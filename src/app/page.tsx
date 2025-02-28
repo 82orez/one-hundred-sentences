@@ -31,7 +31,7 @@ const HomePage = () => {
       <p className="mt-2 text-lg text-gray-600">매일 5문장씩 학습하여 영어 100문장을 완성하세요.</p>
 
       <div className="mt-6 rounded-lg bg-gray-100 p-4 shadow">
-        <p className="text-lg font-semibold">진행률: {progress.toFixed(1)}%</p>
+        <p className="text-lg font-semibold">진행률: {progress.toFixed(0)}%</p>
         <div className="mt-2 h-4 w-full rounded-full bg-gray-300">
           <div className="h-4 rounded-full bg-blue-500" style={{ width: `${progress}%` }}></div>
         </div>

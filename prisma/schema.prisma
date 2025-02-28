@@ -35,10 +35,10 @@ model User {
   // Optional for WebAuthn support
   // Authenticator Authenticator[]
 
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  LearningProgress LearningProgress[]
-  QuizAttempt      QuizAttempt[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  CompletedSentence CompletedSentence[]
+  QuizAttempt       QuizAttempt[]
 }
 
 model Account {
@@ -106,20 +106,19 @@ model PasswordResetToken {
 
 /// 문장 모델 (100개의 영어 문장 저장)
 model Sentence {
-  id               Int                @id @default(autoincrement())
-  no               Int                @unique // 문장 번호 (1~100)
-  en               String // 영어 문장
-  ko               String // 한국어 번역
-  LearningProgress LearningProgress[]
-  QuizAttempt      QuizAttempt[]
+  id                Int                 @id @default(autoincrement())
+  no                Int                 @unique // 문장 번호 (1~100)
+  en                String // 영어 문장
+  ko                String // 한국어 번역
+  CompletedSentence CompletedSentence[]
+  QuizAttempt       QuizAttempt[]
 }
 
-/// 학습 진행도 모델
-model LearningProgress {
-  id         String @id @default(cuid())
-  userId     String
-  sentenceId Int
-
+/// 완료된 학습 문장 모델
+model CompletedSentence {
+  id          String   @id @default(cuid())
+  userId      String
+  sentenceId  Int
   completedAt DateTime @default(now()) // 학습 완료 날짜
 
   // 관계 설정
