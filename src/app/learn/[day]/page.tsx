@@ -4,6 +4,8 @@ import { useLearningStore } from "@/store/useLearningStore";
 import { useQuery } from "@tanstack/react-query"; // ✅ React Query v5 import 변경
 import axios from "axios";
 import { use } from "react";
+import clsx from "clsx";
+import Link from "next/link";
 
 interface Sentence {
   no: number;
@@ -11,8 +13,12 @@ interface Sentence {
   ko: string;
 }
 
-const LearnPage = ({ params }: { params: Promise<{ day: string }> }) => {
-  const { currentDay, markSentenceComplete } = useLearningStore();
+type Props = {
+  params: Promise<{ day: string }>;
+};
+
+const LearnPage = ({ params }: Props) => {
+  const { currentDay, markSentenceComplete, completedSentences } = useLearningStore();
   const { day } = use(params);
 
   // ✅ React Query v5 방식으로 API 요청
@@ -43,6 +49,7 @@ const LearnPage = ({ params }: { params: Promise<{ day: string }> }) => {
             onClick={() => {
               markSentenceComplete(sentence.no);
               console.log("sentence.no: ", sentence.no);
+              console.log("completedSentences: ", completedSentences);
             }}>
             완료
           </button>
@@ -51,6 +58,10 @@ const LearnPage = ({ params }: { params: Promise<{ day: string }> }) => {
           </button>
         </div>
       ))}
+
+      <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": isLoading })}>
+        <Link href={"/"}>Back to Home</Link>
+      </div>
     </div>
   );
 };

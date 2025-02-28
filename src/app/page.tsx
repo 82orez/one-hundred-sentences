@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query"; // ✅ React Query v5 import 변경
 import axios from "axios";
+import clsx from "clsx";
+import Link from "next/link";
 
 const HomePage = () => {
   const router = useRouter();
@@ -62,6 +64,13 @@ const HomePage = () => {
             퀴즈 풀기
           </button>
         </div>
+      </div>
+
+      <div className={clsx("mt-10 flex justify-center hover:underline", {})}>
+        <Link href={"/"}>Back to Home</Link>
+      </div>
+      <div className={clsx("mt-10 flex justify-center hover:underline", {})}>
+        <Link href={"/blog"}>Blog</Link>
       </div>
     </div>
   );
