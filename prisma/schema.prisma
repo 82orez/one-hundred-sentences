@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Test {
+  id         Int       @id @default(autoincrement())
+  name       String
+  age        Int?
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime? @db.Timestamptz()
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String? // 이메일 추가 부분
+  credentials   Boolean   @default(false) // 이메일로 회원가입할 때만 True
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  // Optional for WebAuthn support
+  // Authenticator Authenticator[]
+
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  LearningProgress LearningProgress[]
+  QuizAttempt      QuizAttempt[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+
+  // Kakao 로그인에 필요한 부분.
+  refresh_token_expires_in Int?
+
+  access_token  String?
+  expires_at    Int?
+  token_type    String?
+  scope         String?
+  id_token      String?
+  session_state String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// 이메일 가입 시 인증코드
+model EmailVerificationToken {
+  id      String   @id @default(cuid())
+  email   String   @unique
+  token   String
+  expires DateTime
+
+  createdAt DateTime @default(now())
+}
+
+// 비밀번호 변경 시에 생성된 링크
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String   @unique
+  token   String
+  expires DateTime
+
+  createdAt DateTime @default(now())
+}
+
+/// 문장 모델 (100개의 영어 문장 저장)
+model Sentence {
+  id               Int                @id @default(autoincrement())
+  no               Int                @unique // 문장 번호 (1~100)
+  en               String // 영어 문장
+  ko               String // 한국어 번역
+  LearningProgress LearningProgress[]
+  QuizAttempt      QuizAttempt[]
+}
+
+/// 학습 진행도 모델
+model LearningProgress {
+  id         String @id @default(cuid())
+  userId     String
+  sentenceId Int
+
+  completedAt DateTime @default(now()) // 학습 완료 날짜
+
+  // 관계 설정
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sentence Sentence @relation(fields: [sentenceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, sentenceId]) // 한 문장은 한 번만 학습 완료 가능
+}
+
+/// 퀴즈 기록 모델
+model QuizAttempt {
+  id          String   @id @default(cuid())
+  userId      String
+  sentenceId  Int
+  correct     Boolean // 정답 여부
+  attemptedAt DateTime @default(now())
+
+  // 관계 설정
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sentence Sentence @relation(fields: [sentenceId], references: [id], onDelete: Cascade)
+}
