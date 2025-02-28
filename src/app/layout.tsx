@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { NextLayout } from "@/app/providers";
 import { Noto_Sans_KR } from "next/font/google";
+import AuthProvider from "@/app/auth-provider";
 
 const inter = Noto_Sans_KR({
   weight: ["400", "600", "900"],
@@ -23,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${inter.className} antialiased`}>
-        <NextLayout>{children}</NextLayout>
+        <AuthProvider>
+          <NextLayout>{children}</NextLayout>
+        </AuthProvider>
       </body>
     </html>
   );
