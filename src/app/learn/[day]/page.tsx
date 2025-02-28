@@ -3,6 +3,7 @@
 import { useLearningStore } from "@/store/useLearningStore";
 import { useQuery } from "@tanstack/react-query"; // ✅ React Query v5 import 변경
 import axios from "axios";
+import { use } from "react";
 
 interface Sentence {
   no: number;
@@ -10,8 +11,9 @@ interface Sentence {
   ko: string;
 }
 
-const LearnPage = ({ params }: { params: { day: string } }) => {
+const LearnPage = ({ params }: { params: Promise<{ day: string }> }) => {
   const { currentDay, markSentenceComplete } = useLearningStore();
+  const { day } = use(params);
 
   // ✅ React Query v5 방식으로 API 요청
   const {
@@ -19,9 +21,9 @@ const LearnPage = ({ params }: { params: { day: string } }) => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["sentences", params.day],
+    queryKey: ["sentences", day],
     queryFn: async () => {
-      const res = await axios.get(`/api/learn?day=${params.day}`);
+      const res = await axios.get(`/api/learn?day=${day}`);
       return res.data as Sentence[];
     },
   });
@@ -31,13 +33,21 @@ const LearnPage = ({ params }: { params: { day: string } }) => {
 
   return (
     <div className="mx-auto max-w-2xl p-6">
-      <h1 className="text-2xl font-bold">Day {params.day} 학습</h1>
+      <h1 className="text-2xl font-bold">Day {day} 학습</h1>
       {sentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
           <p className="text-lg font-semibold">{sentence.en}</p>
           <p className="text-gray-600">{sentence.ko}</p>
-          <button className="mt-2 rounded bg-blue-500 px-4 py-2 text-white" onClick={() => markSentenceComplete(sentence.no)}>
+          <button
+            className="mt-2 cursor-pointer rounded bg-blue-500 px-4 py-2 text-white"
+            onClick={() => {
+              markSentenceComplete(sentence.no);
+              console.log("sentence.no: ", sentence.no);
+            }}>
             완료
+          </button>
+          <button onClick={() => alert("hello")} className={"hover:bg-yellow-400"}>
+            hello
           </button>
         </div>
       ))}
