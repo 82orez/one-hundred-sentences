@@ -1,7 +1,7 @@
 "use client";
 
 import { useLearningStore } from "@/store/useLearningStore";
-import { useQuery } from "@tanstack/react-query"; // ✅ React Query v5 import 변경
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { use } from "react";
 import clsx from "clsx";
@@ -21,7 +21,6 @@ const LearnPage = ({ params }: Props) => {
   const { currentDay, markSentenceComplete, completedSentences } = useLearningStore();
   const { day } = use(params);
 
-  // ✅ React Query v5 방식으로 API 요청
   const {
     data: sentences,
     isLoading,
@@ -52,9 +51,6 @@ const LearnPage = ({ params }: Props) => {
               console.log("completedSentences: ", completedSentences);
             }}>
             완료
-          </button>
-          <button onClick={() => alert("hello")} className={"hover:bg-yellow-400"}>
-            hello
           </button>
         </div>
       ))}
