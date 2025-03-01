@@ -9,6 +9,7 @@ export async function GET(req: Request) {
     skip: (day - 1) * 5,
     take: 5,
   });
+  console.log("sentences: ", sentences);
 
   return NextResponse.json(sentences);
 }

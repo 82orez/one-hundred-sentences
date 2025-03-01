@@ -3,7 +3,7 @@
 import { useLearningStore } from "@/store/useLearningStore";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { use, useState } from "react";
+import { useState, use } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -20,7 +20,7 @@ type Props = {
 const LearnPage = ({ params }: Props) => {
   const { currentDay, markSentenceComplete, completedSentences } = useLearningStore();
   const { day } = use(params);
-  const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
+  const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({}); // 기본적으로 숨김
 
   const {
     data: sentences,
@@ -47,18 +47,21 @@ const LearnPage = ({ params }: Props) => {
 
   return (
     <div className="mx-auto max-w-2xl p-6">
-      <h1 className="text-2xl font-bold">Day {day} 학습</h1>
+      <h1 className="text-2xl font-bold">
+        Day - {day}. 학습 {day}일차
+      </h1>
       {sentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
           <p className="text-lg font-semibold">{sentence.en}</p>
-          <div className={"flex items-center"}>
+          <div className="flex items-center">
             {/* Toggle 버튼 */}
             <button
-              className="mr-4 flex h-6 w-6 items-center justify-center rounded-full bg-gray-300 text-black hover:bg-gray-400"
+              className="mr-4 flex cursor-pointer items-center justify-center rounded-md bg-gray-200 p-2 text-black hover:bg-gray-300"
               onClick={() => toggleTranslation(sentence.no)}>
-              {visibleTranslations[sentence.no] ? "👁️" : "🚫"}
+              {visibleTranslations[sentence.no] ? "감추기" : "번역"}
             </button>
-            <p className={clsx("text-gray-600", { "blur-xs": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
+            {/* 기본적으로 blur 처리된 상태 */}
+            <p className={clsx("text-lg text-gray-600", { "blur-md": !visibleTranslations[sentence.no] })}>{sentence.ko}</p>
           </div>
           <button
             className="mt-2 cursor-pointer rounded bg-blue-500 px-4 py-2 text-white"
