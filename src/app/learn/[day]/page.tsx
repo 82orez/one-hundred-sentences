@@ -3,7 +3,7 @@
 import { useLearningStore } from "@/store/useLearningStore";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { use } from "react";
+import { use, useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -20,6 +20,7 @@ type Props = {
 const LearnPage = ({ params }: Props) => {
   const { currentDay, markSentenceComplete, completedSentences } = useLearningStore();
   const { day } = use(params);
+  const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
 
   const {
     data: sentences,
@@ -33,6 +34,14 @@ const LearnPage = ({ params }: Props) => {
     },
   });
 
+  // 번역 보이기/감추기 토글 함수
+  const toggleTranslation = (sentenceId: number) => {
+    setVisibleTranslations((prev) => ({
+      ...prev,
+      [sentenceId]: !prev[sentenceId],
+    }));
+  };
+
   if (isLoading) return <p className="text-center">Loading...</p>;
   if (error) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
@@ -42,7 +51,15 @@ const LearnPage = ({ params }: Props) => {
       {sentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
           <p className="text-lg font-semibold">{sentence.en}</p>
-          <p className="text-gray-600">{sentence.ko}</p>
+          <div className={"flex items-center"}>
+            {/* Toggle 버튼 */}
+            <button
+              className="mr-4 flex h-6 w-6 items-center justify-center rounded-full bg-gray-300 text-black hover:bg-gray-400"
+              onClick={() => toggleTranslation(sentence.no)}>
+              {visibleTranslations[sentence.no] ? "👁️" : "🚫"}
+            </button>
+            <p className={clsx("text-gray-600", { "blur-xs": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
+          </div>
           <button
             className="mt-2 cursor-pointer rounded bg-blue-500 px-4 py-2 text-white"
             onClick={() => {
