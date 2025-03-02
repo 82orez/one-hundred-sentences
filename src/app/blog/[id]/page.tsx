@@ -1,13 +1,14 @@
 // app/blog/[id]/page.tsx
+"use server";
 
 import { notFound } from "next/navigation";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
-const BlogPostPage = ({ params }: Props) => {
-  const { id } = params;
+const BlogPostPage = async ({ params }: Props) => {
+  const { id } = await params;
 
   const posts = {
     "1": { title: "Next.js App Router 이해하기", content: "Next.js App Router 는..." },
