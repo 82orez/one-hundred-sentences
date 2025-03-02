@@ -52,19 +52,25 @@ const LearnPage = ({ params }: Props) => {
 
   // ✅ 개별 영문 보이기/가리기 토글
   const toggleEnglish = (sentenceId: number) => {
+    // ✅ 개별 문장을 보이도록 설정할 때, 전체 가리기 모드를 해제
+    if (allEnglishHidden) {
+      setAllEnglishHidden(false);
+    }
+
     setVisibleEnglish((prev) => ({
       ...prev,
       [sentenceId]: !prev[sentenceId],
     }));
   };
 
-  // ✅ 전체 영문 보이기/가리기 토글
+  // ✅ 전체 영문 보이기/가리기 체크박스 토글
   const toggleAllEnglish = () => {
-    setAllEnglishHidden((prev) => !prev);
+    const newHiddenState = !allEnglishHidden;
+    setAllEnglishHidden(newHiddenState);
     setVisibleEnglish((prev) => {
       const newState: { [key: number]: boolean } = {};
       sentences?.forEach((sentence) => {
-        newState[sentence.no] = allEnglishHidden; // ✅ 버튼을 누르면 모든 문장이 가려지고, 다시 누르면 보임
+        newState[sentence.no] = !newHiddenState; // ✅ 체크하면 모든 문장 가리기, 해제하면 보이기
       });
       return newState;
     });
@@ -95,17 +101,20 @@ const LearnPage = ({ params }: Props) => {
         Day - {day}. 학습 {day}일차
       </h1>
 
-      {/* ✅ 전체 영문 가리기/보이기 버튼 */}
-      <button className="mt-4 w-full rounded-md bg-gray-400 px-4 py-2 text-white hover:bg-gray-500" onClick={toggleAllEnglish}>
-        {allEnglishHidden ? "전체 영문 보기" : "전체 영문 가리기"}
-      </button>
+      {/* ✅ 전체 영문 가리기/보이기 체크박스 */}
+      <div className="mt-2 flex items-center justify-end gap-2 hover:underline">
+        <input type="checkbox" id="toggleAllEnglish" checked={allEnglishHidden} onChange={toggleAllEnglish} className="h-5 w-5 cursor-pointer" />
+        <label htmlFor="toggleAllEnglish" className="text-lg font-medium">
+          전체 영문 가리기
+        </label>
+      </div>
 
       {sentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
           {/* ✅ 처음에는 모든 영어 문장이 보이는 상태 */}
-          <p className={clsx("text-lg font-semibold", { "blur-md": !visibleEnglish[sentence.no] })}>{sentence.en}</p>
+          <p className={clsx("text-lg font-semibold", { "blur-xs": !visibleEnglish[sentence.no] })}>{sentence.en}</p>
 
-          <p className={clsx("text-lg text-gray-600", { "blur-md": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
+          <p className={clsx("mt-2 text-lg text-gray-600", { "blur-xs": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
 
           <div className="mt-2 flex items-center gap-3">
             {/* ✅ 개별 영문 가리기 버튼 */}
