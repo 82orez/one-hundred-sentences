@@ -2,24 +2,38 @@
 import { useLearningStore } from "@/store/useLearningStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query"; // ✅ React Query v5 import 변경
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
 
 const HomePage = () => {
-  const router = useRouter();
+  const { data: session, status } = useSession();
+
   const { currentDay } = useLearningStore();
   const [progress, setProgress] = useState(0);
+  const router = useRouter();
 
-  // ✅ React Query v5에서 queryKey 가 배열로 변경됨
+  // * 로그인한 사용자 정보 가져오기 (userId 포함)
   const { data: completedSentences } = useQuery({
-    queryKey: ["completedSentences"],
+    queryKey: ["completedSentences", session?.user?.id], // ✅ userId 추가
     queryFn: async () => {
-      const res = await axios.get("/api/progress");
+      const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
+      console.log("userID: ", session?.user?.id);
       return res.data;
     },
+    enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
   });
+
+  // * 기존
+  // const { data: completedSentences } = useQuery({
+  //   queryKey: ["completedSentences"],
+  //   queryFn: async () => {
+  //     const res = await axios.get("/api/progress");
+  //     return res.data;
+  //   },
+  // });
 
   useEffect(() => {
     if (completedSentences) {
