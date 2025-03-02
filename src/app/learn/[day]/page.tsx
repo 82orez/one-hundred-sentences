@@ -3,7 +3,7 @@
 import { useLearningStore } from "@/store/useLearningStore";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useState, use } from "react";
+import { useState, useEffect, use } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaPlay } from "react-icons/fa";
@@ -12,7 +12,7 @@ interface Sentence {
   no: number;
   en: string;
   ko: string;
-  audioUrl?: string; // ✅ 추가: Supabase MP3 URL
+  audioUrl?: string;
 }
 
 type Props = {
@@ -20,11 +20,13 @@ type Props = {
 };
 
 const LearnPage = ({ params }: Props) => {
-  const { currentDay, markSentenceComplete, completedSentences } = useLearningStore();
+  const { markSentenceComplete, completedSentences } = useLearningStore();
   const { day } = use(params);
-  const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({}); // 기본적으로 숨김
+  const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
+  const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
 
+  // ✅ React Query 를 사용하여 문장 데이터 가져오기
   const {
     data: sentences,
     isLoading,
@@ -37,7 +39,18 @@ const LearnPage = ({ params }: Props) => {
     },
   });
 
-  // * 영문 보이기/가리기 토글 함수
+  // ✅ 문장이 로드되면 모든 영어 문장을 기본적으로 보이게 설정
+  useEffect(() => {
+    if (sentences) {
+      const initialEnglishState: { [key: number]: boolean } = {};
+      sentences.forEach((sentence) => {
+        initialEnglishState[sentence.no] = true; // ✅ 처음에는 모든 영어 문장이 보임
+      });
+      setVisibleEnglish(initialEnglishState);
+    }
+  }, [sentences]);
+
+  // ✅ 개별 영문 보이기/가리기 토글
   const toggleEnglish = (sentenceId: number) => {
     setVisibleEnglish((prev) => ({
       ...prev,
@@ -45,7 +58,19 @@ const LearnPage = ({ params }: Props) => {
     }));
   };
 
-  // 번역 보이기/감추기 토글 함수
+  // ✅ 전체 영문 보이기/가리기 토글
+  const toggleAllEnglish = () => {
+    setAllEnglishHidden((prev) => !prev);
+    setVisibleEnglish((prev) => {
+      const newState: { [key: number]: boolean } = {};
+      sentences?.forEach((sentence) => {
+        newState[sentence.no] = allEnglishHidden; // ✅ 버튼을 누르면 모든 문장이 가려지고, 다시 누르면 보임
+      });
+      return newState;
+    });
+  };
+
+  // ✅ 번역 보이기/가리기 토글
   const toggleTranslation = (sentenceId: number) => {
     setVisibleTranslations((prev) => ({
       ...prev,
@@ -69,29 +94,42 @@ const LearnPage = ({ params }: Props) => {
       <h1 className="text-2xl font-bold">
         Day - {day}. 학습 {day}일차
       </h1>
+
+      {/* ✅ 전체 영문 가리기/보이기 버튼 */}
+      <button className="mt-4 w-full rounded-md bg-gray-400 px-4 py-2 text-white hover:bg-gray-500" onClick={toggleAllEnglish}>
+        {allEnglishHidden ? "전체 영문 보기" : "전체 영문 가리기"}
+      </button>
+
       {sentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
-          <p className={clsx("text-lg font-semibold", { "blur-xs": visibleEnglish[sentence.no] })}>{sentence.en}</p>
-          <p className={clsx("text-lg text-gray-600", { "blur-xs": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
+          {/* ✅ 처음에는 모든 영어 문장이 보이는 상태 */}
+          <p className={clsx("text-lg font-semibold", { "blur-md": !visibleEnglish[sentence.no] })}>{sentence.en}</p>
+
+          <p className={clsx("text-lg text-gray-600", { "blur-md": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
+
           <div className="mt-2 flex items-center gap-3">
+            {/* ✅ 개별 영문 가리기 버튼 */}
             <button
               className="flex w-24 cursor-pointer items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-black hover:bg-gray-300"
               onClick={() => toggleEnglish(sentence.no)}>
-              {visibleEnglish[sentence.no] ? "영문 보기" : "영문 가리기"}
+              {visibleEnglish[sentence.no] ? "영문 가리기" : "영문 보기"}
             </button>
 
+            {/* ✅ 번역 보이기/가리기 버튼 */}
             <button
               className="flex w-24 cursor-pointer items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-black hover:bg-gray-300"
               onClick={() => toggleTranslation(sentence.no)}>
               {visibleTranslations[sentence.no] ? "번역 보기" : "번역 가리기"}
             </button>
 
+            {/* ✅ 오디오 듣기 버튼 */}
             {sentence.audioUrl && (
               <button className="cursor-pointer rounded bg-green-500 px-4 py-2 text-white" onClick={() => playAudio(sentence.audioUrl)}>
                 <FaPlay size={15} />
               </button>
             )}
 
+            {/* ✅ 완료 버튼 */}
             <button
               className="w-16 cursor-pointer rounded bg-blue-500 px-2 py-1 text-white"
               onClick={() => {
