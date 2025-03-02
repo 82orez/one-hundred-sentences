@@ -26,7 +26,7 @@ export default function SignIn() {
   // * 로그인이 되어 있을 때 이 페이지로 접근하면 루트 페이지 '/' 로 되돌림.
   useEffect(() => {
     if (status === "authenticated") {
-      router.replace("/todos");
+      router.replace("/learn");
     }
   }, [status, router]);
 
@@ -145,7 +145,7 @@ export default function SignIn() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className={clsx("absolute right-3 top-[2.1rem] text-gray-600 hover:text-gray-800", { hidden: !formData.password })}>
+            className={clsx("absolute top-[2.1rem] right-3 text-gray-600 hover:text-gray-800", { hidden: !formData.password })}>
             {showPassword ? <GoEye size={25} /> : <PiEyeClosed size={25} />}
           </button>
         </div>
@@ -162,7 +162,7 @@ export default function SignIn() {
             disabled={!formData.email || !formData.password || isLoading || isKakaoLoading}>
             {isLoading ? "로그인 중..." : "Email 로그인"}
           </button>
-          {isLoading && <AiOutlineLoading3Quarters className={"absolute left-12 top-3.5 animate-spin md:left-14"} />}
+          {isLoading && <AiOutlineLoading3Quarters className={"absolute top-3.5 left-12 animate-spin md:left-14"} />}
         </div>
       </form>
 
