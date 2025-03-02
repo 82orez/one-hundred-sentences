@@ -6,6 +6,7 @@ import axios from "axios";
 import { useState, use } from "react";
 import clsx from "clsx";
 import Link from "next/link";
+import { FaPlay } from "react-icons/fa";
 
 interface Sentence {
   no: number;
@@ -76,7 +77,7 @@ const LearnPage = ({ params }: Props) => {
           {/* ✅ 듣기 버튼 추가 */}
           {sentence.audioUrl && (
             <button className="mt-2 cursor-pointer rounded bg-green-500 px-4 py-2 text-white" onClick={() => playAudio(sentence.audioUrl)}>
-              듣기 ▶️
+              <FaPlay size={15} />
             </button>
           )}
 
