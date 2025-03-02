@@ -63,33 +63,32 @@ const LearnPage = ({ params }: Props) => {
       {sentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
           <p className="text-lg font-semibold">{sentence.en}</p>
-          <div className="flex items-center">
+          <div className="mt-2 flex items-center gap-3">
             {/* Toggle 버튼 */}
             <button
-              className="mr-4 flex cursor-pointer items-center justify-center rounded-md bg-gray-200 p-2 text-black hover:bg-gray-300"
+              className="flex w-20 cursor-pointer items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-black hover:bg-gray-300"
               onClick={() => toggleTranslation(sentence.no)}>
-              {visibleTranslations[sentence.no] ? "감추기" : "번역"}
+              {visibleTranslations[sentence.no] ? "감추기" : "번역 보기"}
             </button>
-            {/* 기본적으로 blur 처리된 상태 */}
-            <p className={clsx("text-lg text-gray-600", { "blur-md": !visibleTranslations[sentence.no] })}>{sentence.ko}</p>
+
+            {sentence.audioUrl && (
+              <button className="cursor-pointer rounded bg-green-500 px-4 py-2 text-white" onClick={() => playAudio(sentence.audioUrl)}>
+                <FaPlay size={15} />
+              </button>
+            )}
+
+            <button
+              className="w-16 cursor-pointer rounded bg-blue-500 px-2 py-1 text-white"
+              onClick={() => {
+                markSentenceComplete(sentence.no);
+                console.log("sentence.no: ", sentence.no);
+                console.log("completedSentences: ", completedSentences);
+              }}>
+              완료
+            </button>
           </div>
-
-          {/* ✅ 듣기 버튼 추가 */}
-          {sentence.audioUrl && (
-            <button className="mt-2 cursor-pointer rounded bg-green-500 px-4 py-2 text-white" onClick={() => playAudio(sentence.audioUrl)}>
-              <FaPlay size={15} />
-            </button>
-          )}
-
-          <button
-            className="mt-2 cursor-pointer rounded bg-blue-500 px-4 py-2 text-white"
-            onClick={() => {
-              markSentenceComplete(sentence.no);
-              console.log("sentence.no: ", sentence.no);
-              console.log("completedSentences: ", completedSentences);
-            }}>
-            완료
-          </button>
+          {/* 기본적으로 blur 처리된 상태 */}
+          <p className={clsx("text-lg text-gray-600", { hidden: !visibleTranslations[sentence.no] })}>{sentence.ko}</p>
         </div>
       ))}
 
