@@ -11,7 +11,12 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 flex w-full items-center justify-between bg-white px-6 py-4 shadow-md">
       <h1 className="text-2xl font-bold">
-        <Link href="/">Friending Academy</Link>
+        <Link href="/" className={"block md:hidden"}>
+          Friending
+        </Link>
+        <Link href="/" className={"hidden md:block"}>
+          Friending Academy
+        </Link>
       </h1>
       <div className="flex items-center gap-4">
         {status === "authenticated" ? (
