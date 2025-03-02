@@ -23,6 +23,7 @@ const LearnPage = ({ params }: Props) => {
   const { currentDay, markSentenceComplete, completedSentences } = useLearningStore();
   const { day } = use(params);
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({}); // 기본적으로 숨김
+  const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
 
   const {
     data: sentences,
@@ -35,6 +36,14 @@ const LearnPage = ({ params }: Props) => {
       return res.data as Sentence[];
     },
   });
+
+  // * 영문 보이기/가리기 토글 함수
+  const toggleEnglish = (sentenceId: number) => {
+    setVisibleEnglish((prev) => ({
+      ...prev,
+      [sentenceId]: !prev[sentenceId],
+    }));
+  };
 
   // 번역 보이기/감추기 토글 함수
   const toggleTranslation = (sentenceId: number) => {
@@ -62,13 +71,19 @@ const LearnPage = ({ params }: Props) => {
       </h1>
       {sentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
-          <p className="text-lg font-semibold">{sentence.en}</p>
+          <p className={clsx("text-lg font-semibold", { "blur-xs": visibleEnglish[sentence.no] })}>{sentence.en}</p>
+          <p className={clsx("text-lg text-gray-600", { "blur-xs": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
           <div className="mt-2 flex items-center gap-3">
-            {/* Toggle 버튼 */}
             <button
-              className="flex w-20 cursor-pointer items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-black hover:bg-gray-300"
+              className="flex w-24 cursor-pointer items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-black hover:bg-gray-300"
+              onClick={() => toggleEnglish(sentence.no)}>
+              {visibleEnglish[sentence.no] ? "영문 보기" : "영문 가리기"}
+            </button>
+
+            <button
+              className="flex w-24 cursor-pointer items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-black hover:bg-gray-300"
               onClick={() => toggleTranslation(sentence.no)}>
-              {visibleTranslations[sentence.no] ? "감추기" : "번역 보기"}
+              {visibleTranslations[sentence.no] ? "번역 보기" : "번역 가리기"}
             </button>
 
             {sentence.audioUrl && (
@@ -87,8 +102,6 @@ const LearnPage = ({ params }: Props) => {
               완료
             </button>
           </div>
-          {/* 기본적으로 blur 처리된 상태 */}
-          <p className={clsx("text-lg text-gray-600", { hidden: !visibleTranslations[sentence.no] })}>{sentence.ko}</p>
         </div>
       ))}
 
