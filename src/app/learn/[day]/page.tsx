@@ -11,6 +11,7 @@ interface Sentence {
   no: number;
   en: string;
   ko: string;
+  audioUrl?: string; // ✅ 추가: Supabase MP3 URL
 }
 
 type Props = {
@@ -42,6 +43,14 @@ const LearnPage = ({ params }: Props) => {
     }));
   };
 
+  // ✅ 오디오 재생 함수
+  const playAudio = (audioUrl?: string) => {
+    if (audioUrl) {
+      const audio = new Audio(audioUrl);
+      audio.play();
+    }
+  };
+
   if (isLoading) return <p className="text-center">Loading...</p>;
   if (error) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
@@ -63,6 +72,14 @@ const LearnPage = ({ params }: Props) => {
             {/* 기본적으로 blur 처리된 상태 */}
             <p className={clsx("text-lg text-gray-600", { "blur-md": !visibleTranslations[sentence.no] })}>{sentence.ko}</p>
           </div>
+
+          {/* ✅ 듣기 버튼 추가 */}
+          {sentence.audioUrl && (
+            <button className="mt-2 cursor-pointer rounded bg-green-500 px-4 py-2 text-white" onClick={() => playAudio(sentence.audioUrl)}>
+              듣기 ▶️
+            </button>
+          )}
+
           <button
             className="mt-2 cursor-pointer rounded bg-blue-500 px-4 py-2 text-white"
             onClick={() => {

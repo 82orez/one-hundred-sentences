@@ -110,6 +110,7 @@ model Sentence {
   no                Int                 @unique // 문장 번호 (1~100)
   en                String // 영어 문장
   ko                String // 한국어 번역
+  audioUrl          String? // ✅ MP3 파일 경로 추가
   CompletedSentence CompletedSentence[]
   QuizAttempt       QuizAttempt[]
 }
