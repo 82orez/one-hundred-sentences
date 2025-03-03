@@ -44,14 +44,12 @@ const LearnPage = ({ params }: Props) => {
     },
   });
 
-  // * completedSentences 가져오기 (userId 포함)
+  // * ✅ 사용자가 완료한 문장 목록 가져오기
   const { data: completedSentences } = useQuery({
-    queryKey: ["completedSentences", session?.user?.id], // ✅ userId 추가
+    queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
       const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
-      console.log("userID: ", session?.user?.id);
-      console.log("completedSentences: ", res.data);
-      return res.data;
+      return res.data.map((item: { sentenceNo: number }) => item.sentenceNo); // 완료된 문장 번호 리스트
     },
     enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
   });
@@ -120,7 +118,13 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
+  // ✅ 완료 버튼 클릭 핸들러
   const handleComplete = async (sentenceNo: number) => {
+    if (completedSentences?.includes(sentenceNo)) {
+      alert("이미 완료한 문장입니다.");
+      return;
+    }
+
     try {
       await completeSentenceMutation.mutateAsync(sentenceNo);
       markSentenceComplete(sentenceNo);
@@ -184,8 +188,14 @@ const LearnPage = ({ params }: Props) => {
             )}
 
             {/* ✅ 완료 버튼 */}
-            <button className="w-16 cursor-pointer rounded bg-blue-500 px-2 py-1 text-white" onClick={() => handleComplete(sentence.no)}>
-              완료
+            <button
+              className="w-24 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={completedSentences?.includes(sentence.no)}
+              onClick={() => handleComplete(sentence.no)}
+              style={{
+                backgroundColor: completedSentences?.includes(sentence.no) ? "gray" : "blue",
+              }}>
+              {completedSentences?.includes(sentence.no) ? "완료된 문장" : "완료"}
             </button>
           </div>
         </div>
