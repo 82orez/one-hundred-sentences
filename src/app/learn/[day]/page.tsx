@@ -9,6 +9,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { FaPlay } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
+import { useSession } from "next-auth/react";
 
 interface Sentence {
   no: number;
@@ -22,12 +23,13 @@ type Props = {
 };
 
 const LearnPage = ({ params }: Props) => {
-  const { markSentenceComplete, completedSentences } = useLearningStore();
+  const { markSentenceComplete } = useLearningStore();
   const { day } = use(params);
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
   const router = useRouter();
+  const { data: session, status } = useSession();
 
   // ✅ React Query 를 사용하여 문장 데이터 가져오기
   const {
@@ -40,6 +42,18 @@ const LearnPage = ({ params }: Props) => {
       const res = await axios.get(`/api/learn?day=${day}`);
       return res.data as Sentence[];
     },
+  });
+
+  // * completedSentences 가져오기 (userId 포함)
+  const { data: completedSentences } = useQuery({
+    queryKey: ["completedSentences", session?.user?.id], // ✅ userId 추가
+    queryFn: async () => {
+      const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
+      console.log("userID: ", session?.user?.id);
+      console.log("completedSentences: ", res.data);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
   });
 
   // ✅ 완료된 문장 등록 Mutation
