@@ -106,7 +106,7 @@ model PasswordResetToken {
 
 /// 문장 모델 (100개의 영어 문장 저장)
 model Sentence {
-  id                Int                 @id @default(autoincrement())
+  id                String              @id @default(cuid())
   no                Int                 @unique // 문장 번호 (1~100)
   en                String // 영어 문장
   ko                String // 한국어 번역
@@ -119,21 +119,21 @@ model Sentence {
 model CompletedSentence {
   id          String   @id @default(cuid())
   userId      String
-  sentenceId  Int
+  sentenceNo  Int
   completedAt DateTime @default(now()) // 학습 완료 날짜
 
   // 관계 설정
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sentence Sentence @relation(fields: [sentenceId], references: [id], onDelete: Cascade)
+  sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 
-  @@unique([userId, sentenceId]) // 한 문장은 한 번만 학습 완료 가능
+  @@unique([userId, sentenceNo]) // 한 문장은 한 번만 학습 완료 가능
 }
 
 /// 퀴즈 기록 모델
 model QuizAttempt {
   id          String   @id @default(cuid())
   userId      String
-  sentenceId  Int
+  sentenceId  String
   correct     Boolean // 정답 여부
   attemptedAt DateTime @default(now())
 

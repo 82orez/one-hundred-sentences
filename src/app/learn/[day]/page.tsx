@@ -2,8 +2,9 @@
 
 import { useLearningStore } from "@/store/useLearningStore";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useState, useEffect, use } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaPlay } from "react-icons/fa";
@@ -25,6 +26,7 @@ const LearnPage = ({ params }: Props) => {
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
+  const router = useRouter();
 
   // ✅ React Query 를 사용하여 문장 데이터 가져오기
   const {

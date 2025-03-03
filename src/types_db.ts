@@ -105,28 +105,28 @@ export type Database = {
         Row: {
           completedAt: string
           id: string
-          sentenceId: number
+          sentenceNo: number
           userId: string
         }
         Insert: {
           completedAt?: string
           id: string
-          sentenceId: number
+          sentenceNo: number
           userId: string
         }
         Update: {
           completedAt?: string
           id?: string
-          sentenceId?: number
+          sentenceNo?: number
           userId?: string
         }
         Relationships: [
           {
-            foreignKeyName: "CompletedSentence_sentenceId_fkey"
-            columns: ["sentenceId"]
+            foreignKeyName: "CompletedSentence_sentenceNo_fkey"
+            columns: ["sentenceNo"]
             isOneToOne: false
             referencedRelation: "Sentence"
-            referencedColumns: ["id"]
+            referencedColumns: ["no"]
           },
           {
             foreignKeyName: "CompletedSentence_userId_fkey"
@@ -190,21 +190,21 @@ export type Database = {
           attemptedAt: string
           correct: boolean
           id: string
-          sentenceId: number
+          sentenceId: string
           userId: string
         }
         Insert: {
           attemptedAt?: string
           correct: boolean
           id: string
-          sentenceId: number
+          sentenceId: string
           userId: string
         }
         Update: {
           attemptedAt?: string
           correct?: boolean
           id?: string
-          sentenceId?: number
+          sentenceId?: string
           userId?: string
         }
         Relationships: [
@@ -226,20 +226,23 @@ export type Database = {
       }
       Sentence: {
         Row: {
+          audioUrl: string | null
           en: string
-          id: number
+          id: string
           ko: string
           no: number
         }
         Insert: {
+          audioUrl?: string | null
           en: string
-          id?: number
+          id: string
           ko: string
           no: number
         }
         Update: {
+          audioUrl?: string | null
           en?: string
-          id?: number
+          id?: string
           ko?: string
           no?: number
         }

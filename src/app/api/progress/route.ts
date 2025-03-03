@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -14,7 +16,6 @@ export async function GET(req: Request) {
       where: { userId },
       include: { sentence: true },
     });
-    console.log("completedSentences: ", completedSentences);
 
     return NextResponse.json(completedSentences);
   } catch (error) {
@@ -22,18 +23,49 @@ export async function GET(req: Request) {
   }
 }
 
-// 이제 API가 다음과 같은 JSON 응답을 반환
-// [
-//   {
-//     "id": "clxyz123",
-//     "userId": "clabc456",
-//     "sentenceId": 3,
-//     "completedAt": "2025-02-26T12:00:00.000Z",
-//     "sentence": {
-//       "id": 3,
-//       "no": 3,
-//       "en": "How many bags can I check in?",
-//       "ko": "부칠 수 있는 가방은 몇 개인가요?"
-//     }
-//   }
-// ]
+export async function POST(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { sentenceNo } = await req.json();
+  const userId = session.user.id;
+
+  if (!sentenceNo || typeof sentenceNo !== "number") {
+    return NextResponse.json({ error: "Invalid sentenceNo format" }, { status: 400 });
+  }
+
+  try {
+    // ✅ Sentence 테이블에서 sentenceNo가 존재하는지 확인
+    const sentenceExists = await prisma.sentence.findUnique({
+      where: { no: sentenceNo }, // ✅ sentenceNo를 기준으로 확인
+    });
+
+    if (!sentenceExists) {
+      return NextResponse.json({ error: "Invalid sentenceNo" }, { status: 400 });
+    }
+
+    // ✅ 이미 완료한 문장인지 확인
+    const existing = await prisma.completedSentence.findUnique({
+      where: { userId_sentenceNo: { userId, sentenceNo } },
+    });
+
+    if (existing) {
+      return NextResponse.json({ message: "Sentence already completed" });
+    }
+
+    // ✅ 완료된 문장 추가
+    const completedSentence = await prisma.completedSentence.create({
+      data: {
+        userId,
+        sentenceNo,
+      },
+    });
+
+    return NextResponse.json(completedSentence);
+  } catch (error) {
+    console.error("Failed to save progress:", error);
+    return NextResponse.json({ error: "Failed to save progress" }, { status: 500 });
+  }
+}
