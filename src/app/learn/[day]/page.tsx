@@ -1,13 +1,14 @@
 "use client";
 
 import { useLearningStore } from "@/store/useLearningStore";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaPlay } from "react-icons/fa";
+import { queryClient } from "@/app/providers";
 
 interface Sentence {
   no: number;
@@ -38,6 +39,17 @@ const LearnPage = ({ params }: Props) => {
     queryFn: async () => {
       const res = await axios.get(`/api/learn?day=${day}`);
       return res.data as Sentence[];
+    },
+  });
+
+  // ✅ 완료된 문장 등록 Mutation
+  const completeSentenceMutation = useMutation({
+    mutationFn: async (sentenceNo: number) => {
+      await axios.post("/api/progress", { sentenceNo });
+    },
+    onSuccess: () => {
+      // @ts-ignore
+      queryClient.invalidateQueries(["completedSentences"]);
     },
   });
 
@@ -94,6 +106,23 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
+  const handleComplete = async (sentenceNo: number) => {
+    try {
+      await completeSentenceMutation.mutateAsync(sentenceNo);
+      markSentenceComplete(sentenceNo);
+
+      // ✅ 5개 문장이 모두 완료되었는지 확인 후 다음 학습일로 이동
+      if (completedSentences.length + 1 === 5) {
+        setTimeout(() => {
+          const nextDay = parseInt(day) + 1;
+          router.push(`/learn/${nextDay}`);
+        }, 500);
+      }
+    } catch (error) {
+      console.error("Failed to save progress:", error);
+    }
+  };
+
   if (isLoading) return <p className="text-center">Loading...</p>;
   if (error) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
@@ -141,13 +170,7 @@ const LearnPage = ({ params }: Props) => {
             )}
 
             {/* ✅ 완료 버튼 */}
-            <button
-              className="w-16 cursor-pointer rounded bg-blue-500 px-2 py-1 text-white"
-              onClick={() => {
-                markSentenceComplete(sentence.no);
-                console.log("sentence.no: ", sentence.no);
-                console.log("completedSentences: ", completedSentences);
-              }}>
+            <button className="w-16 cursor-pointer rounded bg-blue-500 px-2 py-1 text-white" onClick={() => handleComplete(sentence.no)}>
               완료
             </button>
           </div>
