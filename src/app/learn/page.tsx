@@ -1,5 +1,5 @@
 "use client";
-import { useLearningStore } from "@/store/useLearningStore";
+import { useLearningStore } from "@/stores/useLearningStore";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";

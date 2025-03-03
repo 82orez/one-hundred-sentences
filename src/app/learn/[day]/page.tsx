@@ -1,6 +1,5 @@
 "use client";
 
-import { useLearningStore } from "@/store/useLearningStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
@@ -10,6 +9,7 @@ import Link from "next/link";
 import { FaPlay } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import { useSession } from "next-auth/react";
+import { useLearningStore } from "@/stores/useLearningStore";
 
 interface Sentence {
   no: number;
@@ -151,7 +151,7 @@ const LearnPage = ({ params }: Props) => {
       </h1>
 
       {/* ✅ 전체 영문 가리기/보이기 체크박스 */}
-      <div className="absolute top-[4.25rem] right-6 flex items-center justify-end gap-2 hover:underline md:top-16">
+      <div className="absolute top-[4.25rem] right-6 flex items-center justify-end gap-2 md:top-16">
         <input type="checkbox" id="toggleAllEnglish" checked={allEnglishHidden} onChange={toggleAllEnglish} className="h-5 w-5 cursor-pointer" />
         <label htmlFor="toggleAllEnglish" className="text-md font-medium md:text-lg">
           전체 영문 가리기
