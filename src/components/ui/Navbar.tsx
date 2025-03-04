@@ -22,7 +22,7 @@ export default function Navbar() {
         {status === "authenticated" ? (
           <>
             <div className="hidden text-gray-700 md:block">{session?.user?.email}</div>
-            <button onClick={() => signOut({ callbackUrl: "/" })} className="rounded-md bg-red-500 px-4 py-2 text-white transition hover:bg-red-600">
+            <button onClick={() => signOut({ callbackUrl: "/" })} className="rounded-md bg-cyan-500 px-4 py-2 text-white transition hover:bg-red-600">
               Sign Out
             </button>
           </>

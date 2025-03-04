@@ -15,25 +15,30 @@ const HomePage = () => {
   const [progress, setProgress] = useState(0);
   const router = useRouter();
 
-  // * 로그인한 사용자 정보 가져오기 (userId 포함)
-  const { data: completedSentences } = useQuery({
-    queryKey: ["completedSentences", session?.user?.id], // ✅ userId 추가
+  // ✅ 사용자가 완료한 문장 정보 가져오기
+  const {
+    data: completedSentences,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
       const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
-      console.log("userID: ", session?.user?.id);
-      return res.data;
+      return res.data.map((item: { sentenceNo: number }) => item.sentenceNo);
     },
-    enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
+    enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // * 기존
-  // const { data: completedSentences } = useQuery({
-  //   queryKey: ["completedSentences"],
-  //   queryFn: async () => {
-  //     const res = await axios.get("/api/progress");
-  //     return res.data;
-  //   },
-  // });
+  // ✅ 사용자가 완료한 가장 높은 학습일 계산
+  const getNextLearningDay = () => {
+    if (!completedSentences || completedSentences.length === 0) return 1; // 학습 시작 전이면 Day 1
+
+    const highestCompletedSentence = Math.max(...completedSentences);
+    const completedDays = Math.ceil(highestCompletedSentence / 5); // ✅ 5문장 단위로 학습일 계산
+    return completedDays + 1 > 20 ? 20 : completedDays + 1; // ✅ 최대 20일까지만 진행
+  };
+
+  const nextDay = getNextLearningDay();
 
   useEffect(() => {
     if (completedSentences) {
@@ -55,11 +60,11 @@ const HomePage = () => {
 
       <div className="mt-8">
         <h2 className="text-xl font-semibold">오늘의 학습</h2>
-        <p className="text-gray-600">Day {currentDay} 학습을 시작하세요.</p>
+        <p className="text-2xl font-bold text-gray-600">Day - {nextDay}</p>
         <button
           className="mt-4 rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
           onClick={() => router.push(`/learn/${currentDay}`)}>
-          학습 시작 🚀
+          {nextDay}일차 학습 시작
         </button>
       </div>
 
