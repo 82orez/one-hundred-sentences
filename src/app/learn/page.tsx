@@ -10,7 +10,6 @@ import Link from "next/link";
 
 const HomePage = () => {
   const { data: session, status } = useSession();
-
   const { currentDay } = useLearningStore();
   const [progress, setProgress] = useState(0);
   const router = useRouter();
@@ -38,11 +37,11 @@ const HomePage = () => {
     return completedDays + 1 > 20 ? 20 : completedDays + 1; // ✅ 최대 20일까지만 진행
   };
 
-  const nextDay = getNextLearningDay();
+  const nextDay = getNextLearningDay() || 1; // ✅ 최소 Day 1을 보장
 
   useEffect(() => {
     if (completedSentences) {
-      setProgress((completedSentences.length / 100) * 100);
+      setProgress(Math.min((completedSentences.length / 100) * 100, 100)); // ✅ 100% 초과 방지
     }
   }, [completedSentences]);
 
@@ -63,8 +62,9 @@ const HomePage = () => {
         <p className="text-2xl font-bold text-gray-600">Day - {nextDay}</p>
         <button
           className="mt-4 rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
-          onClick={() => router.push(`/learn/${currentDay}`)}>
-          {nextDay}일차 학습 시작
+          onClick={() => router.push(`/learn/${nextDay}`)} // ✅ nextDay 로 이동
+        >
+          {nextDay}일차 학습 시작 🚀
         </button>
       </div>
 
