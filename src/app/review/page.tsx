@@ -21,7 +21,7 @@ const ReviewPage = () => {
   });
 
   // ✅ 선택한 학습일의 문장 목록 가져오기
-  const { data: sentences } = useQuery({
+  const { data: sentences, isFetching } = useQuery({
     queryKey: ["reviewSentences", selectedDay],
     queryFn: async () => {
       if (!selectedDay) return [];
@@ -36,39 +36,51 @@ const ReviewPage = () => {
       <h1 className="text-3xl font-bold">복습하기</h1>
       <p className="mt-2 text-lg text-gray-600">이미 학습한 내용을 복습해보세요.</p>
 
-      {/* ✅ 학습일 선택 목록 (flex 적용) */}
-      <div className="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
-        {[...Array(20)].map((_, index) => {
-          const day = index + 1;
-          const isCompleted = completedDays?.includes(day);
+      {/* ✅ 학습일 선택 목록 */}
+      {isLoading ? (
+        <p className="mt-6 text-gray-500">학습 데이터를 불러오는 중...</p>
+      ) : (
+        <div className="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
+          {[...Array(20)].map((_, index) => {
+            const day = index + 1;
+            const isCompleted = completedDays?.includes(day);
 
-          return (
-            <button
-              key={day}
-              className={clsx(
-                "min-w-[80px] rounded-lg p-3 font-bold transition md:min-w-[100px]",
-                isCompleted ? "bg-blue-500 text-white hover:bg-blue-600" : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
-              )}
-              disabled={!isCompleted}
-              onClick={() => setSelectedDay(day)}>
-              {day}일차
-            </button>
-          );
-        })}
-      </div>
+            return (
+              <button
+                key={day}
+                className={clsx(
+                  "min-w-[80px] rounded-lg p-3 font-bold transition md:min-w-[100px]",
+                  isCompleted ? "bg-blue-500 text-white hover:bg-blue-600" : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
+                )}
+                disabled={!isCompleted}
+                aria-label={isCompleted ? `${day}일차 복습하기` : `${day}일차는 아직 완료되지 않음`}
+                onClick={() => {
+                  if (isCompleted && selectedDay !== day) {
+                    setSelectedDay(day);
+                  }
+                }}>
+                {day}일차
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* ✅ 선택한 학습일 문장 목록 */}
       {selectedDay && (
         <div className="mt-8 text-left">
           <h2 className="text-xl font-semibold">Day {selectedDay} 문장 목록</h2>
-          <ul className="mt-4 space-y-2">
-            {sentences?.map((sentence: { no: number; en: string; ko: string }) => (
-              <li key={sentence.no} className="rounded-md border p-2">
-                <p className="font-semibold">{sentence.en}</p>
-                {/*<p className="text-gray-600">{sentence.ko}</p>*/}
-              </li>
-            ))}
-          </ul>
+          {isFetching ? (
+            <p className="mt-4 text-gray-500">문장을 불러오는 중...</p>
+          ) : (
+            <ul className="mt-4 space-y-2">
+              {sentences?.map((sentence: { no: number; en: string; ko: string }) => (
+                <li key={sentence.no} className="rounded-md border p-2">
+                  <p className="font-semibold">{sentence.en}</p>
+                </li>
+              ))}
+            </ul>
+          )}
 
           {/* ✅ 복습 시작 버튼 */}
           <button
@@ -79,8 +91,11 @@ const ReviewPage = () => {
         </div>
       )}
 
-      <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": isLoading })}>
-        <Link href={"/learn"}>Back to My page</Link>
+      {/* ✅ 뒤로가기 버튼 */}
+      <div className="mt-10 flex justify-center">
+        <Link href="/learn" className="hover:underline focus-visible:ring focus-visible:ring-blue-300">
+          Back to My page
+        </Link>
       </div>
     </div>
   );
