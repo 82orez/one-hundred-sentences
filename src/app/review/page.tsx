@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import clsx from "clsx";
+import Link from "next/link";
 
 const ReviewPage = () => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -35,8 +36,8 @@ const ReviewPage = () => {
       <h1 className="text-3xl font-bold">복습하기</h1>
       <p className="mt-2 text-lg text-gray-600">이미 학습한 내용을 복습해보세요.</p>
 
-      {/* ✅ 학습일 선택 목록 */}
-      <div className="mt-6 grid grid-cols-5 gap-4">
+      {/* ✅ 학습일 선택 목록 (flex 적용) */}
+      <div className="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
         {[...Array(20)].map((_, index) => {
           const day = index + 1;
           const isCompleted = completedDays?.includes(day);
@@ -45,12 +46,12 @@ const ReviewPage = () => {
             <button
               key={day}
               className={clsx(
-                "rounded-lg p-4 font-bold transition",
-                isCompleted ? "bg-blue-500 text-white hover:bg-blue-600" : "cursor-not-allowed bg-gray-300 text-gray-500",
+                "min-w-[80px] rounded-lg p-3 font-bold transition md:min-w-[100px]",
+                isCompleted ? "bg-blue-500 text-white hover:bg-blue-600" : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
               )}
               disabled={!isCompleted}
               onClick={() => setSelectedDay(day)}>
-              {day}일차 {isCompleted && "✅"}
+              {day}일차
             </button>
           );
         })}
@@ -64,7 +65,7 @@ const ReviewPage = () => {
             {sentences?.map((sentence: { no: number; en: string; ko: string }) => (
               <li key={sentence.no} className="rounded-md border p-2">
                 <p className="font-semibold">{sentence.en}</p>
-                <p className="text-gray-600">{sentence.ko}</p>
+                {/*<p className="text-gray-600">{sentence.ko}</p>*/}
               </li>
             ))}
           </ul>
@@ -77,6 +78,10 @@ const ReviewPage = () => {
           </button>
         </div>
       )}
+
+      <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": isLoading })}>
+        <Link href={"/learn"}>Back to My page</Link>
+      </div>
     </div>
   );
 };
