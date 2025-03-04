@@ -1,25 +1,23 @@
 "use client";
+import { useEffect, useState, useRef } from "react";
 import { useLearningStore } from "@/stores/useLearningStore";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import clsx from "clsx";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 const HomePage = () => {
   const { data: session, status } = useSession();
   const { currentDay } = useLearningStore();
   const [progress, setProgress] = useState(0);
+  const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const router = useRouter();
 
   // ✅ 사용자가 완료한 문장 정보 가져오기
-  const {
-    data: completedSentences,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: completedSentences, isLoading } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
       const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
@@ -44,6 +42,19 @@ const HomePage = () => {
       setProgress(Math.min((completedSentences.length / 100) * 100, 100)); // ✅ 100% 초과 방지
     }
   }, [completedSentences]);
+
+  // ✅ ESC 키로 모달 닫기 기능 추가
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setQuizModalOpen(false);
+      }
+    };
+    if (isQuizModalOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isQuizModalOpen]);
 
   return (
     <div className="mx-auto max-w-3xl p-6 text-center">
@@ -79,19 +90,52 @@ const HomePage = () => {
           </button>
           <button
             className="rounded-lg bg-yellow-500 px-4 py-2 text-white shadow transition hover:bg-yellow-600"
-            onClick={() => router.push("/quiz")}>
+            onClick={() => setQuizModalOpen(true)}>
             퀴즈 풀기
           </button>
         </div>
       </div>
 
-      {/*<div className={clsx("mt-10 flex justify-center hover:underline", {})}>*/}
-      {/*  <Link href={"/"}>Back to Home</Link>*/}
-      {/*</div>*/}
+      {/* ✅ 퀴즈 선택 모달 */}
+      <AnimatePresence>
+        {isQuizModalOpen && (
+          <motion.div
+            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setQuizModalOpen(false)}>
+            <motion.div
+              className="relative w-full max-w-sm rounded-lg bg-white p-6 shadow-lg"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}>
+              <button className="absolute top-4 right-4 text-2xl font-bold text-gray-600 hover:text-gray-800" onClick={() => setQuizModalOpen(false)}>
+                ×
+              </button>
+              <h2 className="mb-4 text-center text-xl font-semibold">퀴즈 유형 선택</h2>
+              <div className="flex flex-col gap-4">
+                <button
+                  className="w-full rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
+                  onClick={() => router.push("/quiz/speaking")}>
+                  영어로 말하기
+                </button>
+                <button
+                  className="w-full rounded-lg bg-green-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-green-600"
+                  onClick={() => router.push("/quiz/dictation")}>
+                  받아쓰기
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/*<div className={clsx("mt-10 flex justify-center hover:underline", {})}>*/}
-      {/*  <Link href={"/blog"}>Blog</Link>*/}
-      {/*</div>*/}
+      <div className={clsx("mt-10 flex justify-center hover:underline", {})}>
+        <Link href={"/"}>Back to Home</Link>
+      </div>
     </div>
   );
 };
