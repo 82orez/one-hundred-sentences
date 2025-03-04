@@ -50,7 +50,7 @@ const HomePage = () => {
       <h1 className="text-3xl font-bold">하루 5문장, 20일 완성!</h1>
       <p className="mt-2 text-lg text-gray-600">매일 5문장씩 학습하여 영어 100문장을 완성하세요.</p>
 
-      <div className="mt-6 rounded-lg bg-gray-100 p-4 shadow">
+      <div className="mx-auto mt-6 w-full max-w-md rounded-lg bg-gray-100 p-4 shadow">
         <p className="text-lg font-semibold">진행률: {progress.toFixed(0)}%</p>
         <div className="mt-2 h-4 w-full rounded-full bg-gray-300">
           <div className="h-4 rounded-full bg-blue-500" style={{ width: `${progress}%` }}></div>
@@ -85,12 +85,13 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className={clsx("mt-10 flex justify-center hover:underline", {})}>
-        <Link href={"/"}>Back to Home</Link>
-      </div>
-      <div className={clsx("mt-10 flex justify-center hover:underline", {})}>
-        <Link href={"/blog"}>Blog</Link>
-      </div>
+      {/*<div className={clsx("mt-10 flex justify-center hover:underline", {})}>*/}
+      {/*  <Link href={"/"}>Back to Home</Link>*/}
+      {/*</div>*/}
+
+      {/*<div className={clsx("mt-10 flex justify-center hover:underline", {})}>*/}
+      {/*  <Link href={"/blog"}>Blog</Link>*/}
+      {/*</div>*/}
     </div>
   );
 };
