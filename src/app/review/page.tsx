@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -10,6 +10,7 @@ import Link from "next/link";
 const ReviewPage = () => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const router = useRouter();
+  const modalRef = useRef<HTMLDivElement | null>(null);
 
   // ✅ 완료된 학습일 가져오기
   const { data: completedDays, isLoading } = useQuery({
@@ -30,6 +31,17 @@ const ReviewPage = () => {
     },
     enabled: !!selectedDay,
   });
+
+  // ✅ Esc 키로 모달 닫기
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSelectedDay(null);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <div className="mx-auto max-w-4xl p-6 text-center">
@@ -68,15 +80,18 @@ const ReviewPage = () => {
       {/* ✅ 모달 창 */}
       {selectedDay && (
         <div
-          className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-600"
+          className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-600 transition-opacity"
           onClick={() => setSelectedDay(null)} // 모달 외부 클릭 시 닫기
         >
           <div
-            className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-lg"
+            ref={modalRef}
+            className="relative w-full max-w-lg scale-100 transform rounded-lg bg-white p-6 shadow-lg transition-all duration-200 ease-out"
             onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫히지 않도록 방지
           >
             {/* 닫기 버튼 */}
-            <button className="absolute top-4 right-4 text-2xl font-bold text-gray-600 hover:text-gray-800" onClick={() => setSelectedDay(null)}>
+            <button
+              className="absolute top-4 right-4 flex h-8 w-8 items-center justify-center rounded-full text-2xl font-bold text-gray-600 hover:text-gray-800"
+              onClick={() => setSelectedDay(null)}>
               ×
             </button>
 
