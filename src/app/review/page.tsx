@@ -53,7 +53,6 @@ const ReviewPage = () => {
                   isCompleted ? "bg-blue-500 text-white hover:bg-blue-600" : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
                 )}
                 disabled={!isCompleted}
-                aria-label={isCompleted ? `${day}일차 복습하기` : `${day}일차는 아직 완료되지 않음`}
                 onClick={() => {
                   if (isCompleted && selectedDay !== day) {
                     setSelectedDay(day);
@@ -66,28 +65,43 @@ const ReviewPage = () => {
         </div>
       )}
 
-      {/* ✅ 선택한 학습일 문장 목록 */}
+      {/* ✅ 모달 창 */}
       {selectedDay && (
-        <div className="mt-8 text-left">
-          <h2 className="text-xl font-semibold">Day {selectedDay} 문장 목록</h2>
-          {isFetching ? (
-            <p className="mt-4 text-gray-500">문장을 불러오는 중...</p>
-          ) : (
-            <ul className="mt-4 space-y-2">
-              {sentences?.map((sentence: { no: number; en: string; ko: string }) => (
-                <li key={sentence.no} className="rounded-md border p-2">
-                  <p className="font-semibold">{sentence.en}</p>
-                </li>
-              ))}
-            </ul>
-          )}
+        <div
+          className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-600"
+          onClick={() => setSelectedDay(null)} // 모달 외부 클릭 시 닫기
+        >
+          <div
+            className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-lg"
+            onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫히지 않도록 방지
+          >
+            {/* 닫기 버튼 */}
+            <button className="absolute top-4 right-4 text-2xl font-bold text-gray-600 hover:text-gray-800" onClick={() => setSelectedDay(null)}>
+              ×
+            </button>
 
-          {/* ✅ 복습 시작 버튼 */}
-          <button
-            className="mt-6 w-full rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
-            onClick={() => router.push(`/learn/${selectedDay}`)}>
-            {selectedDay}일차 복습 시작 🚀
-          </button>
+            <h2 className="mb-4 text-xl font-semibold">Day {selectedDay} 문장 목록</h2>
+
+            {isFetching ? (
+              <p className="text-gray-500">문장을 불러오는 중...</p>
+            ) : (
+              <ul className="space-y-4">
+                {sentences?.map((sentence: { no: number; en: string; ko: string }) => (
+                  <li key={sentence.no} className="rounded-md border p-2">
+                    <p className="font-semibold">{sentence.en}</p>
+                    <p className="text-gray-600">{sentence.ko}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {/* 복습 시작 버튼 */}
+            <button
+              className="mt-6 w-full rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
+              onClick={() => router.push(`/learn/${selectedDay}`)}>
+              {selectedDay}일차 복습 시작 🚀
+            </button>
+          </div>
         </div>
       )}
 
