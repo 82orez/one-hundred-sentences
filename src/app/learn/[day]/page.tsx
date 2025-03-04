@@ -120,21 +120,21 @@ const LearnPage = ({ params }: Props) => {
 
   // ✅ 완료 버튼 클릭 핸들러
   const handleComplete = async (sentenceNo: number) => {
-    if (completedSentences?.includes(sentenceNo)) {
-      alert("이미 완료한 문장입니다.");
-      return;
-    }
-
     try {
       await completeSentenceMutation.mutateAsync(sentenceNo);
       markSentenceComplete(sentenceNo);
 
-      // ✅ 5개 문장이 모두 완료되었는지 확인 후 다음 학습일로 이동
-      if (completedSentences.length + 1 === 5) {
+      // ✅ 모든 문장이 완료되었는지 확인
+      const completedSet = new Set(completedSentences);
+      completedSet.add(sentenceNo); // 방금 완료한 문장 추가
+      console.log("completedSet: ", completedSet);
+      const allCompleted = sentences?.every((s) => completedSet.has(s.no));
+
+      if (allCompleted) {
         setTimeout(() => {
-          const nextDay = parseInt(day) + 1;
-          router.push(`/learn/${nextDay}`);
-        }, 500);
+          alert(`${day}일차 학습 완료!`);
+          router.push("/learn");
+        }, 1000);
       }
     } catch (error) {
       console.error("Failed to save progress:", error);
