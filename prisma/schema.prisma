@@ -119,6 +119,7 @@ model Sentence {
 model CompletedSentence {
   id          String   @id @default(cuid())
   userId      String
+  userEmail   String?
   sentenceNo  Int
   completedAt DateTime @default(now()) // 학습 완료 날짜
 

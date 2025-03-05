@@ -106,18 +106,21 @@ export type Database = {
           completedAt: string
           id: string
           sentenceNo: number
+          userEmail: string | null
           userId: string
         }
         Insert: {
           completedAt?: string
           id: string
           sentenceNo: number
+          userEmail?: string | null
           userId: string
         }
         Update: {
           completedAt?: string
           id?: string
           sentenceNo?: number
+          userEmail?: string | null
           userId?: string
         }
         Relationships: [

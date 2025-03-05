@@ -56,7 +56,7 @@ const LearnPage = ({ params }: Props) => {
     enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
   });
 
-  // ✅ 완료된 문장 등록 Mutation
+  // * ✅ 완료된 문장 등록 Mutation
   const completeSentenceMutation = useMutation({
     mutationFn: async (sentenceNo: number) => {
       await axios.post("/api/progress", { sentenceNo });

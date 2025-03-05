@@ -31,6 +31,7 @@ export async function POST(req: Request) {
 
   const { sentenceNo } = await req.json();
   const userId = session.user.id;
+  const userEmail = session.user.email;
 
   if (!sentenceNo || typeof sentenceNo !== "number") {
     return NextResponse.json({ error: "Invalid sentenceNo format" }, { status: 400 });
@@ -59,6 +60,7 @@ export async function POST(req: Request) {
     const completedSentence = await prisma.completedSentence.create({
       data: {
         userId,
+        userEmail,
         sentenceNo,
       },
     });
