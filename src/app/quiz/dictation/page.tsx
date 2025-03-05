@@ -12,15 +12,15 @@ const DictationQuizPage = () => {
   const [userInput, setUserInput] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isBlurred, setIsBlurred] = useState(true); // ✅ 초기에는 문장을 흐리게 표시
 
-  // ✅ 완료된 문장 목록 가져오기 (API 응답 구조 수정)
+  // ✅ 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
       try {
         const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
-        console.log("🔹 API 응답 데이터:", res.data); // ✅ API 응답 확인
-
+        console.log("🔹 API 응답 데이터:", res.data);
         return res.data.map((item: { sentence: { en: string; audioUrl: string } }) => ({
           en: item.sentence?.en ?? "No text found",
           audioUrl: item.sentence?.audioUrl ?? "No audio found",
@@ -45,25 +45,24 @@ const DictationQuizPage = () => {
     const randomIndex = Math.floor(Math.random() * completedSentences.length);
     const selected = completedSentences[randomIndex];
 
-    console.log("🔹 선택된 문장:", selected); // ✅ 선택된 문장 확인
+    console.log("🔹 선택된 문장:", selected);
     setCurrentSentence(selected);
     setUserInput("");
     setFeedback(null);
+    setIsBlurred(true); // ✅ 새로운 문장이 나올 때마다 blur 처리 활성화
   };
 
   // ✅ 정답 확인
   const checkAnswer = () => {
     if (!currentSentence) return;
 
-    // ✅ 입력값과 정답을 처리하는 함수
     const normalizeText = (text: string) =>
       text
-        .toLowerCase() // 1️⃣ 대소문자 무시
-        .trim() // 2️⃣ 앞뒤 공백 제거
-        .replace(/\s+/g, " ") // 3️⃣ 여러 개의 공백을 하나로 변환
-        .replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g, ""); // 4️⃣ 문장 부호 제거
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, " ")
+        .replace(/[.,\/#!?'"$%\^&\*;:{}=\-_`~()]/g, "");
 
-    // ✅ 변환된 입력값과 정답을 비교
     const normalizedInput = normalizeText(userInput);
     const normalizedAnswer = normalizeText(currentSentence.en);
 
@@ -71,7 +70,8 @@ const DictationQuizPage = () => {
     console.log("✅ 정답:", normalizedAnswer);
 
     if (normalizedInput === normalizedAnswer) {
-      setFeedback("✅ 맞았습니다!");
+      setFeedback("정답입니다!");
+      setIsBlurred(false); // ✅ 정답 맞히면 blur 해제
     } else {
       setFeedback("❌ 다시 듣고 도전해 보세요.");
     }
@@ -80,7 +80,7 @@ const DictationQuizPage = () => {
   // ✅ 음성 파일 재생
   const playAudio = async () => {
     if (!currentSentence?.audioUrl || currentSentence.audioUrl === "No audio found") {
-      console.warn("⚠️ 오디오 URL이 없습니다.");
+      console.warn("⚠️ 오디오 URL 이 없습니다.");
       return;
     }
 
@@ -115,10 +115,15 @@ const DictationQuizPage = () => {
 
       {currentSentence ? (
         <div className="mt-6">
+          {/* ✅ 블러 처리된 문장 */}
+          <p className={clsx("rounded-lg border bg-gray-100 p-4 text-xl font-semibold text-gray-800", isBlurred ? "blur-xs" : "blur-none")}>
+            {currentSentence.en}
+          </p>
+
           {/* ✅ 음성 재생 버튼 */}
           <button
             className={clsx(
-              "rounded-lg px-6 py-3 text-lg font-bold shadow-lg transition",
+              "mt-4 rounded-lg px-6 py-3 text-lg font-bold shadow-lg transition",
               isPlaying ? "cursor-not-allowed bg-gray-400 text-white" : "bg-blue-500 text-white hover:bg-blue-600",
             )}
             onClick={playAudio}
@@ -130,27 +135,32 @@ const DictationQuizPage = () => {
           <input
             type="text"
             className="mt-4 w-full rounded-lg border p-3 text-center text-lg"
-            placeholder="문장을 입력하세요..."
+            placeholder="들으신 영어 문장을 입력해 주세요."
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
           />
 
           {/* ✅ 정답 확인 버튼 */}
           <button
-            className="mt-4 w-full rounded-lg bg-green-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-green-600"
+            className={clsx(
+              "mt-4 w-full rounded-lg bg-green-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-green-600 disabled:opacity-50",
+            )}
+            disabled={!userInput || isPlaying || feedback === "정답입니다!"}
             onClick={checkAnswer}>
-            정답 제출 🚀
+            정답 확인 🚀
           </button>
 
           {/* ✅ 정답 피드백 */}
-          {feedback && <p className={clsx("mt-4 text-lg font-semibold", feedback.includes("✅") ? "text-green-500" : "text-red-500")}>{feedback}</p>}
+          {feedback && (
+            <p className={clsx("mt-4 text-lg font-semibold", feedback === "정답입니다!" ? "text-green-500" : "text-red-500")}>{feedback}</p>
+          )}
 
           {/* ✅ 다음 문장 버튼 */}
           {feedback && (
             <button
               className="mt-4 w-full rounded-lg bg-yellow-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-yellow-600"
               onClick={selectRandomSentence}>
-              다음 문장 🔄
+              다음 문장으로 넘어가기 🔄
             </button>
           )}
         </div>
