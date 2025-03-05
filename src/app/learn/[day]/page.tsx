@@ -172,7 +172,7 @@ const LearnPage = ({ params }: Props) => {
           <div className="mt-2 flex items-center gap-3">
             {/* ✅ 개별 영문 가리기 버튼 */}
             <button
-              className={clsx("flex h-9 w-9 cursor-pointer items-center justify-center rounded-md bg-gray-200 text-black hover:bg-gray-300", {
+              className={clsx("flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
                 "border opacity-50": visibleEnglish[sentence.no],
               })}
               onClick={() => toggleEnglish(sentence.no)}>
@@ -181,7 +181,7 @@ const LearnPage = ({ params }: Props) => {
 
             {/* ✅ 번역 보이기/가리기 버튼 */}
             <button
-              className={clsx("flex h-9 w-9 cursor-pointer items-center justify-center rounded-md bg-gray-200 text-black hover:bg-gray-300", {
+              className={clsx("flex h-9 w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
                 "border opacity-50": !visibleTranslations[sentence.no],
               })}
               onClick={() => toggleTranslation(sentence.no)}>
