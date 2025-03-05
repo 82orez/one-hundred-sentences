@@ -9,6 +9,11 @@ import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { HiOutlineSparkles } from "react-icons/hi2";
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+
+// * Chart.js 요소 등록
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const HomePage = () => {
   const { data: session, status } = useSession();
@@ -57,21 +62,41 @@ const HomePage = () => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isQuizModalOpen]);
 
+  // ✅ 원형 진행률 차트 데이터
+  const progressData = {
+    datasets: [
+      {
+        data: [progress, 100 - progress], // 진행률과 남은 부분
+        backgroundColor: ["#4F46E5", "#E5E7EB"], // ✅ 파란색 & 회색
+        borderWidth: 8, // ✅ 테두리 두께로 입체감 표현
+        cutout: "70%", // ✅ 내부 원 크기 조정 (입체적인 도넛 모양)
+      },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-3xl p-6 text-center">
       <h1 className="text-3xl font-bold">하루 5문장, 20일이면 100문장!</h1>
       <p className="mt-2 text-lg text-gray-600">매일 5문장씩 학습하여 여행영어 100문장을 완성하세요.</p>
 
-      <div className="mx-auto mt-6 w-full max-w-md rounded-lg bg-gray-100 p-4 shadow">
-        <p className="text-lg font-semibold">현재까지 학습 진행률: {progress.toFixed(0)}%</p>
-        <div className="mt-2 h-4 w-full rounded-full bg-gray-300">
-          <div className="h-4 rounded-full bg-blue-500" style={{ width: `${progress}%` }}></div>
-        </div>
+      {/*<div className="mx-auto mt-6 w-full max-w-md rounded-lg bg-gray-100 p-4 shadow">*/}
+      {/*  <p className="text-lg font-semibold">현재까지 학습 진행률: {progress.toFixed(0)}%</p>*/}
+      {/*  <div className="mt-2 h-4 w-full rounded-full bg-gray-300">*/}
+      {/*    <div className="h-4 rounded-full bg-blue-500" style={{ width: `${progress}%` }}></div>*/}
+      {/*  </div>*/}
+      {/*</div>*/}
+
+      {/* ✅ 원형 진행률 차트 */}
+      <div className="relative mx-auto mt-6 mb-14 h-48 w-48">
+        <Doughnut data={progressData} />
+        {/* 진행률 텍스트 */}
+        <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-gray-700">{progress.toFixed(0)}%</div>
+        <p>학습 진행율</p>
       </div>
 
       <div className="mt-8">
         {/*<h2 className="text-xl font-semibold">오늘의 학습</h2>*/}
-        <p className="text-2xl font-bold text-gray-600">오늘은 학습 {nextDay} 일차</p>
+        <p className="text-2xl font-bold text-gray-600">" 오늘은 학습 {nextDay} 일차 "</p>
         <button
           className="mt-4 cursor-pointer rounded-lg border-white bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
           onClick={() => router.push(`/learn/${nextDay}`)} // ✅ nextDay 로 이동
