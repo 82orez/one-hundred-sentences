@@ -54,10 +54,26 @@ const DictationQuizPage = () => {
   // ✅ 정답 확인
   const checkAnswer = () => {
     if (!currentSentence) return;
-    if (userInput.trim().toLowerCase() === currentSentence.en.toLowerCase()) {
+
+    // ✅ 입력값과 정답을 처리하는 함수
+    const normalizeText = (text: string) =>
+      text
+        .toLowerCase() // 1️⃣ 대소문자 무시
+        .trim() // 2️⃣ 앞뒤 공백 제거
+        .replace(/\s+/g, " ") // 3️⃣ 여러 개의 공백을 하나로 변환
+        .replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g, ""); // 4️⃣ 문장 부호 제거
+
+    // ✅ 변환된 입력값과 정답을 비교
+    const normalizedInput = normalizeText(userInput);
+    const normalizedAnswer = normalizeText(currentSentence.en);
+
+    console.log("📝 입력값:", normalizedInput);
+    console.log("✅ 정답:", normalizedAnswer);
+
+    if (normalizedInput === normalizedAnswer) {
       setFeedback("✅ 맞았습니다!");
     } else {
-      setFeedback("❌ 다시 도전하세요.");
+      setFeedback("❌ 다시 듣고 도전해 보세요.");
     }
   };
 
