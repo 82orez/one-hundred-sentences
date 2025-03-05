@@ -10,8 +10,6 @@ import { FaPlay } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import { useSession } from "next-auth/react";
 import { useLearningStore } from "@/stores/useLearningStore";
-import { RiEnglishInput } from "react-icons/ri";
-import { PiTextAa, PiTextAaBold, PiTextAaLight } from "react-icons/pi";
 import { FaA } from "react-icons/fa6";
 import { TbAlphabetKorean } from "react-icons/tb";
 
