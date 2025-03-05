@@ -70,13 +70,13 @@ const HomePage = () => {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-xl font-semibold">오늘의 학습</h2>
-        <p className="text-2xl font-bold text-gray-600">Day - {nextDay}</p>
+        {/*<h2 className="text-xl font-semibold">오늘의 학습</h2>*/}
+        <p className="text-2xl font-bold text-gray-600">오늘은 학습 {nextDay} 일차</p>
         <button
           className="mt-4 cursor-pointer rounded-lg border-white bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
           onClick={() => router.push(`/learn/${nextDay}`)} // ✅ nextDay 로 이동
         >
-          {nextDay}일차 학습 시작하기
+          오늘 학습 시작하기
         </button>
       </div>
 
