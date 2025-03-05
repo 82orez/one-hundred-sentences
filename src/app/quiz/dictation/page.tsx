@@ -5,10 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import clsx from "clsx";
+import Link from "next/link";
 
 const DictationQuizPage = () => {
   const { data: session } = useSession();
-  const [currentSentence, setCurrentSentence] = useState<{ en: string; audioUrl: string } | null>(null);
+  const [currentSentence, setCurrentSentence] = useState<{ en: string; ko: string; audioUrl: string } | null>(null);
   const [userInput, setUserInput] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -21,8 +22,9 @@ const DictationQuizPage = () => {
       try {
         const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
         console.log("🔹 API 응답 데이터:", res.data);
-        return res.data.map((item: { sentence: { en: string; audioUrl: string } }) => ({
+        return res.data.map((item: { sentence: { en: string; ko: string; audioUrl: string } }) => ({
           en: item.sentence?.en ?? "No text found",
+          ko: item.sentence?.ko ?? "번역이 없습니다.",
           audioUrl: item.sentence?.audioUrl ?? "No audio found",
         }));
       } catch (error) {
@@ -116,9 +118,10 @@ const DictationQuizPage = () => {
       {currentSentence ? (
         <div className="mt-6">
           {/* ✅ 블러 처리된 문장 */}
-          <p className={clsx("rounded-lg border bg-gray-100 p-4 text-xl font-semibold text-gray-800", isBlurred ? "blur-xs" : "blur-none")}>
-            {currentSentence.en}
-          </p>
+          <div className={clsx("rounded-lg border bg-gray-100 p-4 text-xl font-semibold text-gray-800", isBlurred ? "blur-md" : "blur-none")}>
+            <p>{currentSentence.en}</p>
+            <p className="mt-2 text-lg text-gray-600">{currentSentence.ko}</p>
+          </div>
 
           {/* ✅ 음성 재생 버튼 */}
           <button
@@ -142,9 +145,7 @@ const DictationQuizPage = () => {
 
           {/* ✅ 정답 확인 버튼 */}
           <button
-            className={clsx(
-              "mt-4 w-full rounded-lg bg-green-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-green-600 disabled:opacity-50",
-            )}
+            className="mt-4 w-full rounded-lg bg-green-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-green-600 disabled:opacity-50"
             disabled={!userInput || isPlaying || feedback === "정답입니다!"}
             onClick={checkAnswer}>
             정답 확인 🚀
@@ -167,6 +168,10 @@ const DictationQuizPage = () => {
       ) : (
         <p className="mt-6 text-gray-500">완료된 문장이 없습니다.</p>
       )}
+
+      <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": isLoading })}>
+        <Link href={"/learn"}>Back to My page</Link>
+      </div>
     </div>
   );
 };

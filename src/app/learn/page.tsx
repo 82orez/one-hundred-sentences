@@ -100,7 +100,7 @@ const HomePage = () => {
       <AnimatePresence>
         {isQuizModalOpen && (
           <motion.div
-            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black"
+            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
