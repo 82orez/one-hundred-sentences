@@ -91,14 +91,16 @@ const DictationQuizPage = () => {
       const audio = new Audio(currentSentence.audioUrl);
       audio.volume = 1.0;
 
-      audio.onplay = () => console.log("▶️ 오디오 재생 시작");
+      audio.onplay = () => {
+        console.log("▶️ 오디오 재생 시작");
+        setIsPlaying(true);
+      };
       audio.onended = () => {
         console.log("⏹️ 오디오 재생 완료");
         setIsPlaying(false);
       };
       audio.onerror = (err) => console.error("❌ 오디오 재생 오류", err);
 
-      setIsPlaying(true);
       await audio.play();
     } catch (error) {
       console.error("❌ 오디오 재생 중 오류 발생:", error);
