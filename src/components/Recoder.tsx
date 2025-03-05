@@ -35,7 +35,7 @@ const AudioRecorder = () => {
       formData.append("audio", new File([audioBlob], "recording.mp3"));
 
       // Supabase 업로드 요청
-      const uploadResponse = await fetch("/api/recordings", {
+      const uploadResponse = await fetch("/api/recorder", {
         method: "POST",
         body: formData,
       });

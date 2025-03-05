@@ -227,6 +227,38 @@ export type Database = {
           },
         ]
       }
+      Recordings: {
+        Row: {
+          createdAt: string
+          fileUrl: string
+          id: string
+          userEmail: string | null
+          userId: string
+        }
+        Insert: {
+          createdAt?: string
+          fileUrl: string
+          id: string
+          userEmail?: string | null
+          userId: string
+        }
+        Update: {
+          createdAt?: string
+          fileUrl?: string
+          id?: string
+          userEmail?: string | null
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Recordings_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Sentence: {
         Row: {
           audioUrl: string | null

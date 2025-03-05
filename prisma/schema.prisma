@@ -35,10 +35,12 @@ model User {
   // Optional for WebAuthn support
   // Authenticator Authenticator[]
 
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   CompletedSentence CompletedSentence[]
   QuizAttempt       QuizAttempt[]
+  Recordings        Recordings[]
 }
 
 model Account {
@@ -141,4 +143,14 @@ model QuizAttempt {
   // 관계 설정
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   sentence Sentence @relation(fields: [sentenceId], references: [id], onDelete: Cascade)
+}
+
+model Recordings {
+  id        String   @id @default(cuid())
+  userId    String
+  userEmail String?
+  fileUrl   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
