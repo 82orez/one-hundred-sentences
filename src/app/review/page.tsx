@@ -87,7 +87,7 @@ const ReviewPage = () => {
       <AnimatePresence>
         {selectedDay && (
           <motion.div
-            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-400"
+            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-200"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
