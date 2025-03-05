@@ -10,6 +10,10 @@ import { FaPlay } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import { useSession } from "next-auth/react";
 import { useLearningStore } from "@/stores/useLearningStore";
+import { RiEnglishInput } from "react-icons/ri";
+import { PiTextAa, PiTextAaBold, PiTextAaLight } from "react-icons/pi";
+import { FaA } from "react-icons/fa6";
+import { TbAlphabetKorean } from "react-icons/tb";
 
 interface Sentence {
   no: number;
@@ -168,16 +172,20 @@ const LearnPage = ({ params }: Props) => {
           <div className="mt-2 flex items-center gap-3">
             {/* ✅ 개별 영문 가리기 버튼 */}
             <button
-              className="flex w-24 cursor-pointer items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-black hover:bg-gray-300"
+              className={clsx("flex h-9 w-9 cursor-pointer items-center justify-center rounded-md bg-gray-200 text-black hover:bg-gray-300", {
+                "border opacity-50": visibleEnglish[sentence.no],
+              })}
               onClick={() => toggleEnglish(sentence.no)}>
-              {visibleEnglish[sentence.no] ? "영문 가리기" : "영문 보기"}
+              <FaA size={18} />
             </button>
 
             {/* ✅ 번역 보이기/가리기 버튼 */}
             <button
-              className="flex w-24 cursor-pointer items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-black hover:bg-gray-300"
+              className={clsx("flex h-9 w-9 cursor-pointer items-center justify-center rounded-md bg-gray-200 text-black hover:bg-gray-300", {
+                "border opacity-50": !visibleTranslations[sentence.no],
+              })}
               onClick={() => toggleTranslation(sentence.no)}>
-              {visibleTranslations[sentence.no] ? "번역 보기" : "번역 가리기"}
+              <TbAlphabetKorean size={27} />
             </button>
 
             {/* ✅ 오디오 듣기 버튼 */}
