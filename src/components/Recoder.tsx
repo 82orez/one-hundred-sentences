@@ -84,7 +84,7 @@ const AudioRecorder = ({ sentenceNo, handleComplete }: Props) => {
         ) : (
           <div className={"flex flex-col items-center justify-center"}>
             <FaMicrophone size={50} className={"mb-2"} />
-            <p className={"text-xl font-semibold"}>Start</p>
+            <p className={"animate-pulse text-xl font-semibold text-red-400"}>Start</p>
           </div>
         )}
       </button>

@@ -211,8 +211,13 @@ const LearnPage = ({ params }: Props) => {
               {completedSentences?.includes(sentence.no) ? "완료된 문장" : "완료"}
             </button>
 
-            <button className="w-24 cursor-pointer rounded bg-red-500 px-2 py-1 text-white" onClick={() => toggleRecorder(sentence.no)}>
-              {showRecorder[sentence.no] ? "취소" : "녹음"}
+            <button
+              className={clsx("w-24 cursor-pointer rounded px-2 py-1 text-white", {
+                "bg-gray-400": showRecorder[sentence.no],
+                "bg-red-400": !showRecorder[sentence.no],
+              })}
+              onClick={() => toggleRecorder(sentence.no)}>
+              {showRecorder[sentence.no] ? "닫기" : "녹음"}
             </button>
           </div>
           {showRecorder[sentence.no] && <AudioRecorder sentenceNo={sentence.no} handleComplete={handleComplete} />}
