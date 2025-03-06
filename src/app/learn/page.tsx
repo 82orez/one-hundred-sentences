@@ -39,11 +39,13 @@ const HomePage = () => {
     // ✅ 완료된 문장을 학습일 단위로 그룹화
     const completedDays = new Set(completedSentences.map((no) => Math.ceil(no / 5)));
 
-    // ✅ 현재 학습 중인 학습일의 5개 문장이 모두 완료되었는지 확인
-    const currentDaySentences = Array.from({ length: 5 }, (_, i) => (currentDay - 1) * 5 + (i + 1));
-    const allCompleted = currentDaySentences.every((sentenceNo) => completedSentences.includes(sentenceNo));
+    // ✅ 현재까지 완료된 마지막 학습일 계산
+    const lastCompletedDay = Math.max(...Array.from(completedDays));
 
-    return allCompleted ? Math.min(currentDay + 1, 20) : currentDay; // ✅ 20일 초과 방지
+    // ✅ 모든 문장이 완료된 경우에만 다음 학습일로 이동
+    return completedDays.has(lastCompletedDay) && completedSentences.length >= lastCompletedDay * 5
+      ? Math.min(lastCompletedDay + 1, 20)
+      : lastCompletedDay;
   };
 
   const nextDay = getNextLearningDay(); // ✅ 개선된 로직 적용
