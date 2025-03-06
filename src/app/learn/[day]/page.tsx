@@ -10,9 +10,10 @@ import { FaCheck, FaPlay } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import { useSession } from "next-auth/react";
 import { useLearningStore } from "@/stores/useLearningStore";
-import { FaA } from "react-icons/fa6";
+import { FaA, FaMicrophone } from "react-icons/fa6";
 import { TbAlphabetKorean } from "react-icons/tb";
 import AudioRecorder from "@/components/Recoder";
+import { RiCloseLargeFill } from "react-icons/ri";
 
 interface Sentence {
   no: number;
@@ -213,13 +214,19 @@ const LearnPage = ({ params }: Props) => {
 
             <button
               className={clsx("h-9 min-w-9 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed", {
-                "bg-gray-400": showRecorder[sentence.no],
+                "bg-gray-300": showRecorder[sentence.no],
                 "bg-red-400": !showRecorder[sentence.no],
                 "bg-yellow-400": completedSentences?.includes(sentence.no),
               })}
               disabled={completedSentences?.includes(sentence.no)}
               onClick={() => toggleRecorder(sentence.no)}>
-              {completedSentences?.includes(sentence.no) ? <FaCheck size={20} /> : showRecorder[sentence.no] ? "닫기" : "녹음"}
+              {completedSentences?.includes(sentence.no) ? (
+                <FaCheck size={20} />
+              ) : showRecorder[sentence.no] ? (
+                <RiCloseLargeFill size={20} className={"text-red-500"} />
+              ) : (
+                <FaMicrophone size={20} />
+              )}
             </button>
           </div>
           {showRecorder[sentence.no] && <AudioRecorder sentenceNo={sentence.no} handleComplete={handleComplete} />}
