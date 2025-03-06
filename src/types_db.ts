@@ -232,6 +232,7 @@ export type Database = {
           createdAt: string
           fileUrl: string
           id: string
+          sentenceNo: number
           userEmail: string | null
           userId: string
         }
@@ -239,6 +240,7 @@ export type Database = {
           createdAt?: string
           fileUrl: string
           id: string
+          sentenceNo: number
           userEmail?: string | null
           userId: string
         }
@@ -246,10 +248,18 @@ export type Database = {
           createdAt?: string
           fileUrl?: string
           id?: string
+          sentenceNo?: number
           userEmail?: string | null
           userId?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "Recordings_sentenceNo_fkey"
+            columns: ["sentenceNo"]
+            isOneToOne: false
+            referencedRelation: "Sentence"
+            referencedColumns: ["no"]
+          },
           {
             foreignKeyName: "Recordings_userId_fkey"
             columns: ["userId"]

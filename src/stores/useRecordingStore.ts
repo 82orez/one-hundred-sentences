@@ -14,26 +14,33 @@ export const useRecordingStore = create<RecordingState>((set) => {
   return {
     isRecording: false,
     isLoading: false,
+
     startRecording: async () => {
       set({ isLoading: true });
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder = new MediaRecorder(stream);
-      audioChunks = [];
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
 
-      mediaRecorder.ondataavailable = (event) => {
-        audioChunks.push(event.data);
-      };
+        mediaRecorder.ondataavailable = (event) => {
+          audioChunks.push(event.data);
+        };
 
-      mediaRecorder.start();
-      set({ isRecording: true });
-      set({ isLoading: false });
+        mediaRecorder.start();
+        set({ isRecording: true, isLoading: false });
+      } catch (error) {
+        console.error("Recording failed:", error);
+        set({ isRecording: false, isLoading: false });
+      }
     },
+
     stopRecording: () => {
       return new Promise((resolve) => {
         if (mediaRecorder) {
           mediaRecorder.onstop = () => {
             const audioBlob = new Blob(audioChunks, { type: "audio/mp3" });
+            mediaRecorder = null; // ✅ 녹음기 초기화
             set({ isRecording: false });
             resolve(audioBlob);
           };
