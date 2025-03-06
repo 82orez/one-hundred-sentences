@@ -73,7 +73,7 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
         <RiCloseLargeFill size={24} />
       </button>
 
-      <p className={"mb-4 text-lg"}>문장을 녹음하고 제출하기</p>
+      <p className={"mb-4 text-lg"}>Step 1. 문장 녹음하기</p>
 
       <button
         onClick={isRecording ? handleStopRecording : startRecording}
@@ -97,19 +97,22 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
       </button>
 
       {audioURL && (
-        <div className="mt-4">
-          <p className={"mb-3 text-center"}>녹음한 내용 듣기</p>
+        <div className="mt-8">
+          <p className={"mb-3 text-center text-lg"}>Step 2. 녹음한 내 발음 들어 보기</p>
           <audio controls src={audioURL} className="mx-auto" />
         </div>
       )}
 
       {audioURL && (
-        <button
-          onClick={handleSaveRecording}
-          className="mt-4 flex min-h-12 w-1/4 min-w-52 items-center justify-center rounded bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
-          disabled={isRecording || isLoading || isUpLoading}>
-          {isUpLoading ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : "녹음 파일 제출하기"}
-        </button>
+        <div className="mt-8 flex flex-col items-center">
+          <p className={"text-center text-lg"}>Step 3. 녹음한 파일 제출하기</p>
+          <button
+            onClick={handleSaveRecording}
+            className="mt-2 flex min-h-12 w-1/4 min-w-52 cursor-pointer items-center justify-center rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
+            disabled={isRecording || isLoading || isUpLoading}>
+            {isUpLoading ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : "녹음 파일 제출"}
+          </button>
+        </div>
       )}
 
       {uploadedURL && (
