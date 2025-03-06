@@ -2,7 +2,6 @@
 
 import { useRecordingStore } from "@/stores/useRecordingStore";
 import { useState } from "react";
-import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa6";
 import { FaRegStopCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -36,7 +35,8 @@ const AudioRecorder = ({ sentenceNo }: Props) => {
       const response = await fetch(audioURL);
       const audioBlob = await response.blob();
       const formData = new FormData();
-      formData.append("audio", new File([audioBlob], "recording.mp3"));
+      formData.append("audio", new File([audioBlob], `recording-${sentenceNo}.mp3`)); // ✅ 파일 이름에 sentenceNo 추가
+      formData.append("sentenceNo", sentenceNo.toString()); // ✅ sentenceNo 추가
 
       // Supabase 업로드 요청
       const uploadResponse = await fetch("/api/recorder", {
@@ -97,7 +97,7 @@ const AudioRecorder = ({ sentenceNo }: Props) => {
           onClick={handleSaveRecording}
           className="mt-4 flex min-h-12 w-1/4 min-w-52 items-center justify-center rounded bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
           disabled={isRecording || isLoading || isUpLoading}>
-          {isUpLoading ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : <div className={""}>녹음 파일 제출하기</div>}
+          {isUpLoading ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : "녹음 파일 제출하기"}
         </button>
       )}
 

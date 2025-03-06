@@ -22,16 +22,19 @@ export async function POST(req: NextRequest) {
     const supabase = await createClient();
     const formData = await req.formData();
     const audioFile = formData.get("audio") as File;
+    const sentenceNo = formData.get("sentenceNo") as string; // ✅ sentenceNo 가져오기
 
     if (!audioFile) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
+    if (!sentenceNo) {
+      return NextResponse.json({ error: "Sentence number is required" }, { status: 400 });
+    }
 
     const buffer = Buffer.from(await audioFile.arrayBuffer());
-    // ! email 로 변경 필요
-    const fileName = `recordings/${user.id}/recording-${Date.now()}.mp3`;
+    const fileName = `recordings/${user.id}/sentence-${sentenceNo}-${Date.now()}.mp3`;
 
-    const { data, error } = await supabase.storage.from("recordings").upload(fileName, buffer, {
+    const { error } = await supabase.storage.from("recordings").upload(fileName, buffer, {
       contentType: "audio/mpeg",
       upsert: true,
     });
@@ -45,26 +48,24 @@ export async function POST(req: NextRequest) {
     const { data: publicUrlData } = supabase.storage.from("recordings").getPublicUrl(fileName);
     const fileUrl = publicUrlData.publicUrl;
 
-    // Prisma DB에 저장
+    // ✅ Prisma DB에 저장
     await prisma.recordings.create({
       data: {
         userId: user.id,
-        // * email 추가
         userEmail: user.email,
+        sentenceNo: parseInt(sentenceNo, 10), // ✅ sentenceNo 저장
         fileUrl,
       },
     });
 
-    // 오늘 저장한 파일 개수 조회
+    // ✅ 오늘 저장한 파일 개수 조회
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     const count = await prisma.recordings.count({
       where: {
         userId: user.id,
-        createdAt: {
-          gte: today,
-        },
+        createdAt: { gte: today },
       },
     });
 
