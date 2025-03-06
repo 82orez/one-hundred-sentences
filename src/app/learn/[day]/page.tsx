@@ -199,8 +199,8 @@ const LearnPage = ({ params }: Props) => {
 
               {/* ✅ 오디오 듣기 버튼 */}
               {sentence.audioUrl && (
-                <button className="cursor-pointer rounded bg-green-500 px-4 py-2 text-white" onClick={() => playAudio(sentence.audioUrl)}>
-                  <FaPlay size={15} />
+                <button className="h-9 min-w-9 cursor-pointer rounded bg-green-500 p-1 text-white" onClick={() => playAudio(sentence.audioUrl)}>
+                  <FaPlay size={22} className={"mx-auto"} />
                 </button>
               )}
 
@@ -217,7 +217,7 @@ const LearnPage = ({ params }: Props) => {
 
               {/* ✅ 녹음 버튼 */}
               <button
-                className={clsx("h-9 min-w-9 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed", {
+                className={clsx("h-9 min-w-9 cursor-pointer rounded text-white disabled:cursor-not-allowed", {
                   "bg-gray-300": showRecorder === sentence.no, // ✅ 현재 열려있는 문장이면 회색
                   "bg-red-400": showRecorder !== sentence.no, // ✅ 다른 문장이면 빨간색
                   "bg-yellow-400": completedSentences?.includes(sentence.no), // ✅ 이미 완료한 문장은 노란색
@@ -225,17 +225,17 @@ const LearnPage = ({ params }: Props) => {
                 disabled={completedSentences?.includes(sentence.no)}
                 onClick={() => toggleRecorder(sentence.no)}>
                 {completedSentences?.includes(sentence.no) ? (
-                  <FaCheck size={20} />
+                  <FaCheck size={20} className={"mx-auto"} />
                 ) : showRecorder === sentence.no ? ( // ✅ 현재 녹음 중인 문장만 아이콘 변경
                   <RiCloseLargeFill size={20} className={"text-red-500"} />
                 ) : (
-                  <FaMicrophone size={20} />
+                  <FaMicrophone size={24} className={"mx-auto"} />
                 )}
               </button>
             </div>
           )}
 
-          {/* ✅ AudioRecorder UI (보일 때 버튼 숨김) */}
+          {/* ✅ AudioRecorder UI (보일 때 위의 버튼 part 숨김) */}
           {showRecorder === sentence.no && (
             <AudioRecorder sentenceNo={sentence.no} handleComplete={handleComplete} onClose={() => setShowRecorder(null)} />
           )}
