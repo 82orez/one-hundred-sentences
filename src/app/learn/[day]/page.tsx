@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { useLearningStore } from "@/stores/useLearningStore";
 import { FaA } from "react-icons/fa6";
 import { TbAlphabetKorean } from "react-icons/tb";
+import AudioRecorder from "@/components/Recoder";
 
 interface Sentence {
   no: number;
@@ -30,6 +31,7 @@ const LearnPage = ({ params }: Props) => {
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
+  const [showRecorder, setShowRecorder] = useState<{ [key: number]: boolean }>({});
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -79,7 +81,7 @@ const LearnPage = ({ params }: Props) => {
   }, [sentences]);
 
   // ✅ 개별 영문 보이기/가리기 토글
-  const toggleEnglish = (sentenceId: number) => {
+  const toggleEnglish = (sentenceNo: number) => {
     // ✅ 개별 문장을 보이도록 설정할 때, 전체 가리기 모드를 해제
     if (allEnglishHidden) {
       setAllEnglishHidden(false);
@@ -87,7 +89,7 @@ const LearnPage = ({ params }: Props) => {
 
     setVisibleEnglish((prev) => ({
       ...prev,
-      [sentenceId]: !prev[sentenceId],
+      [sentenceNo]: !prev[sentenceNo],
     }));
   };
 
@@ -110,6 +112,10 @@ const LearnPage = ({ params }: Props) => {
       ...prev,
       [sentenceId]: !prev[sentenceId],
     }));
+  };
+
+  const toggleRecorder = (sentenceId: number) => {
+    setShowRecorder((prev) => ({ ...prev, [sentenceId]: !prev[sentenceId] }));
   };
 
   // ✅ 오디오 재생 함수
@@ -203,7 +209,12 @@ const LearnPage = ({ params }: Props) => {
               }}>
               {completedSentences?.includes(sentence.no) ? "완료된 문장" : "완료"}
             </button>
+
+            <button className="w-24 cursor-pointer rounded bg-red-500 px-2 py-1 text-white" onClick={() => toggleRecorder(sentence.no)}>
+              {showRecorder[sentence.no] ? "취소" : "녹음"}
+            </button>
           </div>
+          {showRecorder[sentence.no] && <AudioRecorder sentenceNo={sentence.no} />}
         </div>
       ))}
 

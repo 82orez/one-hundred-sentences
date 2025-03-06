@@ -7,7 +7,11 @@ import { FaMicrophone } from "react-icons/fa6";
 import { FaRegStopCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-const AudioRecorder = () => {
+interface Props {
+  sentenceNo: number;
+}
+
+const AudioRecorder = ({ sentenceNo }: Props) => {
   const { isRecording, isLoading, startRecording, stopRecording } = useRecordingStore();
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [uploadedURL, setUploadedURL] = useState<string | null>(null);
@@ -57,12 +61,12 @@ const AudioRecorder = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <p className={"mb-8"}>녹음한 파일을 다운 및 업로드하기</p>
+    <div className="mt-4 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
+      <p className={"mb-4 text-lg"}>문장을 녹음하고 제출하기</p>
 
       <button
         onClick={isRecording ? handleStopRecording : startRecording}
-        className={`min-h-24 rounded px-4 py-2 ${isRecording ? "animate-pulse text-red-500" : "text-gray-900"}`}>
+        className={`min-h-24 cursor-pointer rounded px-4 py-2 ${isRecording ? "animate-pulse text-red-500" : "text-gray-900"}`}>
         {isRecording ? (
           <div>
             <FaRegStopCircle size={45} className={"mb-2"} />
@@ -82,8 +86,8 @@ const AudioRecorder = () => {
       </button>
 
       {audioURL && (
-        <div className="mt-4 mb-10">
-          <p className={"mt-10 mb-3 text-center"}>녹음한 내용 듣기</p>
+        <div className="mt-4">
+          <p className={"mb-3 text-center"}>녹음한 내용 듣기</p>
           <audio controls src={audioURL} className="mx-auto" />
         </div>
       )}
@@ -91,9 +95,9 @@ const AudioRecorder = () => {
       {audioURL && (
         <button
           onClick={handleSaveRecording}
-          className="mt-4 flex min-h-12 w-1/4 min-w-52 items-center justify-center rounded bg-green-500 px-4 py-2 text-white disabled:opacity-50"
+          className="mt-4 flex min-h-12 w-1/4 min-w-52 items-center justify-center rounded bg-blue-500 px-4 py-2 text-white disabled:opacity-50"
           disabled={isRecording || isLoading || isUpLoading}>
-          {isUpLoading ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : <div className={""}>Save Recording to Server</div>}
+          {isUpLoading ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : <div className={""}>녹음 파일 제출하기</div>}
         </button>
       )}
 
@@ -103,10 +107,6 @@ const AudioRecorder = () => {
           {recordCount !== null && <p>오늘 저장한 파일 개수: {recordCount}개</p>}
         </div>
       )}
-
-      <Link href={"/"} className="mt-10 text-blue-500 hover:underline">
-        Back to Home
-      </Link>
     </div>
   );
 };
