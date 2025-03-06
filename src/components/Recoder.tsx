@@ -19,6 +19,7 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
   const [uploadedURL, setUploadedURL] = useState<string | null>(null);
   const [isUpLoading, setIsUpLoading] = useState(false);
   const [recordCount, setRecordCount] = useState<number | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false); // ✅ 추가: 숙제 제출 완료 상태
 
   const handleStopRecording = async () => {
     const audioBlob = await stopRecording();
@@ -55,6 +56,9 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
 
         // ✅ 녹음 파일 제출 후 문장 완료 처리
         handleComplete(sentenceNo);
+
+        // ✅ 숙제 제출 완료 상태로 변경
+        setIsSubmitted(true);
       } else {
         alert(result.error);
       }
@@ -109,8 +113,8 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
           <button
             onClick={handleSaveRecording}
             className="mt-2 flex min-h-12 w-1/4 min-w-52 cursor-pointer items-center justify-center rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
-            disabled={isRecording || isLoading || isUpLoading}>
-            {isUpLoading ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : "녹음 파일 제출"}
+            disabled={isRecording || isLoading || isUpLoading || isSubmitted}>
+            {isUpLoading ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : isSubmitted ? "숙제 제출 완료" : "녹음 파일 제출"}
           </button>
         </div>
       )}
