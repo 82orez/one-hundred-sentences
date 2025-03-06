@@ -156,13 +156,13 @@ const LearnPage = ({ params }: Props) => {
   if (error) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
   return (
-    <div className="relative mx-auto max-w-2xl p-6">
+    <div className="relative mx-auto max-w-2xl p-4">
       <h1 className="mb-10 text-2xl font-bold">
         Day - {day}. 학습 {day}일차
       </h1>
 
       {/* ✅ 전체 영문 가리기/보이기 체크박스 */}
-      <div className="absolute top-[4.25rem] right-6 flex items-center justify-end gap-2 md:top-16">
+      <div className="absolute top-[3.75rem] right-6 flex items-center justify-end gap-2 md:top-14">
         <input type="checkbox" id="toggleAllEnglish" checked={allEnglishHidden} onChange={toggleAllEnglish} className="h-5 w-5 cursor-pointer" />
         <label htmlFor="toggleAllEnglish" className="text-md font-medium md:text-lg">
           전체 영문 가리기
