@@ -8,9 +8,10 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface Props {
   sentenceNo: number;
+  handleComplete: (sentenceNo: number) => void;
 }
 
-const AudioRecorder = ({ sentenceNo }: Props) => {
+const AudioRecorder = ({ sentenceNo, handleComplete }: Props) => {
   const { isRecording, isLoading, startRecording, stopRecording } = useRecordingStore();
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [uploadedURL, setUploadedURL] = useState<string | null>(null);
@@ -49,6 +50,9 @@ const AudioRecorder = ({ sentenceNo }: Props) => {
         setUploadedURL(result.url);
         setRecordCount(result.count);
         console.log(`File saved at: ${result.url}`);
+
+        // ✅ 녹음 파일 제출 후 문장 완료 처리
+        handleComplete(sentenceNo);
       } else {
         alert(result.error);
       }

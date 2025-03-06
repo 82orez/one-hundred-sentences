@@ -53,6 +53,7 @@ const LearnPage = ({ params }: Props) => {
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
       const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
+      console.log("completedSentences: ", res.data);
       return res.data.map((item: { sentenceNo: number }) => item.sentenceNo); // 완료된 문장 번호 리스트
     },
     enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
@@ -199,7 +200,7 @@ const LearnPage = ({ params }: Props) => {
               </button>
             )}
 
-            {/* ✅ 완료 버튼 */}
+            {/* ✅ 완료 버튼, 후에 테스트 용으로 사용하기 위해 hidden 처리해 둠. */}
             <button
               className="w-24 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed disabled:opacity-50"
               disabled={completedSentences?.includes(sentence.no)}
@@ -214,7 +215,7 @@ const LearnPage = ({ params }: Props) => {
               {showRecorder[sentence.no] ? "취소" : "녹음"}
             </button>
           </div>
-          {showRecorder[sentence.no] && <AudioRecorder sentenceNo={sentence.no} />}
+          {showRecorder[sentence.no] && <AudioRecorder sentenceNo={sentence.no} handleComplete={handleComplete} />}
         </div>
       ))}
 
