@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
-import { FaPlay } from "react-icons/fa";
+import { FaCheck, FaPlay } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import { useSession } from "next-auth/react";
 import { useLearningStore } from "@/stores/useLearningStore";
@@ -212,12 +212,14 @@ const LearnPage = ({ params }: Props) => {
             </button>
 
             <button
-              className={clsx("w-24 cursor-pointer rounded px-2 py-1 text-white", {
+              className={clsx("h-9 min-w-9 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed", {
                 "bg-gray-400": showRecorder[sentence.no],
                 "bg-red-400": !showRecorder[sentence.no],
+                "bg-yellow-400": completedSentences?.includes(sentence.no),
               })}
+              disabled={completedSentences?.includes(sentence.no)}
               onClick={() => toggleRecorder(sentence.no)}>
-              {showRecorder[sentence.no] ? "닫기" : "녹음"}
+              {completedSentences?.includes(sentence.no) ? <FaCheck size={20} /> : showRecorder[sentence.no] ? "닫기" : "녹음"}
             </button>
           </div>
           {showRecorder[sentence.no] && <AudioRecorder sentenceNo={sentence.no} handleComplete={handleComplete} />}
