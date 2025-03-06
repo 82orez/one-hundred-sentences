@@ -16,10 +16,19 @@ export async function GET(req: Request) {
       select: { sentenceNo: true },
     });
 
-    // ✅ 완료한 문장 번호를 학습일(day)로 변환 (5개 단위로 묶음)
-    const completedDays = new Set(completedSentences.map(({ sentenceNo }) => Math.ceil(sentenceNo / 5)));
+    // ✅ 학습일별 완료된 문장 개수를 계산
+    const dayCounts: Record<number, number> = {};
+    completedSentences.forEach(({ sentenceNo }) => {
+      const day = Math.ceil(sentenceNo / 5);
+      dayCounts[day] = (dayCounts[day] || 0) + 1;
+    });
 
-    return NextResponse.json({ completedDays: Array.from(completedDays) });
+    // ✅ 5문장을 모두 완료한 학습일만 필터링
+    const completedDays = Object.keys(dayCounts)
+      .map(Number)
+      .filter((day) => dayCounts[day] === 5); // ✅ 학습일에 속한 5문장이 전부 완료된 경우만 반환
+
+    return NextResponse.json({ completedDays });
   } catch (error) {
     console.error("Failed to fetch review data:", error);
     return NextResponse.json({ error: "Failed to fetch review data" }, { status: 500 });

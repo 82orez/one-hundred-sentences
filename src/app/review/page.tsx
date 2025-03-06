@@ -61,7 +61,7 @@ const ReviewPage = () => {
         <div className="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
           {[...Array(20)].map((_, index) => {
             const day = index + 1;
-            const isCompleted = completedDays?.includes(day);
+            const isCompleted = completedDays?.includes(day); // ✅ 5문장을 완료한 학습일만 활성화
 
             return (
               <button
