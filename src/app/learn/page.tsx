@@ -32,16 +32,21 @@ const HomePage = () => {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // ✅ 사용자가 완료한 가장 높은 학습일 계산
+  // ✅ 학습할 다음 Day 계산 (5문장 완료 기준)
   const getNextLearningDay = () => {
-    if (!completedSentences || completedSentences.length === 0) return 1; // 학습 시작 전이면 Day 1
+    if (!completedSentences || completedSentences.length === 0) return 1;
 
-    const highestCompletedSentence = Math.max(...completedSentences);
-    const completedDays = Math.ceil(highestCompletedSentence / 5); // ✅ 5문장 단위로 학습일 계산
-    return completedDays + 1 > 20 ? 20 : completedDays + 1; // ✅ 최대 20일까지만 진행
+    // ✅ 완료된 문장을 학습일 단위로 그룹화
+    const completedDays = new Set(completedSentences.map((no) => Math.ceil(no / 5)));
+
+    // ✅ 현재 학습 중인 학습일의 5개 문장이 모두 완료되었는지 확인
+    const currentDaySentences = Array.from({ length: 5 }, (_, i) => (currentDay - 1) * 5 + (i + 1));
+    const allCompleted = currentDaySentences.every((sentenceNo) => completedSentences.includes(sentenceNo));
+
+    return allCompleted ? Math.min(currentDay + 1, 20) : currentDay; // ✅ 20일 초과 방지
   };
 
-  const nextDay = getNextLearningDay() || 1; // ✅ 최소 Day 1을 보장
+  const nextDay = getNextLearningDay(); // ✅ 개선된 로직 적용
 
   useEffect(() => {
     if (completedSentences) {
