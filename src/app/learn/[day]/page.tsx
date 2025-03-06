@@ -32,7 +32,8 @@ const LearnPage = ({ params }: Props) => {
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
-  const [showRecorder, setShowRecorder] = useState<{ [key: number]: boolean }>({});
+  const [showRecorder, setShowRecorder] = useState<number | null>(null); // ✅ 한 번에 하나의 문장에서만 녹음 UI 표시
+
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -116,8 +117,8 @@ const LearnPage = ({ params }: Props) => {
     }));
   };
 
-  const toggleRecorder = (sentenceId: number) => {
-    setShowRecorder((prev) => ({ ...prev, [sentenceId]: !prev[sentenceId] }));
+  const toggleRecorder = (sentenceNo: number) => {
+    setShowRecorder((prev) => (prev === sentenceNo ? null : sentenceNo)); // ✅ 같은 문장을 클릭하면 닫고, 다른 문장을 클릭하면 변경
   };
 
   // ✅ 오디오 재생 함수
@@ -214,22 +215,22 @@ const LearnPage = ({ params }: Props) => {
 
             <button
               className={clsx("h-9 min-w-9 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed", {
-                "bg-gray-300": showRecorder[sentence.no],
-                "bg-red-400": !showRecorder[sentence.no],
-                "bg-yellow-400": completedSentences?.includes(sentence.no),
+                "bg-gray-300": showRecorder === sentence.no, // ✅ 현재 열려있는 문장이면 회색
+                "bg-red-400": showRecorder !== sentence.no, // ✅ 다른 문장이면 빨간색
+                "bg-yellow-400": completedSentences?.includes(sentence.no), // ✅ 이미 완료한 문장은 노란색
               })}
               disabled={completedSentences?.includes(sentence.no)}
               onClick={() => toggleRecorder(sentence.no)}>
               {completedSentences?.includes(sentence.no) ? (
                 <FaCheck size={20} />
-              ) : showRecorder[sentence.no] ? (
+              ) : showRecorder === sentence.no ? ( // ✅ 현재 녹음 중인 문장만 아이콘 변경
                 <RiCloseLargeFill size={20} className={"text-red-500"} />
               ) : (
                 <FaMicrophone size={20} />
               )}
             </button>
           </div>
-          {showRecorder[sentence.no] && <AudioRecorder sentenceNo={sentence.no} handleComplete={handleComplete} />}
+          {showRecorder === sentence.no && <AudioRecorder sentenceNo={sentence.no} handleComplete={handleComplete} />}
         </div>
       ))}
 
