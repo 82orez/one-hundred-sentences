@@ -176,61 +176,69 @@ const LearnPage = ({ params }: Props) => {
 
           <p className={clsx("mt-2 text-lg text-gray-600", { "blur-xs": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
 
-          <div className="mt-2 flex items-center gap-3">
-            {/* ✅ 개별 영문 가리기 버튼 */}
-            <button
-              className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
-                "border opacity-50": visibleEnglish[sentence.no],
-              })}
-              onClick={() => toggleEnglish(sentence.no)}>
-              <FaA size={18} />
-            </button>
-
-            {/* ✅ 번역 보이기/가리기 버튼 */}
-            <button
-              className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
-                "border opacity-50": !visibleTranslations[sentence.no],
-              })}
-              onClick={() => toggleTranslation(sentence.no)}>
-              <TbAlphabetKorean size={27} />
-            </button>
-
-            {/* ✅ 오디오 듣기 버튼 */}
-            {sentence.audioUrl && (
-              <button className="cursor-pointer rounded bg-green-500 px-4 py-2 text-white" onClick={() => playAudio(sentence.audioUrl)}>
-                <FaPlay size={15} />
+          {/* ✅ 버튼 그룹 (녹음 UI가 열려있을 때 숨김) */}
+          {showRecorder !== sentence.no && (
+            <div className="mt-2 flex items-center gap-3">
+              {/* ✅ 개별 영문 가리기 버튼 */}
+              <button
+                className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
+                  "border opacity-50": visibleEnglish[sentence.no],
+                })}
+                onClick={() => toggleEnglish(sentence.no)}>
+                <FaA size={18} />
               </button>
-            )}
 
-            {/* ✅ 완료 버튼, 후에 테스트 용으로 사용하기 위해 hidden 처리해 둠. */}
-            <button
-              className="w-24 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={completedSentences?.includes(sentence.no)}
-              onClick={() => handleComplete(sentence.no)}
-              style={{
-                backgroundColor: completedSentences?.includes(sentence.no) ? "gray" : "blue",
-              }}>
-              {completedSentences?.includes(sentence.no) ? "완료된 문장" : "완료"}
-            </button>
+              {/* ✅ 번역 보이기/가리기 버튼 */}
+              <button
+                className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
+                  "border opacity-50": !visibleTranslations[sentence.no],
+                })}
+                onClick={() => toggleTranslation(sentence.no)}>
+                <TbAlphabetKorean size={27} />
+              </button>
 
-            <button
-              className={clsx("h-9 min-w-9 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed", {
-                "bg-gray-300": showRecorder === sentence.no, // ✅ 현재 열려있는 문장이면 회색
-                "bg-red-400": showRecorder !== sentence.no, // ✅ 다른 문장이면 빨간색
-                "bg-yellow-400": completedSentences?.includes(sentence.no), // ✅ 이미 완료한 문장은 노란색
-              })}
-              disabled={completedSentences?.includes(sentence.no)}
-              onClick={() => toggleRecorder(sentence.no)}>
-              {completedSentences?.includes(sentence.no) ? (
-                <FaCheck size={20} />
-              ) : showRecorder === sentence.no ? ( // ✅ 현재 녹음 중인 문장만 아이콘 변경
-                <RiCloseLargeFill size={20} className={"text-red-500"} />
-              ) : (
-                <FaMicrophone size={20} />
+              {/* ✅ 오디오 듣기 버튼 */}
+              {sentence.audioUrl && (
+                <button className="cursor-pointer rounded bg-green-500 px-4 py-2 text-white" onClick={() => playAudio(sentence.audioUrl)}>
+                  <FaPlay size={15} />
+                </button>
               )}
-            </button>
-          </div>
-          {showRecorder === sentence.no && <AudioRecorder sentenceNo={sentence.no} handleComplete={handleComplete} />}
+
+              {/* ✅ 완료 버튼 */}
+              <button
+                className="w-24 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={completedSentences?.includes(sentence.no)}
+                onClick={() => handleComplete(sentence.no)}
+                style={{
+                  backgroundColor: completedSentences?.includes(sentence.no) ? "gray" : "blue",
+                }}>
+                {completedSentences?.includes(sentence.no) ? "완료된 문장" : "완료"}
+              </button>
+
+              {/* ✅ 녹음 버튼 */}
+              <button
+                className={clsx("h-9 min-w-9 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed", {
+                  "bg-gray-300": showRecorder === sentence.no, // ✅ 현재 열려있는 문장이면 회색
+                  "bg-red-400": showRecorder !== sentence.no, // ✅ 다른 문장이면 빨간색
+                  "bg-yellow-400": completedSentences?.includes(sentence.no), // ✅ 이미 완료한 문장은 노란색
+                })}
+                disabled={completedSentences?.includes(sentence.no)}
+                onClick={() => toggleRecorder(sentence.no)}>
+                {completedSentences?.includes(sentence.no) ? (
+                  <FaCheck size={20} />
+                ) : showRecorder === sentence.no ? ( // ✅ 현재 녹음 중인 문장만 아이콘 변경
+                  <RiCloseLargeFill size={20} className={"text-red-500"} />
+                ) : (
+                  <FaMicrophone size={20} />
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* ✅ AudioRecorder UI (보일 때 버튼 숨김) */}
+          {showRecorder === sentence.no && (
+            <AudioRecorder sentenceNo={sentence.no} handleComplete={handleComplete} onClose={() => setShowRecorder(null)} />
+          )}
         </div>
       ))}
 

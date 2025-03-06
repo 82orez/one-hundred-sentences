@@ -5,13 +5,15 @@ import { useState } from "react";
 import { FaMicrophone } from "react-icons/fa6";
 import { FaRegStopCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { RiCloseLargeFill } from "react-icons/ri";
 
 interface Props {
   sentenceNo: number;
   handleComplete: (sentenceNo: number) => void;
+  onClose: () => void; // ✅ 추가: 녹음 UI 닫기 함수
 }
 
-const AudioRecorder = ({ sentenceNo, handleComplete }: Props) => {
+const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
   const { isRecording, isLoading, startRecording, stopRecording } = useRecordingStore();
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [uploadedURL, setUploadedURL] = useState<string | null>(null);
@@ -65,7 +67,12 @@ const AudioRecorder = ({ sentenceNo, handleComplete }: Props) => {
   };
 
   return (
-    <div className="mt-4 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
+    <div className="relative mt-4 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
+      {/* ✅ X 버튼 (우측 상단) */}
+      <button className="absolute top-3 right-3 text-red-500 hover:text-red-700" onClick={onClose}>
+        <RiCloseLargeFill size={24} />
+      </button>
+
       <p className={"mb-4 text-lg"}>문장을 녹음하고 제출하기</p>
 
       <button
@@ -109,6 +116,7 @@ const AudioRecorder = ({ sentenceNo, handleComplete }: Props) => {
         <div className="mt-4 text-center">
           <p className="text-green-600">File saved successfully!</p>
           {recordCount !== null && <p>오늘 저장한 파일 개수: {recordCount}개</p>}
+          <audio controls src={uploadedURL} className="mx-auto" />
         </div>
       )}
     </div>
