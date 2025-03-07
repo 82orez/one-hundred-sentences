@@ -26,6 +26,9 @@ export default function Navbar() {
             <Link href="/users/edit" className={""}>
               회원 정보 수정
             </Link>
+            <Link href="/users/profile" className={""}>
+              my page
+            </Link>
             <button onClick={() => signOut({ callbackUrl: "/" })} className="rounded-md bg-cyan-500 p-2 text-white transition hover:bg-red-600">
               Sign Out
             </button>
