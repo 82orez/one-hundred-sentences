@@ -22,8 +22,11 @@ const ProfilePage = () => {
   }
 
   if (!session || !session.user) {
-    // 세션이 존재하지 않거나, 세션의 user 정보가 없을 때 처리
-    return <p>세션 정보가 없습니다.</p>;
+    return (
+      <div className="flex h-screen flex-col items-center justify-center text-gray-600">
+        <p className="text-lg">세션 정보가 없습니다.</p>
+      </div>
+    );
   }
 
   // ✅ 사용자 정보 불러오기
@@ -51,9 +54,9 @@ const ProfilePage = () => {
 
   if (error) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center">
-        <p className="text-center text-red-500">프로필 정보를 불러오는 중 오류가 발생했습니다.</p>
-        <Button asChild>
+      <div className="flex h-screen flex-col items-center justify-center text-center text-red-500">
+        <p>프로필 정보를 불러오는 중 오류가 발생했습니다.</p>
+        <Button asChild className="mt-4">
           <Link href="/users/sign-in">다시 시도하기</Link>
         </Button>
       </div>
@@ -61,42 +64,47 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-100 to-gray-300 p-4 md:p-6">
-      <Card className="mt-10 w-full max-w-lg rounded-2xl bg-white/90 shadow-lg backdrop-blur-md">
+    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-blue-50 to-blue-200 p-4 md:p-6">
+      <Card className="mt-12 w-full max-w-lg rounded-3xl border border-gray-300/50 bg-white/80 shadow-xl backdrop-blur-lg">
         <CardHeader className="flex flex-col items-center">
           {/* ✅ 프로필 이미지 */}
-          <Avatar className="h-30 w-30 border shadow-md">
+          <Avatar className="h-24 w-24 shadow-md ring-2 ring-blue-300 md:h-32 md:w-32">
             <AvatarImage src={session.user.image || "/default-avatar.png"} alt="Profile Image" />
             <AvatarFallback>{userInfo?.realName?.charAt(0) || "U"}</AvatarFallback>
           </Avatar>
-          <CardTitle className="mt-3 text-2xl font-semibold">{userInfo?.realName || "등록되지 않음"}</CardTitle>
+          <CardTitle className="mt-4 text-2xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</CardTitle>
         </CardHeader>
 
-        <CardContent className="mt-4 space-y-4 text-gray-700">
-          <div className="flex items-center gap-3">
-            <User size={20} className="text-gray-500" />
+        <CardContent className="mt-2 space-y-6 text-gray-700">
+          <div className="flex items-center gap-4 px-2">
+            <User size={22} className="text-gray-500" />
             <span className="text-lg">{userInfo?.realName || "등록되지 않음"}</span>
           </div>
-          <div className="flex items-center gap-3">
-            <Mail size={20} className="text-gray-500" />
+          <div className="flex items-center gap-4 px-2">
+            <Mail size={22} className="text-gray-500" />
             <span className="text-lg">{session.user.email || "등록되지 않음"}</span>
           </div>
-          <div className="flex items-center gap-3">
-            <Phone size={20} className="text-gray-500" />
+          <div className="flex items-center gap-4 px-2">
+            <Phone size={22} className="text-gray-500" />
             <span className="text-lg">{userInfo?.phone || "등록되지 않음"}</span>
           </div>
 
-          <div className="mt-6 flex justify-between">
-            <Button asChild className="gap-2">
+          <div className="mt-8 flex flex-col items-center justify-center gap-4">
+            <Button
+              asChild
+              className="h-10 w-full max-w-sm rounded-lg bg-blue-500 px-5 py-3 text-lg font-semibold text-white shadow-md hover:bg-blue-600">
               <Link href="/users/edit">
-                <Edit size={18} />
+                <Edit size={20} />
                 프로필 수정
               </Link>
             </Button>
 
-            <Button variant="outline" asChild className="gap-2">
+            <Button
+              variant="outline"
+              asChild
+              className="h-10 w-full max-w-sm rounded-lg bg-gray-200 px-5 py-3 text-lg font-semibold text-gray-800 shadow-md hover:bg-gray-300">
               <Link href="/">
-                <Home size={18} />
+                <Home size={20} />
                 홈으로
               </Link>
             </Button>
