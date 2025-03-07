@@ -22,12 +22,12 @@ export default function Navbar() {
       <div className="flex items-center gap-4">
         {status === "authenticated" ? (
           <>
-            <div className="hidden text-gray-700 md:block">{session?.user?.email}</div>
-            <Link href="/users/edit" className={""}>
+            <div className="hidden text-gray-700">{session?.user?.email}</div>
+            <Link href="/users/edit" className={"hidden"}>
               회원 정보 수정
             </Link>
-            <Link href="/users/profile" className={""}>
-              my page
+            <Link href="/users/profile" className={"hover:underline"}>
+              My Page
             </Link>
             <button onClick={() => signOut({ callbackUrl: "/" })} className="rounded-md bg-cyan-500 p-2 text-white transition hover:bg-red-600">
               Sign Out
