@@ -18,10 +18,14 @@ export default function Navbar() {
           Friending Academy
         </Link>
       </h1>
+
       <div className="flex items-center gap-4">
         {status === "authenticated" ? (
           <>
             <div className="hidden text-gray-700 md:block">{session?.user?.email}</div>
+            <Link href="/users/edit" className={""}>
+              회원 정보 수정
+            </Link>
             <button onClick={() => signOut({ callbackUrl: "/" })} className="rounded-md bg-cyan-500 p-2 text-white transition hover:bg-red-600">
               Sign Out
             </button>
