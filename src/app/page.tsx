@@ -1,7 +1,7 @@
 "use server";
 
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent } from "@/components/ui/Card";
+import { Button } from "@/components/Button";
+import { Card, CardContent } from "@/components/Card";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 
@@ -19,7 +19,7 @@ export default async function LandingPage() {
         <CardContent className="text-center md:text-left">
           <h2 className="mb-3 text-2xl font-semibold">영어 100문장으로 영어의 기초를 완성하세요</h2>
           <p className="mb-4 text-gray-600">반복 학습과 체계적인 암기법을 통해 누구나 쉽게 영어 실력을 높일 수 있습니다.</p>
-          <Button className="flex items-center rounded-full bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700">
+          <Button className="flex cursor-pointer items-center rounded-full bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700">
             학습 시작하기 <FaArrowRight className="ml-2" />
           </Button>
         </CardContent>

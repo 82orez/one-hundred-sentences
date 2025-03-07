@@ -29,7 +29,9 @@ export default function Navbar() {
             <Link href="/users/profile" className={"hover:underline"}>
               My Page
             </Link>
-            <button onClick={() => signOut({ callbackUrl: "/" })} className="rounded-md bg-cyan-500 p-2 text-white transition hover:bg-red-600">
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="cursor-pointer rounded-md bg-cyan-500 p-2 text-white transition hover:bg-red-600">
               Sign Out
             </button>
           </>
@@ -37,12 +39,12 @@ export default function Navbar() {
           <>
             <button
               onClick={() => router.push("/users/sign-up")}
-              className="rounded-md border border-blue-500 px-4 py-2 text-blue-500 transition hover:bg-blue-500 hover:text-white">
+              className="cursor-pointer rounded-md border border-blue-500 px-4 py-2 text-blue-500 transition hover:bg-blue-500 hover:text-white">
               회원가입
             </button>
             <button
               onClick={() => router.push("/users/sign-in")}
-              className="rounded-md bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600">
+              className="cursor-pointer rounded-md bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600">
               로그인
             </button>
           </>
