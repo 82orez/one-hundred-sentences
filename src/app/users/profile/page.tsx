@@ -21,18 +21,23 @@ const ProfilePage = () => {
     return null;
   }
 
+  if (!session || !session.user) {
+    // 세션이 존재하지 않거나, 세션의 user 정보가 없을 때 처리
+    return <p>세션 정보가 없습니다.</p>;
+  }
+
   // ✅ 사용자 정보 불러오기
   const {
     data: userInfo,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["userProfile", session?.user?.id],
+    queryKey: ["userProfile", session.user.id],
     queryFn: async () => {
       const res = await axios.get("/api/user/profile");
       return res.data;
     },
-    enabled: !!session?.user?.id, // 세션이 있는 경우만 실행
+    enabled: !!session.user.id,
   });
 
   if (isLoading) {
@@ -45,7 +50,14 @@ const ProfilePage = () => {
   }
 
   if (error) {
-    return <p className="text-center text-red-500">프로필 정보를 불러오는 중 오류가 발생했습니다.</p>;
+    return (
+      <div className="flex h-screen flex-col items-center justify-center">
+        <p className="text-center text-red-500">프로필 정보를 불러오는 중 오류가 발생했습니다.</p>
+        <Button asChild>
+          <Link href="/users/sign-in">다시 시도하기</Link>
+        </Button>
+      </div>
+    );
   }
 
   return (
@@ -67,7 +79,7 @@ const ProfilePage = () => {
           </div>
           <div className="flex items-center gap-3">
             <Mail size={20} className="text-gray-500" />
-            <span className="text-lg">{session.user.email}</span>
+            <span className="text-lg">{session.user.email || "등록되지 않음"}</span>
           </div>
           <div className="flex items-center gap-3">
             <Phone size={20} className="text-gray-500" />
