@@ -61,18 +61,18 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-gray-100 to-gray-300 p-6">
-      <Card className="w-full max-w-lg rounded-2xl bg-white/90 shadow-lg backdrop-blur-md">
+    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-gray-100 to-gray-300 p-4 md:p-6">
+      <Card className="mt-10 w-full max-w-lg rounded-2xl bg-white/90 shadow-lg backdrop-blur-md">
         <CardHeader className="flex flex-col items-center">
           {/* ✅ 프로필 이미지 */}
-          <Avatar className="h-20 w-20 border shadow-md">
+          <Avatar className="h-30 w-30 border shadow-md">
             <AvatarImage src={session.user.image || "/default-avatar.png"} alt="Profile Image" />
             <AvatarFallback>{userInfo?.realName?.charAt(0) || "U"}</AvatarFallback>
           </Avatar>
           <CardTitle className="mt-3 text-2xl font-semibold">{userInfo?.realName || "등록되지 않음"}</CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-4 text-gray-700">
+        <CardContent className="mt-4 space-y-4 text-gray-700">
           <div className="flex items-center gap-3">
             <User size={20} className="text-gray-500" />
             <span className="text-lg">{userInfo?.realName || "등록되지 않음"}</span>

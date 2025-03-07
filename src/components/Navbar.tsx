@@ -18,10 +18,9 @@ export default function Navbar() {
         <Link href="/" className={"hidden md:block"}>
           Friending Academy
         </Link>
-        <Button onClick={() => alert("hello")}>shadcn</Button>
       </h1>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-6">
         {status === "authenticated" ? (
           <>
             <div className="hidden text-gray-700">{session?.user?.email}</div>
