@@ -29,12 +29,31 @@ const EditProfilePage = () => {
   // ✅ 입력 상태 관리
   const [realName, setRealName] = useState(userInfo?.realName || "");
   const [phone, setPhone] = useState(userInfo?.phone || "");
+  const [error, setError] = useState<string | null>(null); // ✅ 에러 메시지 상태 추가
 
-  // ✅ 전화번호 형식 자동 변환 (000-0000-0000)
+  // ✅ 전화번호 자동 변환 (마지막 4자리 기준)
   const formatPhoneNumber = (value: string) => {
-    return value
-      .replace(/\D/g, "") // 숫자 이외 제거
-      .replace(/^(\d{3})(\d{3,4})(\d{4})$/, "$1-$2-$3"); // 000-0000-0000 형식 적용
+    const numbersOnly = value.replace(/\D/g, ""); // 숫자만 남기기
+
+    if (numbersOnly.length <= 3) {
+      return numbersOnly;
+    } else if (numbersOnly.length <= 6) {
+      return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(3)}`;
+    } else if (numbersOnly.length === 7) {
+      return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(3, 7)}`;
+    } else if (numbersOnly.length === 8) {
+      return `${numbersOnly.slice(0, 4)}-${numbersOnly.slice(4, 8)}`;
+    } else if (numbersOnly.length === 9) {
+      return `${numbersOnly.slice(0, 2)}-${numbersOnly.slice(2, 5)}-${numbersOnly.slice(5, 9)}`;
+    } else {
+      return `${numbersOnly.slice(0, 3)}-${numbersOnly.slice(3, numbersOnly.length - 4)}-${numbersOnly.slice(-4)}`;
+    }
+  };
+
+  // ✅ 전화번호 유효성 검사
+  const isValidPhoneNumber = (value: string) => {
+    const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/; // 000-000-0000 또는 000-0000-0000 형식
+    return phoneRegex.test(value);
   };
 
   // ✅ 정보 업데이트 Mutation
@@ -55,10 +74,18 @@ const EditProfilePage = () => {
   // ✅ 저장 버튼 클릭 핸들러
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null); // 이전 에러 메시지 초기화
+
     if (!realName.trim() || !phone.trim()) {
-      alert("모든 정보를 입력해주세요.");
+      setError("모든 정보를 입력해주세요.");
       return;
     }
+
+    if (!isValidPhoneNumber(phone)) {
+      setError("전화번호 형식이 맞지 않습니다. (예: 010-1234-5678)");
+      return;
+    }
+
     updateProfileMutation.mutate();
   };
 
@@ -88,15 +115,19 @@ const EditProfilePage = () => {
             value={phone}
             onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
             className="mt-1 rounded border p-2"
-            placeholder="010-1234-5678"
+            placeholder="숫자만 입력해 주세요."
+            maxLength={13} // ✅ 최대 13자리 (하이픈 포함)
           />
         </label>
+
+        {/* 에러 메시지 표시 */}
+        {error && <p className="text-red-500">{error}</p>}
 
         <button
           type="submit"
           className="mt-4 w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
           disabled={updateProfileMutation.isPending}>
-          {updateProfileMutation.isPending ? "업데이트 중..." : "저장"}
+          {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
         </button>
       </form>
     </div>
