@@ -89,10 +89,10 @@ const ProfilePage = () => {
             <span className="text-lg">{userInfo?.phone || "등록되지 않음"}</span>
           </div>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-4">
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 md:flex-row md:justify-between">
             <Button
               asChild
-              className="h-10 w-full max-w-sm rounded-lg bg-blue-500 px-5 py-3 text-lg font-semibold text-white shadow-md hover:bg-blue-600">
+              className="h-10 w-full max-w-sm rounded-lg px-5 py-3 text-lg font-semibold text-white shadow-md hover:bg-gray-600 md:w-40">
               <Link href="/users/edit">
                 <Edit size={20} />
                 프로필 수정
@@ -102,7 +102,7 @@ const ProfilePage = () => {
             <Button
               variant="outline"
               asChild
-              className="h-10 w-full max-w-sm rounded-lg bg-gray-200 px-5 py-3 text-lg font-semibold text-gray-800 shadow-md hover:bg-gray-300">
+              className="h-10 w-full max-w-sm rounded-lg bg-gray-200 px-5 py-3 text-lg font-semibold text-gray-800 shadow-md hover:bg-gray-300 md:w-40">
               <Link href="/">
                 <Home size={20} />
                 홈으로
