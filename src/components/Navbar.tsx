@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function Navbar() {
         <Link href="/" className={"hidden md:block"}>
           Friending Academy
         </Link>
+        <Button onClick={() => alert("hello")}>shadcn</Button>
       </h1>
 
       <div className="flex items-center gap-4">
@@ -31,7 +33,7 @@ export default function Navbar() {
             </Link>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="cursor-pointer rounded-md bg-cyan-500 p-2 text-white transition hover:bg-red-600">
+              className="cursor-pointer rounded-md bg-gray-900 p-2 text-white transition hover:bg-red-600">
               Sign Out
             </button>
           </>
