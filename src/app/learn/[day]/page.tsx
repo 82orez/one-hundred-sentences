@@ -185,7 +185,7 @@ const LearnPage = ({ params }: Props) => {
 
           {/* ✅ 버튼 그룹 (녹음 UI가 열려있을 때 숨김) */}
           {showRecorder !== sentence.no && (
-            <div className="mt-2 flex items-center gap-3">
+            <div className="mt-4 flex items-center gap-4">
               {/* ✅ 개별 영문 가리기 버튼 */}
               <button
                 className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
@@ -207,17 +207,17 @@ const LearnPage = ({ params }: Props) => {
               {/* ✅ 오디오 듣기 버튼 */}
               {sentence.audioUrl && (
                 <button
-                  className="h-9 min-w-9 cursor-pointer rounded bg-green-500 p-1 text-white"
+                  className="h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white"
                   onClick={() => playAudio(sentence.audioUrl, sentence.no)}
                   disabled={playingSentence !== null} // 다른 문장이 재생 중이면 비활성화
                 >
-                  <FaPlay size={20} className={"mx-auto"} />
+                  <FaPlay size={18} className={"mx-auto"} />
                 </button>
               )}
 
               {/* ✅ 완료 버튼 */}
               <button
-                className="w-24 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed disabled:opacity-50"
+                className="hidden w-24 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={completedSentences?.includes(sentence.no)}
                 onClick={() => handleComplete(sentence.no)}
                 style={{
@@ -232,6 +232,7 @@ const LearnPage = ({ params }: Props) => {
                   "bg-gray-300": showRecorder === sentence.no, // ✅ 현재 열려있는 문장이면 회색
                   "bg-red-400": showRecorder !== sentence.no, // ✅ 다른 문장이면 빨간색
                   "bg-yellow-400": completedSentences?.includes(sentence.no), // ✅ 이미 완료한 문장은 노란색
+                  "pointer-events-none": playingSentence,
                 })}
                 disabled={completedSentences?.includes(sentence.no)}
                 onClick={() => toggleRecorder(sentence.no)}>
