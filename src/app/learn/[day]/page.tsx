@@ -33,6 +33,7 @@ const LearnPage = ({ params }: Props) => {
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
   const [showRecorder, setShowRecorder] = useState<number | null>(null); // ✅ 한 번에 하나의 문장에서만 녹음 UI 표시
+  const [playingSentence, setPlayingSentence] = useState<number | null>(null); // 현재 재생 중인 문장 추적
 
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -122,11 +123,17 @@ const LearnPage = ({ params }: Props) => {
   };
 
   // ✅ 오디오 재생 함수
-  const playAudio = (audioUrl?: string) => {
-    if (audioUrl) {
-      const audio = new Audio(audioUrl);
-      audio.play();
-    }
+  const playAudio = (audioUrl?: string, sentenceNo?: number) => {
+    if (!audioUrl || sentenceNo === undefined || playingSentence !== null) return; // 이미 다른 오디오가 재생 중이면 실행 방지
+
+    setPlayingSentence(sentenceNo);
+
+    const audio = new Audio(audioUrl);
+    audio.play();
+
+    audio.onended = () => {
+      setPlayingSentence(null);
+    };
   };
 
   // ✅ 완료 버튼 클릭 핸들러
@@ -199,8 +206,12 @@ const LearnPage = ({ params }: Props) => {
 
               {/* ✅ 오디오 듣기 버튼 */}
               {sentence.audioUrl && (
-                <button className="h-9 min-w-9 cursor-pointer rounded bg-green-500 p-1 text-white" onClick={() => playAudio(sentence.audioUrl)}>
-                  <FaPlay size={22} className={"mx-auto"} />
+                <button
+                  className="h-9 min-w-9 cursor-pointer rounded bg-green-500 p-1 text-white"
+                  onClick={() => playAudio(sentence.audioUrl, sentence.no)}
+                  disabled={playingSentence !== null} // 다른 문장이 재생 중이면 비활성화
+                >
+                  <FaPlay size={20} className={"mx-auto"} />
                 </button>
               )}
 
