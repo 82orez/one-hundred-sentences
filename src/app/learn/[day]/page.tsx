@@ -124,7 +124,7 @@ const LearnPage = ({ params }: Props) => {
 
   // ✅ 오디오 재생 함수
   const playAudio = (audioUrl?: string, sentenceNo?: number) => {
-    if (!audioUrl || sentenceNo === undefined || playingSentence !== null) return; // 이미 다른 오디오가 재생 중이면 실행 방지
+    if (!audioUrl || sentenceNo === undefined || playingSentence !== null) return; // ✅ 이미 다른 오디오가 재생 중이면 실행 방지
 
     setPlayingSentence(sentenceNo);
 

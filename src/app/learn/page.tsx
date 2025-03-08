@@ -140,7 +140,7 @@ const HomePage = () => {
             exit={{ opacity: 0 }}
             onClick={() => setQuizModalOpen(false)}>
             <motion.div
-              className="relative w-full max-w-sm rounded-lg bg-white p-6 shadow-lg"
+              className="relative mx-4 w-full max-w-sm rounded-lg bg-white p-6 shadow-lg"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
