@@ -5,12 +5,18 @@ import { useSession } from "next-auth/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner"; // ✅ Sonner 라이브러리 사용
+import { Phone, User } from "lucide-react";
+import { MdOutlinePhoneAndroid } from "react-icons/md";
 
 const EditProfilePage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // ✅ 로그인되지 않은 경우 로그인 페이지로 리디렉트
   if (status === "unauthenticated") {
     router.replace("/users/sign-in");
     return null;
@@ -23,17 +29,16 @@ const EditProfilePage = () => {
       const res = await axios.get("/api/user/profile");
       return res.data;
     },
-    enabled: !!session?.user?.id, // 세션이 있는 경우만 실행
+    enabled: !!session?.user?.id,
   });
 
-  // ✅ 입력 상태 관리
   const [realName, setRealName] = useState(userInfo?.realName || "");
   const [phone, setPhone] = useState(userInfo?.phone || "");
-  const [error, setError] = useState<string | null>(null); // ✅ 에러 메시지 상태 추가
+  const [error, setError] = useState<string | null>(null);
 
   // ✅ 전화번호 자동 변환 (마지막 4자리 기준)
   const formatPhoneNumber = (value: string) => {
-    const numbersOnly = value.replace(/\D/g, ""); // 숫자만 남기기
+    const numbersOnly = value.replace(/\D/g, "");
 
     if (numbersOnly.length <= 3) {
       return numbersOnly;
@@ -62,19 +67,18 @@ const EditProfilePage = () => {
       return axios.post("/api/user/update", { realName, phone });
     },
     onSuccess: () => {
-      alert("프로필이 업데이트되었습니다.");
+      toast.success("프로필이 업데이트되었습니다.");
       router.push("/users/profile");
     },
-    onError: (error) => {
-      console.error("업데이트 실패:", error);
-      alert("업데이트 중 오류가 발생했습니다.");
+    onError: () => {
+      toast.error("❌ 업데이트 중 오류가 발생했습니다.");
     },
   });
 
   // ✅ 저장 버튼 클릭 핸들러
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // 이전 에러 메시지 초기화
+    setError(null);
 
     if (!realName.trim() || !phone.trim()) {
       setError("모든 정보를 입력해주세요.");
@@ -89,47 +93,74 @@ const EditProfilePage = () => {
     updateProfileMutation.mutate();
   };
 
-  if (isLoading) return <p className="text-center">Loading...</p>;
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Skeleton className="h-40 w-80 rounded-lg" />
+      </div>
+    );
+  }
 
   return (
-    <div className="mx-auto max-w-md p-6">
-      <h1 className="mb-6 text-xl font-bold">프로필 수정</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* 실제 이름 입력 */}
-        <label className="flex flex-col">
-          <span className="font-semibold">실제 이름</span>
-          <input
-            type="text"
-            value={realName}
-            onChange={(e) => setRealName(e.target.value)}
-            className="mt-1 rounded border p-2"
-            placeholder="홍길동"
-          />
-        </label>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300 p-6">
+      <Card className="w-full max-w-lg rounded-2xl border border-gray-300/50 bg-white/90 shadow-xl backdrop-blur-md">
+        <CardHeader>
+          <CardTitle className="text-center text-3xl font-extrabold text-gray-800">프로필 수정</CardTitle>
+          <p className={"mt-4 text-center"}>정확한 이름과 휴대폰 번호를 입력해 주세요.</p>
+        </CardHeader>
 
-        {/* 전화번호 입력 */}
-        <label className="flex flex-col">
-          <span className="font-semibold">전화번호</span>
-          <input
-            type="text"
-            value={phone}
-            onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
-            className="mt-1 rounded border p-2"
-            placeholder="숫자만 입력해 주세요."
-            maxLength={13} // ✅ 최대 13자리 (하이픈 포함)
-          />
-        </label>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-xl">
+            {/* 실제 이름 입력 */}
+            <div>
+              <Label htmlFor="realName" className="text-lg font-semibold text-gray-700">
+                실제 이름
+              </Label>
+              <div className="relative mt-2">
+                <User className="absolute top-3 left-5 text-gray-500" size={24} />
+                <input
+                  id="realName"
+                  type="text"
+                  value={realName}
+                  onChange={(e) => setRealName(e.target.value)}
+                  className="h-12 w-full rounded-xl border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
+                  placeholder="홍길동"
+                />
+              </div>
+            </div>
 
-        {/* 에러 메시지 표시 */}
-        {error && <p className="text-red-500">{error}</p>}
+            {/* 전화번호 입력 */}
+            <div>
+              <Label htmlFor="phone" className="text-lg font-semibold text-gray-700">
+                휴대폰 번호
+              </Label>
+              <div className="relative mt-2">
+                <MdOutlinePhoneAndroid className="absolute top-3 left-5 text-gray-500" size={24} />
+                <input
+                  id="phone"
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
+                  className="h-12 w-full rounded-xl border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
+                  placeholder="010-1234-5678"
+                  maxLength={13}
+                />
+              </div>
+            </div>
 
-        <button
-          type="submit"
-          className="mt-4 w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
-          disabled={updateProfileMutation.isPending}>
-          {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
-        </button>
-      </form>
+            {/* 에러 메시지 표시 */}
+            {error && <p className="text-lg text-red-500">{error}</p>}
+
+            {/* 저장 버튼 */}
+            <Button
+              type="submit"
+              className="mt-4 h-16 w-full rounded-xl bg-blue-500 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
+              disabled={updateProfileMutation.isPending}>
+              {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

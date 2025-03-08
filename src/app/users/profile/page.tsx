@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Mail, Phone, User, Edit, Home } from "lucide-react";
+import { MdOutlinePhoneAndroid } from "react-icons/md";
 
 const ProfilePage = () => {
   const { data: session, status } = useSession();
@@ -85,7 +86,7 @@ const ProfilePage = () => {
             <span className="text-lg">{session.user.email || "등록되지 않음"}</span>
           </div>
           <div className="flex items-center gap-4 px-2">
-            <Phone size={22} className="text-gray-500" />
+            <MdOutlinePhoneAndroid size={22} className="text-gray-500" />
             <span className="text-lg">{userInfo?.phone || "등록되지 않음"}</span>
           </div>
 
