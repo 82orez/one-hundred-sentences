@@ -102,65 +102,67 @@ const EditProfilePage = () => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300 p-6">
-      <Card className="w-full max-w-lg rounded-2xl border border-gray-300/50 bg-white/90 shadow-xl backdrop-blur-md">
-        <CardHeader>
-          <CardTitle className="text-center text-3xl font-extrabold text-gray-800">프로필 수정</CardTitle>
-          <p className={"mt-4 text-center"}>정확한 이름과 휴대폰 번호를 입력해 주세요.</p>
-        </CardHeader>
+    <div className="flex min-h-screen justify-center bg-gradient-to-br from-blue-100 to-blue-300 p-4 md:p-6">
+      <div>
+        <Card className="w-full max-w-lg rounded-2xl border border-gray-300/50 bg-white/90 shadow-xl backdrop-blur-md">
+          <CardHeader>
+            <CardTitle className="text-center text-3xl font-semibold text-gray-800">프로필 수정</CardTitle>
+            <p className={"mt-4 text-center"}>정확한 이름과 휴대폰 번호를 입력해 주세요.</p>
+          </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-xl">
-            {/* 실제 이름 입력 */}
-            <div>
-              <Label htmlFor="realName" className="text-lg font-semibold text-gray-700">
-                실제 이름
-              </Label>
-              <div className="relative mt-2">
-                <User className="absolute top-3 left-5 text-gray-500" size={24} />
-                <input
-                  id="realName"
-                  type="text"
-                  value={realName}
-                  onChange={(e) => setRealName(e.target.value)}
-                  className="h-12 w-full rounded-xl border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
-                  placeholder="홍길동"
-                />
+          <CardContent>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-xl">
+              {/* 실제 이름 입력 */}
+              <div>
+                <Label htmlFor="realName" className="text-lg font-semibold text-gray-700">
+                  실제 이름
+                </Label>
+                <div className="relative mt-2">
+                  <User className="absolute top-3 left-5 text-gray-500" size={24} />
+                  <input
+                    id="realName"
+                    type="text"
+                    value={realName}
+                    onChange={(e) => setRealName(e.target.value)}
+                    className="h-12 w-full rounded-xl border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
+                    placeholder="홍길동"
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* 전화번호 입력 */}
-            <div>
-              <Label htmlFor="phone" className="text-lg font-semibold text-gray-700">
-                휴대폰 번호
-              </Label>
-              <div className="relative mt-2">
-                <MdOutlinePhoneAndroid className="absolute top-3 left-5 text-gray-500" size={24} />
-                <input
-                  id="phone"
-                  type="text"
-                  value={phone}
-                  onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
-                  className="h-12 w-full rounded-xl border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
-                  placeholder="010-1234-5678"
-                  maxLength={13}
-                />
+              {/* 전화번호 입력 */}
+              <div>
+                <Label htmlFor="phone" className="text-lg font-semibold text-gray-700">
+                  휴대폰 번호
+                </Label>
+                <div className="relative mt-2">
+                  <MdOutlinePhoneAndroid className="absolute top-3 left-5 text-gray-500" size={24} />
+                  <input
+                    id="phone"
+                    type="text"
+                    value={phone}
+                    onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
+                    className="h-12 w-full rounded-xl border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
+                    placeholder="010-1234-5678"
+                    maxLength={13}
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* 에러 메시지 표시 */}
-            {error && <p className="text-lg text-red-500">{error}</p>}
+              {/* 에러 메시지 표시 */}
+              {error && <p className="text-lg text-red-500">{error}</p>}
 
-            {/* 저장 버튼 */}
-            <Button
-              type="submit"
-              className="mt-4 h-16 w-full rounded-xl bg-blue-500 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
-              disabled={updateProfileMutation.isPending}>
-              {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              {/* 저장 버튼 */}
+              <Button
+                type="submit"
+                className="h-14 w-full rounded-xl bg-blue-500 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
+                disabled={updateProfileMutation.isPending}>
+                {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

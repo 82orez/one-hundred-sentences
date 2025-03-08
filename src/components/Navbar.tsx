@@ -40,7 +40,7 @@ export default function Navbar() {
           <>
             <button
               onClick={() => router.push("/users/sign-up")}
-              className="cursor-pointer rounded-md border border-blue-500 px-4 py-2 text-blue-500 transition hover:bg-blue-500 hover:text-white">
+              className="hidden cursor-pointer rounded-md border border-blue-500 px-4 py-2 text-blue-500 transition hover:bg-blue-500 hover:text-white">
               회원가입
             </button>
             <button
