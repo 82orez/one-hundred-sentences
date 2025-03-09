@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { TfiAnnouncement } from "react-icons/tfi";
 
-const AnnouncementModal = () => {
+const AnnouncementModalForOneDay = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [dontShowToday, setDontShowToday] = useState(false);
 
@@ -74,4 +74,4 @@ const AnnouncementModal = () => {
   );
 };
 
-export default AnnouncementModal;
+export default AnnouncementModalForOneDay;
