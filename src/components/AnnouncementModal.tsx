@@ -10,7 +10,7 @@ const AnnouncementModal = () => {
 
   useEffect(() => {
     // localStorage 에서 '오늘 하루 보지 않기' 선택 여부 확인
-    const lastClosed = localStorage.getItem("announcement_closed");
+    const lastClosed = localStorage.getItem("announcement_closed_one_day");
     const today = new Date().toISOString().split("T")[0];
 
     if (lastClosed !== today) {
@@ -21,7 +21,7 @@ const AnnouncementModal = () => {
   const closeModal = () => {
     if (dontShowToday) {
       const today = new Date().toISOString().split("T")[0];
-      localStorage.setItem("announcement_closed", today);
+      localStorage.setItem("announcement_closed_one_day", today);
     }
     setIsOpen(false);
   };
