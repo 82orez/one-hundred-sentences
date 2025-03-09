@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import clsx from "clsx";
-import { TfiAnnouncement } from "react-icons/tfi";
 import { useRouter } from "next/navigation";
+import { TfiAnnouncement } from "react-icons/tfi";
 
 const AnnouncementModal = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [dontShowAgain, setDontShowAgain] = useState(false); // ✅ 변수명 변경
-  const router = useRouter();
+  const [dontShowAgain, setDontShowAgain] = useState(false);
+  const router = useRouter(); // ✅ Next.js 라우터 사용
 
   useEffect(() => {
     // localStorage 에서 '더 이상 보지 않기' 선택 여부 확인
@@ -24,6 +23,11 @@ const AnnouncementModal = () => {
       localStorage.setItem("announcement_closed", "true"); // ✅ 한 번 설정하면 다시 안 보이게
     }
     setIsOpen(false);
+  };
+
+  const handleNavigate = () => {
+    router.push("/users/edit"); // ✅ 버튼 클릭 시 이동
+    closeModal(); // ✅ 모달 닫기
   };
 
   if (!isOpen) return null;
@@ -46,9 +50,14 @@ const AnnouncementModal = () => {
           정확한 이름과 휴대폰 번호가 등록되지 않으면 정상적인 서비스가 이루어지기 어렵다는 점을 양해 부탁드립니다.
         </p>
 
-        {/* 배송지역 버튼 */}
+        {/* 이름과 휴대폰 번호 등록 버튼 */}
         <div className="mt-4 flex justify-center">
-          <button className="rounded-md bg-red-500 px-4 py-2 font-semibold text-white">이름과 휴대폰 번호 등록하기</button>
+          <button
+            className="rounded-md bg-red-500 px-4 py-2 font-semibold text-white transition hover:bg-red-600"
+            onClick={handleNavigate} // ✅ 클릭 시 이동
+          >
+            이름과 휴대폰 번호 등록하기
+          </button>
         </div>
 
         {/* '더 이상 보지 않기' + 닫기 버튼 수평 정렬 */}

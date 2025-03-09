@@ -31,7 +31,7 @@ export default function Navbar() {
               My Page
             </Link>
             <Button variant={"ghost"} onClick={() => signOut({ callbackUrl: "/" })} className="cursor-pointer rounded-md hover:underline">
-              로그 아웃
+              로그아웃
             </Button>
           </>
         ) : (

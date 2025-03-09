@@ -103,11 +103,11 @@ const EditProfilePage = () => {
 
   return (
     <div className="flex min-h-screen justify-center bg-gradient-to-br from-blue-100 to-blue-300 p-4 md:p-6">
-      <div>
+      <div className={"mt-4"}>
         <Card className="w-full max-w-lg rounded-2xl border border-gray-300/50 bg-white/90 shadow-xl backdrop-blur-md">
           <CardHeader>
             <CardTitle className="text-center text-3xl font-semibold text-gray-800">프로필 수정</CardTitle>
-            <p className={"mt-4 text-center"}>정확한 이름과 휴대폰 번호를 입력해 주세요.</p>
+            <p className={"mt-4 text-center text-lg md:text-xl"}>결제 정보 확인을 위해 반드시 정확한 이름과 휴대폰 번호를 입력해 주세요.</p>
           </CardHeader>
 
           <CardContent>
@@ -143,7 +143,7 @@ const EditProfilePage = () => {
                     value={phone}
                     onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
                     className="h-12 w-full rounded-xl border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
-                    placeholder="010-1234-5678"
+                    placeholder="숫자만 입력해 주세요."
                     maxLength={13}
                   />
                 </div>
@@ -155,7 +155,7 @@ const EditProfilePage = () => {
               {/* 저장 버튼 */}
               <Button
                 type="submit"
-                className="h-14 w-full rounded-xl bg-blue-500 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
+                className="h-12 w-full rounded-xl bg-blue-500 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
                 disabled={updateProfileMutation.isPending}>
                 {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
               </Button>
