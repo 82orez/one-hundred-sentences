@@ -10,7 +10,7 @@ export default function Navbar() {
   const { status, data: session } = useSession();
 
   return (
-    <nav className="sticky top-0 z-10 flex w-full items-center justify-between bg-white px-6 py-4 shadow-md">
+    <nav className="sticky top-0 z-10 flex w-full items-center justify-between bg-white px-6 py-2 shadow-md md:py-4">
       <h1 className="text-2xl font-bold">
         <Link href="/" className={"block md:hidden"}>
           Friending
