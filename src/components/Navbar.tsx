@@ -20,7 +20,7 @@ export default function Navbar() {
         </Link>
       </h1>
 
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-3">
         {status === "authenticated" ? (
           <>
             <div className="hidden text-gray-700">{session?.user?.email}</div>
@@ -30,11 +30,9 @@ export default function Navbar() {
             <Link href="/users/profile" className={"hover:underline"}>
               My Page
             </Link>
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="cursor-pointer rounded-md bg-gray-900 p-2 text-white transition hover:bg-red-600">
+            <Button variant={"ghost"} onClick={() => signOut({ callbackUrl: "/" })} className="cursor-pointer rounded-md hover:underline">
               로그 아웃
-            </button>
+            </Button>
           </>
         ) : (
           <>

@@ -7,7 +7,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 export default async function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-400 px-4 text-white md:px-6">
+    <div className="flex min-h-screen flex-col items-center bg-gradient-to-br from-blue-600 to-indigo-400 px-4 pt-3 text-white md:justify-center md:px-6 md:pt-0">
       <header className="mb-3 text-center md:mb-10 md:pt-0">
         <h1 className="mb-3 text-2xl font-bold drop-shadow-lg md:mb-8 md:text-5xl">한 달만에 끝내는 “여행영어 100문장 사관학교”</h1>
         <p className="mx-auto max-w-2xl text-lg text-gray-200 md:mb-2 md:text-xl">효과적인 영어 학습을 위한 최고의 플랫폼!</p>
