@@ -28,8 +28,8 @@ export const NextLayout = ({ children }: Props) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/*<AnnouncementModalForOneDay />*/}
-      {/*<AnnouncementModal />*/}
+      <AnnouncementModalForOneDay />
+      <AnnouncementModal />
       <Navbar />
       {children}
     </QueryClientProvider>
