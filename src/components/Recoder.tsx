@@ -1,7 +1,7 @@
 "use client";
 
 import { useRecordingStore } from "@/stores/useRecordingStore";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { FaMicrophone } from "react-icons/fa6";
 import { FaRegStopCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -10,7 +10,7 @@ import { RiCloseLargeFill } from "react-icons/ri";
 interface Props {
   sentenceNo: number;
   handleComplete: (sentenceNo: number) => void;
-  onClose: () => void; // ✅ 추가: 녹음 UI 닫기 함수
+  onClose: () => void;
 }
 
 const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
@@ -19,7 +19,9 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
   const [uploadedURL, setUploadedURL] = useState<string | null>(null);
   const [isUpLoading, setIsUpLoading] = useState(false);
   const [recordCount, setRecordCount] = useState<number | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false); // ✅ 추가: 숙제 제출 완료 상태
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false); // ✅ 오디오 재생 여부 상태 추가
+  const audioRef = useRef<HTMLAudioElement | null>(null); // ✅ 오디오 엘리먼트 참조
 
   const handleStopRecording = async () => {
     const audioBlob = await stopRecording();
@@ -39,10 +41,9 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
       const response = await fetch(audioURL);
       const audioBlob = await response.blob();
       const formData = new FormData();
-      formData.append("audio", new File([audioBlob], `recording-${sentenceNo}.mp3`)); // ✅ 파일 이름에 sentenceNo 추가
-      formData.append("sentenceNo", sentenceNo.toString()); // ✅ sentenceNo 추가
+      formData.append("audio", new File([audioBlob], `recording-${sentenceNo}.mp3`));
+      formData.append("sentenceNo", sentenceNo.toString());
 
-      // Supabase 업로드 요청
       const uploadResponse = await fetch("/api/recorder", {
         method: "POST",
         body: formData,
@@ -54,10 +55,7 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
         setRecordCount(result.count);
         console.log(`File saved at: ${result.url}`);
 
-        // ✅ 녹음 파일 제출 후 문장 완료 처리
         handleComplete(sentenceNo);
-
-        // ✅ 숙제 제출 완료 상태로 변경
         setIsSubmitted(true);
       } else {
         alert(result.error);
@@ -72,16 +70,19 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
 
   return (
     <div className="relative mt-4 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
-      {/* ✅ X 버튼 (우측 상단) */}
+      {/* ✅ X 버튼 (닫기) */}
       <button className="absolute top-3 right-3 text-red-500 hover:text-red-700" onClick={onClose}>
         <RiCloseLargeFill size={24} />
       </button>
 
       <p className={"mb-4 text-lg"}>Step 1. 문장 녹음하기</p>
 
+      {/* ✅ 녹음 버튼 (오디오 재생 중이면 비활성화) */}
       <button
         onClick={isRecording ? handleStopRecording : startRecording}
-        className={`min-h-24 cursor-pointer rounded px-4 py-2 ${isRecording ? "animate-pulse text-red-500" : "text-gray-900"}`}>
+        disabled={isPlaying} // ✅ 재생 중이면 비활성화
+        className={`min-h-24 cursor-pointer rounded px-4 py-2 ${isRecording ? "animate-pulse text-red-500" : "text-gray-900"} ${isPlaying ? "cursor-not-allowed opacity-50" : ""}`} // ✅ UI 업데이트
+      >
         {isRecording ? (
           <div>
             <FaRegStopCircle size={45} className={"mb-2"} />
@@ -100,13 +101,23 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
         )}
       </button>
 
+      {/* ✅ 오디오 재생 UI */}
       {audioURL && (
         <div className="mt-8">
           <p className={"mb-3 text-center text-lg"}>Step 2. 녹음한 내 발음 들어 보기</p>
-          <audio controls src={audioURL} className="mx-auto" />
+          <audio
+            ref={audioRef}
+            controls
+            src={audioURL}
+            className="mx-auto"
+            onPlay={() => setIsPlaying(true)} // ✅ 재생 시작
+            onPause={() => setIsPlaying(false)} // ✅ 일시정지
+            onEnded={() => setIsPlaying(false)} // ✅ 종료
+          />
         </div>
       )}
 
+      {/* ✅ 녹음 파일 제출 */}
       {audioURL && (
         <div className="mt-8 flex flex-col items-center">
           <p className={"text-center text-lg"}>Step 3. 녹음한 파일 제출하기</p>
@@ -119,6 +130,7 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
         </div>
       )}
 
+      {/* ✅ 업로드 완료 시 메시지 표시 */}
       {uploadedURL && (
         <div className="mt-4 text-center">
           <p className="text-green-600">File saved successfully!</p>
