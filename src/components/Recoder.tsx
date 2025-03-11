@@ -75,7 +75,7 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
         <RiCloseLargeFill size={24} />
       </button>
 
-      <p className={"mb-4 text-lg"}>Step 1. 문장 녹음하기</p>
+      <p className={"mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
 
       {/* ✅ 녹음 버튼 (오디오 재생 중이면 비활성화) */}
       <button
@@ -102,9 +102,9 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
       </button>
 
       {/* ✅ 오디오 재생 UI */}
-      {audioURL && (
+      {audioURL && !isRecording && (
         <div className="mt-8">
-          <p className={"mb-3 text-center text-lg"}>Step 2. 녹음한 내 발음 들어 보기</p>
+          <p className={"mb-3 text-center text-lg font-semibold"}>Step 2. 녹음한 내 발음 들어 보기</p>
           <audio
             ref={audioRef}
             controls
@@ -118,13 +118,13 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
       )}
 
       {/* ✅ 녹음 파일 제출 */}
-      {audioURL && (
+      {audioURL && !isRecording && (
         <div className="mt-8 flex flex-col items-center">
-          <p className={"text-center text-lg"}>Step 3. 녹음한 파일 제출하기</p>
+          <p className={"text-center text-lg font-semibold"}>Step 3. 녹음한 파일 제출하기</p>
           <button
             onClick={handleSaveRecording}
             className="mt-2 flex min-h-12 w-1/4 min-w-52 cursor-pointer items-center justify-center rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
-            disabled={isRecording || isLoading || isUpLoading || isSubmitted}>
+            disabled={isRecording || isLoading || isUpLoading || isSubmitted || isPlaying}>
             {isUpLoading ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : isSubmitted ? "숙제 제출 완료" : "녹음 파일 제출"}
           </button>
         </div>
