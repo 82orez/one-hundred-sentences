@@ -14,6 +14,7 @@ import { FaA, FaMicrophone } from "react-icons/fa6";
 import { TbAlphabetKorean } from "react-icons/tb";
 import AudioRecorder from "@/components/Recoder";
 import { RiCloseLargeFill } from "react-icons/ri";
+import Modal from "@/components/Modal";
 
 interface Sentence {
   no: number;
@@ -247,10 +248,12 @@ const LearnPage = ({ params }: Props) => {
             </div>
           )}
 
-          {/* ✅ AudioRecorder UI (보일 때 위의 버튼 part 숨김) */}
-          {showRecorder === sentence.no && (
-            <AudioRecorder sentenceNo={sentence.no} handleComplete={handleComplete} onClose={() => setShowRecorder(null)} />
-          )}
+          {/* ✅ 녹음 모달 */}
+          <Modal isOpen={showRecorder !== null} onClose={() => setShowRecorder(null)}>
+            {showRecorder !== null && (
+              <AudioRecorder sentenceNo={showRecorder} handleComplete={handleComplete} onClose={() => setShowRecorder(null)} />
+            )}
+          </Modal>
         </div>
       ))}
 
