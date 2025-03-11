@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { IoHomeOutline } from "react-icons/io5";
+import clsx from "clsx";
 
 export default function Navbar() {
   const router = useRouter();
@@ -13,7 +15,9 @@ export default function Navbar() {
     <nav className="sticky top-0 z-10 flex w-full items-center justify-between bg-white px-6 py-2 shadow-md md:py-4">
       <h1 className="text-2xl font-bold">
         <Link href="/" className={"block md:hidden"}>
-          Friending
+          {/*<IoHomeOutline size={"30"} className={clsx("", { hidden: status !== "authenticated" })} />*/}
+          <div className={clsx("", { hidden: status !== "authenticated" })}>Home</div>
+          <div className={clsx("", { hidden: status === "authenticated" })}>Friending</div>
         </Link>
         <Link href="/" className={"hidden md:block"}>
           Friending Academy
