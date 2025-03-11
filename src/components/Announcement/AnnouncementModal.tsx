@@ -33,7 +33,7 @@ const AnnouncementModal = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-xl">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30 backdrop-blur-xl">
       <div className="relative w-[90%] max-w-md rounded-lg bg-white p-6 shadow-lg">
         <div className="mb-4 flex items-center gap-3 border-b border-gray-200 pb-2">
           {/* 제목 */}

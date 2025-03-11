@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     const resetLink = `${process.env.NEXTAUTH_URL}/users/reset-password/${token}`;
 
     const data = await resend.emails.send({
-      from: "Your Service Name <no-reply@supaneer.com>",
+      from: "프렌딩 아카데미 <no-reply@friending.ac>",
       to: email,
       subject: "비밀번호 재설정",
       text: `비밀번호를 재설정하려면 다음 링크를 클릭하세요: ${resetLink}`,

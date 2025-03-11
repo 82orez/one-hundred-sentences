@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     });
 
     const data = await resend.emails.send({
-      from: "Your Service Name <no-reply@supaneer.com>",
+      from: "프렌딩 아카데미 <no-reply@friending.ac>",
       to: email,
       subject: "Your verification code",
       text: `Your verification code is: ${token}`,
