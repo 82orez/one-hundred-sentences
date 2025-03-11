@@ -23,13 +23,13 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // ✅ 녹음 취소 함수
+  // ❌ 녹음 취소 및 창 닫기 함수
   const handleCancelRecording = async () => {
     if (isRecording) {
       await stopRecording(); // ✅ 녹음 즉시 중단
     }
     setAudioURL(null); // ✅ 녹음된 파일 삭제
-    onClose(); // ✅ 모달 닫기
+    onClose(); // ✅ 모달창 닫기
   };
 
   const handleStopRecording = async () => {
@@ -46,7 +46,7 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
 
     // ✅ 확인창 추가
     const confirmSubmit = window.confirm("정말로 제출하시겠습니까?");
-    if (!confirmSubmit) return; // ❌ 사용자가 취소하면 제출 중단
+    if (!confirmSubmit) return; // 사용자가 취소하면 제출 중단
 
     try {
       setIsUpLoading(true);
@@ -83,7 +83,7 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
 
   return (
     <div className="relative mt-4 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
-      {/* ✅ X 버튼 (닫기 & 녹음 취소) */}
+      {/* ❌ 버튼 (닫기 & 녹음 취소) */}
       <button className="absolute top-3 right-3 text-red-500 hover:text-red-700" onClick={handleCancelRecording}>
         <RiCloseLargeFill size={24} />
       </button>
