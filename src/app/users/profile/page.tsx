@@ -66,14 +66,15 @@ const ProfilePage = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-blue-50 to-blue-200 p-4 md:p-6">
-      <Card className="mt-12 w-full max-w-lg rounded-3xl border border-gray-300/50 bg-white/80 shadow-xl backdrop-blur-lg">
+      <Card className="mt-12 w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 shadow-xl backdrop-blur-lg">
+        <CardTitle className="mx-auto mt-4 text-3xl font-bold text-gray-800">My Profile</CardTitle>
         <CardHeader className="flex flex-col items-center">
           {/* ✅ 프로필 이미지 */}
           <Avatar className="h-24 w-24 shadow-md ring-2 ring-blue-300 md:h-32 md:w-32">
             <AvatarImage src={session.user.image || "/default-avatar.png"} alt="Profile Image" />
             <AvatarFallback>{userInfo?.realName?.charAt(0) || "U"}</AvatarFallback>
           </Avatar>
-          <CardTitle className="mt-4 text-2xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</CardTitle>
+          <CardTitle className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</CardTitle>
         </CardHeader>
 
         <CardContent className="mt-2 space-y-6 text-gray-700">
@@ -96,7 +97,7 @@ const ProfilePage = () => {
               className="h-10 w-full max-w-sm rounded-lg px-5 py-3 text-lg font-semibold text-white shadow-md hover:bg-gray-600 md:w-40">
               <Link href="/users/edit">
                 <Edit size={20} />
-                프로필 수정
+                회원 정보 수정
               </Link>
             </Button>
 

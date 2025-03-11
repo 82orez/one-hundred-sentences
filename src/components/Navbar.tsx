@@ -28,13 +28,10 @@ export default function Navbar() {
         {status === "authenticated" ? (
           <>
             <div className="hidden text-gray-700">{session?.user?.email}</div>
-            <Link href="/users/edit" className={"hidden"}>
-              회원 정보 수정
-            </Link>
             <Link href="/users/profile" className={"hover:underline"}>
-              My Page
+              회원 정보
             </Link>
-            <Button variant={"ghost"} onClick={() => signOut({ callbackUrl: "/" })} className="cursor-pointer rounded-md hover:underline">
+            <Button variant={"ghost"} onClick={() => signOut({ callbackUrl: "/" })} className="text-md cursor-pointer rounded-md hover:underline">
               로그아웃
             </Button>
           </>

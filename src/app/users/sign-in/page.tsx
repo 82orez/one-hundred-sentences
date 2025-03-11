@@ -171,7 +171,7 @@ export default function SignIn() {
 
       <div className={clsx("mt-3 flex justify-around", { "pointer-events-none": isLoading })}>
         <Link href={"/users/sign-up"} className={"min-w-32 text-center hover:underline"}>
-          이메일 회원 가입
+          이메일 회원가입
         </Link>
         <div className={"flex items-center justify-center"}>
           <TbMinusVertical className={"h-full"} />
