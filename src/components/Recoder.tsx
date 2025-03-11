@@ -6,6 +6,7 @@ import { FaMicrophone } from "react-icons/fa6";
 import { FaRegStopCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { RiCloseLargeFill } from "react-icons/ri";
+import { IoMdCloseCircleOutline } from "react-icons/io";
 
 interface Props {
   sentenceKo: string;
@@ -83,15 +84,16 @@ const AudioRecorder = ({ sentenceKo, sentenceNo, handleComplete, onClose }: Prop
   };
 
   return (
-    <div className="relative mt-4 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
+    <div className="relative mt-5 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
       {/* ❌ 버튼 (닫기 & 녹음 취소) */}
-      <button className="absolute top-3 right-3 text-red-500 hover:text-red-700" onClick={handleCancelRecording}>
-        <RiCloseLargeFill size={24} />
+      <button className="absolute -top-9 -right-5 text-red-500 hover:text-red-700" onClick={handleCancelRecording}>
+        {/*<RiCloseLargeFill size={24} />*/}
+        <IoMdCloseCircleOutline size={30} />
       </button>
 
-      <p>{sentenceKo}</p>
+      <p className={"mt-1 text-lg"}>{sentenceKo}</p>
 
-      <p className={"mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
+      <p className={"mt-8 mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
 
       {/* ✅ 녹음 버튼 (오디오 재생 중이면 비활성화) */}
       <button

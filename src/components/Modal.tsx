@@ -12,7 +12,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-400/10 backdrop-blur-xs">
-      <div className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-lg">
+      <div className="relative flex w-full max-w-[360px] justify-center rounded-lg bg-white p-6 shadow-lg">
         {/*<button className="absolute top-4 right-4 text-gray-600 hover:text-gray-900" onClick={onClose}>*/}
         {/*  <RiCloseLargeFill size={24} />*/}
         {/*</button>*/}
