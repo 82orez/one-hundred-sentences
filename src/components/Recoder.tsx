@@ -35,6 +35,10 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
   const handleSaveRecording = async () => {
     if (!audioURL) return;
 
+    // ✅ 확인창 추가
+    const confirmSubmit = window.confirm("정말로 제출하시겠습니까?");
+    if (!confirmSubmit) return; // ❌ 사용자가 취소하면 제출 중단
+
     try {
       setIsUpLoading(true);
 
