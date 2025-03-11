@@ -251,7 +251,12 @@ const LearnPage = ({ params }: Props) => {
           {/* ✅ 녹음 모달 */}
           <Modal isOpen={showRecorder !== null} onClose={() => setShowRecorder(null)}>
             {showRecorder !== null && (
-              <AudioRecorder sentenceNo={showRecorder} handleComplete={handleComplete} onClose={() => setShowRecorder(null)} />
+              <AudioRecorder
+                sentenceKo={sentence.ko}
+                sentenceNo={showRecorder}
+                handleComplete={handleComplete}
+                onClose={() => setShowRecorder(null)}
+              />
             )}
           </Modal>
         </div>

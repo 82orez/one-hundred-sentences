@@ -8,12 +8,13 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { RiCloseLargeFill } from "react-icons/ri";
 
 interface Props {
+  sentenceKo: string;
   sentenceNo: number;
   handleComplete: (sentenceNo: number) => void;
   onClose: () => void;
 }
 
-const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
+const AudioRecorder = ({ sentenceKo, sentenceNo, handleComplete, onClose }: Props) => {
   const { isRecording, isLoading, startRecording, stopRecording } = useRecordingStore();
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [uploadedURL, setUploadedURL] = useState<string | null>(null);
@@ -87,6 +88,8 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
       <button className="absolute top-3 right-3 text-red-500 hover:text-red-700" onClick={handleCancelRecording}>
         <RiCloseLargeFill size={24} />
       </button>
+
+      <p>{sentenceKo}</p>
 
       <p className={"mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
 
