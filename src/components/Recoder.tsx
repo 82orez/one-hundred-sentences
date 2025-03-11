@@ -20,8 +20,17 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
   const [isUpLoading, setIsUpLoading] = useState(false);
   const [recordCount, setRecordCount] = useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false); // ✅ 오디오 재생 여부 상태 추가
-  const audioRef = useRef<HTMLAudioElement | null>(null); // ✅ 오디오 엘리먼트 참조
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // ✅ 녹음 취소 함수
+  const handleCancelRecording = async () => {
+    if (isRecording) {
+      await stopRecording(); // ✅ 녹음 즉시 중단
+    }
+    setAudioURL(null); // ✅ 녹음된 파일 삭제
+    onClose(); // ✅ 모달 닫기
+  };
 
   const handleStopRecording = async () => {
     const audioBlob = await stopRecording();
@@ -74,8 +83,8 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
 
   return (
     <div className="relative mt-4 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
-      {/* ✅ X 버튼 (닫기) */}
-      <button className="absolute top-3 right-3 text-red-500 hover:text-red-700" onClick={onClose}>
+      {/* ✅ X 버튼 (닫기 & 녹음 취소) */}
+      <button className="absolute top-3 right-3 text-red-500 hover:text-red-700" onClick={handleCancelRecording}>
         <RiCloseLargeFill size={24} />
       </button>
 
@@ -84,9 +93,8 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
       {/* ✅ 녹음 버튼 (오디오 재생 중이면 비활성화) */}
       <button
         onClick={isRecording ? handleStopRecording : startRecording}
-        disabled={isPlaying} // ✅ 재생 중이면 비활성화
-        className={`min-h-24 cursor-pointer rounded px-4 py-2 ${isRecording ? "animate-pulse text-red-500" : "text-gray-900"} ${isPlaying ? "cursor-not-allowed opacity-50" : ""}`} // ✅ UI 업데이트
-      >
+        disabled={isPlaying}
+        className={`min-h-24 cursor-pointer rounded px-4 py-2 ${isRecording ? "animate-pulse text-red-500" : "text-gray-900"} ${isPlaying ? "cursor-not-allowed opacity-50" : ""}`}>
         {isRecording ? (
           <div>
             <FaRegStopCircle size={45} className={"mb-2"} />
@@ -114,9 +122,9 @@ const AudioRecorder = ({ sentenceNo, handleComplete, onClose }: Props) => {
             controls
             src={audioURL}
             className="mx-auto"
-            onPlay={() => setIsPlaying(true)} // ✅ 재생 시작
-            onPause={() => setIsPlaying(false)} // ✅ 일시정지
-            onEnded={() => setIsPlaying(false)} // ✅ 종료
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            onEnded={() => setIsPlaying(false)}
           />
         </div>
       )}
