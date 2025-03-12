@@ -24,13 +24,23 @@ const PurchasePage = () => {
         <div className="mx-auto max-w-5xl px-4 text-center">
           <h2 className="mb-8 text-3xl font-bold">요금제</h2>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {/* Plan 0: Free */}
+            <div
+              className={`cursor-pointer rounded-lg border p-6 shadow-lg ${selectedPlan === "free" ? "border-blue-600" : "border-gray-300"}`}
+              onClick={() => setSelectedPlan("free")}>
+              <h3 className="text-xl font-bold text-blue-600">Free Plan</h3>
+              <p className="mt-4 text-sm text-gray-600">월 $0 - 제한된 기본 기능</p>
+            </div>
+
             {/* Plan 1: Basic */}
+
             <div
               className={`cursor-pointer rounded-lg border p-6 shadow-lg ${selectedPlan === "basic" ? "border-blue-600" : "border-gray-300"}`}
               onClick={() => setSelectedPlan("basic")}>
               <h3 className="text-xl font-bold text-blue-600">Basic Plan</h3>
               <p className="mt-4 text-sm text-gray-600">월 $10 - 주요 기능 포함</p>
             </div>
+
             {/* Plan 2: Pro */}
             <div
               className={`cursor-pointer rounded-lg border p-6 shadow-lg ${selectedPlan === "pro" ? "border-blue-600" : "border-gray-300"}`}
