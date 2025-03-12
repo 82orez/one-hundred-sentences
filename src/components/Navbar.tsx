@@ -29,13 +29,13 @@ export default function Navbar() {
           <>
             <div className="hidden text-gray-700">{session?.user?.email}</div>
             <Link href="/landing" className={"hover:underline"}>
-              Landing Page
+              Landing
             </Link>
 
             <Link href="/users/profile" className={"hover:underline"}>
               회원 정보
             </Link>
-            <Button variant={"ghost"} onClick={() => signOut({ callbackUrl: "/" })} className="text-md cursor-pointer rounded-md hover:underline">
+            <Button variant={"outline"} onClick={() => signOut({ callbackUrl: "/" })} className="text-md cursor-pointer rounded-md hover:underline">
               로그아웃
             </Button>
           </>

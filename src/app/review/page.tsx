@@ -50,7 +50,7 @@ const ReviewPage = () => {
   }, [selectedDay]);
 
   return (
-    <div className="mx-auto max-w-4xl p-6 text-center">
+    <div className="mx-auto max-w-2xl p-6 text-center">
       <h1 className="text-3xl font-bold">복습하기</h1>
       <p className="mt-2 text-lg text-gray-600">이미 학습한 내용을 복습해보세요.</p>
 
@@ -58,7 +58,7 @@ const ReviewPage = () => {
       {isLoading ? (
         <p className="mt-6 text-gray-500">학습 데이터를 불러오는 중...</p>
       ) : (
-        <div className="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
+        <div className="mt-6 grid grid-cols-3 gap-2 md:grid-cols-5 md:gap-4">
           {[...Array(20)].map((_, index) => {
             const day = index + 1;
             const isCompleted = completedDays?.includes(day); // ✅ 5문장을 완료한 학습일만 활성화
