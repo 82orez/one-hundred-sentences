@@ -22,20 +22,24 @@ const PurchasePage = () => {
       {/* Pricing Section */}
       <section className="py-12">
         <div className="mx-auto max-w-5xl px-4 text-center">
-          <h2 className="mb-8 text-3xl font-bold">요금제</h2>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <h2 className="mb-8 text-3xl font-bold">요금 Plan</h2>
+          {/* Grid 설정: 열 개수를 줄이고 아이템을 넓게 */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Plan 0: Free */}
             <div
-              className={`cursor-pointer rounded-lg border p-6 shadow-lg ${selectedPlan === "free" ? "border-blue-600" : "border-gray-300"}`}
+              className={`w-full cursor-pointer rounded-lg border p-8 shadow-lg md:max-w-lg ${
+                selectedPlan === "free" ? "border-blue-600" : "border-gray-300"
+              }`}
               onClick={() => setSelectedPlan("free")}>
               <h3 className="text-xl font-bold text-blue-600">Free Plan</h3>
               <p className="mt-4 text-sm text-gray-600">월 $0 - 제한된 기본 기능</p>
             </div>
 
             {/* Plan 1: Basic */}
-
             <div
-              className={`cursor-pointer rounded-lg border p-6 shadow-lg ${selectedPlan === "basic" ? "border-blue-600" : "border-gray-300"}`}
+              className={`w-full cursor-pointer rounded-lg border p-8 shadow-lg md:max-w-lg ${
+                selectedPlan === "basic" ? "border-blue-600" : "border-gray-300"
+              }`}
               onClick={() => setSelectedPlan("basic")}>
               <h3 className="text-xl font-bold text-blue-600">Basic Plan</h3>
               <p className="mt-4 text-sm text-gray-600">월 $10 - 주요 기능 포함</p>
@@ -43,13 +47,18 @@ const PurchasePage = () => {
 
             {/* Plan 2: Pro */}
             <div
-              className={`cursor-pointer rounded-lg border p-6 shadow-lg ${selectedPlan === "pro" ? "border-blue-600" : "border-gray-300"}`}
+              className={`w-full cursor-pointer rounded-lg border p-8 shadow-lg md:max-w-lg ${
+                selectedPlan === "pro" ? "border-blue-600" : "border-gray-300"
+              }`}
               onClick={() => setSelectedPlan("pro")}>
               <h3 className="text-xl font-bold text-blue-600">Pro Plan</h3>
               <p className="mt-4 text-sm text-gray-600">월 $30 - 모든 기능 + 추가 옵션!</p>
             </div>
           </div>
-          <button onClick={handlePurchase} className="mt-8 rounded-lg bg-blue-600 px-6 py-3 font-bold text-white shadow-lg hover:bg-blue-700">
+          {/* 구매 버튼 */}
+          <button
+            onClick={handlePurchase}
+            className="mt-12 w-full rounded-lg bg-blue-600 px-6 py-3 text-lg font-bold text-white shadow-lg hover:bg-blue-700 md:w-auto">
             구매하기
           </button>
         </div>
