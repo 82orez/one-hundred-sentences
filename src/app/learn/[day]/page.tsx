@@ -35,6 +35,7 @@ const LearnPage = ({ params }: Props) => {
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
   const [showRecorder, setShowRecorder] = useState<number | null>(null); // ✅ 한 번에 하나의 문장에서만 녹음 UI 표시
   const [playingSentence, setPlayingSentence] = useState<number | null>(null); // 현재 재생 중인 문장 추적
+  const [selectedSentence, setSelectedSentence] = useState<string | null>(null); // ✅ 문장 객체 저장
 
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -121,6 +122,11 @@ const LearnPage = ({ params }: Props) => {
 
   const toggleRecorder = (sentenceNo: number) => {
     setShowRecorder((prev) => (prev === sentenceNo ? null : sentenceNo)); // ✅ 같은 문장을 클릭하면 닫고, 다른 문장을 클릭하면 변경
+  };
+
+  // ✅ 녹음 버튼 클릭 시 모달 열기
+  const openRecorderModal = (sentence: string) => {
+    setSelectedSentence(sentence); // ✅ 문장 정보 저장
   };
 
   // ✅ 오디오 재생 함수
@@ -236,7 +242,10 @@ const LearnPage = ({ params }: Props) => {
                   "pointer-events-none": playingSentence,
                 })}
                 disabled={completedSentences?.includes(sentence.no)}
-                onClick={() => toggleRecorder(sentence.no)}>
+                onClick={() => {
+                  toggleRecorder(sentence.no);
+                  openRecorderModal(sentence.ko);
+                }}>
                 {completedSentences?.includes(sentence.no) ? (
                   <FaCheck size={20} className={"mx-auto"} />
                 ) : showRecorder === sentence.no ? ( // ✅ 현재 녹음 중인 문장만 아이콘 변경
@@ -252,7 +261,7 @@ const LearnPage = ({ params }: Props) => {
           <Modal isOpen={showRecorder !== null} onClose={() => setShowRecorder(null)}>
             {showRecorder !== null && (
               <AudioRecorder
-                sentenceKo={sentence.ko}
+                sentenceKo={selectedSentence}
                 sentenceNo={showRecorder}
                 handleComplete={handleComplete}
                 onClose={() => setShowRecorder(null)}
