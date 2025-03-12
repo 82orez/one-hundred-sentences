@@ -28,6 +28,10 @@ export default function Navbar() {
         {status === "authenticated" ? (
           <>
             <div className="hidden text-gray-700">{session?.user?.email}</div>
+            <Link href="/landing" className={"hover:underline"}>
+              Landing Page
+            </Link>
+
             <Link href="/users/profile" className={"hover:underline"}>
               회원 정보
             </Link>
