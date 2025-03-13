@@ -7,8 +7,10 @@ import plans from "./plans.json"; // JSON 파일 가져오기
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("basic");
 
+  const selectedPlanInfo = plans.find((plan) => plan.id === selectedPlan);
+  console.log(`selectedPlanInfo: `, selectedPlanInfo);
+
   const handlePurchase = () => {
-    const selectedPlanInfo = plans.find((plan) => plan.id === selectedPlan);
     alert(`You selected the ${selectedPlanInfo?.name}! 결제 연동은 추후 구현됩니다.`);
   };
 
@@ -50,7 +52,7 @@ const PurchasePage = () => {
           <button
             onClick={handlePurchase}
             className="mt-6 w-full min-w-52 rounded-lg bg-blue-600 px-6 py-3 text-lg font-bold text-white shadow-lg hover:bg-blue-700 md:mt-12 md:w-auto">
-            구매하기
+            {selectedPlanInfo?.price} 결제 하기
           </button>
         </div>
       </section>
