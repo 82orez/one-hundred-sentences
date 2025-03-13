@@ -24,13 +24,14 @@ export default function Navbar() {
         </Link>
       </h1>
 
+      <Link href="/landing" className={"hover:underline"}>
+        Landing
+      </Link>
+
       <div className="flex items-center gap-3">
         {status === "authenticated" ? (
           <>
             <div className="hidden text-gray-700">{session?.user?.email}</div>
-            <Link href="/landing" className={"hover:underline"}>
-              Landing
-            </Link>
 
             <Link href="/users/profile" className={"hover:underline"}>
               회원 정보
