@@ -30,7 +30,13 @@ export function PurchaseButton({ id, price }: Props) {
         redirectUrl: `${window.location.origin}/api/payment/complete`,
       });
 
-      alert("구매가 완료되었습니다!");
+      console.log("Purchase-response: ", response);
+
+      if (response?.code !== null) {
+        alert(response.message);
+      } else {
+        alert("구매가 완료되었습니다!");
+      }
     } catch (error) {
       console.error("구매 중 오류 발생:", error);
       alert("구매 처리 중 문제가 발생했습니다.");

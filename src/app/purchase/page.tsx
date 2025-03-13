@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { IoMdCheckboxOutline } from "react-icons/io";
-import plans from "@/lib/price_plan.json";
+import { pricePlans } from "@/lib/pricePlans";
 import { PurchaseButton } from "@/components/PurchaseButton"; // JSON 파일 가져오기
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("basic");
 
-  const selectedPlanInfo = plans.find((plan) => plan.id === selectedPlan);
+  const selectedPlanInfo = pricePlans.find((plan) => plan.id === selectedPlan);
   console.log(`selectedPlanInfo: `, selectedPlanInfo);
 
   const handlePurchase = () => {
@@ -30,7 +30,7 @@ const PurchasePage = () => {
           <h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">요금 Plan</h2>
           {/* Grid for Plans */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {plans.map((plan) => (
+            {pricePlans.map((plan) => (
               <div
                 key={plan.id}
                 className={`relative w-full cursor-pointer rounded-lg border p-8 text-center shadow-lg transition-transform duration-300 ease-in-out ${
