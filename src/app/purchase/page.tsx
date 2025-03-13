@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { IoMdCheckboxOutline } from "react-icons/io";
-import plans from "./plans.json"; // JSON 파일 가져오기
+import plans from "@/lib/price_plan.json"; // JSON 파일 가져오기
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("basic");
