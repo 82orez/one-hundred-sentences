@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { IoMdCheckboxOutline } from "react-icons/io";
-import plans from "@/lib/price_plan.json"; // JSON 파일 가져오기
+import plans from "@/lib/price_plan.json";
+import { PurchaseButton } from "@/components/PurchaseButton"; // JSON 파일 가져오기
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("basic");
@@ -26,7 +27,7 @@ const PurchasePage = () => {
       {/* Pricing Section */}
       <section className="py-6 md:py-12">
         <div className="mx-auto max-w-5xl px-4 text-center">
-          <h2 className="mb-4 text-3xl font-bold md:mb-8">요금 Plan</h2>
+          <h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">요금 Plan</h2>
           {/* Grid for Plans */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {plans.map((plan) => (
@@ -49,11 +50,13 @@ const PurchasePage = () => {
           </div>
 
           {/* Purchase Button */}
-          <button
-            onClick={handlePurchase}
-            className="mt-6 w-full min-w-52 rounded-lg bg-blue-600 px-6 py-3 text-lg font-bold text-white shadow-lg hover:bg-blue-700 md:mt-12 md:w-auto">
-            {selectedPlanInfo?.price} 결제 하기
-          </button>
+          {/*<button*/}
+          {/*  onClick={handlePurchase}*/}
+          {/*  className="mt-6 w-full min-w-52 rounded-lg bg-blue-600 px-6 py-3 text-lg font-bold text-white shadow-lg hover:bg-blue-700 md:mt-12 md:w-auto">*/}
+          {/*  {selectedPlanInfo?.price} 결제 하기*/}
+          {/*</button>*/}
+
+          <PurchaseButton id={selectedPlanInfo?.id} price={selectedPlanInfo?.price} />
         </div>
       </section>
     </div>
