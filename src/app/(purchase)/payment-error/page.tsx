@@ -40,7 +40,7 @@ export default function PaymentErrorPage() {
           {status && <p className="mb-6 text-sm text-gray-500">상태: {status}</p>}
 
           <div className="flex flex-col gap-3">
-            <Link href="/" passHref>
+            <Link href="/public" passHref>
               <Button className="w-full p-6 text-lg font-semibold">홈으로 돌아가기</Button>
             </Link>
             <Link href="/purchase" passHref>

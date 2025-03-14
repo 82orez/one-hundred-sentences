@@ -30,7 +30,7 @@ export default function PaymentPartialErrorPage() {
             <Link href="/learn" passHref>
               <Button className="w-full p-6 text-lg">학습 페이지로 이동하기</Button>
             </Link>
-            <Link href="/" passHref>
+            <Link href="/public" passHref>
               <Button variant="outline" className="w-full p-6 text-lg">
                 홈으로 돌아가기
               </Button>
