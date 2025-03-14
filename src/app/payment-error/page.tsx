@@ -1,10 +1,10 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { BiSolidError } from "react-icons/bi";
 
 const errorMessages = {
   "no-payment-id": "결제 정보를 찾을 수 없습니다.",
@@ -32,17 +32,19 @@ export default function PaymentErrorPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
       <Card className="w-full max-w-md">
         <CardContent>
-          <div className="mb-4 text-center text-5xl text-red-600">❌</div>
-          <h1 className="mb-4 text-center text-2xl font-bold">결제 오류</h1>
-          <p className="mb-6 text-center">{errorMessage}</p>
+          <div className="mb-4 flex items-center justify-center gap-2 text-red-600">
+            <BiSolidError size={30} />
+            <h1 className="text-center text-2xl font-bold">Error</h1>
+          </div>
+          <p className="mb-6 animate-pulse text-center text-lg">{errorMessage}</p>
           {status && <p className="mb-6 text-sm text-gray-500">상태: {status}</p>}
 
           <div className="flex flex-col gap-3">
             <Link href="/" passHref>
-              <Button className="w-full p-6">홈으로 돌아가기</Button>
+              <Button className="w-full p-6 text-lg font-semibold">홈으로 돌아가기</Button>
             </Link>
             <Link href="/purchase" passHref>
-              <Button variant="outline" className="w-full p-6">
+              <Button variant="outline" className="w-full p-6 text-lg font-semibold">
                 다시 결제하기
               </Button>
             </Link>
