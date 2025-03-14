@@ -24,8 +24,8 @@ export default function Navbar() {
         </Link>
       </h1>
 
-      <Link href="/landing" className={"hover:underline"}>
-        Landing
+      <Link href="/purchase" className={"hover:underline"}>
+        Purchase
       </Link>
 
       <div className="flex items-center gap-3">
