@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const errorMessages = {
   "no-payment-id": "결제 정보를 찾을 수 없습니다.",
@@ -14,9 +15,16 @@ const errorMessages = {
 };
 
 export default function PaymentErrorPage() {
-  const searchParams = useSearchParams();
-  const reason = searchParams.get("reason") || "server-error";
-  const status = searchParams.get("status");
+  const [reason, setReason] = useState("");
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      setReason(searchParams.get("reason") || "server-error");
+      setStatus(searchParams.get("status"));
+    }
+  }, []);
 
   const errorMessage = errorMessages[reason] || "결제 처리 중 오류가 발생했습니다.";
 
