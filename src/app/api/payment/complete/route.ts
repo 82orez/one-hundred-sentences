@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import * as PortOne from "@portone/browser-sdk/v2";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -36,19 +35,29 @@ export async function GET(req: Request) {
         return NextResponse.redirect(new URL("/payment-error?reason=unauthorized", req.url));
       }
 
-      //  ! error 처리 과정 필요
+      //  * error 처리 과정 필요
       // 결제 정보를 데이터베이스에 저장
-      const purchase = await prisma.purchase.create({
-        data: {
-          userId: session.user.id,
-          paymentId: paymentId,
-          orderName: payment.orderName,
-          amount: payment.totalAmount ? parseInt(payment.totalAmount) : 0,
-        },
-      });
+      try {
+        const purchase = await prisma.purchase.create({
+          data: {
+            userId: session.user.id,
+            paymentId: paymentId,
+            orderName: payment.orderName,
+            amount: payment.totalAmount ? parseInt(payment.totalAmount) : 0,
+          },
+        });
 
-      // 결제 성공 시 /learn 페이지로 리디렉션
-      return NextResponse.redirect(new URL("/learn", req.url));
+        // 결제 성공 및 DB 저장 성공 시 /learn 페이지로 리디렉션
+        return NextResponse.redirect(new URL("/learn", req.url));
+      } catch (dbError) {
+        // DB 저장 실패 시 로그 기록
+        console.error("결제 정보 DB 저장 중 오류:", dbError);
+
+        // ! 이 부분에 관리자에게 알림을 보내는 로직을 추가할 수 있습니다 (예: 로그 시스템, 이메일 알림 등)
+
+        // 사용자에게는 특별한 에러 페이지로 안내
+        return NextResponse.redirect(new URL("/payment-partial-error?paymentId=" + paymentId, req.url));
+      }
     } else {
       // 결제가 완료되지 않은 경우 에러 페이지로 리디렉션
       return NextResponse.redirect(new URL(`/payment-error?reason=payment-failed&status=${payment.status}`, req.url));
