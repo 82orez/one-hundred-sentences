@@ -10,7 +10,8 @@ export async function GET(req: Request) {
     const paymentId = url.searchParams.get("paymentId");
 
     if (!paymentId) {
-      return NextResponse.json({ error: "결제 ID가 필요합니다." }, { status: 400 });
+      // 결제 ID가 없는 경우 에러 페이지로 리디렉션
+      return NextResponse.redirect(new URL("/payment-error?reason=no-payment-id", req.url));
     }
 
     // 1. 포트원 결제내역 단건조회 API 호출
@@ -18,7 +19,10 @@ export async function GET(req: Request) {
       headers: { Authorization: `PortOne ${process.env.PORTONE_API_SECRET}` },
     });
 
-    if (!paymentResponse.ok) throw new Error(`paymentResponse: ${await paymentResponse.json()}`);
+    if (!paymentResponse.ok) {
+      // API 응답 오류시 에러 페이지로 리디렉션
+      return NextResponse.redirect(new URL("/payment-error?reason=api-error", req.url));
+    }
 
     const payment = await paymentResponse.json();
 
@@ -28,7 +32,8 @@ export async function GET(req: Request) {
       const session = await getServerSession(authOptions);
 
       if (!session?.user?.id) {
-        return NextResponse.json({ error: "인증되지 않은 사용자입니다." }, { status: 401 });
+        // 인증되지 않은 사용자는 에러 페이지로 리디렉션
+        return NextResponse.redirect(new URL("/payment-error?reason=unauthorized", req.url));
       }
 
       // 결제 정보를 데이터베이스에 저장
@@ -41,23 +46,15 @@ export async function GET(req: Request) {
         },
       });
 
-      return NextResponse.json({
-        success: true,
-        message: "결제가 성공적으로 완료되었습니다.",
-        data: purchase,
-      });
+      // 결제 성공 시 /learn 페이지로 리디렉션
+      return NextResponse.redirect(new URL("/learn", req.url));
     } else {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "결제가 완료되지 않았습니다.",
-          status: payment.status,
-        },
-        { status: 400 },
-      );
+      // 결제가 완료되지 않은 경우 에러 페이지로 리디렉션
+      return NextResponse.redirect(new URL(`/payment-error?reason=payment-failed&status=${payment.status}`, req.url));
     }
   } catch (error) {
     console.error("결제 처리 중 오류 발생:", error);
-    return NextResponse.json({ error: "결제 처리 중 오류가 발생했습니다." }, { status: 500 });
+    // 오류 발생 시 에러 페이지로 리디렉션
+    return NextResponse.redirect(new URL("/payment-error?reason=server-error", req.url));
   }
 }
