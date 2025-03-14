@@ -32,10 +32,11 @@ export function PurchaseButton({ id, price }: Props) {
 
       console.log("Purchase-response: ", response);
 
-      if (response?.code !== null) {
+      if (response?.code !== undefined) {
         alert(response.message);
       } else {
-        alert("구매가 완료되었습니다!");
+        // 리디렉션 URL 로 바로 이동
+        window.location.href = `${window.location.origin}/api/payment/complete?paymentId=${response.paymentId}`;
       }
     } catch (error) {
       console.error("구매 중 오류 발생:", error);
