@@ -37,7 +37,7 @@ export async function GET(req: Request) {
           userId: session.user.id,
           paymentId: paymentId,
           orderName: payment.orderName,
-          amount: payment.totalAmount,
+          amount: payment.totalAmount ? parseInt(payment.totalAmount) : 0,
         },
       });
 

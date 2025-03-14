@@ -8,13 +8,13 @@ export const pricePlans = [
   {
     id: "basic",
     name: "Basic Plan",
-    price: 55000,
+    price: 1100,
     description: "월 $10 - 주요 기능 포함",
   },
   {
     id: "pro",
     name: "Pro Plan",
-    price: 88000,
+    price: 2200,
     description: "월 $30 - 모든 기능 + 추가 옵션!",
   },
 ];
