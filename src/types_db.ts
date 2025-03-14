@@ -188,6 +188,90 @@ export type Database = {
         }
         Relationships: []
       }
+      Plan: {
+        Row: {
+          createdAt: string
+          description: string
+          features: string[] | null
+          id: string
+          name: string
+          price: number
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          description: string
+          features?: string[] | null
+          id: string
+          name: string
+          price: number
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          description?: string
+          features?: string[] | null
+          id?: string
+          name?: string
+          price?: number
+          updatedAt?: string
+        }
+        Relationships: []
+      }
+      Purchase: {
+        Row: {
+          amount: number
+          createdAt: string
+          expiresAt: string | null
+          id: string
+          orderName: string
+          paymentId: string
+          payMethod: string
+          planId: string
+          status: Database["public"]["Enums"]["PurchaseStatus"]
+          userId: string
+        }
+        Insert: {
+          amount: number
+          createdAt?: string
+          expiresAt?: string | null
+          id: string
+          orderName: string
+          paymentId: string
+          payMethod: string
+          planId: string
+          status?: Database["public"]["Enums"]["PurchaseStatus"]
+          userId: string
+        }
+        Update: {
+          amount?: number
+          createdAt?: string
+          expiresAt?: string | null
+          id?: string
+          orderName?: string
+          paymentId?: string
+          payMethod?: string
+          planId?: string
+          status?: Database["public"]["Enums"]["PurchaseStatus"]
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Purchase_planId_fkey"
+            columns: ["planId"]
+            isOneToOne: false
+            referencedRelation: "Plan"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Purchase_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       QuizAttempt: {
         Row: {
           attemptedAt: string
@@ -417,7 +501,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      PurchaseStatus: "PENDING" | "PAID" | "CANCELLED" | "FAILED"
     }
     CompositeTypes: {
       [_ in never]: never
