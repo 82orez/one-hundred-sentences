@@ -20,11 +20,11 @@ export const NextLayout = ({ children }: Props) => {
   const { status } = useSession();
 
   // ✅ 로그인된 사용자는 learn 페이지로 이동
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.replace("/learn");
-    }
-  }, [status, router]);
+  // useEffect(() => {
+  //   if (status === "authenticated") {
+  //     router.replace("/learn");
+  //   }
+  // }, [status, router]);
 
   return (
     <QueryClientProvider client={queryClient}>
