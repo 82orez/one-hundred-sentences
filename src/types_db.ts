@@ -188,36 +188,6 @@ export type Database = {
         }
         Relationships: []
       }
-      Plan: {
-        Row: {
-          createdAt: string
-          description: string
-          features: string[] | null
-          id: string
-          name: string
-          price: number
-          updatedAt: string
-        }
-        Insert: {
-          createdAt?: string
-          description: string
-          features?: string[] | null
-          id: string
-          name: string
-          price: number
-          updatedAt: string
-        }
-        Update: {
-          createdAt?: string
-          description?: string
-          features?: string[] | null
-          id?: string
-          name?: string
-          price?: number
-          updatedAt?: string
-        }
-        Relationships: []
-      }
       Purchase: {
         Row: {
           amount: number
@@ -226,9 +196,6 @@ export type Database = {
           id: string
           orderName: string
           paymentId: string
-          payMethod: string
-          planId: string
-          status: Database["public"]["Enums"]["PurchaseStatus"]
           userId: string
         }
         Insert: {
@@ -238,9 +205,6 @@ export type Database = {
           id: string
           orderName: string
           paymentId: string
-          payMethod: string
-          planId: string
-          status?: Database["public"]["Enums"]["PurchaseStatus"]
           userId: string
         }
         Update: {
@@ -250,19 +214,9 @@ export type Database = {
           id?: string
           orderName?: string
           paymentId?: string
-          payMethod?: string
-          planId?: string
-          status?: Database["public"]["Enums"]["PurchaseStatus"]
           userId?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "Purchase_planId_fkey"
-            columns: ["planId"]
-            isOneToOne: false
-            referencedRelation: "Plan"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "Purchase_userId_fkey"
             columns: ["userId"]
@@ -501,7 +455,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      PurchaseStatus: "PENDING" | "PAID" | "CANCELLED" | "FAILED"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never

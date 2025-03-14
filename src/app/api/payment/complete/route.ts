@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import * as PortOne from "@portone/browser-sdk/v2";
+import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(req: Request) {
   try {
@@ -21,8 +24,37 @@ export async function GET(req: Request) {
 
     // * 결제 상태에 따라 주문 상태 업데이트하기
     if (payment.status === "PAID") {
-      // 주문 상태를 "PAYMENT_COMPLETED"로 업데이트합니다.
-      // ...
+      // 사용자 정보 가져오기
+      const session = await getServerSession(authOptions);
+
+      if (!session?.user?.id) {
+        return NextResponse.json({ error: "인증되지 않은 사용자입니다." }, { status: 401 });
+      }
+
+      // 결제 정보를 데이터베이스에 저장
+      const purchase = await prisma.purchase.create({
+        data: {
+          userId: session.user.id,
+          paymentId: paymentId,
+          orderName: payment.orderName,
+          amount: payment.totalAmount,
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: "결제가 성공적으로 완료되었습니다.",
+        data: purchase,
+      });
+    } else {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "결제가 완료되지 않았습니다.",
+          status: payment.status,
+        },
+        { status: 400 },
+      );
     }
   } catch (error) {
     console.error("결제 처리 중 오류 발생:", error);

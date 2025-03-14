@@ -163,45 +163,18 @@ model Recordings {
   @@unique([userId, sentenceNo]) // 한 문장은 한 번만 등록 가능
 }
 
-/// 요금제 플랜 모델
-model Plan {
-  id          String   @id @default(cuid())
-  name        String // 요금제 이름 (basic, standard, premium)
-  description String // 요금제 설명
-  price       Int // 가격
-  features    String[] // 제공 기능 목록
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // 관계 설정
-  purchases Purchase[]
-}
-
 /// 구매 내역 모델
 model Purchase {
-  id        String         @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String // 구매자 ID
-  planId    String // 구매한 플랜 ID
-  paymentId String         @unique // 포트원 결제 ID
-  orderName String // 주문명
+  paymentId String    @unique // 포트원 결제 ID
+  orderName String
   amount    Int // 결제 금액
-  status    PurchaseStatus @default(PENDING) // 결제 상태
-  payMethod String // 결제 방법 (CARD 등)
-  createdAt DateTime       @default(now()) // 구매 시간
+  createdAt DateTime  @default(now()) // 구매 시간
   expiresAt DateTime? // 구독 만료일 (null이면 영구)
 
   // 관계 설정
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan Plan @relation(fields: [planId], references: [id])
 
   @@index([userId])
-  @@index([planId])
-}
-
-/// 결제 상태 열거형
-enum PurchaseStatus {
-  PENDING // 결제 대기
-  PAID // 결제 완료
-  CANCELLED // 취소됨
-  FAILED // 결제 실패
 }
