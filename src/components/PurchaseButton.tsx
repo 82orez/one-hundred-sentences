@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import * as PortOne from "@portone/browser-sdk/v2";
 
@@ -11,11 +12,19 @@ interface Props {
 
 export function PurchaseButton({ id, price }: Props) {
   const [isPurchasing, setIsPurchasing] = useState(false);
+  const router = useRouter();
 
   const handlePurchase = async () => {
     try {
       setIsPurchasing(true);
 
+      // free plan 인 경우 /learn 페이지로 라우팅
+      if (id === "free") {
+        router.push("/learn");
+        return;
+      }
+
+      // 무료 플랜이 아닌 경우에만 결제 진행
       // 결제 요청
       const response = await PortOne.requestPayment({
         // Store ID 설정
@@ -54,7 +63,7 @@ export function PurchaseButton({ id, price }: Props) {
           <span className="text-primary text-lg font-bold">{price.toLocaleString()}원</span>
         </div>
         <Button variant={"default"} onClick={handlePurchase} disabled={isPurchasing} className="w-full py-6 text-lg font-bold">
-          {isPurchasing ? "처리중..." : "결제하기"}
+          {isPurchasing ? "처리중..." : id === "free" ? "시작하기" : "결제하기"}
         </Button>
       </div>
     </div>
