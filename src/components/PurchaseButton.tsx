@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import * as PortOne from "@portone/browser-sdk/v2";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface Props {
   id: string;
@@ -62,9 +64,9 @@ export function PurchaseButton({ id, price }: Props) {
           <span className="font-bold">사용권 구매하기</span>
           <span className="text-primary text-lg font-bold">{price.toLocaleString()}원</span>
         </div>
-        <Button variant={"default"} onClick={handlePurchase} disabled={isPurchasing} className="w-full py-6 text-lg font-bold">
-          {isPurchasing ? "처리중..." : id === "free" ? "시작하기" : "결제하기"}
-        </Button>
+        <button onClick={handlePurchase} disabled={isPurchasing} className="btn btn-primary w-full py-6 text-lg font-bold">
+          {isPurchasing ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : id === "free" ? "시작하기" : "결제하기"}
+        </button>
       </div>
     </div>
   );
