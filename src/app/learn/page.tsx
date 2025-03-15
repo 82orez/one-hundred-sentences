@@ -106,7 +106,7 @@ const HomePage = () => {
         {/*<h2 className="text-xl font-semibold">오늘의 학습</h2>*/}
         <p className="text-2xl font-bold text-gray-600">" 오늘은 학습 {nextDay} 일차 "</p>
         <button
-          className="mt-4 cursor-pointer rounded-lg border-white bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
+          className="mt-4 cursor-pointer rounded-lg border-white bg-blue-700 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
           onClick={() => router.push(`/learn/${nextDay}`)} // ✅ nextDay 로 이동
         >
           오늘 학습 시작하기
@@ -118,7 +118,7 @@ const HomePage = () => {
         <p className="text-gray-600">복습하거나 퀴즈를 풀어보세요.</p>
         <div className="mt-4 flex justify-center gap-4">
           <button
-            className="cursor-pointer rounded-lg bg-green-500 px-4 py-2 text-white shadow transition hover:bg-green-600"
+            className="cursor-pointer rounded-lg bg-green-700 px-4 py-2 text-white shadow transition hover:bg-green-600"
             onClick={() => router.push("/review")}>
             복습하기
           </button>

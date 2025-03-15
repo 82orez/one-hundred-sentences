@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import * as PortOne from "@portone/browser-sdk/v2";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface Props {

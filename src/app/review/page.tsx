@@ -58,7 +58,7 @@ const ReviewPage = () => {
       {isLoading ? (
         <p className="mt-6 text-gray-500">학습 데이터를 불러오는 중...</p>
       ) : (
-        <div className="mt-6 grid grid-cols-3 gap-2 md:grid-cols-5 md:gap-4">
+        <div className="mt-6 grid grid-cols-3 gap-4 md:grid-cols-5 md:gap-5">
           {[...Array(20)].map((_, index) => {
             const day = index + 1;
             const isCompleted = completedDays?.includes(day); // ✅ 5문장을 완료한 학습일만 활성화
@@ -68,7 +68,7 @@ const ReviewPage = () => {
                 key={day}
                 className={clsx(
                   "min-w-[80px] rounded-lg p-3 font-bold transition md:min-w-[100px]",
-                  isCompleted ? "bg-blue-500 text-white hover:bg-blue-600" : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
+                  isCompleted ? "cursor-pointer bg-blue-600 text-white hover:bg-blue-500" : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
                 )}
                 disabled={!isCompleted}
                 onClick={() => {

@@ -155,7 +155,7 @@ const EditProfilePage = () => {
               {/* 저장 버튼 */}
               <Button
                 type="submit"
-                className="h-12 w-full rounded-xl bg-blue-500 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
+                className="h-12 w-full rounded-xl bg-blue-700 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
                 disabled={updateProfileMutation.isPending}>
                 {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
               </Button>
