@@ -5,10 +5,15 @@ import { useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function PaymentPartialErrorPage() {
-  const searchParams = useSearchParams();
-  const paymentId = searchParams.get("paymentId");
+  const [paymentId, setPaymentId] = useState("");
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    setPaymentId(searchParams.get("paymentId"));
+  }, []);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
