@@ -11,8 +11,10 @@ export default function PaymentPartialErrorPage() {
   const [paymentId, setPaymentId] = useState("");
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    setPaymentId(searchParams.get("paymentId"));
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      setPaymentId(searchParams.get("paymentId"));
+    }
   }, []);
 
   return (
