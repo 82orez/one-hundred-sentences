@@ -48,8 +48,8 @@ export default function SignIn() {
 
   const handleClickKakao = async () => {
     setIsKakaoLoading(true);
-    // * 로그인에 성공하면 '/learn' 로 이동.
-    await signIn("kakao", { callbackUrl: "/learn" });
+    // * 카카오 로그인에 성공하면 '/' 로 이동.
+    await signIn("kakao", { callbackUrl: "/" });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,8 +75,8 @@ export default function SignIn() {
       } else {
         // 로그인 성공 후 로딩 화면을 유지
         setIsLoading(true);
-        // * 로그인에 성공하면 '/learn' 로 이동.
-        router.push("/learn");
+        // * 이메일 로그인에 성공하면 '/' 로 이동.
+        router.push("/");
       }
     } catch (error) {
       setError("An unexpected error occurred.");

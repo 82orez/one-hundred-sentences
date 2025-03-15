@@ -1,12 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { IoMdCheckboxOutline } from "react-icons/io";
 import { pricePlans } from "@/lib/pricePlans";
-import { PurchaseButton } from "@/components/PurchaseButton"; // JSON 파일 가져오기
+import { PurchaseButton } from "@/components/PurchaseButton";
+import { useSession } from "next-auth/react";
 
 const PurchasePage = () => {
-  const [selectedPlan, setSelectedPlan] = useState("basic");
+  const [selectedPlan, setSelectedPlan] = useState("free");
+  const router = useRouter();
+  const { status } = useSession();
+
+  useEffect(() => {
+    // 로그인 상태가 'unauthenticated' 인 경우 로그인 페이지로 리다이렉트
+    if (status === "unauthenticated") {
+      router.push("/users/sign-in");
+    }
+  }, [status, router]);
+
+  // 로딩 상태 처리
+  if (status === "loading") {
+    return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
+  }
 
   const selectedPlanInfo = pricePlans.find((plan) => plan.id === selectedPlan);
   console.log(`selectedPlanInfo: `, selectedPlanInfo);
@@ -14,6 +30,9 @@ const PurchasePage = () => {
   const handlePurchase = () => {
     alert(`You selected the ${selectedPlanInfo?.name}! 결제 연동은 추후 구현됩니다.`);
   };
+
+  // 인증되지 않은 상태라면 페이지 내용을 렌더링하지 않음
+  if (status === "unauthenticated") return null;
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
