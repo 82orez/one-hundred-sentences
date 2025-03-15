@@ -16,32 +16,18 @@ const ProfilePage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // ✅ 로그인되지 않은 경우 로그인 페이지로 리디렉트
-  if (status === "unauthenticated") {
-    router.replace("/users/sign-in");
-    return null;
-  }
-
-  if (!session || !session.user) {
-    return (
-      <div className="flex h-screen flex-col items-center justify-center text-gray-600">
-        <p className="text-lg">세션 정보가 없습니다.</p>
-      </div>
-    );
-  }
-
-  // ✅ 사용자 정보 불러오기
+  // user 정보 불러오기
   const {
     data: userInfo,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["userProfile", session.user.id],
+    queryKey: ["userProfile", session?.user?.id],
     queryFn: async () => {
       const res = await axios.get("/api/user/profile");
       return res.data;
     },
-    enabled: !!session.user.id,
+    enabled: !!session?.user?.id, // 여기서 조건부 실행 제어
   });
 
   if (isLoading) {
@@ -71,7 +57,7 @@ const ProfilePage = () => {
         <CardHeader className="flex flex-col items-center">
           {/* ✅ 프로필 이미지 */}
           <Avatar className="h-24 w-24 shadow-md ring-2 ring-blue-300 md:h-32 md:w-32">
-            <AvatarImage src={session.user.image || "/default-avatar.png"} alt="Profile Image" />
+            <AvatarImage src={session?.user?.image || "/default-avatar.png"} alt="Profile Image" />
             <AvatarFallback>{userInfo?.realName?.charAt(0) || "U"}</AvatarFallback>
           </Avatar>
           <CardTitle className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</CardTitle>
@@ -84,7 +70,7 @@ const ProfilePage = () => {
           </div>
           <div className="flex items-center gap-4 px-2">
             <Mail size={22} className="text-gray-500" />
-            <span className="text-lg">{session.user.email || "등록되지 않음"}</span>
+            <span className="text-lg">{session?.user?.email || "등록되지 않음"}</span>
           </div>
           <div className="flex items-center gap-4 px-2">
             <MdOutlinePhoneAndroid size={22} className="text-gray-500" />
