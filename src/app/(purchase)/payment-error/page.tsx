@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BiSolidError } from "react-icons/bi";
@@ -41,13 +40,11 @@ export default function PaymentErrorPage() {
           {status && <p className="mb-6 text-sm text-gray-500">상태: {status}</p>}
 
           <div className="flex flex-col gap-3">
-            <Link href="/public" passHref>
-              <Button className="w-full p-6 text-lg font-semibold">홈으로 돌아가기</Button>
+            <Link href="/" passHref>
+              <button className="w-full rounded-md border bg-blue-700 p-2 text-lg font-semibold text-white hover:bg-blue-600">홈으로 돌아가기</button>
             </Link>
             <Link href="/purchase" passHref>
-              <Button variant="outline" className="w-full p-6 text-lg font-semibold">
-                다시 결제하기
-              </Button>
+              <button className="w-full rounded-md border p-2 text-lg font-semibold hover:bg-gray-200">다시 결제하기</button>
             </Link>
           </div>
         </div>
