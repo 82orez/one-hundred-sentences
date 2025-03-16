@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -30,8 +29,10 @@ export default function PaymentErrorPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardContent>
+      {/* Card 컴포넌트를 div 로 변경 */}
+      <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 shadow-md">
+        {/* CardContent 대신 일반 div 사용 */}
+        <div className="p-4">
           <div className="mb-4 flex items-center justify-center gap-2 text-red-600">
             <BiSolidError size={30} />
             <h1 className="text-center text-2xl font-bold">Error</h1>
@@ -49,8 +50,8 @@ export default function PaymentErrorPage() {
               </Button>
             </Link>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
