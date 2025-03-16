@@ -3,8 +3,6 @@
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { IoHomeOutline } from "react-icons/io5";
 import clsx from "clsx";
 
 export default function Navbar() {
@@ -36,9 +34,9 @@ export default function Navbar() {
             <Link href="/users/profile" className={"hover:underline"}>
               회원 정보
             </Link>
-            <Button variant={"outline"} onClick={() => signOut({ callbackUrl: "/" })} className="text-md cursor-pointer rounded-md hover:underline">
+            <button onClick={() => signOut({ callbackUrl: "/" })} className="cursor-pointer rounded-md border p-2 hover:bg-gray-300">
               로그아웃
-            </Button>
+            </button>
           </>
         ) : (
           <>
