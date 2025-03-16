@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -34,12 +33,12 @@ export default function PaymentPartialErrorPage() {
 
           <div className="flex flex-col gap-3">
             <Link href="/learn" passHref>
-              <Button className="w-full p-6 text-lg">학습 페이지로 이동하기</Button>
+              <button className="w-full rounded-md border bg-blue-700 p-2 text-lg font-semibold text-white hover:bg-blue-600">
+                학습 페이지로 이동하기
+              </button>
             </Link>
-            <Link href="/public" passHref>
-              <Button variant="outline" className="w-full p-6 text-lg">
-                홈으로 돌아가기
-              </Button>
+            <Link href="/" passHref>
+              <button className="w-full rounded-md border p-2 text-lg font-semibold hover:bg-gray-200">홈으로 돌아가기</button>
             </Link>
           </div>
         </div>
