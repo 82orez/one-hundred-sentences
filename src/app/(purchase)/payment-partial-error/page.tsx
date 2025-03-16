@@ -15,9 +15,7 @@ export default function PaymentPartialErrorPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      {/* Card 컴포넌트를 div 로 변경 */}
       <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-4 shadow-md md:p-6">
-        {/* CardContent 대신 일반 div 사용 */}
         <div className="p-4">
           <div className="mb-4 text-center text-5xl text-yellow-500">⚠️</div>
           <h1 className="mb-4 text-center text-2xl font-bold">결제 처리 중 문제가 발생했습니다.</h1>
@@ -32,13 +30,8 @@ export default function PaymentPartialErrorPage() {
           )}
 
           <div className="flex flex-col gap-3">
-            <Link href="/learn" passHref>
-              <button className="w-full rounded-md border bg-blue-700 p-2 text-lg font-semibold text-white hover:bg-blue-600">
-                학습 페이지로 이동하기
-              </button>
-            </Link>
             <Link href="/" passHref>
-              <button className="w-full rounded-md border p-2 text-lg font-semibold hover:bg-gray-200">홈으로 돌아가기</button>
+              <button className="w-full rounded-md border bg-blue-700 p-2 text-lg font-semibold text-white hover:bg-blue-600">홈으로 돌아가기</button>
             </Link>
           </div>
         </div>
