@@ -22,10 +22,6 @@ export default function Navbar() {
         </Link>
       </h1>
 
-      <Link href="/purchase" className={"hover:underline"}>
-        Purchase
-      </Link>
-
       <div className="flex items-center gap-3">
         {status === "authenticated" ? (
           <>
