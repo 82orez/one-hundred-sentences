@@ -5,12 +5,11 @@ import { useSession } from "next-auth/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner"; // ✅ Sonner 라이브러리 사용
-import { Phone, User } from "lucide-react";
+import { User } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 
 const EditProfilePage = () => {
@@ -104,14 +103,13 @@ const EditProfilePage = () => {
   return (
     <div className="flex min-h-screen justify-center bg-gradient-to-br from-blue-100 to-blue-300 p-4 md:p-6">
       <div className={"mt-4"}>
-        <Card className="w-full max-w-lg rounded-2xl border border-gray-300/50 bg-white/90 shadow-xl backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="text-center text-3xl font-semibold text-gray-800">프로필 수정</CardTitle>
-            <p className={"mt-4 text-center text-lg md:text-xl"}>결제 정보 확인을 위해 반드시 정확한 이름과 휴대폰 번호를 입력해 주세요.</p>
-          </CardHeader>
+        {/* daisyUI 카드로 교체 */}
+        <div className="card w-full max-w-md rounded-2xl border border-gray-300/50 bg-white/90 shadow-xl backdrop-blur-md">
+          <div className="card-body px-4 py-6 md:p-8">
+            <h2 className="card-title justify-center text-center text-3xl font-semibold text-gray-800">프로필 수정</h2>
+            <p className={"mt-2 text-center text-lg md:text-xl"}>결제 정보 확인을 위해 반드시 정확한 이름과 휴대폰 번호를 입력해 주세요.</p>
 
-          <CardContent>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-xl">
+            <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-6 text-xl">
               {/* 실제 이름 입력 */}
               <div>
                 <Label htmlFor="realName" className="text-lg font-semibold text-gray-700">
@@ -125,12 +123,11 @@ const EditProfilePage = () => {
                     value={realName}
                     onChange={(e) => setRealName(e.target.value)}
                     className="h-12 w-full rounded-xl border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
-                    placeholder="홍길동"
+                    placeholder="이름을 입력해 주세요."
                   />
                 </div>
               </div>
 
-              {/* 전화번호 입력 */}
               <div>
                 <Label htmlFor="phone" className="text-lg font-semibold text-gray-700">
                   휴대폰 번호
@@ -160,8 +157,8 @@ const EditProfilePage = () => {
                 {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
               </Button>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
