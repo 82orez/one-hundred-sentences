@@ -5,11 +5,9 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Mail, Phone, User, Edit, Home } from "lucide-react";
+import { Mail, User, Edit, Home } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 
 const ProfilePage = () => {
@@ -52,53 +50,50 @@ const ProfilePage = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-blue-50 to-blue-200 p-4 md:p-6">
-      <Card className="mt-12 w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 shadow-xl backdrop-blur-lg">
-        <CardTitle className="mx-auto mt-4 text-3xl font-bold text-gray-800">My Profile</CardTitle>
-        <CardHeader className="flex flex-col items-center">
-          {/* ✅ 프로필 이미지 */}
-          <Avatar className="h-24 w-24 shadow-md ring-2 ring-blue-300 md:h-32 md:w-32">
-            <AvatarImage src={session?.user?.image || "/default-avatar.png"} alt="Profile Image" />
-            <AvatarFallback>{userInfo?.realName?.charAt(0) || "U"}</AvatarFallback>
-          </Avatar>
-          <CardTitle className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</CardTitle>
-        </CardHeader>
-
-        <CardContent className="mt-2 space-y-6 text-gray-700">
-          <div className="flex items-center gap-4 px-2">
-            <User size={22} className="text-gray-500" />
-            <span className="text-lg">{userInfo?.realName || "등록되지 않음"}</span>
-          </div>
-          <div className="flex items-center gap-4 px-2">
-            <Mail size={22} className="text-gray-500" />
-            <span className="text-lg">{session?.user?.email || "등록되지 않음"}</span>
-          </div>
-          <div className="flex items-center gap-4 px-2">
-            <MdOutlinePhoneAndroid size={22} className="text-gray-500" />
-            <span className="text-lg">{userInfo?.phone || "등록되지 않음"}</span>
+      {/* daisyUI 카드 적용 */}
+      <div className="card mt-12 w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 p-8 shadow-xl backdrop-blur-lg">
+        <div className="card-body items-center justify-center text-center">
+          <div className={"flex items-center justify-center"}>
+            <h2 className="card-title text-3xl font-bold text-gray-800">My Profile</h2>
           </div>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 md:flex-row md:justify-between">
-            <Button
-              asChild
-              className="h-10 w-full max-w-sm rounded-lg bg-blue-700 px-5 py-3 text-lg font-semibold text-white shadow-md hover:bg-blue-600 md:w-40">
-              <Link href="/users/edit">
+          {/* 프로필 이미지 */}
+          <div className="avatar mt-8">
+            <div className="h-24 w-24 rounded-full shadow-md ring-2 ring-blue-300 md:h-32 md:w-32">
+              <img src={session?.user?.image || "/images/anon-user.png"} alt="Profile Image" />
+            </div>
+          </div>
+
+          <h3 className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</h3>
+
+          <div className="mt-8 w-full space-y-6 text-gray-700">
+            <div className="flex items-center gap-4 px-2">
+              <User size={22} className="text-gray-500" />
+              <span className="text-lg">{userInfo?.realName || "등록되지 않음"}</span>
+            </div>
+            <div className="flex items-center gap-4 px-2">
+              <Mail size={22} className="text-gray-500" />
+              <span className="text-lg">{session?.user?.email || "등록되지 않음"}</span>
+            </div>
+            <div className="flex items-center gap-4 px-2">
+              <MdOutlinePhoneAndroid size={22} className="text-gray-500" />
+              <span className="text-lg">{userInfo?.phone || "등록되지 않음"}</span>
+            </div>
+
+            <div className="mt-8 flex flex-col items-center justify-center gap-4 md:flex-row md:justify-between">
+              <Link href="/users/edit" className="btn btn-primary h-10 w-full max-w-sm rounded-lg text-lg shadow-md md:w-40">
                 <Edit size={20} />
                 회원 정보 수정
               </Link>
-            </Button>
 
-            <Button
-              variant="outline"
-              asChild
-              className="h-10 w-full max-w-sm rounded-lg bg-gray-200 px-5 py-3 text-lg font-semibold text-gray-800 shadow-md hover:bg-gray-300 md:w-40">
-              <Link href="/">
+              <Link href="/" className="btn btn-outline btn-neutral h-10 w-full max-w-sm rounded-lg text-lg shadow-md md:w-40">
                 <Home size={20} />
                 홈으로
               </Link>
-            </Button>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
