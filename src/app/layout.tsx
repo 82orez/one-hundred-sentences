@@ -3,7 +3,6 @@ import "./globals.css";
 import { NextLayout } from "@/app/providers";
 import { Noto_Sans_KR } from "next/font/google";
 import AuthProvider from "@/app/auth-provider";
-import { Toaster } from "@/components/ui/sonner";
 
 const inter = Noto_Sans_KR({
   weight: ["400", "600", "900"],
@@ -27,7 +26,6 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <AuthProvider>
           <NextLayout>{children}</NextLayout>
-          <Toaster />
         </AuthProvider>
       </body>
     </html>
