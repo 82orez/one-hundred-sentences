@@ -22,7 +22,7 @@ export default function Navbar() {
         </Link>
       </h1>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-5 md:gap-8">
         {status === "authenticated" ? (
           <>
             <div className="hidden text-gray-700">{session?.user?.email}</div>
@@ -30,20 +30,13 @@ export default function Navbar() {
             <Link href="/users/profile" className={"hover:underline"}>
               회원 정보
             </Link>
-            <button onClick={() => signOut({ callbackUrl: "/" })} className="cursor-pointer rounded-md border p-2 hover:bg-gray-300">
+            <button onClick={() => signOut({ callbackUrl: "/" })} className={"btn"}>
               로그아웃
             </button>
           </>
         ) : (
           <>
-            <button
-              onClick={() => router.push("/users/sign-up")}
-              className="hidden cursor-pointer rounded-md border border-blue-500 px-4 py-2 text-blue-500 transition hover:bg-blue-500 hover:text-white">
-              회원가입
-            </button>
-            <button
-              onClick={() => router.push("/users/sign-in")}
-              className="cursor-pointer rounded-md bg-blue-500 px-4 py-2 text-white transition hover:bg-blue-600">
+            <button onClick={() => router.push("/users/sign-in")} className="btn">
               로그인
             </button>
           </>
