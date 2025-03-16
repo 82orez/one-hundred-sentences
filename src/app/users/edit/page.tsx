@@ -5,9 +5,36 @@ import { useSession } from "next-auth/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner"; // ✅ Sonner 라이브러리 사용
 import { User } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
+
+// * DaisyUI Toast 를 위한 함수
+const showToast = (message: string, type: "success" | "error" = "success") => {
+  // 이미 있는 toast 제거
+  const existingToast = document.getElementById("custom-toast");
+  if (existingToast) {
+    document.body.removeChild(existingToast);
+  }
+
+  // 새로운 toast 생성
+  const toast = document.createElement("div");
+  toast.id = "custom-toast";
+  toast.className = "toast toast-bottom toast-end z-50";
+
+  const alert = document.createElement("div");
+  alert.className = `alert ${type === "success" ? "alert-neutral" : "alert-error"}`;
+  alert.innerText = message;
+
+  toast.appendChild(alert);
+  document.body.appendChild(toast);
+
+  // 3초 후 제거
+  setTimeout(() => {
+    if (document.body.contains(toast)) {
+      document.body.removeChild(toast);
+    }
+  }, 3000);
+};
 
 const EditProfilePage = () => {
   const { data: session, status } = useSession();
@@ -63,11 +90,11 @@ const EditProfilePage = () => {
       return axios.post("/api/user/update", { realName, phone });
     },
     onSuccess: () => {
-      toast.success("프로필이 업데이트되었습니다.");
+      showToast("✅ 프로필이 업데이트되었습니다.", "success");
       router.push("/users/profile");
     },
     onError: () => {
-      toast.error("❌ 업데이트 중 오류가 발생했습니다.");
+      showToast("❌ 업데이트 중 오류가 발생했습니다.", "error");
     },
   });
 
