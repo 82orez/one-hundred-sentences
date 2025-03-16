@@ -77,7 +77,7 @@ export const sentences = [
   { no: 61, en: "Where is the tourist information center?", ko: "관광 안내소가 어디인가요?" },
   { no: 62, en: "What are the must-visit places here?", ko: "여기에서 꼭 가봐야 할 곳은 어디인가요?" },
   { no: 63, en: "How much is the entrance fee?", ko: "입장료가 얼마인가요?" },
-  { no: 64, en: "What time does this place open/close?", ko: "이곳은 몇 시에 열고 닫나요?" },
+  { no: 64, en: "What time does this place open and close?", ko: "이곳은 몇 시에 열고 닫나요?" },
   { no: 65, en: "Is there a guided tour available?", ko: "가이드 투어가 있나요?" },
   { no: 66, en: "Can I take pictures here?", ko: "여기서 사진을 찍어도 되나요?" },
   { no: 67, en: "Where is the best place to take pictures?", ko: "사진 찍기 좋은 장소는 어디인가요?" },
