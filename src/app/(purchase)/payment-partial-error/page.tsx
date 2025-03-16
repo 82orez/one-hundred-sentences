@@ -1,8 +1,5 @@
-// app/payment-partial-error/page.tsx
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -19,8 +16,10 @@ export default function PaymentPartialErrorPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <Card className="max-w-md">
-        <CardContent>
+      {/* Card 컴포넌트를 div 로 변경 */}
+      <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-4 shadow-md md:p-6">
+        {/* CardContent 대신 일반 div 사용 */}
+        <div className="p-4">
           <div className="mb-4 text-center text-5xl text-yellow-500">⚠️</div>
           <h1 className="mb-4 text-center text-2xl font-bold">결제 처리 중 문제가 발생했습니다.</h1>
           <p className="mb-2">결제는 성공적으로 처리되었으나, 시스템 내부에 일시적인 문제가 발생했습니다.</p>
@@ -43,8 +42,8 @@ export default function PaymentPartialErrorPage() {
               </Button>
             </Link>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
