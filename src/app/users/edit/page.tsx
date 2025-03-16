@@ -146,7 +146,7 @@ const EditProfilePage = () => {
                     type="text"
                     value={realName}
                     onChange={(e) => setRealName(e.target.value)}
-                    className="h-12 w-full rounded-xl border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
+                    className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
                     placeholder="이름을 입력해 주세요."
                   />
                 </div>
@@ -163,7 +163,7 @@ const EditProfilePage = () => {
                     type="text"
                     value={phone}
                     onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
-                    className="h-12 w-full rounded-xl border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
+                    className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
                     placeholder="숫자만 입력해 주세요."
                     maxLength={13}
                   />
@@ -176,7 +176,7 @@ const EditProfilePage = () => {
               {/* 저장 버튼 */}
               <button
                 type="submit"
-                className="h-12 w-full rounded-xl bg-blue-700 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
+                className="h-12 w-full rounded-lg bg-blue-700 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
                 disabled={updateProfileMutation.isPending}>
                 {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
               </button>
