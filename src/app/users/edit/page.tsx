@@ -5,9 +5,6 @@ import { useSession } from "next-auth/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner"; // ✅ Sonner 라이브러리 사용
 import { User } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
@@ -95,7 +92,7 @@ const EditProfilePage = () => {
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <Skeleton className="h-40 w-80 rounded-lg" />
+        <div className="skeleton h-40 w-80 rounded-lg"></div>
       </div>
     );
   }
@@ -112,9 +109,9 @@ const EditProfilePage = () => {
             <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-6 text-xl">
               {/* 실제 이름 입력 */}
               <div>
-                <Label htmlFor="realName" className="text-lg font-semibold text-gray-700">
+                <label htmlFor="realName" className="text-lg font-semibold text-gray-700">
                   실제 이름
-                </Label>
+                </label>
                 <div className="relative mt-2">
                   <User className="absolute top-3 left-5 text-gray-500" size={24} />
                   <input
@@ -129,9 +126,9 @@ const EditProfilePage = () => {
               </div>
 
               <div>
-                <Label htmlFor="phone" className="text-lg font-semibold text-gray-700">
+                <label htmlFor="phone" className="text-lg font-semibold text-gray-700">
                   휴대폰 번호
-                </Label>
+                </label>
                 <div className="relative mt-2">
                   <MdOutlinePhoneAndroid className="absolute top-3 left-5 text-gray-500" size={24} />
                   <input
@@ -150,12 +147,12 @@ const EditProfilePage = () => {
               {error && <p className="text-lg text-red-500">{error}</p>}
 
               {/* 저장 버튼 */}
-              <Button
+              <button
                 type="submit"
                 className="h-12 w-full rounded-xl bg-blue-700 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
                 disabled={updateProfileMutation.isPending}>
                 {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
-              </Button>
+              </button>
             </form>
           </div>
         </div>
