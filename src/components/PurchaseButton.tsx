@@ -57,7 +57,7 @@ export function PurchaseButton({ id, price }: Props) {
 
   return (
     <div className="mx-auto mt-4 max-w-md md:mt-10">
-      <div className="rounded-lg border bg-white p-4 shadow-lg">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
         <div className="mb-2 flex items-center justify-between">
           <span className="font-bold">사용권 구매하기</span>
           <span className="text-primary text-lg font-bold">{price.toLocaleString()}원</span>

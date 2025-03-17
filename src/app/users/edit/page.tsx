@@ -146,7 +146,7 @@ const EditProfilePage = () => {
                     type="text"
                     value={realName}
                     onChange={(e) => setRealName(e.target.value)}
-                    className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
+                    className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-gray-400"
                     placeholder="이름을 입력해 주세요."
                   />
                 </div>
@@ -163,7 +163,7 @@ const EditProfilePage = () => {
                     type="text"
                     value={phone}
                     onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
-                    className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-blue-400"
+                    className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-gray-400"
                     placeholder="숫자만 입력해 주세요."
                     maxLength={13}
                   />

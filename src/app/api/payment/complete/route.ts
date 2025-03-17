@@ -35,8 +35,7 @@ export async function GET(req: Request) {
         return NextResponse.redirect(new URL("/payment-error?reason=unauthorized", req.url));
       }
 
-      // * error 처리 과정 필요
-      // 결제 정보를 데이터베이스에 저장
+      // * 결제 정보를 데이터베이스에 저장할 때 error 처리 과정 필요
       try {
         const purchase = await prisma.purchase.create({
           data: {
