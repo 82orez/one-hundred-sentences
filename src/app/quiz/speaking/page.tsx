@@ -103,7 +103,7 @@ export default function SpeakingPage() {
     };
 
     recognition.onerror = (event: any) => {
-      console.error("❌ 음성 인식 오류:", event.error);
+      // console.error("❌ 음성 인식 오류:", event.error);
       setIsListening(false);
       recognitionRef.current = null;
     };
@@ -180,31 +180,31 @@ export default function SpeakingPage() {
           </div>
 
           {/* 버튼 영역 */}
-          <div className="mt-4 mb-6 flex justify-center gap-3">
+          <div className="mt-4 mb-6 flex flex-col justify-center gap-3">
             <button
               onClick={isListening ? stopListening : startListening}
               className={clsx(
-                "flex min-h-16 flex-col items-center justify-center rounded-lg px-6 py-3 text-white transition-all",
+                "flex h-12 min-w-32 items-center justify-center gap-1 rounded-lg px-3 py-3 text-white transition-all",
                 isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
               )}>
               {isListening ? (
                 <>
-                  <FaRegStopCircle size={24} className="mb-1" />
+                  <FaRegStopCircle size={24} className="" />
                   <span>녹음 중지</span>
                 </>
               ) : (
                 <>
-                  <FaMicrophone size={24} className="mb-1" />
+                  <FaMicrophone size={24} className="" />
                   <span>말하기</span>
                 </>
               )}
             </button>
 
-            <button onClick={selectRandomSentence} className="rounded-lg bg-blue-500 px-6 py-3 text-white hover:bg-blue-600">
+            <button onClick={selectRandomSentence} className="min-w-32 rounded-lg bg-blue-500 px-3 py-3 text-white hover:bg-blue-600">
               ↻ 다른 문장
             </button>
 
-            <button onClick={showAnswer} className="rounded-lg bg-gray-500 px-6 py-3 text-white hover:bg-gray-600">
+            <button onClick={showAnswer} className="min-w-32 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600">
               💡 정답 보기
             </button>
           </div>
