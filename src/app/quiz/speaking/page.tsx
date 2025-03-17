@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
+import { FaMicrophone } from "react-icons/fa6";
+import { FaRegStopCircle } from "react-icons/fa";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -14,6 +16,9 @@ export default function SpeakingPage() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [isBlurred, setIsBlurred] = useState(true); // 초기에는 영어 문장을 흐리게 표시
+
+  // 음성 인식 객체 참조
+  const recognitionRef = useRef<any>(null);
 
   // 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading } = useQuery({
@@ -42,6 +47,15 @@ export default function SpeakingPage() {
     }
   }, [completedSentences]);
 
+  // 컴포넌트 언마운트 시 음성 인식 중지
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
+
   const selectRandomSentence = () => {
     if (!completedSentences || completedSentences.length === 0) return;
     const randomIndex = Math.floor(Math.random() * completedSentences.length);
@@ -61,11 +75,18 @@ export default function SpeakingPage() {
       return;
     }
 
+    // 이미 실행 중인 recognition 객체가 있다면 중지
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+      return;
+    }
+
     const recognition = new (window as any).webkitSpeechRecognition();
+    recognitionRef.current = recognition;
+
     recognition.lang = "en-US";
-    // true 이면 연속적으로 인식, false 면 한 문장만 인식
     recognition.continuous = false;
-    // true 이면 중간 결과 제공, false 면 최종 결과만 제공
     recognition.interimResults = false;
 
     setIsListening(true);
@@ -84,13 +105,23 @@ export default function SpeakingPage() {
     recognition.onerror = (event: any) => {
       console.error("❌ 음성 인식 오류:", event.error);
       setIsListening(false);
+      recognitionRef.current = null;
     };
 
     recognition.onend = () => {
       setIsListening(false);
+      recognitionRef.current = null;
     };
 
     recognition.start();
+  };
+
+  // 음성 인식 중지
+  const stopListening = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+    }
   };
 
   // 정답 확인
@@ -151,13 +182,22 @@ export default function SpeakingPage() {
           {/* 버튼 영역 */}
           <div className="mt-4 mb-6 flex justify-center gap-3">
             <button
-              onClick={startListening}
-              disabled={isListening}
+              onClick={isListening ? stopListening : startListening}
               className={clsx(
-                "rounded-lg px-6 py-3 text-white transition-all",
-                isListening ? "animate-pulse bg-red-500" : "bg-green-500 hover:bg-green-600",
+                "flex min-h-16 flex-col items-center justify-center rounded-lg px-6 py-3 text-white transition-all",
+                isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
               )}>
-              {isListening ? "듣는 중..." : "🎙️ 말하기"}
+              {isListening ? (
+                <>
+                  <FaRegStopCircle size={24} className="mb-1" />
+                  <span>녹음 중지</span>
+                </>
+              ) : (
+                <>
+                  <FaMicrophone size={24} className="mb-1" />
+                  <span>말하기</span>
+                </>
+              )}
             </button>
 
             <button onClick={selectRandomSentence} className="rounded-lg bg-blue-500 px-6 py-3 text-white hover:bg-blue-600">
