@@ -150,8 +150,9 @@ export default function SpeakingPage() {
   };
 
   // 답안 확인하기
-  const showAnswer = () => {
-    setIsVisible(true);
+  // 토글 형태로 변경된 함수:
+  const toggleAnswer = () => {
+    setIsVisible(!isVisible);
   };
 
   if (isLoading) {
@@ -207,8 +208,8 @@ export default function SpeakingPage() {
               ↻ 다른 문장
             </button>
 
-            <button onClick={showAnswer} disabled={isListening} className="min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600">
-              💡 정답 보기
+            <button onClick={toggleAnswer} disabled={isListening} className="min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600">
+              {isVisible ? "💡 정답 숨기기" : "💡 정답 보기"}
             </button>
           </div>
 
