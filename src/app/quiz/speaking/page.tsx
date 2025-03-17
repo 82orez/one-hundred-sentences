@@ -175,16 +175,16 @@ export default function SpeakingPage() {
       {currentSentence ? (
         <div className="mt-6">
           {/* 한글 문장 표시 */}
-          <div className="mb-8 rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800">
+          <div className="mb-8 flex min-h-24 items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800">
             <p>{currentSentence.ko}</p>
           </div>
 
           {/* 버튼 영역 */}
-          <div className="mt-4 mb-6 flex flex-col justify-center gap-3">
+          <div className="mt-4 mb-6 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-between">
             <button
               onClick={isListening ? stopListening : startListening}
               className={clsx(
-                "flex h-12 min-w-32 items-center justify-center gap-1 rounded-lg px-3 py-3 text-white transition-all",
+                "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-white transition-all",
                 isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
               )}>
               {isListening ? (
@@ -200,11 +200,11 @@ export default function SpeakingPage() {
               )}
             </button>
 
-            <button onClick={selectRandomSentence} className="min-w-32 rounded-lg bg-blue-500 px-3 py-3 text-white hover:bg-blue-600">
+            <button onClick={selectRandomSentence} className="min-w-36 rounded-lg bg-blue-500 px-3 py-3 text-white hover:bg-blue-600">
               ↻ 다른 문장
             </button>
 
-            <button onClick={showAnswer} className="min-w-32 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600">
+            <button onClick={showAnswer} className="min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600">
               💡 정답 보기
             </button>
           </div>
@@ -225,11 +225,17 @@ export default function SpeakingPage() {
           )}
 
           {/* 블러 처리된 정답 (영어 문장) */}
-          <div className="mt-6">
-            <h3 className="mb-2 text-lg font-medium">정답:</h3>
-            <div className={clsx("rounded-lg border bg-gray-100 p-4 text-xl font-semibold text-gray-800", isBlurred ? "blur-md" : "blur-none")}>
-              <p>{currentSentence.en}</p>
-            </div>
+          <div className="mt-10">
+            {/*<h3 className="mb-2 text-lg font-medium">정답</h3>*/}
+            <section className={clsx("min-h-24 rounded-xl border bg-gray-100")}>
+              <div
+                className={clsx("bg-gray-100 p-4 text-xl font-semibold text-gray-800", {
+                  invisible: isBlurred,
+                  visible: !isBlurred,
+                })}>
+                <p>{currentSentence.en}</p>
+              </div>
+            </section>
           </div>
         </div>
       ) : (
