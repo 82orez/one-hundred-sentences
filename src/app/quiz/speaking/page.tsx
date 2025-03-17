@@ -15,7 +15,7 @@ export default function SpeakingPage() {
   const [userSpoken, setUserSpoken] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
-  const [isBlurred, setIsBlurred] = useState(true); // 초기에는 영어 문장을 흐리게 표시
+  const [isVisible, setIsVisible] = useState(false);
 
   // 음성 인식 객체 참조
   const recognitionRef = useRef<any>(null);
@@ -65,7 +65,7 @@ export default function SpeakingPage() {
     setCurrentSentence(selected);
     setUserSpoken("");
     setFeedback(null);
-    setIsBlurred(true); // 새로운 문장이 나올 때마다 blur 처리 활성화
+    setIsVisible(false);
   };
 
   // 음성 인식 시작
@@ -143,7 +143,7 @@ export default function SpeakingPage() {
 
     if (normalizedSpoken === normalizedAnswer) {
       setFeedback("정답입니다!");
-      setIsBlurred(false); // 정답 맞히면 blur 해제
+      setIsVisible(true);
     } else {
       setFeedback("❌ 다시 도전해 보세요.");
     }
@@ -151,7 +151,7 @@ export default function SpeakingPage() {
 
   // 답안 확인하기
   const showAnswer = () => {
-    setIsBlurred(false);
+    setIsVisible(true);
   };
 
   if (isLoading) {
@@ -200,11 +200,14 @@ export default function SpeakingPage() {
               )}
             </button>
 
-            <button onClick={selectRandomSentence} className="min-w-36 rounded-lg bg-blue-500 px-3 py-3 text-white hover:bg-blue-600">
+            <button
+              onClick={selectRandomSentence}
+              disabled={isListening}
+              className={clsx("min-w-36 rounded-lg bg-blue-500 px-3 py-3 text-white hover:bg-blue-600")}>
               ↻ 다른 문장
             </button>
 
-            <button onClick={showAnswer} className="min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600">
+            <button onClick={showAnswer} disabled={isListening} className="min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600">
               💡 정답 보기
             </button>
           </div>
@@ -227,15 +230,13 @@ export default function SpeakingPage() {
           {/* 블러 처리된 정답 (영어 문장) */}
           <div className="mt-10">
             {/*<h3 className="mb-2 text-lg font-medium">정답</h3>*/}
-            <section className={clsx("min-h-24 rounded-xl border bg-gray-100")}>
-              <div
-                className={clsx("bg-gray-100 p-4 text-xl font-semibold text-gray-800", {
-                  invisible: isBlurred,
-                  visible: !isBlurred,
-                })}>
-                <p>{currentSentence.en}</p>
-              </div>
-            </section>
+            <div
+              className={clsx("flex min-h-24 items-center justify-center rounded-lg border bg-gray-100 p-4 text-xl font-semibold text-gray-800", {
+                invisible: !isVisible,
+                visible: isVisible,
+              })}>
+              <p>{currentSentence.en}</p>
+            </div>
           </div>
         </div>
       ) : (
