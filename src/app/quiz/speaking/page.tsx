@@ -63,15 +63,21 @@ export default function SpeakingPage() {
 
     const recognition = new (window as any).webkitSpeechRecognition();
     recognition.lang = "en-US";
+    // true 이면 연속적으로 인식, false 면 한 문장만 인식
     recognition.continuous = false;
+    // true 이면 중간 결과 제공, false 면 최종 결과만 제공
     recognition.interimResults = false;
 
     setIsListening(true);
 
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
-      setUserSpoken(transcript);
+      const confidence = event.results[0][0].confidence;
       console.log("🎙️ 인식된 음성:", transcript);
+      console.log("confidence 음성:", confidence);
+
+      setUserSpoken(transcript);
+
       checkAnswer(transcript);
     };
 
