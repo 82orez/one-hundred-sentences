@@ -185,13 +185,13 @@ export default function SpeakingPage() {
           </div>
 
           {/* 버튼 영역 */}
-          <div className="mt-4 mb-6 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="mt-4 mb-6 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4">
             <button
               onClick={isListening ? stopListening : startListening}
-              disabled={feedback?.includes("정답")}
               className={clsx(
                 "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-white transition-all",
                 isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
+                { hidden: feedback?.includes("정답") },
               )}>
               {isListening ? (
                 <>
@@ -209,11 +209,14 @@ export default function SpeakingPage() {
             <button
               onClick={selectRandomSentence}
               disabled={isListening}
-              className={clsx("min-w-36 rounded-lg bg-blue-500 px-3 py-3 text-white hover:bg-blue-600")}>
+              className={clsx("w-full min-w-36 rounded-lg bg-blue-500 px-3 py-3 text-white hover:bg-blue-600")}>
               ↻ 다른 문장
             </button>
 
-            <button onClick={toggleAnswer} disabled={isListening} className="min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600">
+            <button
+              onClick={toggleAnswer}
+              disabled={isListening}
+              className={clsx("min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600", { hidden: feedback?.includes("정답") })}>
               {isVisible ? "💡 정답 숨기기" : "💡 정답 보기"}
             </button>
           </div>
