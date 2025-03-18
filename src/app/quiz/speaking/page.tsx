@@ -136,7 +136,7 @@ export default function SpeakingPage() {
         .toLowerCase()
         .trim()
         .replace(/\s+/g, " ")
-        .replace(/[.,\/#!?'"$%\^&\*;:{}=\-_`~()]/g, "");
+        .replace(/[.,\/#!?"$%\^&\*;:{}=\-_`~()]/g, "");
     };
 
     const normalizedSpoken = normalizeText(spoken);
