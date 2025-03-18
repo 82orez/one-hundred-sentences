@@ -184,6 +184,7 @@ export default function SpeakingPage() {
           <div className="mt-4 mb-6 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-between">
             <button
               onClick={isListening ? stopListening : startListening}
+              disabled={feedback?.includes("정답")}
               className={clsx(
                 "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-white transition-all",
                 isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
