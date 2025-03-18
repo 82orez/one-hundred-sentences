@@ -248,12 +248,12 @@ export default function SpeakingPage() {
       {currentSentence ? (
         <div className="mt-6">
           {/* 한글 문장 표시 */}
-          <div className="mb-8 flex min-h-24 items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800">
+          <div className="mb-6 flex min-h-24 items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-8">
             <p>{currentSentence.ko}</p>
           </div>
 
           {/* 버튼 영역 */}
-          <div className="mt-4 mb-6 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4">
+          <div className="mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4">
             <button
               onClick={isListening ? stopListening : startListening}
               disabled={isPlaying}
@@ -306,7 +306,7 @@ export default function SpeakingPage() {
           )}
 
           {/* 블러 처리된 정답 (영어 문장) */}
-          <div className="mt-10">
+          <div className="mt-6 flex flex-col md:mt-8">
             {/*<h3 className="mb-2 text-lg font-medium">정답</h3>*/}
             <div
               className={clsx("flex min-h-24 items-center justify-center rounded-lg border bg-gray-100 p-4 text-xl font-semibold text-gray-800", {
@@ -321,7 +321,7 @@ export default function SpeakingPage() {
               <button
                 onClick={playNativeAudio}
                 disabled={isListening || isPlaying}
-                className="flex items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
+                className="mt-4 flex items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 md:mt-8">
                 <FaPlay /> 원어민 음성 듣기
               </button>
             )}
@@ -331,7 +331,7 @@ export default function SpeakingPage() {
         completedSentences?.length > 0 && <p className="mt-8 text-lg text-gray-500">문장을 불러오는 중...</p>
       )}
 
-      <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": isLoading })}>
+      <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": isLoading })}>
         <Link href={"/learn"}>Back to My page</Link>
       </div>
     </div>
