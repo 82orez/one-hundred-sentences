@@ -16,9 +16,13 @@ export default function SpeakingPage() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  // 오디오 재생 상태를 관리할 새로운 상태 변수
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // 음성 인식 객체 참조
   const recognitionRef = useRef<any>(null);
+  // 오디오 객체 참조 추가
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading } = useQuery({
@@ -53,6 +57,11 @@ export default function SpeakingPage() {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
+      // 오디오가 재생 중이면 정지
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
   }, []);
 
@@ -70,6 +79,9 @@ export default function SpeakingPage() {
 
   // 음성 인식 시작
   const startListening = () => {
+    // 오디오 재생 중이면 음성 인식 시작하지 않음
+    if (isPlaying) return;
+
     if (!("webkitSpeechRecognition" in window)) {
       alert("이 브라우저는 음성 인식을 지원하지 않습니다.");
       return;
@@ -177,21 +189,42 @@ export default function SpeakingPage() {
     }
   };
 
-  // 답안 확인하기
-  // 토글 형태로 변경된 함수:
+  // 답안 확인하기 - 토글 형태로 변경된 함수:
   const toggleAnswer = () => {
     setIsVisible(!isVisible);
   };
 
-  // 음성 재생을 위한 함수
+  // 오디오 재생 함수 추가
   const playNativeAudio = () => {
-    if (currentSentence && currentSentence.audioUrl) {
-      const audio = new Audio(currentSentence.audioUrl);
-      audio.play().catch((error) => {
-        console.error("❌ 오디오 재생 오류:", error);
-        alert("오디오를 재생할 수 없습니다.");
-      });
+    if (!currentSentence?.audioUrl) return;
+
+    // 이미 재생 중인 오디오가 있다면 중지
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
     }
+
+    const audio = new Audio(currentSentence.audioUrl);
+    audioRef.current = audio;
+
+    setIsPlaying(true);
+
+    audio.onended = () => {
+      setIsPlaying(false);
+      audioRef.current = null;
+    };
+
+    audio.onerror = () => {
+      console.error("❌ 오디오 재생 오류");
+      setIsPlaying(false);
+      audioRef.current = null;
+    };
+
+    audio.play().catch((err) => {
+      console.error("❌ 오디오 재생 실패:", err);
+      setIsPlaying(false);
+      audioRef.current = null;
+    });
   };
 
   if (isLoading) {
@@ -223,6 +256,7 @@ export default function SpeakingPage() {
           <div className="mt-4 mb-6 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4">
             <button
               onClick={isListening ? stopListening : startListening}
+              disabled={isPlaying}
               className={clsx(
                 "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-white transition-all",
                 isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
@@ -243,14 +277,14 @@ export default function SpeakingPage() {
 
             <button
               onClick={selectRandomSentence}
-              disabled={isListening}
+              disabled={isListening || isPlaying}
               className={clsx("w-full min-w-36 rounded-lg bg-blue-500 px-3 py-3 text-white hover:bg-blue-600")}>
               ↻ 다른 문장
             </button>
 
             <button
               onClick={toggleAnswer}
-              disabled={isListening}
+              disabled={isListening || isPlaying}
               className={clsx("min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600", { hidden: feedback?.includes("정답") })}>
               {isVisible ? "💡 정답 숨기기" : "💡 정답 보기"}
             </button>
@@ -286,6 +320,7 @@ export default function SpeakingPage() {
             {currentSentence && (
               <button
                 onClick={playNativeAudio}
+                disabled={isListening || isPlaying}
                 className="flex items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
                 <FaPlay /> 원어민 음성 듣기
               </button>
