@@ -128,12 +128,16 @@ export default function SpeakingPage() {
   const checkAnswer = (spoken: string) => {
     if (!currentSentence) return;
 
-    const normalizeText = (text: string) =>
-      text
+    const normalizeText = (text: string) => {
+      // 다양한 종류의 아포스트로피를 단일 형태로 통일
+      const standardizedText = text.replace(/[\u2018\u2019\u201A\u201B\u2032\u2035\u0060\u00B4]/g, "'");
+
+      return standardizedText
         .toLowerCase()
         .trim()
         .replace(/\s+/g, " ")
         .replace(/[.,\/#!?'"$%\^&\*;:{}=\-_`~()]/g, "");
+    };
 
     const normalizedSpoken = normalizeText(spoken);
     const normalizedAnswer = normalizeText(currentSentence.en);
