@@ -132,11 +132,35 @@ export default function SpeakingPage() {
       // 다양한 종류의 아포스트로피를 단일 형태로 통일
       const standardizedText = text.replace(/[\u2018\u2019\u201A\u201B\u2032\u2035\u0060\u00B4]/g, "'");
 
-      return standardizedText
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, " ")
-        .replace(/[.,\/#!?"$%\^&\*;:{}=\-_`~()]/g, "");
+      return (
+        standardizedText
+          .toLowerCase()
+          // 조동사 축약형 처리
+          // 대명사+'d 패턴을 한번에 처리
+          .replace(/\b(i|he|she|it|we|they|you|who)'d\b/gi, "$1 would")
+          // 조동사 축약형은 'would' 외에도 'had' 의 의미로도 쓰일 수 있어 컨텍스트에 따라 선택 필요
+          // 'had' 확장이 필요한 경우 아래 주석 해제
+          // .replace(/\bi'd\b/g, "i had")
+          // 그 외의 경우 'would' 로 처리
+          .replace(/\b(\w+)'d\b/gi, "$1 would")
+          // ... (다른 had 축약형)
+          .replace(/\bwhere's\b/g, "where is")
+
+          // 다른 일반적인 축약형도 처리
+          .replace(/\bi'll\b/g, "i will")
+          .replace(/\bi've\b/g, "i have")
+          .replace(/\bi'm\b/g, "i am")
+          .replace(/\bdon't\b/g, "do not")
+          .replace(/\bcan't\b/g, "cannot")
+          .replace(/\bwon't\b/g, "will not")
+          .replace(/\bisn't\b/g, "is not")
+          .replace(/\baren't\b/g, "are not")
+
+          // 그 외 문장 부호와 공백 정리
+          .replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g, "")
+          .replace(/\s+/g, " ")
+          .trim()
+      );
     };
 
     const normalizedSpoken = normalizeText(spoken);

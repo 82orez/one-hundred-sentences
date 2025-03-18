@@ -6,7 +6,7 @@ export const sentences = [
   { no: 4, en: "Do I need to take out my laptop for security screening?", ko: "보안 검색대에서 노트북을 꺼내야 하나요?" },
   { no: 5, en: "Where is the immigration counter?", ko: "출입국 심사대가 어디인가요?" },
   { no: 6, en: "I am here for business.", ko: "출장 목적으로 왔습니다." }, // 기존 관광 -> 출장으로 변경
-  { no: 7, en: "I will be staying for two weeks.", ko: "저는 2주 동안 머물 예정입니다." }, // 기간 변경
+  { no: 7, en: "I will be staying for 2 weeks.", ko: "저는 2주 동안 머물 예정입니다." }, // 기간 변경
   { no: 8, en: "Here is my hotel reservation.", ko: "여기 제 호텔 예약 확인서입니다." }, // 기존 항공권 -> 호텔 예약으로 변경
   { no: 9, en: "Where can I get a SIM card?", ko: "심카드는 어디에서 살 수 있나요?" }, // 새로운 문장 추가
   { no: 10, en: "How long does it take to get through customs?", ko: "세관 통과하는 데 얼마나 걸리나요?" }, // 새로운 문장 추가
