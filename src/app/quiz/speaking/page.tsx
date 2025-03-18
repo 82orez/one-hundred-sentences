@@ -321,7 +321,7 @@ export default function SpeakingPage() {
               <button
                 onClick={playNativeAudio}
                 disabled={isListening || isPlaying}
-                className="mt-4 flex items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600 md:mt-8">
+                className="btn btn-warning btn-outline mt-4 flex items-center justify-center gap-2 rounded-lg py-6 font-bold md:mt-8">
                 <FaPlay /> 원어민 음성 듣기
               </button>
             )}
