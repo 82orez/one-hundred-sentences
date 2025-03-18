@@ -7,7 +7,7 @@ import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa6";
-import { FaRegStopCircle } from "react-icons/fa";
+import { FaPlay, FaRegStopCircle } from "react-icons/fa";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -183,6 +183,17 @@ export default function SpeakingPage() {
     setIsVisible(!isVisible);
   };
 
+  // 음성 재생을 위한 함수
+  const playNativeAudio = () => {
+    if (currentSentence && currentSentence.audioUrl) {
+      const audio = new Audio(currentSentence.audioUrl);
+      audio.play().catch((error) => {
+        console.error("❌ 오디오 재생 오류:", error);
+        alert("오디오를 재생할 수 없습니다.");
+      });
+    }
+  };
+
   if (isLoading) {
     return <p className="text-center text-lg text-gray-500">문장을 불러오는 중...</p>;
   }
@@ -270,6 +281,15 @@ export default function SpeakingPage() {
               })}>
               <p>{currentSentence.en}</p>
             </div>
+
+            {/* 원어민 음성 재생 부분 */}
+            {currentSentence && (
+              <button
+                onClick={playNativeAudio}
+                className="flex items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
+                <FaPlay /> 원어민 음성 듣기
+              </button>
+            )}
           </div>
         </div>
       ) : (
