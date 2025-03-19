@@ -37,6 +37,9 @@ const LearnPage = ({ params }: Props) => {
   const [playingSentence, setPlayingSentence] = useState<number | null>(null); // 현재 재생 중인 문장 추적
   const [selectedSentence, setSelectedSentence] = useState<string | null>(null); // ✅ 문장 객체 저장
 
+  const [showYoutubeModal, setShowYoutubeModal] = useState(false);
+  const videoId = "ARa5yXcnT_w";
+
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -254,6 +257,14 @@ const LearnPage = ({ params }: Props) => {
                   <FaMicrophone size={24} className={"mx-auto"} />
                 )}
               </button>
+
+              {/* 유튜브 재생 링크 */}
+              {/*<h3 className="mb-2 font-semibold">학습 관련 동영상</h3>*/}
+              <button
+                onClick={() => setShowYoutubeModal(true)}
+                className="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700">
+                <span className="font-semibold">동영상 보기</span>
+              </button>
             </div>
           )}
 
@@ -270,6 +281,28 @@ const LearnPage = ({ params }: Props) => {
           </Modal>
         </div>
       ))}
+
+      {showYoutubeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="relative w-[90%] max-w-4xl rounded-lg bg-white p-4 shadow-xl">
+            <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-2">
+              <h3 className="text-lg font-semibold">학습 관련 동영상</h3>
+              <button onClick={() => setShowYoutubeModal(false)} className="rounded-full p-1 hover:bg-gray-100">
+                <span className="text-2xl">&times;</span>
+              </button>
+            </div>
+            <div className="aspect-video w-full overflow-hidden rounded-lg">
+              <iframe
+                width="100%"
+                height="100%"
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                title="영어 학습 동영상"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen></iframe>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": isLoading })}>
         <Link href={"/learn"}>Back to My page</Link>
