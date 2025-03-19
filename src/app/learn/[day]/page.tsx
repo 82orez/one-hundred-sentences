@@ -15,6 +15,8 @@ import { TbAlphabetKorean } from "react-icons/tb";
 import AudioRecorder from "@/components/Recoder";
 import { RiCloseLargeFill } from "react-icons/ri";
 import Modal from "@/components/Modal";
+import { ImYoutube2 } from "react-icons/im";
+import { TfiYoutube } from "react-icons/tfi";
 
 interface Sentence {
   no: number;
@@ -196,6 +198,15 @@ const LearnPage = ({ params }: Props) => {
           {/* ✅ 버튼 그룹 (녹음 UI가 열려있을 때 숨김) */}
           {showRecorder !== sentence.no && (
             <div className="mt-4 flex items-center gap-4">
+              {/* 유튜브 재생 링크 */}
+              <button
+                onClick={() => setShowYoutubeModal(true)}
+                className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 p-2 text-red-600">
+                <TfiYoutube size={30} className={"md:hidden"} />
+                <ImYoutube2 size={50} className={"hidden md:block"} />
+                {/* 강의 보기 */}
+              </button>
+
               {/* ✅ 개별 영문 가리기 버튼 */}
               <button
                 className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
@@ -257,14 +268,6 @@ const LearnPage = ({ params }: Props) => {
                   <FaMicrophone size={24} className={"mx-auto"} />
                 )}
               </button>
-
-              {/* 유튜브 재생 링크 */}
-              {/*<h3 className="mb-2 font-semibold">학습 관련 동영상</h3>*/}
-              <button
-                onClick={() => setShowYoutubeModal(true)}
-                className="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700">
-                <span className="font-semibold">동영상 보기</span>
-              </button>
             </div>
           )}
 
@@ -286,7 +289,7 @@ const LearnPage = ({ params }: Props) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="relative w-[90%] max-w-4xl rounded-lg bg-white p-4 shadow-xl">
             <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-2">
-              <h3 className="text-lg font-semibold">학습 관련 동영상</h3>
+              <h3 className="text-lg font-semibold">강의 동영상</h3>
               <button onClick={() => setShowYoutubeModal(false)} className="rounded-full p-1 hover:bg-gray-100">
                 <span className="text-2xl">&times;</span>
               </button>

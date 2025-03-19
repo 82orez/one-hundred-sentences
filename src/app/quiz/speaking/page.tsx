@@ -118,6 +118,7 @@ export default function SpeakingPage() {
     recognition.onerror = (event: any) => {
       // console.error("❌ 음성 인식 오류:", event.error);
       setIsListening(false);
+      alert("음성이 입력되지 않았습니다.");
       recognitionRef.current = null;
     };
 
