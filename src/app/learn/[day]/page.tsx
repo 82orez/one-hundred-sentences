@@ -182,9 +182,15 @@ const LearnPage = ({ params }: Props) => {
 
       {/* ✅ 전체 영문 가리기/보이기 체크박스 */}
       <div className="absolute top-[3.75rem] right-6 flex items-center justify-end gap-2 md:top-14">
-        <input type="checkbox" id="toggleAllEnglish" checked={allEnglishHidden} onChange={toggleAllEnglish} className="h-5 w-5 cursor-pointer" />
-        <label htmlFor="toggleAllEnglish" className="text-md font-medium md:text-lg">
-          전체 영문 가리기
+        <input
+          type="checkbox"
+          id="toggleAllEnglish"
+          checked={allEnglishHidden}
+          onChange={toggleAllEnglish}
+          className="checkbox checkbox-neutral checkbox-sm md:checkbox-md cursor-pointer"
+        />
+        <label htmlFor="toggleAllEnglish" className="text-md font-semibold md:text-lg">
+          훈련 모드
         </label>
       </div>
 
