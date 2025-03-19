@@ -18,6 +18,7 @@ export default function SpeakingPage() {
   const [isVisible, setIsVisible] = useState(false);
   // 오디오 재생 상태를 관리할 새로운 상태 변수
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   // 음성 인식 객체 참조
   const recognitionRef = useRef<any>(null);
@@ -133,6 +134,14 @@ export default function SpeakingPage() {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       recognitionRef.current = null;
+
+      // 버튼 비활성화
+      setIsButtonDisabled(true);
+
+      // 1초 후 버튼 다시 활성화
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      }, 1200);
     }
   };
 
@@ -234,7 +243,7 @@ export default function SpeakingPage() {
   return (
     <div className="mx-auto max-w-lg p-6 text-center">
       <h1 className="text-4xl font-bold">Speaking quiz</h1>
-      <p className="mt-4 text-lg text-gray-600">한글 문장을 보고 영어로 말해보세요.</p>
+      <p className="mt-4 text-lg font-semibold text-gray-600">한글 문장을 보고 영어로 말해보세요.</p>
 
       {completedSentences?.length === 0 && (
         <div className="my-8 rounded-lg bg-yellow-100 p-4 text-yellow-800">
@@ -256,16 +265,17 @@ export default function SpeakingPage() {
           <div className="mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4">
             <button
               onClick={isListening ? stopListening : startListening}
-              disabled={isPlaying}
+              disabled={isPlaying || isButtonDisabled}
               className={clsx(
                 "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-white transition-all",
                 isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
                 { hidden: feedback?.includes("정답") },
+                { "cursor-not-allowed opacity-50": isButtonDisabled },
               )}>
               {isListening ? (
                 <>
                   <FaRegStopCircle size={24} className="" />
-                  <span>녹음 중지</span>
+                  <span>Cancel</span>
                 </>
               ) : (
                 <>
@@ -301,7 +311,7 @@ export default function SpeakingPage() {
           {/* 피드백 */}
           {feedback && (
             <div className={clsx("mb-4 rounded-lg p-3", feedback.includes("정답") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>
-              <p className="text-lg font-medium">{feedback}</p>
+              <p className="text-xl font-semibold">{feedback}</p>
             </div>
           )}
 
@@ -321,7 +331,7 @@ export default function SpeakingPage() {
               <button
                 onClick={playNativeAudio}
                 disabled={isListening || isPlaying}
-                className="btn btn-warning btn-outline mt-4 flex items-center justify-center gap-2 rounded-lg py-6 font-bold md:mt-8">
+                className="btn btn-warning btn-outline mt-4 flex items-center justify-center gap-2 rounded-lg py-5 font-bold md:mt-8">
                 <FaPlay /> 원어민 음성 듣기
               </button>
             )}
