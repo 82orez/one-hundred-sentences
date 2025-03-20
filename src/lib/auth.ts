@@ -61,7 +61,17 @@ export const authOptions: NextAuthOptions = {
       console.log("token: ", token);
 
       if (user) {
-        token = { ...token, ...user };
+        // DB 에서 사용자 정보를 가져와서 role 을 포함시킵니다
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { role: true },
+        });
+
+        token = {
+          ...token,
+          ...user,
+          role: dbUser?.role, // role 정보 추가
+        };
       }
       return token;
     },
@@ -69,7 +79,8 @@ export const authOptions: NextAuthOptions = {
       ...session,
       user: {
         ...session.user,
-        ...token,
+        id: token.id,
+        role: token.role, // role 정보를 세션에 포함
       },
     }),
     signIn: async ({ account, user, profile, credentials, email }) => {

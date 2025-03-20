@@ -399,6 +399,7 @@ export type Database = {
           password: string | null
           phone: string | null
           realName: string | null
+          role: Database["public"]["Enums"]["Role"]
           updatedAt: string
         }
         Insert: {
@@ -412,6 +413,7 @@ export type Database = {
           password?: string | null
           phone?: string | null
           realName?: string | null
+          role?: Database["public"]["Enums"]["Role"]
           updatedAt: string
         }
         Update: {
@@ -425,6 +427,7 @@ export type Database = {
           password?: string | null
           phone?: string | null
           realName?: string | null
+          role?: Database["public"]["Enums"]["Role"]
           updatedAt?: string
         }
         Relationships: []
@@ -455,7 +458,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      Role: "admin" | "semiAdmin" | "teacher" | "student"
     }
     CompositeTypes: {
       [_ in never]: never

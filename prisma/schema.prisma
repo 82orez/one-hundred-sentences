@@ -22,6 +22,14 @@ model Test {
   updated_at DateTime? @db.Timestamptz()
 }
 
+// 파일 상단에 Role enum 추가
+enum Role {
+  admin
+  semiAdmin
+  teacher
+  student
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -30,6 +38,7 @@ model User {
   credentials   Boolean   @default(false) // 이메일로 회원가입할 때만 True
   realName      String? // 추가 정보
   phone         String? // 추가 정보
+  role          Role      @default(student) // 사용자 역할 추가
   emailVerified DateTime?
   image         String?
   accounts      Account[]

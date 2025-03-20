@@ -17,14 +17,14 @@ export const queryClient = new QueryClient();
 
 export const NextLayout = ({ children }: Props) => {
   const router = useRouter();
-  const { status } = useSession();
+  const { status, data: session } = useSession();
 
-  // ✅ 로그인된 사용자는 learn 페이지로 이동
-  // useEffect(() => {
-  //   if (status === "authenticated") {
-  //     router.replace("/learn");
-  //   }
-  // }, [status, router]);
+  useEffect(() => {
+    if (status === "authenticated" && session?.user.role === "teacher") {
+      console.log("Session:", session);
+      router.replace("/teacher");
+    }
+  }, [status, router, session]);
 
   return (
     <QueryClientProvider client={queryClient}>
