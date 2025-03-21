@@ -22,7 +22,7 @@ export const NextLayout = ({ children }: Props) => {
   useEffect(() => {
     if (status === "authenticated" && session?.user.role === "teacher") {
       console.log("Session:", session);
-      router.replace("/teacher");
+      router.replace("/users/teacher");
     }
   }, [status, router, session]);
 

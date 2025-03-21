@@ -8,6 +8,10 @@ import clsx from "clsx";
 export default function Navbar() {
   const router = useRouter();
   const { status, data: session } = useSession();
+  const isAdmin = session?.user?.role === "admin";
+  const isSemiAdmin = session?.user?.role === "semiAdmin";
+  const isTeacher = session?.user?.role === "teacher";
+  const isStudent = session?.user?.role === "student";
 
   return (
     <nav className="sticky top-0 z-10 flex w-full items-center justify-between bg-white px-6 py-2 shadow-md md:py-4">
@@ -26,8 +30,10 @@ export default function Navbar() {
         {status === "authenticated" ? (
           <>
             <div className="hidden text-gray-700">{session?.user?.email}</div>
-
-            <Link href="/users/profile" className={"hover:underline"}>
+            <Link href="/users/admin" className={clsx("hover:underline", { hidden: isTeacher || isStudent })}>
+              Admin
+            </Link>
+            <Link href="/users/profile" className={clsx("hover:underline", { hidden: isTeacher })}>
               회원 정보
             </Link>
             <button onClick={() => signOut({ callbackUrl: "/" })} className={"btn"}>
