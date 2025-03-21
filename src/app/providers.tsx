@@ -21,14 +21,13 @@ export const NextLayout = ({ children }: Props) => {
 
   useEffect(() => {
     if (status === "authenticated") {
+      console.log("data: ", session);
       if (session?.user.role === "teacher") {
         console.log("Session:", session);
         router.replace("/users/teacher");
       } else if (session?.user.role === "student") {
         // student 인 경우 realName 과 phone 값 확인
-        // @ts-ignore
         const userRealName = session?.user.realName;
-        // @ts-ignore
         const userPhone = session?.user.phone;
 
         // realName 또는 phone 값이 없는 경우 /users/edit 로 리다이렉트
