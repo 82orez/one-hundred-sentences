@@ -33,7 +33,13 @@ export default function Navbar() {
             <Link href="/users/admin" className={clsx("hover:underline", { hidden: isTeacher || isStudent })}>
               Admin
             </Link>
-            <Link href="/users/profile" className={clsx("hover:underline", { hidden: isTeacher })}>
+
+            {/* 교사 전용 링크 추가 */}
+            <Link href="/users/teacher" className={clsx("hover:underline", { hidden: !isTeacher })}>
+              강사 페이지
+            </Link>
+
+            <Link href="/users/profile" className={clsx("hover:underline")}>
               회원 정보
             </Link>
             <button onClick={() => signOut({ callbackUrl: "/" })} className={"btn"}>
