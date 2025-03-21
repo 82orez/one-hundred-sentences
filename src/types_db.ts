@@ -101,6 +101,44 @@ export type Database = {
           },
         ]
       }
+      Assignment: {
+        Row: {
+          courseId: string
+          createdAt: string
+          description: string | null
+          dueDate: string | null
+          id: string
+          title: string
+          updatedAt: string
+        }
+        Insert: {
+          courseId: string
+          createdAt?: string
+          description?: string | null
+          dueDate?: string | null
+          id: string
+          title: string
+          updatedAt: string
+        }
+        Update: {
+          courseId?: string
+          createdAt?: string
+          description?: string | null
+          dueDate?: string | null
+          id?: string
+          title?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Assignment_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       CompletedSentence: {
         Row: {
           completedAt: string
@@ -140,6 +178,41 @@ export type Database = {
           },
         ]
       }
+      Course: {
+        Row: {
+          createdAt: string
+          description: string | null
+          id: string
+          teacherId: string
+          title: string
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          description?: string | null
+          id: string
+          teacherId: string
+          title: string
+          updatedAt: string
+        }
+        Update: {
+          createdAt?: string
+          description?: string | null
+          id?: string
+          teacherId?: string
+          title?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Course_teacherId_fkey"
+            columns: ["teacherId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       EmailVerificationToken: {
         Row: {
           createdAt: string
@@ -164,6 +237,86 @@ export type Database = {
         }
         Relationships: []
       }
+      Enrollment: {
+        Row: {
+          courseId: string
+          createdAt: string
+          id: string
+          status: Database["public"]["Enums"]["EnrollmentStatus"]
+          studentId: string
+          updatedAt: string
+        }
+        Insert: {
+          courseId: string
+          createdAt?: string
+          id: string
+          status?: Database["public"]["Enums"]["EnrollmentStatus"]
+          studentId: string
+          updatedAt: string
+        }
+        Update: {
+          courseId?: string
+          createdAt?: string
+          id?: string
+          status?: Database["public"]["Enums"]["EnrollmentStatus"]
+          studentId?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Enrollment_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Enrollment_studentId_fkey"
+            columns: ["studentId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Lesson: {
+        Row: {
+          content: string | null
+          courseId: string
+          createdAt: string
+          id: string
+          order: number
+          title: string
+          updatedAt: string
+        }
+        Insert: {
+          content?: string | null
+          courseId: string
+          createdAt?: string
+          id: string
+          order: number
+          title: string
+          updatedAt: string
+        }
+        Update: {
+          content?: string | null
+          courseId?: string
+          createdAt?: string
+          id?: string
+          order?: number
+          title?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Lesson_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       PasswordResetToken: {
         Row: {
           createdAt: string
@@ -187,6 +340,38 @@ export type Database = {
           token?: string
         }
         Relationships: []
+      }
+      Progress: {
+        Row: {
+          completed: boolean
+          enrollmentId: string
+          id: string
+          lastAccessed: string | null
+          lessonId: string | null
+        }
+        Insert: {
+          completed?: boolean
+          enrollmentId: string
+          id: string
+          lastAccessed?: string | null
+          lessonId?: string | null
+        }
+        Update: {
+          completed?: boolean
+          enrollmentId?: string
+          id?: string
+          lastAccessed?: string | null
+          lessonId?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Progress_enrollmentId_fkey"
+            columns: ["enrollmentId"]
+            isOneToOne: false
+            referencedRelation: "Enrollment"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       Purchase: {
         Row: {
@@ -363,6 +548,57 @@ export type Database = {
           },
         ]
       }
+      Submission: {
+        Row: {
+          assignmentId: string
+          content: string | null
+          feedback: string | null
+          fileUrl: string | null
+          grade: number | null
+          gradedAt: string | null
+          id: string
+          studentId: string
+          submittedAt: string
+        }
+        Insert: {
+          assignmentId: string
+          content?: string | null
+          feedback?: string | null
+          fileUrl?: string | null
+          grade?: number | null
+          gradedAt?: string | null
+          id: string
+          studentId: string
+          submittedAt?: string
+        }
+        Update: {
+          assignmentId?: string
+          content?: string | null
+          feedback?: string | null
+          fileUrl?: string | null
+          grade?: number | null
+          gradedAt?: string | null
+          id?: string
+          studentId?: string
+          submittedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Submission_assignmentId_fkey"
+            columns: ["assignmentId"]
+            isOneToOne: false
+            referencedRelation: "Assignment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Submission_studentId_fkey"
+            columns: ["studentId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Test: {
         Row: {
           age: number | null
@@ -458,6 +694,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      EnrollmentStatus: "pending" | "active" | "completed" | "dropped"
       Role: "admin" | "semiAdmin" | "teacher" | "student"
     }
     CompositeTypes: {

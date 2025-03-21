@@ -53,6 +53,10 @@ model User {
   QuizAttempt       QuizAttempt[]
   Recordings        Recordings[]
   Purchase          Purchase[]
+
+  Course     Course[]
+  Enrollment Enrollment[]
+  Submission Submission[]
 }
 
 model Account {
@@ -186,4 +190,97 @@ model Purchase {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// 강사(Teacher) 관련 prisma/schema.prisma 에 추가
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  teacherId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 관계 설정
+  teacher     User         @relation(fields: [teacherId], references: [id])
+  lessons     Lesson[]
+  enrollments Enrollment[]
+  assignments Assignment[]
+}
+
+model Lesson {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  courseId  String
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 관계 설정
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
+  id        String           @id @default(cuid())
+  courseId  String
+  studentId String
+  status    EnrollmentStatus @default(active)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  // 관계 설정
+  course   Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  student  User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  progress Progress[]
+
+  @@unique([courseId, studentId])
+}
+
+enum EnrollmentStatus {
+  pending
+  active
+  completed
+  dropped
+}
+
+model Assignment {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  courseId    String
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // 관계 설정
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+}
+
+model Submission {
+  id           String    @id @default(cuid())
+  assignmentId String
+  studentId    String
+  content      String?
+  fileUrl      String?
+  grade        Float?
+  feedback     String?
+  submittedAt  DateTime  @default(now())
+  gradedAt     DateTime?
+
+  // 관계 설정
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student    User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Progress {
+  id           String    @id @default(cuid())
+  enrollmentId String
+  lessonId     String?
+  completed    Boolean   @default(false)
+  lastAccessed DateTime?
+
+  // 관계 설정
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
 }
