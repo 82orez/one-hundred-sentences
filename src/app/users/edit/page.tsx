@@ -130,7 +130,7 @@ const EditProfilePage = () => {
         {/* daisyUI 카드로 교체 */}
         <div className="card w-full max-w-md rounded-2xl border border-gray-300/50 bg-white/90 shadow-xl backdrop-blur-md">
           <div className="card-body px-4 py-6 md:p-8">
-            <h2 className="card-title justify-center text-center text-3xl font-semibold text-gray-800">프로필 수정</h2>
+            <h2 className="card-title justify-center text-center text-3xl font-semibold text-gray-800">프로필 등록 및 수정</h2>
             <p className={"mt-2 text-center text-lg md:text-xl"}>결제 정보 확인을 위해 반드시 정확한 이름과 휴대폰 번호를 입력해 주세요.</p>
 
             <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-6 text-xl">
