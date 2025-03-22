@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -37,7 +37,7 @@ const showToast = (message: string, type: "success" | "error" = "success") => {
 };
 
 const EditProfilePage = () => {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
 
   if (status === "unauthenticated") {
@@ -55,8 +55,18 @@ const EditProfilePage = () => {
     enabled: !!session?.user?.id,
   });
 
-  const [realName, setRealName] = useState(userInfo?.realName || "");
-  const [phone, setPhone] = useState(userInfo?.phone || "");
+  // 수정 후:
+  const [realName, setRealName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  // userInfo 가 로드된 후 상태 업데이트
+  useEffect(() => {
+    if (userInfo) {
+      setRealName(userInfo.realName || "");
+      setPhone(userInfo.phone || "");
+    }
+  }, [userInfo]);
+
   const [error, setError] = useState<string | null>(null);
 
   // ✅ 전화번호 자동 변환 (마지막 4자리 기준)
@@ -90,6 +100,7 @@ const EditProfilePage = () => {
       return axios.post("/api/user/update", { realName, phone });
     },
     onSuccess: () => {
+      update({ realName, phone }); // 세션 업데이트 추가
       showToast("✅ 프로필이 업데이트되었습니다.", "success");
       router.push("/users/profile");
     },

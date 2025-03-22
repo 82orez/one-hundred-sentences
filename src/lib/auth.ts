@@ -60,17 +60,19 @@ export const authOptions: NextAuthOptions = {
       console.log("user: ", user);
       console.log("token: ", token);
 
-      if (user) {
-        // DB 에서 사용자 정보를 가져와서 role 을 포함시킵니다
+      // 사용자 ID가 있는 경우 (로그인 시 또는 세션 갱신 시)
+      if (user?.id || token?.id) {
+        // 사용자 ID를 기준으로 DB 에서 최신 정보를 조회
         const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
+          where: { id: user?.id || (token.id as string) },
           select: { role: true, realName: true, phone: true },
         });
 
+        // 토큰에 최신 사용자 정보 업데이트
         token = {
           ...token,
-          ...user,
-          role: dbUser?.role, // role 정보 추가
+          ...(user || {}),
+          role: dbUser?.role,
           realName: dbUser?.realName,
           phone: dbUser?.phone,
         };
