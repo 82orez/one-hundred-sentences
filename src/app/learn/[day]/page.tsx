@@ -141,6 +141,9 @@ const LearnPage = ({ params }: Props) => {
     setPlayingSentence(sentenceNo);
 
     const audio = new Audio(audioUrl);
+    // * 재생 속도 설정
+    audio.playbackRate = 1;
+
     audio.play();
 
     audio.onended = () => {
