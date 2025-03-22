@@ -128,6 +128,15 @@ const HomePage = () => {
             퀴즈 풀기
           </button>
         </div>
+
+        <button
+          className={"btn btn-primary mt-10"}
+          onClick={() => {
+            const url = "https://us04web.zoom.us/j/3080825122?pwd=edksBWiLSuQ2gFIP6bMMuO5FSppKTw.1";
+            window.open(url, "_blank");
+          }}>
+          화상 수업 시작하기
+        </button>
       </div>
 
       {/* ✅ 퀴즈 선택 모달 */}
