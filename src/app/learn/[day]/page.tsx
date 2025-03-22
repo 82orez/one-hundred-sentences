@@ -142,7 +142,7 @@ const LearnPage = ({ params }: Props) => {
 
     const audio = new Audio(audioUrl);
     // * 재생 속도 설정
-    audio.playbackRate = 1;
+    audio.playbackRate = 0.8;
 
     audio.play();
 

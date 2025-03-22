@@ -499,6 +499,7 @@ export type Database = {
           id: string
           ko: string
           no: number
+          utubeUrl: string | null
         }
         Insert: {
           audioUrl?: string | null
@@ -506,6 +507,7 @@ export type Database = {
           id: string
           ko: string
           no: number
+          utubeUrl?: string | null
         }
         Update: {
           audioUrl?: string | null
@@ -513,6 +515,7 @@ export type Database = {
           id?: string
           ko?: string
           no?: number
+          utubeUrl?: string | null
         }
         Relationships: []
       }
