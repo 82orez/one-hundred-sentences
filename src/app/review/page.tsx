@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion"; // ✅ framer-motion 추가
+import { motion, AnimatePresence } from "framer-motion";
+import LoadingPageSkeleton from "@/components/LoadingPageSkeleton"; // ✅ framer-motion 추가
 
 const ReviewPage = () => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -56,7 +57,7 @@ const ReviewPage = () => {
 
       {/* ✅ 학습일 선택 목록 */}
       {isLoading ? (
-        <p className="mt-6 text-gray-500">학습 데이터를 불러오는 중...</p>
+        <LoadingPageSkeleton />
       ) : (
         <div className="mt-6 grid grid-cols-3 gap-4 md:grid-cols-5 md:gap-5">
           {[...Array(20)].map((_, index) => {

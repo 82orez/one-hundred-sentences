@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
+import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 
 const DictationQuizPage = () => {
   const { data: session } = useSession();
@@ -109,7 +110,7 @@ const DictationQuizPage = () => {
   };
 
   if (isLoading) {
-    return <p className="text-center text-lg text-gray-500">문장을 불러오는 중...</p>;
+    return <LoadingPageSkeleton />;
   }
 
   return (

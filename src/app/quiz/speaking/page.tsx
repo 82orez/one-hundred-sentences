@@ -8,6 +8,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa6";
 import { FaPlay, FaRegStopCircle } from "react-icons/fa";
+import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -238,7 +239,7 @@ export default function SpeakingPage() {
   };
 
   if (isLoading) {
-    return <p className="text-center text-lg text-gray-500">문장을 불러오는 중...</p>;
+    return <LoadingPageSkeleton />;
   }
 
   return (

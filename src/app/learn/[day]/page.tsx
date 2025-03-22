@@ -18,6 +18,7 @@ import Modal from "@/components/Modal";
 import { ImYoutube2 } from "react-icons/im";
 import { TfiYoutube } from "react-icons/tfi";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface Sentence {
   no: number;
@@ -40,6 +41,7 @@ const LearnPage = ({ params }: Props) => {
   const [showRecorder, setShowRecorder] = useState<number | null>(null); // ✅ 한 번에 하나의 문장에서만 녹음 UI 표시
   const [playingSentence, setPlayingSentence] = useState<number | null>(null); // 현재 재생 중인 문장 추적
   const [selectedSentence, setSelectedSentence] = useState<string | null>(null); // ✅ 문장 객체 저장
+  const [isPlayingNative, setIsPlayingNative] = useState(false);
 
   // 유튜브 모달 상태와 현재 선택된 유튜브 URL 을 저장할 상태 추가
   const [showYoutubeModal, setShowYoutubeModal] = useState(false);
@@ -277,7 +279,13 @@ const LearnPage = ({ params }: Props) => {
                   onClick={() => playAudio(sentence.audioUrl, sentence.no)}
                   disabled={playingSentence !== null} // 다른 문장이 재생 중이면 비활성화
                 >
-                  <FaPlay size={18} className={"mx-auto"} />
+                  {playingSentence === sentence.no ? (
+                    <div className="flex items-center justify-center">
+                      <AiOutlineLoading3Quarters className={"animate-spin"} />
+                    </div>
+                  ) : (
+                    <FaPlay size={18} className={"mx-auto"} />
+                  )}
                 </button>
               )}
 
