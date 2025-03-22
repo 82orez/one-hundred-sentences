@@ -237,7 +237,7 @@ const LearnPage = ({ params }: Props) => {
               {/* ✅ 오디오 듣기 버튼 */}
               {sentence.audioUrl && (
                 <button
-                  className="h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white"
+                  className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", { "opacity-50": playingSentence === sentence.no })}
                   onClick={() => playAudio(sentence.audioUrl, sentence.no)}
                   disabled={playingSentence !== null} // 다른 문장이 재생 중이면 비활성화
                 >
