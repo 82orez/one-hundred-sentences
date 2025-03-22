@@ -1,4 +1,3 @@
-// app/loading.tsx (혹은 원하는 컴포넌트 위치)
 export default function LoadingPageSkeleton() {
   return (
     <div className="mx-auto mt-10 flex max-w-xl flex-col gap-4 p-8">

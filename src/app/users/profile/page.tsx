@@ -6,6 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 import { Mail, User, Edit, Home } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
+import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 
 const ProfilePage = () => {
   const { data: session } = useSession();
@@ -24,14 +25,7 @@ const ProfilePage = () => {
     enabled: !!session?.user?.id, // 여기서 조건부 실행 제어
   });
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen flex-col items-center justify-center">
-        <div className="h-40 w-80 animate-pulse rounded-lg bg-gray-200" />
-        <div className="mt-4 h-10 w-40 animate-pulse rounded-md bg-gray-200" />
-      </div>
-    );
-  }
+  if (isLoading) return <LoadingPageSkeleton />;
 
   if (error) {
     return (

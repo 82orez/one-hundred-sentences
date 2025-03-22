@@ -7,6 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { User } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
+import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 
 // * DaisyUI Toast 를 위한 함수
 const showToast = (message: string, type: "success" | "error" = "success") => {
@@ -127,13 +128,7 @@ const EditProfilePage = () => {
     updateProfileMutation.mutate();
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="skeleton h-40 w-80 rounded-lg"></div>
-      </div>
-    );
-  }
+  if (isLoading) return <LoadingPageSkeleton />;
 
   return (
     <div className="flex min-h-screen justify-center bg-gradient-to-br from-blue-100 to-blue-300 p-4 md:p-6">

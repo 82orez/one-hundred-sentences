@@ -17,12 +17,14 @@ import { RiCloseLargeFill } from "react-icons/ri";
 import Modal from "@/components/Modal";
 import { ImYoutube2 } from "react-icons/im";
 import { TfiYoutube } from "react-icons/tfi";
+import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 
 interface Sentence {
   no: number;
   en: string;
   ko: string;
   audioUrl?: string;
+  utubeUrl?: string;
 }
 
 type Props = {
@@ -39,8 +41,9 @@ const LearnPage = ({ params }: Props) => {
   const [playingSentence, setPlayingSentence] = useState<number | null>(null); // 현재 재생 중인 문장 추적
   const [selectedSentence, setSelectedSentence] = useState<string | null>(null); // ✅ 문장 객체 저장
 
+  // 유튜브 모달 상태와 현재 선택된 유튜브 URL 을 저장할 상태 추가
   const [showYoutubeModal, setShowYoutubeModal] = useState(false);
-  const videoId = "ARa5yXcnT_w";
+  const [currentYoutubeUrl, setCurrentYoutubeUrl] = useState<string | null>(null);
 
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -174,7 +177,38 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
-  if (isLoading) return <p className="text-center">Loading...</p>;
+  // 유튜브 재생 함수
+  const handlePlayYoutube = (sentence: Sentence) => {
+    if (sentence.utubeUrl) {
+      setCurrentYoutubeUrl(sentence.utubeUrl);
+      setShowYoutubeModal(true);
+    } else {
+      // 유튜브 URL 이 없을 경우 처리 (알림 등)
+      alert("이 문장에 대한 유튜브 영상이 없습니다.");
+    }
+  };
+
+  // 유튜브 모달 닫기 함수
+  const closeYoutubeModal = () => {
+    setShowYoutubeModal(false);
+    setCurrentYoutubeUrl(null);
+  };
+
+  // 유튜브 URL 에서 ID를 추출하는 유틸리티 함수
+  const extractYoutubeId = (url: string): string => {
+    // 다양한 유튜브 URL 형식 처리:
+    // https://www.youtube.com/watch?v=VIDEO_ID
+    // https://youtu.be/VIDEO_ID
+    // https://www.youtube.com/embed/VIDEO_ID
+
+    // URL 에서 ID 추출하는 정규식
+    const regExp = /^.*(youtu.be\/|v\/|e\/|u\/\w+\/|embed\/|v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+
+    return match && match[2].length === 11 ? match[2] : url; // 정규 ID가 추출되지 않으면 원래 URL 반환
+  };
+
+  if (isLoading) return <LoadingPageSkeleton />;
   if (error) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
   return (
@@ -207,14 +241,16 @@ const LearnPage = ({ params }: Props) => {
           {/* ✅ 버튼 그룹 (녹음 UI가 열려있을 때 숨김) */}
           {showRecorder !== sentence.no && (
             <div className="mt-4 flex items-center gap-4">
-              {/* 유튜브 재생 링크 */}
-              <button
-                onClick={() => setShowYoutubeModal(true)}
-                className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 p-2 text-red-600">
-                <TfiYoutube size={30} className={"md:hidden"} />
-                <ImYoutube2 size={50} className={"hidden md:block"} />
-                {/* 강의 보기 */}
-              </button>
+              {/* 유튜브 버튼 추가 */}
+              {sentence.utubeUrl && (
+                <button
+                  onClick={() => handlePlayYoutube(sentence)}
+                  className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 p-2 text-red-600"
+                  aria-label="유튜브 재생">
+                  <TfiYoutube size={30} className={"md:hidden"} />
+                  <ImYoutube2 size={50} className={"hidden md:block"} />
+                </button>
+              )}
 
               {/* ✅ 개별 영문 가리기 버튼 */}
               <button
@@ -294,12 +330,12 @@ const LearnPage = ({ params }: Props) => {
         </div>
       ))}
 
-      {showYoutubeModal && (
+      {showYoutubeModal && currentYoutubeUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="relative w-[90%] max-w-4xl rounded-lg bg-white p-4 shadow-xl">
             <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-2">
               <h3 className="text-lg font-semibold">강의 동영상</h3>
-              <button onClick={() => setShowYoutubeModal(false)} className="rounded-full p-1 hover:bg-gray-100">
+              <button onClick={() => closeYoutubeModal()} className="rounded-full p-1 hover:bg-gray-100">
                 <span className="text-2xl">&times;</span>
               </button>
             </div>
@@ -307,7 +343,7 @@ const LearnPage = ({ params }: Props) => {
               <iframe
                 width="100%"
                 height="100%"
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                src={`https://www.youtube.com/embed/${extractYoutubeId(currentYoutubeUrl)}?autoplay=1`}
                 title="영어 학습 동영상"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen></iframe>
