@@ -11,6 +11,7 @@ import Link from "next/link";
 import { HiOutlineSparkles } from "react-icons/hi2";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 
 // * Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -20,6 +21,8 @@ const HomePage = () => {
   const { currentDay } = useLearningStore();
   const [progress, setProgress] = useState(0);
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+
   const router = useRouter();
 
   // ✅ 사용자가 완료한 문장 정보 가져오기
@@ -82,17 +85,14 @@ const HomePage = () => {
     ],
   };
 
+  if (isNavigating) {
+    return <LoadingPageSkeleton />;
+  }
+
   return (
     <div className="mx-auto max-w-3xl p-6 text-center">
       <h1 className="text-3xl font-bold">하루 5문장, 20일이면 100문장!</h1>
       <p className="mt-2 text-lg text-gray-600">매일 5문장씩 학습하여 여행영어 100문장을 완성하세요.</p>
-
-      {/*<div className="mx-auto mt-6 w-full max-w-md rounded-lg bg-gray-100 p-4 shadow">*/}
-      {/*  <p className="text-lg font-semibold">현재까지 학습 진행률: {progress.toFixed(0)}%</p>*/}
-      {/*  <div className="mt-2 h-4 w-full rounded-full bg-gray-300">*/}
-      {/*    <div className="h-4 rounded-full bg-blue-500" style={{ width: `${progress}%` }}></div>*/}
-      {/*  </div>*/}
-      {/*</div>*/}
 
       {/* ✅ 원형 진행률 차트 */}
       <div className="relative mx-auto mt-6 mb-14 h-48 w-48">
@@ -107,7 +107,10 @@ const HomePage = () => {
         <p className="text-2xl font-bold text-gray-600">" 오늘은 학습 {nextDay} 일차 "</p>
         <button
           className="mt-4 cursor-pointer rounded-lg border-white bg-blue-700 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
-          onClick={() => router.push(`/learn/${nextDay}`)} // ✅ nextDay 로 이동
+          onClick={() => {
+            setIsNavigating(true);
+            router.push(`/learn/${nextDay}`);
+          }} // ✅ nextDay 로 이동
         >
           오늘 학습 시작하기
         </button>
