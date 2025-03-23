@@ -14,7 +14,6 @@ import { FaA, FaMicrophone } from "react-icons/fa6";
 import { TbAlphabetKorean } from "react-icons/tb";
 import AudioRecorder from "@/components/Recoder";
 import { RiCloseLargeFill } from "react-icons/ri";
-import Modal from "@/components/Modal";
 import { ImYoutube2 } from "react-icons/im";
 import { TfiYoutube } from "react-icons/tfi";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
@@ -324,17 +323,19 @@ const LearnPage = ({ params }: Props) => {
             </div>
           )}
 
-          {/* ✅ 녹음 모달 */}
-          <Modal isOpen={showRecorder !== null}>
-            {showRecorder !== null && (
-              <AudioRecorder
-                sentenceKo={selectedSentence}
-                sentenceNo={showRecorder}
-                handleComplete={handleComplete}
-                onClose={() => setShowRecorder(null)}
-              />
-            )}
-          </Modal>
+          {/* ✅ 녹음 모달 - Tailwind CSS 사용 */}
+          {showRecorder !== null && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/15">
+              <div className="relative flex w-[90%] max-w-md items-center justify-center rounded-lg bg-white p-6 shadow-lg">
+                <AudioRecorder
+                  sentenceKo={selectedSentence}
+                  sentenceNo={showRecorder}
+                  handleComplete={handleComplete}
+                  onClose={() => setShowRecorder(null)}
+                />
+              </div>
+            </div>
+          )}
         </div>
       ))}
 
