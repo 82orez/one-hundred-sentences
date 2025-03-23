@@ -5,13 +5,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 // GET 요청 처리: 특정 강좌 정보 조회
-export async function GET(req: Request, { params }: { params: { courseId: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ courseId: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "인증되지 않은 사용자입니다." }, { status: 401 });
   }
 
-  const courseId = params.courseId;
+  const { courseId } = await params;
 
   try {
     const course = await prisma.course.findUnique({
@@ -40,13 +40,13 @@ export async function GET(req: Request, { params }: { params: { courseId: string
 }
 
 // PUT 요청 처리: 강좌 수정
-export async function PUT(req: Request, { params }: { params: { courseId: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ courseId: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "인증되지 않은 사용자입니다." }, { status: 401 });
   }
 
-  const courseId = params.courseId;
+  const { courseId } = await params;
   const { title, description } = await req.json();
 
   if (!title) {
@@ -86,13 +86,13 @@ export async function PUT(req: Request, { params }: { params: { courseId: string
 }
 
 // DELETE 요청 처리: 강좌 삭제
-export async function DELETE(req: Request, { params }: { params: { courseId: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ courseId: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "인증되지 않은 사용자입니다." }, { status: 401 });
   }
 
-  const courseId = params.courseId;
+  const { courseId } = await params;
 
   try {
     // 먼저 강좌가 해당 강사의 것인지 확인
