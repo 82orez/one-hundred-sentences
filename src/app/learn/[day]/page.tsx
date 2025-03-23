@@ -40,7 +40,6 @@ const LearnPage = ({ params }: Props) => {
   const [showRecorder, setShowRecorder] = useState<number | null>(null); // ✅ 한 번에 하나의 문장에서만 녹음 UI 표시
   const [playingSentence, setPlayingSentence] = useState<number | null>(null); // 현재 재생 중인 문장 추적
   const [selectedSentence, setSelectedSentence] = useState<string | null>(null); // ✅ 문장 객체 저장
-  const [isPlayingNative, setIsPlayingNative] = useState(false);
 
   // 유튜브 모달 상태와 현재 선택된 유튜브 URL 을 저장할 상태 추가
   const [showYoutubeModal, setShowYoutubeModal] = useState(false);

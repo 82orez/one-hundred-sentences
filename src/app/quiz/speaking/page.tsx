@@ -218,6 +218,9 @@ export default function SpeakingPage() {
     const audio = new Audio(currentSentence.audioUrl);
     audioRef.current = audio;
 
+    // * 재생 속도 설정
+    audio.playbackRate = 0.8;
+
     setIsPlaying(true);
 
     audio.onended = () => {
