@@ -16,8 +16,8 @@ export const sentences = [
   // 3
   { no: 11, en: "Do you need to check my bag again?", ko: "제 가방을 다시 확인해야 하나요?" },
   { no: 12, en: "Can’t I bring this pair of scissors on board?", ko: "이 가위는 기내 반입이 안 되나요?" },
-  { no: 13, en: "Alright, you can throw it away.", ko: "알겠습니다. 버리셔도 되세요." },
-  { no: 14, en: "My facial toner is under 100ml.", ko: "제 페이셜 토너는 100ml 이하인데요." }, // 단위
+  { no: 13, en: "All right, you can throw it away.", ko: "알겠습니다. 버리셔도 되세요." },
+  { no: 14, en: "My facial toner is under 100 ml.", ko: "제 페이셜 토너는 100 ml 이하인데요." }, // 단위
   { no: 15, en: "Is there any other issue with my bag?", ko: "제 가방에 다른 문제가 있나요?" },
 
   // 4
@@ -44,7 +44,7 @@ export const sentences = [
   { no: 30, en: "Do you bring the coffee to the table?", ko: "커피를 테이블로 가져다 주시나요?" },
 
   // 8
-  { no: 31, en: "Where is the City Center station?", ko: "실례합니다, 시티센터역은 어디에 있나요?" }, // the
+  { no: 31, en: "Where is the City Center station?", ko: "시티센터역은 어디에 있나요?" }, // the
   { no: 32, en: "Can I get there on foot?", ko: "걸어서 갈 수 있나요?" },
   { no: 33, en: "Can you tell me how to get there?", ko: "거기에 어떻게 가는지 말해 주실 수 있나요?" },
   { no: 34, en: "Do I turn right after going straight for two blocks?", ko: "두 블록 직진한 후 오른쪽으로 도나요?" },

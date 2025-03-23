@@ -1,7 +1,7 @@
 "use client";
 
 import { useRecordingStore } from "@/stores/useRecordingStore";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FaMicrophone } from "react-icons/fa6";
 import { FaRegStopCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -26,6 +26,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null); // 타이머 참조 추가
 
   // ❌ 녹음 취소 및 창 닫기 함수
   const handleCancelRecording = async () => {
@@ -35,6 +36,29 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
     setAudioURL(null); // ✅ 녹음된 파일 삭제
     onClose(); // ✅ 모달창 닫기
   };
+
+  // 녹음 시작 시 타이머 설정 및 녹음 종료 시 타이머 제거
+  useEffect(() => {
+    if (isRecording) {
+      // 녹음 시작 시 1분(60000ms) 타이머 설정
+      timerRef.current = setTimeout(() => {
+        handleCancelRecording();
+      }, 60000);
+    } else {
+      // 녹음이 중지되면 타이머 제거
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+
+    // 컴포넌트 언마운트 시 타이머 정리
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [isRecording]);
 
   const handleStopRecording = async () => {
     const audioBlob = await stopRecording();
