@@ -285,36 +285,30 @@ const LearnPage = ({ params }: Props) => {
               </button>
             )}
 
-            {/* ✅ 완료 버튼 */}
-            <button
-              className="hidden w-24 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={completedSentences?.includes(sentence.no)}
-              onClick={() => handleComplete(sentence.no)}
-              style={{
-                backgroundColor: completedSentences?.includes(sentence.no) ? "gray" : "blue",
-              }}>
-              {completedSentences?.includes(sentence.no) ? "완료된 문장" : "완료"}
-            </button>
-
             {/* ✅ 녹음 버튼 */}
             <button
               className={clsx("h-9 min-w-9 cursor-pointer rounded text-white disabled:cursor-not-allowed", {
-                "bg-gray-300": selectedSentenceNo === sentence.no, // ✅ 현재 열려있는 문장이면 회색
-                "bg-red-400": selectedSentenceNo !== sentence.no, // ✅ 다른 문장이면 빨간색
-                "bg-yellow-400": completedSentences?.includes(sentence.no), // ✅ 이미 완료한 문장은 노란색
+                "bg-gray-400": completedSentences?.includes(sentence.no),
+                "bg-red-400": !completedSentences?.includes(sentence.no),
                 "pointer-events-none": isPlayingSentenceNo,
               })}
-              disabled={completedSentences?.includes(sentence.no)}
               onClick={() => {
                 toggleRecorder(sentence.no);
               }}>
-              {completedSentences?.includes(sentence.no) ? (
-                <FaCheck size={20} className={"mx-auto"} />
-              ) : selectedSentenceNo === sentence.no ? ( // ✅ 현재 녹음 중인 문장만 아이콘 변경
+              {selectedSentenceNo === sentence.no ? ( // ✅ 현재 녹음 중인 문장만 아이콘 변경
                 <RiCloseLargeFill size={20} className={"text-red-500"} />
               ) : (
                 <FaMicrophone size={24} className={"mx-auto"} />
               )}
+            </button>
+
+            {/* ✅ 완료 버튼 */}
+            <button
+              className={clsx("h-9 min-w-9 rounded bg-yellow-400 text-white disabled:cursor-not-allowed", {
+                hidden: !completedSentences?.includes(sentence.no),
+              })}
+              disabled={completedSentences?.includes(sentence.no)}>
+              {completedSentences?.includes(sentence.no) && <FaCheck size={20} className={"mx-auto"} />}
             </button>
           </div>
 
@@ -328,6 +322,7 @@ const LearnPage = ({ params }: Props) => {
                   sentenceNo={selectedSentenceNo}
                   handleComplete={handleComplete}
                   onClose={() => setSelectedSentenceNo(null)}
+                  isCompleted={completedSentences?.includes(selectedSentenceNo)}
                 />
               </div>
             </div>

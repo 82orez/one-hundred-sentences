@@ -3,7 +3,7 @@
 import { useRecordingStore } from "@/stores/useRecordingStore";
 import { useState, useRef, useEffect } from "react";
 import { FaMicrophone } from "react-icons/fa6";
-import { FaRegStopCircle } from "react-icons/fa";
+import { FaCheck, FaRegStopCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { RiCloseLargeFill } from "react-icons/ri";
 import { IoMdCloseCircleOutline } from "react-icons/io";
@@ -12,18 +12,18 @@ interface Props {
   sentenceNo: number;
   sentenceEn: string;
   sentenceKo: string;
+  isCompleted: boolean;
 
   handleComplete: (sentenceNo: number) => void;
   onClose: () => void;
 }
 
-const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onClose }: Props) => {
+const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onClose, isCompleted }: Props) => {
   const { isRecording, isLoading, startRecording, stopRecording } = useRecordingStore();
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [uploadedURL, setUploadedURL] = useState<string | null>(null);
   const [isUpLoading, setIsUpLoading] = useState(false);
   const [recordCount, setRecordCount] = useState<number | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null); // 타이머 참조 추가
@@ -97,7 +97,6 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
         console.log(`File saved at: ${result.url}`);
 
         handleComplete(sentenceNo);
-        setIsSubmitted(true);
       } else {
         alert(result.error);
       }
@@ -113,7 +112,6 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
     <div className="relative mt-5 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
       {/* ❌ 버튼 (닫기 & 녹음 취소) */}
       <button className="absolute -top-9 -right-5 text-red-500 hover:text-red-700" onClick={handleCancelRecording}>
-        {/*<RiCloseLargeFill size={24} />*/}
         <IoMdCloseCircleOutline size={30} />
       </button>
 
@@ -170,8 +168,17 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
           <button
             onClick={handleSaveRecording}
             className="mt-2 flex min-h-12 w-1/4 min-w-52 cursor-pointer items-center justify-center rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
-            disabled={isRecording || isLoading || isUpLoading || isSubmitted || isPlaying}>
-            {isUpLoading ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : isSubmitted ? "숙제 제출 완료" : "녹음 파일 제출"}
+            disabled={isRecording || isLoading || isUpLoading || isCompleted || isPlaying}>
+            {isUpLoading ? (
+              <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+            ) : isCompleted ? (
+              <div className={"flex items-center justify-center gap-2"}>
+                <FaCheck size={20} />
+                제출 완료
+              </div>
+            ) : (
+              "녹음 파일 제출"
+            )}
           </button>
         </div>
       )}
