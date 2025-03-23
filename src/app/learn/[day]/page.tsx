@@ -166,6 +166,7 @@ const LearnPage = ({ params }: Props) => {
       console.log("completedSet: ", completedSet);
       const allCompleted = sentences?.every((s) => completedSet.has(s.no));
 
+      // ! ui 고려 필요
       if (allCompleted) {
         setTimeout(() => {
           alert(`${day}일차 학습 완료!`);
@@ -323,12 +324,18 @@ const LearnPage = ({ params }: Props) => {
           )}
 
           {/* ✅ 녹음 모달 - Tailwind CSS 사용 */}
-          {showRecorder !== null && (
+          {showRecorder && sentences?.find((s) => s.no === showRecorder) && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/15">
               <div className="relative flex w-[90%] max-w-md items-center justify-center rounded-lg bg-white p-6 shadow-lg">
                 <AudioRecorder
-                  sentenceKo={selectedSentence}
+                  sentenceKo={sentences.find((s) => s.no === showRecorder)?.ko || ""}
+                  sentenceEn={sentences.find((s) => s.no === showRecorder)?.en || ""}
                   sentenceNo={showRecorder}
+                  // handleComplete={(sentenceNo) => {
+                  //   completeSentenceMutation.mutate(sentenceNo);
+                  //   markSentenceComplete(sentenceNo);
+                  //   setShowRecorder(null);
+                  // }}
                   handleComplete={handleComplete}
                   onClose={() => setShowRecorder(null)}
                 />

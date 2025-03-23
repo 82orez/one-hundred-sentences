@@ -9,13 +9,15 @@ import { RiCloseLargeFill } from "react-icons/ri";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 
 interface Props {
-  sentenceKo: string;
   sentenceNo: number;
+  sentenceEn: string;
+  sentenceKo: string;
+
   handleComplete: (sentenceNo: number) => void;
   onClose: () => void;
 }
 
-const AudioRecorder = ({ sentenceKo, sentenceNo, handleComplete, onClose }: Props) => {
+const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onClose }: Props) => {
   const { isRecording, isLoading, startRecording, stopRecording } = useRecordingStore();
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [uploadedURL, setUploadedURL] = useState<string | null>(null);
@@ -92,6 +94,9 @@ const AudioRecorder = ({ sentenceKo, sentenceNo, handleComplete, onClose }: Prop
       </button>
 
       <p className={"mt-1 text-lg"}>{sentenceKo}</p>
+
+      {/* 영어 문장 추가 */}
+      <p className="text-md mt-1 text-gray-700">{sentenceEn}</p>
 
       <p className={"mt-8 mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
 
