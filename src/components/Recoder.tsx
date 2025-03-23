@@ -37,7 +37,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
     onClose(); // ✅ 모달창 닫기
   };
 
-  // 녹음 시작 시 타이머 설정 및 녹음 종료 시 타이머 제거
+  // ✅ 녹음 시작 시 타이머 설정 및 녹음 종료 시 타이머 제거
   useEffect(() => {
     if (isRecording) {
       // 녹음 시작 시 1분(60000ms) 타이머 설정
@@ -72,7 +72,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
   const handleSaveRecording = async () => {
     if (!audioURL) return;
 
-    // ✅ 확인창 추가
+    // 확인창 추가
     const confirmSubmit = window.confirm("정말로 제출하시겠습니까?");
     if (!confirmSubmit) return; // 사용자가 취소하면 제출 중단
 

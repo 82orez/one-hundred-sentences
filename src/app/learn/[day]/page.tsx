@@ -241,7 +241,7 @@ const LearnPage = ({ params }: Props) => {
             {sentence.utubeUrl && (
               <button
                 onClick={() => handlePlayYoutube(sentence)}
-                className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 p-2 text-red-600"
+                className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 text-red-600 md:p-2"
                 aria-label="유튜브 재생">
                 <TfiYoutube size={30} className={"md:hidden"} />
                 <ImYoutube2 size={50} className={"hidden md:block"} />
