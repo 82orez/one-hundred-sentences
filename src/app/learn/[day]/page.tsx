@@ -37,8 +37,8 @@ const LearnPage = ({ params }: Props) => {
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
-  const [showRecorder, setShowRecorder] = useState<number | null>(null); // ✅ 한 번에 하나의 문장에서만 녹음 UI 표시
-  const [playingSentence, setPlayingSentence] = useState<number | null>(null); // 현재 재생 중인 문장 추적
+  const [selectedSentenceNo, setSelectedSentenceNo] = useState<number | null>(null); // 선택된 문장 No.
+  const [isPlayingSentenceNo, setIsPlayingSentenceNo] = useState<number | null>(null); // 현재 재생 중인 문장 No.
   const [selectedSentence, setSelectedSentence] = useState<string | null>(null); // ✅ 문장 객체 저장
 
   // 유튜브 모달 상태와 현재 선택된 유튜브 URL 을 저장할 상태 추가
@@ -129,7 +129,7 @@ const LearnPage = ({ params }: Props) => {
   };
 
   const toggleRecorder = (sentenceNo: number) => {
-    setShowRecorder((prev) => (prev === sentenceNo ? null : sentenceNo)); // ✅ 같은 문장을 클릭하면 닫고, 다른 문장을 클릭하면 변경
+    setSelectedSentenceNo((prev) => (prev === sentenceNo ? null : sentenceNo)); // ✅ 같은 문장을 클릭하면 닫고, 다른 문장을 클릭하면 변경
   };
 
   // ✅ 녹음 버튼 클릭 시 모달 열기
@@ -139,9 +139,9 @@ const LearnPage = ({ params }: Props) => {
 
   // ✅ 오디오 재생 함수
   const playAudio = (audioUrl?: string, sentenceNo?: number) => {
-    if (!audioUrl || sentenceNo === undefined || playingSentence !== null) return; // ✅ 이미 다른 오디오가 재생 중이면 실행 방지
+    if (!audioUrl || sentenceNo === undefined || isPlayingSentenceNo !== null) return; // ✅ 이미 다른 오디오가 재생 중이면 실행 방지
 
-    setPlayingSentence(sentenceNo);
+    setIsPlayingSentenceNo(sentenceNo);
 
     const audio = new Audio(audioUrl);
     // * 재생 속도 설정
@@ -150,7 +150,7 @@ const LearnPage = ({ params }: Props) => {
     audio.play();
 
     audio.onended = () => {
-      setPlayingSentence(null);
+      setIsPlayingSentenceNo(null);
     };
   };
 
@@ -239,105 +239,105 @@ const LearnPage = ({ params }: Props) => {
 
           <p className={clsx("mt-2 text-lg text-gray-600", { "blur-xs": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
 
-          {/* ✅ 버튼 그룹 (녹음 UI가 열려있을 때 숨김) */}
-          {showRecorder !== sentence.no && (
-            <div className="mt-4 flex items-center gap-4">
-              {/* 유튜브 버튼 추가 */}
-              {sentence.utubeUrl && (
-                <button
-                  onClick={() => handlePlayYoutube(sentence)}
-                  className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 p-2 text-red-600"
-                  aria-label="유튜브 재생">
-                  <TfiYoutube size={30} className={"md:hidden"} />
-                  <ImYoutube2 size={50} className={"hidden md:block"} />
-                </button>
-              )}
-
-              {/* ✅ 개별 영문 가리기 버튼 */}
+          {/* ✅ 버튼 그룹 */}
+          <div className="mt-4 flex items-center gap-4">
+            {/* 유튜브 버튼 추가 */}
+            {sentence.utubeUrl && (
               <button
-                className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
-                  "border opacity-50": visibleEnglish[sentence.no],
-                })}
-                onClick={() => toggleEnglish(sentence.no)}>
-                <FaA size={18} />
+                onClick={() => handlePlayYoutube(sentence)}
+                className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 p-2 text-red-600"
+                aria-label="유튜브 재생">
+                <TfiYoutube size={30} className={"md:hidden"} />
+                <ImYoutube2 size={50} className={"hidden md:block"} />
               </button>
+            )}
 
-              {/* ✅ 번역 보이기/가리기 버튼 */}
+            {/* ✅ 개별 영문 가리기 버튼 */}
+            <button
+              className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
+                "border opacity-50": visibleEnglish[sentence.no],
+              })}
+              onClick={() => toggleEnglish(sentence.no)}>
+              <FaA size={18} />
+            </button>
+
+            {/* ✅ 번역 보이기/가리기 버튼 */}
+            <button
+              className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
+                "border opacity-50": !visibleTranslations[sentence.no],
+              })}
+              onClick={() => toggleTranslation(sentence.no)}>
+              <TbAlphabetKorean size={27} />
+            </button>
+
+            {/* ✅ 오디오 듣기 버튼 */}
+            {sentence.audioUrl && (
               <button
-                className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
-                  "border opacity-50": !visibleTranslations[sentence.no],
+                className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
+                  "opacity-50": isPlayingSentenceNo === sentence.no,
                 })}
-                onClick={() => toggleTranslation(sentence.no)}>
-                <TbAlphabetKorean size={27} />
-              </button>
-
-              {/* ✅ 오디오 듣기 버튼 */}
-              {sentence.audioUrl && (
-                <button
-                  className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", { "opacity-50": playingSentence === sentence.no })}
-                  onClick={() => playAudio(sentence.audioUrl, sentence.no)}
-                  disabled={playingSentence !== null} // 다른 문장이 재생 중이면 비활성화
-                >
-                  {playingSentence === sentence.no ? (
-                    <div className="flex items-center justify-center">
-                      <AiOutlineLoading3Quarters className={"animate-spin"} />
-                    </div>
-                  ) : (
-                    <FaPlay size={18} className={"mx-auto"} />
-                  )}
-                </button>
-              )}
-
-              {/* ✅ 완료 버튼 */}
-              <button
-                className="hidden w-24 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={completedSentences?.includes(sentence.no)}
-                onClick={() => handleComplete(sentence.no)}
-                style={{
-                  backgroundColor: completedSentences?.includes(sentence.no) ? "gray" : "blue",
-                }}>
-                {completedSentences?.includes(sentence.no) ? "완료된 문장" : "완료"}
-              </button>
-
-              {/* ✅ 녹음 버튼 */}
-              <button
-                className={clsx("h-9 min-w-9 cursor-pointer rounded text-white disabled:cursor-not-allowed", {
-                  "bg-gray-300": showRecorder === sentence.no, // ✅ 현재 열려있는 문장이면 회색
-                  "bg-red-400": showRecorder !== sentence.no, // ✅ 다른 문장이면 빨간색
-                  "bg-yellow-400": completedSentences?.includes(sentence.no), // ✅ 이미 완료한 문장은 노란색
-                  "pointer-events-none": playingSentence,
-                })}
-                disabled={completedSentences?.includes(sentence.no)}
-                onClick={() => {
-                  toggleRecorder(sentence.no);
-                  openRecorderModal(sentence.ko);
-                }}>
-                {completedSentences?.includes(sentence.no) ? (
-                  <FaCheck size={20} className={"mx-auto"} />
-                ) : showRecorder === sentence.no ? ( // ✅ 현재 녹음 중인 문장만 아이콘 변경
-                  <RiCloseLargeFill size={20} className={"text-red-500"} />
+                onClick={() => playAudio(sentence.audioUrl, sentence.no)}
+                disabled={isPlayingSentenceNo !== null} // 다른 문장이 재생 중이면 비활성화
+              >
+                {isPlayingSentenceNo === sentence.no ? (
+                  <div className="flex items-center justify-center">
+                    <AiOutlineLoading3Quarters className={"animate-spin"} />
+                  </div>
                 ) : (
-                  <FaMicrophone size={24} className={"mx-auto"} />
+                  <FaPlay size={18} className={"mx-auto"} />
                 )}
               </button>
-            </div>
-          )}
+            )}
+
+            {/* ✅ 완료 버튼 */}
+            <button
+              className="hidden w-24 cursor-pointer rounded px-2 py-1 text-white disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={completedSentences?.includes(sentence.no)}
+              onClick={() => handleComplete(sentence.no)}
+              style={{
+                backgroundColor: completedSentences?.includes(sentence.no) ? "gray" : "blue",
+              }}>
+              {completedSentences?.includes(sentence.no) ? "완료된 문장" : "완료"}
+            </button>
+
+            {/* ✅ 녹음 버튼 */}
+            <button
+              className={clsx("h-9 min-w-9 cursor-pointer rounded text-white disabled:cursor-not-allowed", {
+                "bg-gray-300": selectedSentenceNo === sentence.no, // ✅ 현재 열려있는 문장이면 회색
+                "bg-red-400": selectedSentenceNo !== sentence.no, // ✅ 다른 문장이면 빨간색
+                "bg-yellow-400": completedSentences?.includes(sentence.no), // ✅ 이미 완료한 문장은 노란색
+                "pointer-events-none": isPlayingSentenceNo,
+              })}
+              disabled={completedSentences?.includes(sentence.no)}
+              onClick={() => {
+                toggleRecorder(sentence.no);
+                openRecorderModal(sentence.ko);
+              }}>
+              {completedSentences?.includes(sentence.no) ? (
+                <FaCheck size={20} className={"mx-auto"} />
+              ) : selectedSentenceNo === sentence.no ? ( // ✅ 현재 녹음 중인 문장만 아이콘 변경
+                <RiCloseLargeFill size={20} className={"text-red-500"} />
+              ) : (
+                <FaMicrophone size={24} className={"mx-auto"} />
+              )}
+            </button>
+          </div>
 
           {/* ✅ 녹음 모달 - Tailwind CSS 사용 */}
-          {showRecorder && sentences?.find((s) => s.no === showRecorder) && (
+          {selectedSentenceNo && sentences?.find((s) => s.no === selectedSentenceNo) && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/25">
               <div className="relative flex w-[90%] max-w-md items-center justify-center rounded-lg bg-white p-6 shadow-lg">
                 <AudioRecorder
-                  sentenceKo={sentences.find((s) => s.no === showRecorder)?.ko || ""}
-                  sentenceEn={sentences.find((s) => s.no === showRecorder)?.en || ""}
-                  sentenceNo={showRecorder}
+                  sentenceKo={sentences.find((s) => s.no === selectedSentenceNo)?.ko || ""}
+                  sentenceEn={sentences.find((s) => s.no === selectedSentenceNo)?.en || ""}
+                  sentenceNo={selectedSentenceNo}
                   // handleComplete={(sentenceNo) => {
                   //   completeSentenceMutation.mutate(sentenceNo);
                   //   markSentenceComplete(sentenceNo);
                   //   setShowRecorder(null);
                   // }}
                   handleComplete={handleComplete}
-                  onClose={() => setShowRecorder(null)}
+                  onClose={() => setSelectedSentenceNo(null)}
                 />
               </div>
             </div>
