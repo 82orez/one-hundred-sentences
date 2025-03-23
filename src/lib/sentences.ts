@@ -16,7 +16,7 @@ export const sentences = [
   // 3
   { no: 11, en: "Do you need to check my bag again?", ko: "제 가방을 다시 확인해야 하나요?" },
   { no: 12, en: "Can’t I bring this pair of scissors on board?", ko: "이 가위는 기내 반입이 안 되나요?" },
-  { no: 13, en: "Alright, You can throw it away.", ko: "알겠습니다. 버리셔도 되세요." },
+  { no: 13, en: "Alright, you can throw it away.", ko: "알겠습니다. 버리셔도 되세요." },
   { no: 14, en: "My facial toner is under 100ml.", ko: "제 페이셜 토너는 100ml 이하인데요." }, // 단위
   { no: 15, en: "Is there any other issue with my bag?", ko: "제 가방에 다른 문제가 있나요?" },
 
@@ -135,7 +135,7 @@ export const sentences = [
   { no: 91, en: "I’d like to top up my bus card with $20.", ko: "버스 카드에 20불 충전하고 싶어요." },
   { no: 92, en: "Can I pay by card?", ko: "카드로 결제할 수 있나요?" },
   { no: 93, en: "You only accept cash?", ko: "현금만 된다고요?" },
-  { no: 94, en: "I only have a 50$ bill.", ko: "50 달러 지폐밖에 없어요." },
+  { no: 94, en: "I only have a $50 bill.", ko: "50 달러 지폐밖에 없어요." },
   { no: 95, en: "You don’t give change?", ko: "거스름돈은 주지 않나요?" },
 
   // 23
