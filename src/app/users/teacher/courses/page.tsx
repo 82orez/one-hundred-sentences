@@ -177,7 +177,7 @@ export default function CoursesPage() {
       {/* 강좌 수정 모달 */}
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="w-full max-w-md rounded-lg bg-white p-6">
+          <div className="m-3 w-full max-w-md rounded-lg bg-white p-6">
             <h2 className="mb-4 text-2xl font-bold">강좌 수정</h2>
             <form onSubmit={handleEditCourse}>
               <div className="mb-4">
@@ -214,7 +214,7 @@ export default function CoursesPage() {
       {/* 강좌 삭제 확인 모달 */}
       {showDeleteModal && courseToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="w-full max-w-md rounded-lg bg-white p-6">
+          <div className="m-3 w-full max-w-md rounded-lg bg-white p-6">
             <h2 className="text-error mb-4 text-xl font-bold">강좌 삭제 확인</h2>
             <p className="mb-6">
               <span className="font-semibold">'{courseToDelete.title}'</span> 강좌를 정말 삭제하시겠습니까?
