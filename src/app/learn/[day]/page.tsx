@@ -39,7 +39,6 @@ const LearnPage = ({ params }: Props) => {
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
   const [selectedSentenceNo, setSelectedSentenceNo] = useState<number | null>(null); // 선택된 문장 No.
   const [isPlayingSentenceNo, setIsPlayingSentenceNo] = useState<number | null>(null); // 현재 재생 중인 문장 No.
-  const [selectedSentence, setSelectedSentence] = useState<string | null>(null); // ✅ 문장 객체 저장
 
   // 유튜브 모달 상태와 현재 선택된 유튜브 URL 을 저장할 상태 추가
   const [showYoutubeModal, setShowYoutubeModal] = useState(false);
@@ -129,12 +128,9 @@ const LearnPage = ({ params }: Props) => {
   };
 
   const toggleRecorder = (sentenceNo: number) => {
-    setSelectedSentenceNo((prev) => (prev === sentenceNo ? null : sentenceNo)); // ✅ 같은 문장을 클릭하면 닫고, 다른 문장을 클릭하면 변경
-  };
-
-  // ✅ 녹음 버튼 클릭 시 모달 열기
-  const openRecorderModal = (sentence: string) => {
-    setSelectedSentence(sentence); // ✅ 문장 정보 저장
+    // ✅ 클릭(선택)한 문장의 번호를 비교하여, 같은 문장의 버튼을 클릭하면 null, 다른 문장을 클릭하면 선택되 문장 번호를 변경
+    // 선택된 문장이 null 이면, Recorder 가 닫히는 시스템
+    setSelectedSentenceNo((prev) => (prev === sentenceNo ? null : sentenceNo));
   };
 
   // ✅ 오디오 재생 함수
@@ -311,7 +307,6 @@ const LearnPage = ({ params }: Props) => {
               disabled={completedSentences?.includes(sentence.no)}
               onClick={() => {
                 toggleRecorder(sentence.no);
-                openRecorderModal(sentence.ko);
               }}>
               {completedSentences?.includes(sentence.no) ? (
                 <FaCheck size={20} className={"mx-auto"} />
@@ -331,11 +326,6 @@ const LearnPage = ({ params }: Props) => {
                   sentenceKo={sentences.find((s) => s.no === selectedSentenceNo)?.ko || ""}
                   sentenceEn={sentences.find((s) => s.no === selectedSentenceNo)?.en || ""}
                   sentenceNo={selectedSentenceNo}
-                  // handleComplete={(sentenceNo) => {
-                  //   completeSentenceMutation.mutate(sentenceNo);
-                  //   markSentenceComplete(sentenceNo);
-                  //   setShowRecorder(null);
-                  // }}
                   handleComplete={handleComplete}
                   onClose={() => setSelectedSentenceNo(null)}
                 />
