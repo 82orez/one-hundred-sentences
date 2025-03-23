@@ -325,7 +325,7 @@ const LearnPage = ({ params }: Props) => {
 
           {/* ✅ 녹음 모달 - Tailwind CSS 사용 */}
           {showRecorder && sentences?.find((s) => s.no === showRecorder) && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/15">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/25">
               <div className="relative flex w-[90%] max-w-md items-center justify-center rounded-lg bg-white p-6 shadow-lg">
                 <AudioRecorder
                   sentenceKo={sentences.find((s) => s.no === showRecorder)?.ko || ""}
