@@ -4,14 +4,32 @@ import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import clsx from "clsx";
+import { useState, useEffect } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const { status, data: session } = useSession();
   const isAdmin = session?.user?.role === "admin";
   const isSemiAdmin = session?.user?.role === "semiAdmin";
   const isTeacher = session?.user?.role === "teacher";
   const isStudent = session?.user?.role === "student";
+  // 로딩 상태 추가
+  const [isLoading, setIsLoading] = useState(false);
+
+  // 경로가 변경될 때마다 로딩 상태 초기화
+  useEffect(() => {
+    setIsLoading(false);
+    console.log(`pathname: ${pathname}`);
+  }, [pathname]);
+
+  // 로그인 페이지로 이동하는 함수 수정
+  const handleLoginClick = () => {
+    setIsLoading(true);
+    router.push("/users/sign-in");
+  };
 
   return (
     <nav className="sticky top-0 z-10 flex w-full items-center justify-between bg-white px-6 py-2 shadow-md md:py-4">
@@ -48,7 +66,11 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <button onClick={() => router.push("/users/sign-in")} className="btn">
+            <button
+              onClick={handleLoginClick}
+              disabled={isLoading}
+              className={clsx("btn flex items-center gap-2", { hidden: pathname === "/users/sign-in" })}>
+              {isLoading && <AiOutlineLoading3Quarters className="animate-spin" />}
               로그인
             </button>
           </>
