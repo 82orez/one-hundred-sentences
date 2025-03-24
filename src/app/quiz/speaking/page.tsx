@@ -168,6 +168,7 @@ export default function SpeakingPage() {
           .replace(/\b(\w+)'d\b/gi, "$1 would")
           // ... (다른 had 축약형)
           .replace(/\bwhere's\b/g, "where is")
+          .replace(/\bwhat's\b/g, "what is")
 
           // 다른 일반적인 축약형도 처리
           .replace(/\bi'll\b/g, "i will")

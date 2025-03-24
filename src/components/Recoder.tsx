@@ -115,10 +115,10 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
         <IoMdCloseCircleOutline size={30} />
       </button>
 
-      <p className={"mt-1 text-lg"}>{sentenceKo}</p>
+      <p className={"mt-1 text-center text-lg"}>{sentenceKo}</p>
 
       {/* 영어 문장 추가 */}
-      <p className="text-md mt-1 text-gray-700">{sentenceEn}</p>
+      <p className="text-md mt-1 text-center text-gray-700">{sentenceEn}</p>
 
       <p className={"mt-8 mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
 
@@ -128,9 +128,9 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
         disabled={isPlaying}
         className={`min-h-24 cursor-pointer rounded px-4 py-2 ${isRecording ? "animate-pulse text-red-500" : "text-gray-900"} ${isPlaying ? "cursor-not-allowed opacity-50" : ""}`}>
         {isRecording ? (
-          <div>
+          <div className={"flex flex-col items-center justify-center"}>
             <FaRegStopCircle size={45} className={"mb-2"} />
-            <p className={"text-xl font-semibold text-red-400"}>Stop</p>
+            <p className={"text-xl font-semibold text-red-400"}>녹음 완료하기</p>
           </div>
         ) : isLoading ? (
           <div className={"flex flex-col items-center justify-center"}>
@@ -140,20 +140,20 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
         ) : (
           <div className={"flex flex-col items-center justify-center"}>
             <FaMicrophone size={50} className={"mb-2"} />
-            <p className={"animate-pulse text-xl font-semibold text-red-400"}>Start</p>
+            <p className={"animate-pulse text-xl font-semibold text-red-400"}>Click</p>
           </div>
         )}
       </button>
 
       {/* ✅ 오디오 재생 UI */}
       {audioURL && !isRecording && (
-        <div className="mt-8">
-          <p className={"mb-3 text-center text-lg font-semibold"}>Step 2. 녹음한 내 발음 들어 보기</p>
+        <div className="mt-8 w-full">
+          <p className={"mb-3 text-center text-lg font-semibold"}>Step 2. 녹음 파일 들어 보기</p>
           <audio
             ref={audioRef}
             controls
             src={audioURL}
-            className="mx-auto"
+            className="mx-auto w-full"
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             onEnded={() => setIsPlaying(false)}
@@ -163,8 +163,8 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
 
       {/* ✅ 녹음 파일 제출 */}
       {audioURL && !isRecording && (
-        <div className="mt-8 flex flex-col items-center">
-          <p className={"text-center text-lg font-semibold"}>Step 3. 녹음한 파일 제출하기</p>
+        <div className="mt-8 mb-2 flex flex-col items-center">
+          <p className={"text-center text-lg font-semibold"}>Step 3. 녹음 파일 제출하기</p>
           <button
             onClick={handleSaveRecording}
             className="mt-2 flex min-h-12 w-1/4 min-w-52 cursor-pointer items-center justify-center rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
@@ -184,13 +184,13 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
       )}
 
       {/* ✅ 업로드 완료 시 메시지 표시 */}
-      {uploadedURL && (
-        <div className="mt-4 text-center">
-          <p className="text-green-600">File saved successfully!</p>
-          {recordCount !== null && <p>오늘 저장한 파일 개수: {recordCount}개</p>}
-          <audio controls src={uploadedURL} className="mx-auto" />
-        </div>
-      )}
+      {/*{uploadedURL && (*/}
+      {/*  <div className="mt-4 text-center">*/}
+      {/*    <p className="text-green-600">File saved successfully!</p>*/}
+      {/*    {recordCount !== null && <p>오늘 저장한 파일 개수: {recordCount}개</p>}*/}
+      {/*    <audio controls src={uploadedURL} className="mx-auto" />*/}
+      {/*  </div>*/}
+      {/*)}*/}
     </div>
   );
 };
