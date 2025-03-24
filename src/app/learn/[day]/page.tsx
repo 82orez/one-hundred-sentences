@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
-import { FaCheck, FaPlay } from "react-icons/fa";
+import { FaCheck, FaChevronLeft, FaChevronRight, FaPlay } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import { useSession } from "next-auth/react";
 import { useLearningStore } from "@/stores/useLearningStore";
@@ -227,12 +227,8 @@ const LearnPage = ({ params }: Props) => {
 
   return (
     <div className="relative mx-auto max-w-2xl p-4">
-      <h1 className="mb-10 text-2xl font-bold">
-        Day - {day}. 학습 {day}일차
-      </h1>
-
       {/* 페이지 네비게이션 버튼 */}
-      <div className="mt-8 flex justify-between px-4">
+      <div className="mt-8 flex items-center justify-between px-4">
         <button
           onClick={handlePreviousDay}
           disabled={dayNumber <= 1}
@@ -240,25 +236,23 @@ const LearnPage = ({ params }: Props) => {
             "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
             dayNumber <= 1 ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
           )}>
-          <FaArrowLeft />
-          이전 일자
+          <FaChevronLeft size={30} />
         </button>
-
+        <h1 className="text-4xl font-bold">학습 {day}일차</h1>
         <button
           onClick={handleNextDay}
           disabled={dayNumber >= 20}
           className={clsx(
             "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
             dayNumber >= 20 ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
-            { hidden: dayNumber === nextDay },
+            { invisible: dayNumber === nextDay },
           )}>
-          다음 일자
-          <FaArrowRight />
+          <FaChevronRight size={30} />
         </button>
       </div>
 
       {/* ✅ 전체 영문 가리기/보이기 체크박스 */}
-      <div className="absolute top-[3.75rem] right-6 flex items-center justify-end gap-2 md:top-14">
+      <div className="flex items-center justify-end gap-2">
         <input
           type="checkbox"
           id="toggleAllEnglish"
