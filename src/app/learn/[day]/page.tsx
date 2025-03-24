@@ -210,7 +210,9 @@ const LearnPage = ({ params }: Props) => {
 
   // 페이지 네비게이션 핸들러
   const handlePreviousDay = () => {
-    if (currentPageNumber > 1) {
+    if (nextDay !== 1 && currentPageNumber === 1) {
+      router.push(`/learn/${nextDay}`);
+    } else if (currentPageNumber > 1) {
       router.push(`/learn/${currentPageNumber - 1}`);
     }
   };
@@ -233,10 +235,11 @@ const LearnPage = ({ params }: Props) => {
       <div className="mt-2 flex items-center justify-between px-4 md:mt-8">
         <button
           onClick={handlePreviousDay}
-          disabled={currentPageNumber <= 1}
+          disabled={nextDay === 1}
           className={clsx(
             "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
-            currentPageNumber <= 1 ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
+            currentPageNumber <= 1 ? "bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
+            { invisible: nextDay === 1 },
           )}>
           <FaChevronLeft className={"text-xl md:text-3xl"} />
         </button>
@@ -245,11 +248,11 @@ const LearnPage = ({ params }: Props) => {
 
         <button
           onClick={handleNextDay}
-          disabled={currentPageNumber >= 20}
+          disabled={nextDay === 1}
           className={clsx(
             "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
-            currentPageNumber >= 20 || currentPageNumber === nextDay ? "bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
-            // { invisible: dayNumber === nextDay },
+            currentPageNumber > 20 || currentPageNumber === nextDay ? "bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
+            { invisible: nextDay === 1 },
           )}>
           <FaChevronRight className={"text-xl md:text-3xl"} />
         </button>
