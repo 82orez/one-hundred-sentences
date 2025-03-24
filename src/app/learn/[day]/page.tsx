@@ -34,7 +34,8 @@ type Props = {
 const LearnPage = ({ params }: Props) => {
   const { markSentenceComplete } = useLearningStore();
   const { day } = use(params);
-  const dayNumber = parseInt(day);
+  // url 의 파라미터로 받아온 day 를 현재 페이지 no. 로 저장
+  const currentPageNumber = parseInt(day);
   const { nextDay } = useLearningStore();
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
@@ -209,16 +210,17 @@ const LearnPage = ({ params }: Props) => {
 
   // 페이지 네비게이션 핸들러
   const handlePreviousDay = () => {
-    if (dayNumber > 1) {
-      router.push(`/learn/${dayNumber - 1}`);
+    if (currentPageNumber > 1) {
+      router.push(`/learn/${currentPageNumber - 1}`);
     }
   };
 
   const handleNextDay = () => {
     // 총 학습일(day)의 최대값을 20이라고 가정
-    // 실제 값은 프로젝트의 요구사항에 맞게 조정해야 합니다
-    if (dayNumber < 20) {
-      router.push(`/learn/${dayNumber + 1}`);
+    if (currentPageNumber === nextDay) {
+      router.push(`/learn/1`);
+    } else if (currentPageNumber < 20) {
+      router.push(`/learn/${currentPageNumber + 1}`);
     }
   };
 
@@ -231,10 +233,10 @@ const LearnPage = ({ params }: Props) => {
       <div className="mt-2 flex items-center justify-between px-4 md:mt-8">
         <button
           onClick={handlePreviousDay}
-          disabled={dayNumber <= 1}
+          disabled={currentPageNumber <= 1}
           className={clsx(
             "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
-            dayNumber <= 1 ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
+            currentPageNumber <= 1 ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
           )}>
           <FaChevronLeft className={"text-xl md:text-3xl"} />
         </button>
@@ -243,10 +245,10 @@ const LearnPage = ({ params }: Props) => {
 
         <button
           onClick={handleNextDay}
-          disabled={dayNumber >= 20 || dayNumber === nextDay}
+          disabled={currentPageNumber >= 20}
           className={clsx(
             "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
-            dayNumber >= 20 || dayNumber === nextDay ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
+            currentPageNumber >= 20 || currentPageNumber === nextDay ? "bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
             // { invisible: dayNumber === nextDay },
           )}>
           <FaChevronRight className={"text-xl md:text-3xl"} />
