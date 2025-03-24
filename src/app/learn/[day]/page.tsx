@@ -228,7 +228,7 @@ const LearnPage = ({ params }: Props) => {
   return (
     <div className="relative mx-auto max-w-2xl p-4">
       {/* 페이지 네비게이션 버튼 */}
-      <div className="mt-8 flex items-center justify-between px-4">
+      <div className="mt-2 flex items-center justify-between px-4 md:mt-8">
         <button
           onClick={handlePreviousDay}
           disabled={dayNumber <= 1}
@@ -236,23 +236,25 @@ const LearnPage = ({ params }: Props) => {
             "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
             dayNumber <= 1 ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
           )}>
-          <FaChevronLeft size={30} />
+          <FaChevronLeft className={"text-xl md:text-3xl"} />
         </button>
-        <h1 className="text-4xl font-bold">학습 {day}일차</h1>
+
+        <h1 className="text-2xl font-bold md:text-4xl">학습 {day}일차</h1>
+
         <button
           onClick={handleNextDay}
-          disabled={dayNumber >= 20}
+          disabled={dayNumber >= 20 || dayNumber === nextDay}
           className={clsx(
             "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
-            dayNumber >= 20 ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
-            { invisible: dayNumber === nextDay },
+            dayNumber >= 20 || dayNumber === nextDay ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
+            // { invisible: dayNumber === nextDay },
           )}>
-          <FaChevronRight size={30} />
+          <FaChevronRight className={"text-xl md:text-3xl"} />
         </button>
       </div>
 
-      {/* ✅ 전체 영문 가리기/보이기 체크박스 */}
-      <div className="flex items-center justify-end gap-2">
+      {/* ✅ 훈련 모드 - 전체 영문 가리기/보이기 체크박스 */}
+      <div className="mt-4 flex items-center justify-end gap-2">
         <input
           type="checkbox"
           id="toggleAllEnglish"
