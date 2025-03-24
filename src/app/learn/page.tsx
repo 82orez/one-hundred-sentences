@@ -18,7 +18,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const HomePage = () => {
   const { data: session, status } = useSession();
-  const { currentDay } = useLearningStore();
+  const { currentDay, nextDay, setNextDay } = useLearningStore();
   const [progress, setProgress] = useState(0);
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -52,7 +52,13 @@ const HomePage = () => {
       : lastCompletedDay || 1; // 빈 경우 최소 Day 1 보장
   };
 
-  const nextDay = getNextLearningDay(); // ✅ 개선된 로직 적용
+  // useEffect 를 사용하여 completedSentences 가 변경될 때마다 nextDay 업데이트
+  useEffect(() => {
+    if (completedSentences) {
+      const calculatedNextDay = getNextLearningDay();
+      setNextDay(calculatedNextDay); // Zustand 스토어의 nextDay 업데이트
+    }
+  }, [completedSentences, setNextDay]);
 
   useEffect(() => {
     if (completedSentences) {
