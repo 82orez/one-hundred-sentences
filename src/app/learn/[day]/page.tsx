@@ -35,6 +35,7 @@ const LearnPage = ({ params }: Props) => {
   const { markSentenceComplete } = useLearningStore();
   const { day } = use(params);
   const dayNumber = parseInt(day);
+  const { nextDay } = useLearningStore();
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
@@ -163,7 +164,7 @@ const LearnPage = ({ params }: Props) => {
       console.log("completedSet: ", completedSet);
       const allCompleted = sentences?.every((s) => completedSet.has(s.no));
 
-      // ! ui 고려 필요
+      // * ui 고려 필요
       if (allCompleted) {
         setTimeout(() => {
           alert(`${day}일차 학습 완료!`);
@@ -249,6 +250,7 @@ const LearnPage = ({ params }: Props) => {
           className={clsx(
             "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
             dayNumber >= 20 ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
+            { hidden: dayNumber === nextDay },
           )}>
           다음 일자
           <FaArrowRight />
