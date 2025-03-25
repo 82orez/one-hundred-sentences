@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useLearningStore } from "@/stores/useLearningStore";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -19,7 +19,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const HomePage = () => {
   const { data: session, status } = useSession();
   const { currentDay, nextDay, setNextDay } = useLearningStore();
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
 
@@ -43,24 +43,24 @@ const HomePage = () => {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // ✅ 학습할 다음 Day 계산 (5문장 완료 기준)
+  // ✅ 학습할 다음 Day(nextDay) 계산 (5문장 완료 기준)
   const getNextLearningDay = () => {
     if (!completedSentences || completedSentences.length === 0) return 1;
 
-    // ✅ 완료된 문장을 학습일 단위로 그룹화
+    // 완료된 문장을 학습일 단위로 그룹화
     const completedDays = new Set(completedSentences.map((no) => Math.ceil(no / 5)));
 
-    // ✅ Set 을 배열로 변환하고, 빈 경우 기본값 설정
+    // Set 을 배열로 변환하고, 빈 경우 기본값 설정
     const completedDaysArray = Array.from(completedDays) as number[];
     const lastCompletedDay = completedDaysArray.length > 0 ? Math.max(...completedDaysArray) : 0;
 
-    // ✅ 모든 문장이 완료된 경우에만 다음 학습일로 이동
+    // 모든 문장이 완료된 경우에만 다음 학습일(nextDay) 변경
     return completedDays.has(lastCompletedDay) && completedSentences.length >= lastCompletedDay * 5
       ? Math.min(lastCompletedDay + 1, 20)
       : lastCompletedDay || 1; // 빈 경우 최소 Day 1 보장
   };
 
-  // useEffect 를 사용하여 completedSentences 가 변경될 때마다 nextDay 업데이트
+  // ✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다(문장 하나를 학습 완료했을 때) nextDay 업데이트
   useEffect(() => {
     if (completedSentences) {
       const calculatedNextDay = getNextLearningDay();
@@ -68,11 +68,24 @@ const HomePage = () => {
     }
   }, [completedSentences, setNextDay]);
 
+  // ✅ 완료된 문장 갯수 산출
   useEffect(() => {
     if (completedSentences) {
       setProgress(Math.min((completedSentences.length / 100) * 100, 100)); // ✅ 100% 초과 방지
     }
   }, [completedSentences]);
+
+  // ✅ 원형 진행률 차트 데이터
+  const progressData = {
+    datasets: [
+      {
+        data: [progress, 100 - progress], // 진행률과 남은 부분
+        backgroundColor: ["#4F46E5", "#E5E7EB"], // 파란색 & 회색
+        borderWidth: 8, // 테두리 두께로 입체감 표현
+        cutout: "70%", // 내부 원 크기 조정 (입체적인 도넛 모양)
+      },
+    ],
+  };
 
   // ✅ ESC 키로 Quiz 모달 닫기 기능 추가
   useEffect(() => {
@@ -87,21 +100,8 @@ const HomePage = () => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isQuizModalOpen]);
 
-  // ✅ 원형 진행률 차트 데이터
-  const progressData = {
-    datasets: [
-      {
-        data: [progress, 100 - progress], // 진행률과 남은 부분
-        backgroundColor: ["#4F46E5", "#E5E7EB"], // ✅ 파란색 & 회색
-        borderWidth: 8, // ✅ 테두리 두께로 입체감 표현
-        cutout: "70%", // ✅ 내부 원 크기 조정 (입체적인 도넛 모양)
-      },
-    ],
-  };
-
-  if (isNavigating) {
-    return <LoadingPageSkeleton />;
-  }
+  if (isLoading) return <LoadingPageSkeleton />;
+  if (isNavigating) return <LoadingPageSkeleton />;
 
   return (
     <div className="mx-auto max-w-3xl p-6 text-center">
