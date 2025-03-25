@@ -57,6 +57,10 @@ export default function Navbar() {
               강사 페이지
             </Link>
 
+            <Link href="/dashboard" className="text-gray-700 hover:text-blue-600">
+              대시보드
+            </Link>
+
             <Link href="/users/profile" className={clsx("hover:underline")}>
               회원 정보
             </Link>
