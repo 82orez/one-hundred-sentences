@@ -30,6 +30,14 @@ const HomePage = () => {
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
       const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
+
+      console.log(
+        "completedSentences@LearnPage: ",
+        res.data,
+        res.data.map((item: { sentenceNo: number }) => item.sentenceNo),
+      );
+
+      // return 값은 [1, 2, ...] 형태로 반환 -> Only 완료된 문장 번호 in 배열
       return res.data.map((item: { sentenceNo: number }) => item.sentenceNo);
     },
     enabled: status === "authenticated" && !!session?.user?.id,
@@ -66,7 +74,7 @@ const HomePage = () => {
     }
   }, [completedSentences]);
 
-  // ✅ ESC 키로 모달 닫기 기능 추가
+  // ✅ ESC 키로 Quiz 모달 닫기 기능 추가
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
