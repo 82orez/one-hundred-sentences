@@ -110,10 +110,10 @@ const ReviewPage = () => {
                 ×
               </button>
 
-              <h2 className="mb-4 text-xl font-semibold">Day {selectedDay} 문장 목록</h2>
+              <h2 className="mb-4 text-2xl font-semibold">Day {selectedDay} 학습 내용</h2>
 
               {isFetching ? (
-                <p className="text-gray-500">문장을 불러오는 중...</p>
+                <LoadingPageSkeleton />
               ) : (
                 <ul className="space-y-4">
                   {sentences?.map((sentence: { no: number; en: string; ko: string }) => (

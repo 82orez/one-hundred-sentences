@@ -91,6 +91,7 @@ const DictationQuizPage = () => {
       console.log("🎵 오디오 재생 시도:", currentSentence.audioUrl);
       const audio = new Audio(currentSentence.audioUrl);
       audio.volume = 1.0;
+      audio.playbackRate = 0.8;
 
       audio.onplay = () => {
         console.log("▶️ 오디오 재생 시작");
@@ -116,12 +117,12 @@ const DictationQuizPage = () => {
   return (
     <div className="mx-auto max-w-lg p-6 text-center">
       <h1 className="text-3xl font-bold">받아쓰기 퀴즈</h1>
-      <p className="mt-2 text-lg text-gray-600">문장을 듣고 받아쓰기를 해보세요.</p>
+      <p className="mt-2 text-lg text-gray-600">다음 문장을 듣고 받아쓰기를 해보세요.</p>
 
       {currentSentence ? (
         <div className="mt-6">
           {/* ✅ 블러 처리된 문장 */}
-          <div className={clsx("rounded-lg border bg-gray-100 p-4 text-xl font-semibold text-gray-800", isBlurred ? "blur-md" : "blur-none")}>
+          <div className={clsx("rounded-lg border bg-gray-100 p-4 text-xl font-semibold text-gray-800", isBlurred ? "blur-xs" : "blur-none")}>
             <p>{currentSentence.en}</p>
             <p className="mt-2 text-lg text-gray-600">{currentSentence.ko}</p>
           </div>
@@ -129,7 +130,7 @@ const DictationQuizPage = () => {
           {/* ✅ 음성 재생 버튼 */}
           <button
             className={clsx(
-              "mt-4 rounded-lg px-6 py-3 text-lg font-bold shadow-lg transition",
+              "mt-4 rounded-lg px-6 py-3 text-lg font-semibold shadow-lg transition",
               isPlaying ? "cursor-not-allowed bg-gray-400 text-white" : "bg-blue-500 text-white hover:bg-blue-600",
             )}
             onClick={playAudio}
@@ -148,21 +149,26 @@ const DictationQuizPage = () => {
 
           {/* ✅ 정답 확인 버튼 */}
           <button
-            className="mt-4 w-full rounded-lg bg-green-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-green-600 disabled:opacity-50"
+            className="mt-4 w-full rounded-lg bg-green-500 px-6 py-3 text-lg font-semibold text-white shadow-lg transition hover:bg-green-600 disabled:opacity-50"
             disabled={!userInput || isPlaying || feedback === "정답입니다!"}
             onClick={checkAnswer}>
-            정답 확인 🚀
+            채점하기 🚀
           </button>
 
           {/* ✅ 정답 피드백 */}
           {feedback && (
-            <p className={clsx("mt-4 text-lg font-semibold", feedback === "정답입니다!" ? "text-green-500" : "text-red-500")}>{feedback}</p>
+            <div>
+              <p className={clsx("mt-4 text-lg font-semibold", feedback === "정답입니다!" ? "text-green-500" : "text-red-500")}>{feedback}</p>
+              <button className={"btn mt-4"} onClick={() => setIsBlurred((prev) => !prev)}>
+                정답 보기/가리기
+              </button>
+            </div>
           )}
 
           {/* ✅ 다음 문장 버튼 */}
           {feedback && (
             <button
-              className="mt-4 w-full rounded-lg bg-yellow-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-yellow-600"
+              className="mt-4 w-full rounded-lg bg-yellow-500 px-6 py-3 text-lg text-white shadow-lg transition hover:bg-yellow-600"
               onClick={selectRandomSentence}>
               다음 문장으로 넘어가기 🔄
             </button>
