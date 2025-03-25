@@ -13,7 +13,7 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 
-// * Chart.js 요소 등록
+// ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const HomePage = () => {
@@ -26,7 +26,11 @@ const HomePage = () => {
   const router = useRouter();
 
   // ✅ 사용자가 완료한 문장 정보 가져오기
-  const { data: completedSentences, isLoading } = useQuery({
+  const {
+    data: completedSentences,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
       const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
@@ -102,6 +106,10 @@ const HomePage = () => {
 
   if (isLoading) return <LoadingPageSkeleton />;
   if (isNavigating) return <LoadingPageSkeleton />;
+  if (error) {
+    console.log(error.message);
+    return <p>Error loading Lists</p>;
+  }
 
   return (
     <div className="mx-auto max-w-3xl p-6 text-center">

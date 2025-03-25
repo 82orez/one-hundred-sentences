@@ -5,9 +5,16 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { Calendar, LucideBook, Award, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { useLearningStore } from "@/stores/useLearningStore";
+import { useQuery } from "@tanstack/react-query";
+import { createClient } from "@/utils/supabase/client";
+
+// ✅ Chart.js 요소 등록
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -49,12 +56,95 @@ export default function Dashboard() {
     fetchDashboardData();
   }, [status, router]);
 
-  const pieData = [
-    { name: "완료", value: stats.completedSentences },
-    { name: "미완료", value: stats.totalSentences - stats.completedSentences },
-  ];
-
   const COLORS = ["#4ade80", "#e4e4e7"];
+
+  const { currentDay, nextDay, setNextDay } = useLearningStore();
+  const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
+  const [isQuizModalOpen, setQuizModalOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  const supabase = createClient();
+
+  const getSentenceCount = useQuery({
+    queryKey: ["SentenceCount"],
+    queryFn: async () => {
+      const { count, error } = await supabase.from("Sentence").select("*", { count: "exact", head: true });
+
+      if (error) {
+        console.error("Sentence 카운트 조회 실패:", error);
+        throw new Error("문장 수 조회에 실패했습니다.");
+      }
+
+      console.log("Sentence 갯수: ", { count });
+      return { count };
+    },
+  });
+
+  // ✅ 사용자가 완료한 문장 정보 가져오기
+  const {
+    data: completedSentences,
+    isLoading: isCompletedSentencesLoading,
+    error: isCompletedSentencesError,
+  } = useQuery({
+    queryKey: ["completedSentences", session?.user?.id],
+    queryFn: async () => {
+      const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
+
+      console.log(
+        "completedSentences@LearnPage: ",
+        res.data,
+        res.data.map((item: { sentenceNo: number }) => item.sentenceNo),
+      );
+
+      // return 값은 [1, 2, ...] 형태로 반환 -> Only 완료된 문장 번호 in 배열
+      return res.data.map((item: { sentenceNo: number }) => item.sentenceNo);
+    },
+    enabled: status === "authenticated" && !!session?.user?.id,
+  });
+
+  // ✅ 학습할 다음 Day(nextDay) 계산 (5문장 완료 기준)
+  const getNextLearningDay = () => {
+    if (!completedSentences || completedSentences.length === 0) return 1;
+
+    // 완료된 문장을 학습일 단위로 그룹화
+    const completedDays = new Set(completedSentences.map((no) => Math.ceil(no / 5)));
+
+    // Set 을 배열로 변환하고, 빈 경우 기본값 설정
+    const completedDaysArray = Array.from(completedDays) as number[];
+    const lastCompletedDay = completedDaysArray.length > 0 ? Math.max(...completedDaysArray) : 0;
+
+    // 모든 문장이 완료된 경우에만 다음 학습일(nextDay) 변경
+    return completedDays.has(lastCompletedDay) && completedSentences.length >= lastCompletedDay * 5
+      ? Math.min(lastCompletedDay + 1, 20)
+      : lastCompletedDay || 1; // 빈 경우 최소 Day 1 보장
+  };
+
+  // ✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다(문장 하나를 학습 완료했을 때) nextDay 업데이트
+  useEffect(() => {
+    if (completedSentences) {
+      const calculatedNextDay = getNextLearningDay();
+      setNextDay(calculatedNextDay); // Zustand 스토어의 nextDay 업데이트
+    }
+  }, [completedSentences, setNextDay]);
+
+  // ✅ 완료된 문장 갯수 산출
+  useEffect(() => {
+    if (completedSentences) {
+      setProgress(Math.min((completedSentences.length / 100) * 100, 100)); // ✅ 100% 초과 방지
+    }
+  }, [completedSentences]);
+
+  // ✅ 원형 진행률 차트 데이터
+  const progressData = {
+    datasets: [
+      {
+        data: [progress, 100 - progress], // 진행률과 남은 부분
+        backgroundColor: ["#4F46E5", "#E5E7EB"], // 파란색 & 회색
+        borderWidth: 8, // 테두리 두께로 입체감 표현
+        cutout: "70%", // 내부 원 크기 조정 (입체적인 도넛 모양)
+      },
+    ],
+  };
 
   if (loading) {
     return (
@@ -67,61 +157,53 @@ export default function Dashboard() {
     );
   }
 
+  if (isCompletedSentencesError) {
+    console.log(isCompletedSentencesError.message);
+    return <p>Error loading Lists</p>;
+  }
+
   return (
     <div className="container mx-auto p-6">
-      <h1 className="mb-8 text-3xl font-bold">학생 대시보드</h1>
+      <h1 className="mb-8 text-center text-3xl font-semibold">나의 학습 현황</h1>
 
       {/* 학습 진행 상황 개요 */}
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="rounded-lg bg-white p-6 shadow-md">
-          <div className="mb-4 flex items-center">
+          <div className="mb-0 flex items-center">
             <LucideBook className="mr-2 h-6 w-6 text-blue-500" />
-            <h2 className="text-xl font-semibold">학습 진행률</h2>
+            <h2 className="text-xl font-semibold">문장 학습 진행률</h2>
           </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-3xl font-bold">
-                {stats.completedSentences}/{stats.totalSentences}
-              </p>
-              <p className="text-gray-500">완료한 문장</p>
-            </div>
-            <div className="h-20 w-20">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={pieData} innerRadius={24} outerRadius={35} paddingAngle={2} dataKey="value">
-                    {pieData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+          {/* ✅ 원형 진행률 차트 */}
+          <div className="relative mx-auto mt-0 mb-0 h-52 w-52">
+            <Doughnut data={progressData} />
+            {/* 진행률 텍스트 */}
+            <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-gray-700">{progress.toFixed(0)}%</div>
           </div>
-          <div className="mt-2">
-            <p className="text-sm">
-              전체 진행률: <span className="font-semibold">{Math.round((stats.completedSentences / stats.totalSentences) * 100)}%</span>
-            </p>
-            <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
-              <div className="h-2 rounded-full bg-blue-500" style={{ width: `${(stats.completedSentences / stats.totalSentences) * 100}%` }}></div>
-            </div>
-          </div>
+          <p className="mt-2 text-center text-gray-700">
+            전체 {getSentenceCount.data?.count} 문장 중 {progress} 문장 학습 완료!
+          </p>
         </div>
 
         <div className="rounded-lg bg-white p-6 shadow-md">
           <div className="mb-4 flex items-center">
             <Calendar className="mr-2 h-6 w-6 text-purple-500" />
-            <h2 className="text-xl font-semibold">학습일 완료</h2>
+            <h2 className="text-xl font-semibold">학습일 기준 완료 현황</h2>
           </div>
           <p className="text-3xl font-bold">
-            {stats.completedDays}/{stats.totalDays}
+            {progress === 100 ? 20 : nextDay - 1}/{getSentenceCount.data?.count / 5 || 100}
           </p>
-          <p className="text-gray-500">완료한 학습일</p>
+          <p className="text-gray-500">학습 완료 현황</p>
           <div className="mt-2">
             <p className="text-sm">
-              전체 진행률: <span className="font-semibold">{Math.round((stats.completedDays / stats.totalDays) * 100)}%</span>
+              전체 진행률:{" "}
+              <span className="font-semibold">
+                {progress === 100 ? 100 : Math.round(((nextDay - 1) / (getSentenceCount.data?.count / 5)) * 100)}%
+              </span>
             </p>
             <div className="mt-1 h-2 w-full rounded-full bg-gray-200">
-              <div className="h-2 rounded-full bg-purple-500" style={{ width: `${(stats.completedDays / stats.totalDays) * 100}%` }}></div>
+              <div
+                className="h-2 rounded-full bg-purple-500"
+                style={{ width: `${progress === 100 ? 100 : ((nextDay - 1) / (getSentenceCount.data?.count / 5)) * 100}%` }}></div>
             </div>
           </div>
         </div>
@@ -132,12 +214,12 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold">학습 성취도</h2>
           </div>
           <div className="py-4 text-center">
-            {stats.completedDays < 5 ? (
+            {progress < 5 ? (
               <>
                 <p className="text-xl font-medium">초보 학습자</p>
                 <p className="mt-2 text-gray-500">5일 이상 완료하면 중급 학습자로 승급!</p>
               </>
-            ) : stats.completedDays < 15 ? (
+            ) : progress < 15 ? (
               <>
                 <p className="text-xl font-medium">중급 학습자</p>
                 <p className="mt-2 text-gray-500">15일 이상 완료하면 고급 학습자로 승급!</p>
@@ -190,23 +272,13 @@ export default function Dashboard() {
             </div>
           ) : (
             <div>
-              {(() => {
-                // 미완료된 가장 첫 번째 학습일 찾기
-                let nextDay = 1;
-                while (completedDays.includes(nextDay) && nextDay <= 20) {
-                  nextDay++;
-                }
-
-                return (
-                  <div className="rounded-lg bg-blue-50 p-4">
-                    <p className="font-medium">추천 학습: {nextDay}일차</p>
-                    <p className="mt-2 text-sm text-gray-600">체계적인 학습을 위해 {nextDay}일차 학습을 진행해보세요.</p>
-                    <Link href={`/learn/${nextDay}`} className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800">
-                      지금 학습하기 <ArrowRight className="ml-1 h-4 w-4" />
-                    </Link>
-                  </div>
-                );
-              })()}
+              <div className="rounded-lg bg-blue-50 p-4">
+                <p className="font-medium">추천 학습: {nextDay}일차</p>
+                <p className="mt-2 text-sm text-gray-600">체계적인 학습을 위해 {nextDay}일차 학습을 진행해보세요.</p>
+                <Link href={`/learn/${nextDay}`} className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800">
+                  지금 학습하기 <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </div>
 
               <div className="mt-6">
                 <h3 className="mb-3 text-lg font-medium">최근 복습</h3>
