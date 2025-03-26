@@ -30,11 +30,11 @@ export default function Dashboard() {
     }
   }, [status, router]);
 
-  const { currentDay, nextDay, setNextDay } = useLearningStore();
+  const { nextDay, setNextDay } = useLearningStore();
   const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const supabase = createClient();
@@ -104,7 +104,7 @@ export default function Dashboard() {
   // ✅ 완료된 문장 갯수 산출
   useEffect(() => {
     if (completedSentences) {
-      setProgress(Math.min((completedSentences.length / 100) * 100, 100)); // ✅ 100% 초과 방지
+      setProgress(Math.min((completedSentences.length / 100) * 100, 100)); // 100% 초과 방지
     }
   }, [completedSentences]);
 
@@ -228,16 +228,17 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 최근 학습 현황 */}
+      {/* 학습 현황 및 복습 + 다음 학습일 */}
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+        {/* 학습 현황 및 복습 */}
         <div className="rounded-lg bg-white p-6 shadow-md">
-          <h2 className="mb-4 text-xl font-semibold">학습 현황</h2>
+          <h2 className="mb-4 text-xl font-semibold">학습 현황 및 복습하기</h2>
           <div className="space-y-4">
             {/* ✅ 학습일 선택 목록 */}
             {isLoading ? (
               <LoadingPageSkeleton />
             ) : (
-              <div className="mt-6 grid grid-cols-3 gap-4 md:grid-cols-5 md:gap-5">
+              <div className="mt-6 grid grid-cols-4 gap-2 md:grid-cols-5 md:gap-5">
                 {[...Array(20)].map((_, index) => {
                   const day = index + 1;
                   const isCompleted = completedDays?.includes(day); // ✅ 5문장을 완료한 학습일만 활성화
@@ -246,7 +247,7 @@ export default function Dashboard() {
                     <button
                       key={day}
                       className={clsx(
-                        "min-w-[80px] rounded-lg p-3 font-bold transition md:min-w-[100px]",
+                        "min-w-[60px] rounded-lg p-3 font-bold transition md:min-w-[100px]",
                         isCompleted
                           ? "cursor-pointer bg-indigo-600 text-white hover:bg-indigo-500"
                           : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
@@ -254,10 +255,12 @@ export default function Dashboard() {
                       disabled={!isCompleted}
                       onClick={() => {
                         if (isCompleted && selectedDay !== day) {
+                          // selectedDay 에 특정 숫자가 설정되면 복습하기 모달창이 열림.
                           setSelectedDay(day);
                         }
                       }}>
-                      {day}일차
+                      {day}
+                      <span className="hidden md:inline">일차</span>
                     </button>
                   );
                 })}
@@ -276,6 +279,7 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* 다음 학습일 */}
         <div className="rounded-lg bg-white p-6 shadow-md">
           <h2 className="mb-4 text-xl font-semibold">다음 학습일</h2>
           {completedDays?.length === 20 ? (
