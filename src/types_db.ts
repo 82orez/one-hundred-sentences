@@ -452,27 +452,30 @@ export type Database = {
       }
       Recordings: {
         Row: {
+          atemptCount: number
           createdAt: string
           fileUrl: string
           id: string
           sentenceNo: number
-          userEmail: string | null
+          updatedAt: string
           userId: string
         }
         Insert: {
+          atemptCount?: number
           createdAt?: string
           fileUrl: string
           id: string
           sentenceNo: number
-          userEmail?: string | null
+          updatedAt: string
           userId: string
         }
         Update: {
+          atemptCount?: number
           createdAt?: string
           fileUrl?: string
           id?: string
           sentenceNo?: number
-          userEmail?: string | null
+          updatedAt?: string
           userId?: string
         }
         Relationships: [

@@ -184,13 +184,13 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
       )}
 
       {/* ✅ 업로드 완료 시 메시지 표시 */}
-      {/*{uploadedURL && (*/}
-      {/*  <div className="mt-4 text-center">*/}
-      {/*    <p className="text-green-600">File saved successfully!</p>*/}
-      {/*    {recordCount !== null && <p>오늘 저장한 파일 개수: {recordCount}개</p>}*/}
-      {/*    <audio controls src={uploadedURL} className="mx-auto" />*/}
-      {/*  </div>*/}
-      {/*)}*/}
+      {uploadedURL && (
+        <div className="mt-4 text-center">
+          <p className="text-green-600">File saved successfully!</p>
+          {recordCount !== null && <p>오늘 저장한 파일 개수: {recordCount}개</p>}
+          <audio controls src={uploadedURL} className="mx-auto" />
+        </div>
+      )}
     </div>
   );
 };

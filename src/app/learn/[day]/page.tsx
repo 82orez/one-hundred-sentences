@@ -35,7 +35,7 @@ const LearnPage = ({ params }: Props) => {
   const { markSentenceComplete } = useLearningStore();
   const { day } = use(params);
   // url 의 파라미터로 받아온 day 를 현재 페이지 no. 로 저장
-  const currentPageNumber = parseInt(day);
+  const currentPageNumber = parseInt(day, 10);
   const { nextDay } = useLearningStore();
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});

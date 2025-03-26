@@ -164,12 +164,13 @@ model QuizAttempt {
 }
 
 model Recordings {
-  id         String   @id @default(cuid())
-  userId     String
-  userEmail  String?
-  sentenceNo Int
-  fileUrl    String
-  createdAt  DateTime @default(now())
+  id          String   @id @default(cuid())
+  userId      String
+  sentenceNo  Int
+  fileUrl     String
+  atemptCount Int      @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)

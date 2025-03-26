@@ -52,8 +52,7 @@ export async function POST(req: NextRequest) {
     await prisma.recordings.create({
       data: {
         userId: user.id,
-        userEmail: user.email,
-        sentenceNo: parseInt(sentenceNo, 10), // ✅ sentenceNo 저장
+        sentenceNo: parseInt(sentenceNo, 10), // sentenceNo 저장
         fileUrl,
       },
     });
