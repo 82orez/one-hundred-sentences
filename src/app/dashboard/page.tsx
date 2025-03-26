@@ -140,17 +140,13 @@ export default function Dashboard() {
     enabled: !!selectedDay,
   });
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex min-h-screen items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="mx-auto h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-gray-900"></div>
-  //         <p className="mt-4">로딩 중...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
+  if (getSentenceCount.isError) {
+    console.log(getSentenceCount.error.message);
+    return <p>Error loading Sentences count</p>;
+  }
 
+  if (isCompletedSentencesLoading) return <LoadingPageSkeleton />;
   if (isCompletedSentencesError) {
     console.log(isCompletedSentencesError.message);
     return <p>Error loading Completed Sentences Lists</p>;
