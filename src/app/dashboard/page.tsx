@@ -1,7 +1,7 @@
 // app/dashboard/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -12,6 +12,9 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useLearningStore } from "@/stores/useLearningStore";
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/utils/supabase/client";
+import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
+import clsx from "clsx";
+import { AnimatePresence, motion } from "framer-motion";
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -19,14 +22,6 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  // const [completedDays, setCompletedDays] = useState<number[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    completedSentences: 0,
-    totalSentences: 100,
-    completedDays: 0,
-    totalDays: 20,
-  });
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -35,12 +30,12 @@ export default function Dashboard() {
     }
   }, [status, router]);
 
-  const COLORS = ["#4ade80", "#e4e4e7"];
-
   const { currentDay, nextDay, setNextDay } = useLearningStore();
   const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const supabase = createClient();
 
@@ -132,6 +127,17 @@ export default function Dashboard() {
       const res = await axios.get("/api/review");
       return res.data.completedDays;
     },
+  });
+
+  // ✅ 선택한 학습일의 문장 목록 가져오기
+  const { data: sentences, isFetching } = useQuery({
+    queryKey: ["reviewSentences", selectedDay],
+    queryFn: async () => {
+      if (!selectedDay) return [];
+      const res = await axios.get(`/api/review/sentences?day=${selectedDay}`);
+      return res.data;
+    },
+    enabled: !!selectedDay,
   });
 
   // if (loading) {
@@ -227,17 +233,36 @@ export default function Dashboard() {
         <div className="rounded-lg bg-white p-6 shadow-md">
           <h2 className="mb-4 text-xl font-semibold">학습 현황</h2>
           <div className="space-y-4">
-            <div className="grid grid-cols-5 gap-2">
-              {Array.from({ length: 20 }, (_, i) => i + 1).map((day) => (
-                <div
-                  key={day}
-                  className={`flex h-12 items-center justify-center rounded-md ${
-                    completedDays?.includes(day) ? "bg-indigo-600 text-white" : "bg-gray-100"
-                  }`}>
-                  {day}
-                </div>
-              ))}
-            </div>
+            {/* ✅ 학습일 선택 목록 */}
+            {isLoading ? (
+              <LoadingPageSkeleton />
+            ) : (
+              <div className="mt-6 grid grid-cols-3 gap-4 md:grid-cols-5 md:gap-5">
+                {[...Array(20)].map((_, index) => {
+                  const day = index + 1;
+                  const isCompleted = completedDays?.includes(day); // ✅ 5문장을 완료한 학습일만 활성화
+
+                  return (
+                    <button
+                      key={day}
+                      className={clsx(
+                        "min-w-[80px] rounded-lg p-3 font-bold transition md:min-w-[100px]",
+                        isCompleted
+                          ? "cursor-pointer bg-indigo-600 text-white hover:bg-indigo-500"
+                          : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
+                      )}
+                      disabled={!isCompleted}
+                      onClick={() => {
+                        if (isCompleted && selectedDay !== day) {
+                          setSelectedDay(day);
+                        }
+                      }}>
+                      {day}일차
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             <div className="flex space-x-4">
               <div className="flex items-center">
                 <div className="mr-2 h-4 w-4 rounded bg-indigo-600"></div>
@@ -289,6 +314,58 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      {/* ✅ 모달 창 (framer-motion 적용) */}
+      <AnimatePresence>
+        {selectedDay && (
+          <motion.div
+            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-200"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedDay(null)} // 모달 외부 클릭 시 닫기
+          >
+            <motion.div
+              className="relative w-full max-w-lg rounded-lg bg-white px-4 py-6 shadow-lg md:px-6"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()} // 내부 클릭 시 닫히지 않도록 방지
+            >
+              {/* 닫기 버튼 */}
+              <button
+                ref={closeButtonRef}
+                className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full text-2xl font-bold text-gray-600 hover:text-gray-800"
+                onClick={() => setSelectedDay(null)}>
+                ×
+              </button>
+
+              <h2 className="mb-4 text-2xl font-semibold">Day {selectedDay} 학습 내용</h2>
+
+              {isFetching ? (
+                <LoadingPageSkeleton />
+              ) : (
+                <ul className="space-y-4">
+                  {sentences?.map((sentence: { no: number; en: string; ko: string }) => (
+                    <li key={sentence.no} className="rounded-md border p-2">
+                      <p className="text-lg font-semibold">{sentence.en}</p>
+                      <p className="text-gray-600">{sentence.ko}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {/* 복습 시작 버튼 */}
+              <button
+                className="mt-6 w-full rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
+                onClick={() => router.push(`/learn/${selectedDay}`)}>
+                {selectedDay}일차 복습 시작 🚀
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
