@@ -28,6 +28,7 @@ export async function GET(req: Request) {
       .map(Number)
       .filter((day) => dayCounts[day] === 5); // ✅ 학습일에 속한 5문장이 전부 완료된 경우만 반환
 
+    console.log("completedDays: ", completedDays);
     return NextResponse.json({ completedDays });
   } catch (error) {
     console.error("Failed to fetch review data:", error);

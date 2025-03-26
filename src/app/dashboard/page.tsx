@@ -19,7 +19,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [completedDays, setCompletedDays] = useState<number[]>([]);
+  // const [completedDays, setCompletedDays] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     completedSentences: 0,
@@ -30,30 +30,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/login");
+      router.push("/users/sign-in");
       return;
     }
-
-    async function fetchDashboardData() {
-      try {
-        const { data } = await axios.get("/api/review/completed");
-        setCompletedDays(data.completedDays || []);
-
-        setStats({
-          completedSentences: data.completedDays?.length * 5 || 0,
-          totalSentences: 100,
-          completedDays: data.completedDays?.length || 0,
-          totalDays: 20,
-        });
-
-        setLoading(false);
-      } catch (error) {
-        console.error("대시보드 데이터 로딩 실패:", error);
-        setLoading(false);
-      }
-    }
-
-    fetchDashboardData();
   }, [status, router]);
 
   const COLORS = ["#4ade80", "#e4e4e7"];
@@ -75,7 +54,7 @@ export default function Dashboard() {
         throw new Error("문장 수 조회에 실패했습니다.");
       }
 
-      console.log("Sentence 갯수: ", { count });
+      console.log("전체 Sentence 갯수: ", count);
       return { count };
     },
   });
@@ -146,20 +125,29 @@ export default function Dashboard() {
     ],
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-gray-900"></div>
-          <p className="mt-4">로딩 중...</p>
-        </div>
-      </div>
-    );
-  }
+  // ✅ 완료된 학습일 가져오기
+  const { data: completedDays, isLoading } = useQuery({
+    queryKey: ["completedDays"],
+    queryFn: async () => {
+      const res = await axios.get("/api/review");
+      return res.data.completedDays;
+    },
+  });
+
+  // if (loading) {
+  //   return (
+  //     <div className="flex min-h-screen items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="mx-auto h-12 w-12 animate-spin rounded-full border-t-2 border-b-2 border-gray-900"></div>
+  //         <p className="mt-4">로딩 중...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (isCompletedSentencesError) {
     console.log(isCompletedSentencesError.message);
-    return <p>Error loading Lists</p>;
+    return <p>Error loading Completed Sentences Lists</p>;
   }
 
   return (
@@ -234,7 +222,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 최근 학습 현황 및 다음 학습일 추천 */}
+      {/* 최근 학습 현황 */}
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="rounded-lg bg-white p-6 shadow-md">
           <h2 className="mb-4 text-xl font-semibold">학습 현황</h2>
@@ -244,7 +232,7 @@ export default function Dashboard() {
                 <div
                   key={day}
                   className={`flex h-12 items-center justify-center rounded-md ${
-                    completedDays.includes(day) ? "bg-green-500 text-white" : "bg-gray-100"
+                    completedDays?.includes(day) ? "bg-indigo-600 text-white" : "bg-gray-100"
                   }`}>
                   {day}
                 </div>
@@ -252,7 +240,7 @@ export default function Dashboard() {
             </div>
             <div className="flex space-x-4">
               <div className="flex items-center">
-                <div className="mr-2 h-4 w-4 rounded bg-green-500"></div>
+                <div className="mr-2 h-4 w-4 rounded bg-indigo-600"></div>
                 <span className="text-sm">완료</span>
               </div>
               <div className="flex items-center">
@@ -264,8 +252,8 @@ export default function Dashboard() {
         </div>
 
         <div className="rounded-lg bg-white p-6 shadow-md">
-          <h2 className="mb-4 text-xl font-semibold">다음 학습일 추천</h2>
-          {completedDays.length === 20 ? (
+          <h2 className="mb-4 text-xl font-semibold">다음 학습일</h2>
+          {completedDays?.length === 20 ? (
             <div className="py-8 text-center">
               <p className="text-lg font-medium">모든 학습일을 완료했습니다!</p>
               <p className="mt-2 text-gray-500">축하합니다. 복습을 통해 실력을 다져보세요.</p>
@@ -273,7 +261,7 @@ export default function Dashboard() {
           ) : (
             <div>
               <div className="rounded-lg bg-blue-50 p-4">
-                <p className="font-medium">추천 학습: {nextDay}일차</p>
+                <p className="font-medium">학습 {nextDay} 일차</p>
                 <p className="mt-2 text-sm text-gray-600">체계적인 학습을 위해 {nextDay}일차 학습을 진행해보세요.</p>
                 <Link href={`/learn/${nextDay}`} className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800">
                   지금 학습하기 <ArrowRight className="ml-1 h-4 w-4" />
@@ -282,7 +270,7 @@ export default function Dashboard() {
 
               <div className="mt-6">
                 <h3 className="mb-3 text-lg font-medium">최근 복습</h3>
-                {completedDays.length > 0 ? (
+                {completedDays?.length > 0 ? (
                   <div className="space-y-2">
                     {completedDays
                       .slice(-3)
