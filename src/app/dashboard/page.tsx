@@ -170,7 +170,7 @@ export default function Dashboard() {
             <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-gray-700">{progress.toFixed(0)}%</div>
           </div>
           <p className="mt-2 text-center text-gray-700">
-            전체 {getSentenceCount.data?.count} 문장 중 {progress} 문장 학습 완료!
+            전체 {getSentenceCount.data?.count} 문장 중 {progress.toFixed(0)} 문장 학습 완료!
           </p>
         </div>
 

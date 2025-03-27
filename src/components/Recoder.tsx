@@ -196,7 +196,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
       {uploadedURL && (
         <div className="mt-4 text-center">
           <p className="text-green-600">{recordMessage}</p>
-          {recordCount !== null && <p>오늘 저장한 파일 개수: {recordCount}개</p>}
+          {recordCount !== null && <p>문장 연습 횟수: 총 {recordCount} 회</p>}
           <audio controls src={uploadedURL} className="mx-auto" />
         </div>
       )}

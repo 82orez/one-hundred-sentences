@@ -75,21 +75,17 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 오늘 저장한 파일 개수 조회
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const count = await prisma.recordings.count({
+    const count = await prisma.recordings.findFirst({
       where: {
         userId: user.id,
-        createdAt: { gte: today },
+        sentenceNo: parseInt(sentenceNo, 10),
       },
     });
 
     return NextResponse.json({
       message: existingRecording ? "Recording updated successfully" : "New recording created successfully",
       url: fileUrl,
-      count,
+      count: count.attemptCount,
     });
   } catch (error) {
     console.error("File Upload Error:", error);
