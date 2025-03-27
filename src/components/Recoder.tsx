@@ -26,6 +26,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null); // 타이머 참조 추가
+  const [hasNewRecording, setHasNewRecording] = useState(false);
 
   // ❌ 녹음 취소 및 창 닫기 함수
   const handleCancelRecording = async () => {
@@ -64,12 +65,16 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
     if (audioBlob) {
       const audioURL = URL.createObjectURL(audioBlob);
       setAudioURL(audioURL);
+      setHasNewRecording(true); // 새 녹음이 완료됨을 표시
       console.log("Audio URL:", audioURL);
     }
   };
 
   const handleSaveRecording = async () => {
-    if (!audioURL) return;
+    if (!audioURL || !hasNewRecording) {
+      alert("새로운 녹음이 필요합니다. 녹음 후 다시 시도해주세요.");
+      return;
+    }
 
     // 확인창 추가
     const confirmSubmit = window.confirm("정말로 제출하시겠습니까?");
@@ -94,6 +99,9 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
         setUploadedURL(result.url);
         setRecordCount(result.count);
         console.log(`File saved at: ${result.url}`);
+
+        // 제출 후 새 녹음 상태 초기화
+        setHasNewRecording(false);
 
         handleComplete(sentenceNo);
       } else {
