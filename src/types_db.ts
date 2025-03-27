@@ -452,7 +452,7 @@ export type Database = {
       }
       Recordings: {
         Row: {
-          atemptCount: number
+          attemptCount: number
           createdAt: string
           fileUrl: string
           id: string
@@ -461,7 +461,7 @@ export type Database = {
           userId: string
         }
         Insert: {
-          atemptCount?: number
+          attemptCount: number
           createdAt?: string
           fileUrl: string
           id: string
@@ -470,7 +470,7 @@ export type Database = {
           userId: string
         }
         Update: {
-          atemptCount?: number
+          attemptCount?: number
           createdAt?: string
           fileUrl?: string
           id?: string

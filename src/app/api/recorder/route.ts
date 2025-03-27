@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       // 기존 녹음 업데이트
       await prisma.recordings.update({
         where: { id: existingRecording.id },
-        data: { fileUrl },
+        data: { fileUrl, attemptCount: existingRecording.attemptCount + 1 },
       });
     } else {
       // 새 녹음 생성
@@ -70,6 +70,7 @@ export async function POST(req: NextRequest) {
           userId: user.id,
           sentenceNo: parseInt(sentenceNo, 10),
           fileUrl,
+          attemptCount: 1,
         },
       });
     }
