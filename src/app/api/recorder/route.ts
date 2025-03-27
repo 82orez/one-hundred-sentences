@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     const supabase = await createClient();
     const formData = await req.formData();
     const audioFile = formData.get("audio") as File;
-    const sentenceNo = formData.get("sentenceNo") as string; // ✅ sentenceNo 가져오기
+    const sentenceNo = formData.get("sentenceNo") as string;
 
     if (!audioFile) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
@@ -49,15 +49,32 @@ export async function POST(req: NextRequest) {
     const fileUrl = publicUrlData.publicUrl;
 
     // ✅ Prisma DB에 저장
-    await prisma.recordings.create({
-      data: {
+    // 이미 해당 사용자와 문장에 대한 녹음이 있는지 확인
+    const existingRecording = await prisma.recordings.findFirst({
+      where: {
         userId: user.id,
-        sentenceNo: parseInt(sentenceNo, 10), // sentenceNo 저장
-        fileUrl,
+        sentenceNo: parseInt(sentenceNo, 10),
       },
     });
 
-    // ✅ 오늘 저장한 파일 개수 조회
+    if (existingRecording) {
+      // 기존 녹음 업데이트
+      await prisma.recordings.update({
+        where: { id: existingRecording.id },
+        data: { fileUrl },
+      });
+    } else {
+      // 새 녹음 생성
+      await prisma.recordings.create({
+        data: {
+          userId: user.id,
+          sentenceNo: parseInt(sentenceNo, 10),
+          fileUrl,
+        },
+      });
+    }
+
+    // 오늘 저장한 파일 개수 조회
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -69,7 +86,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({
-      message: "File uploaded successfully",
+      message: existingRecording ? "Recording updated successfully" : "New recording created successfully",
       url: fileUrl,
       count,
     });

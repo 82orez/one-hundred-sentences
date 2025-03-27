@@ -5,7 +5,6 @@ import { useState, useRef, useEffect } from "react";
 import { FaMicrophone } from "react-icons/fa6";
 import { FaCheck, FaRegStopCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { RiCloseLargeFill } from "react-icons/ri";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 
 interface Props {
@@ -168,13 +167,13 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
           <button
             onClick={handleSaveRecording}
             className="mt-2 flex min-h-12 w-1/4 min-w-52 cursor-pointer items-center justify-center rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
-            disabled={isRecording || isLoading || isUpLoading || isCompleted || isPlaying}>
+            disabled={isRecording || isLoading || isUpLoading || isPlaying}>
             {isUpLoading ? (
               <AiOutlineLoading3Quarters className="animate-spin text-xl" />
             ) : isCompleted ? (
               <div className={"flex items-center justify-center gap-2"}>
                 <FaCheck size={20} />
-                제출 완료
+                다시 제출
               </div>
             ) : (
               "녹음 파일 제출"
