@@ -258,18 +258,20 @@ const LearnPage = ({ params }: Props) => {
         </button>
       </div>
 
-      {/* ✅ 훈련 모드 - 전체 영문 가리기/보이기 체크박스 */}
-      <div className="mt-4 flex items-center justify-end gap-2">
-        <input
-          type="checkbox"
-          id="toggleAllEnglish"
-          checked={allEnglishHidden}
-          onChange={toggleAllEnglish}
-          className="checkbox checkbox-neutral checkbox-sm md:checkbox-md cursor-pointer"
-        />
-        <label htmlFor="toggleAllEnglish" className="text-md font-semibold md:text-lg">
-          훈련 모드
-        </label>
+      {/* ✅ 완료 표시 + 훈련 모드 */}
+      <div className="mt-4 flex items-center justify-between">
+        {/* ✅ 훈련 모드 - 전체 영문 가리기/보이기 체크박스 */}
+        <div className="flex items-center justify-end gap-2">
+          <input type="checkbox" id="toggleAllEnglish" checked={allEnglishHidden} onChange={toggleAllEnglish} className="toggle cursor-pointer" />
+          <label htmlFor="toggleAllEnglish" className="text-md font-semibold md:text-lg">
+            훈련 모드
+          </label>
+        </div>
+        {/* ✅ 완료 표시 */}
+        <div className="flex items-center">
+          <FaCheck size={25} className={"mr-2 rounded bg-yellow-400 p-1 text-white"} />
+          <span className="">학습 완료 표시</span>
+        </div>
       </div>
 
       {sentences?.map((sentence) => (
