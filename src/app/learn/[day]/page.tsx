@@ -50,7 +50,7 @@ const LearnPage = ({ params }: Props) => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  // ✅ React Query 를 사용하여 문장 데이터 가져오기
+  // ✅ 해당 일차에 학습할 문장 데이터 가져오기 - todaySentences
   const {
     data: sentences,
     isLoading,
@@ -63,7 +63,7 @@ const LearnPage = ({ params }: Props) => {
     },
   });
 
-  // ✅ 사용자가 완료한 문장 목록 가져오기
+  // ✅ 사용자가 학습 완료한 문장 목록 가져오기
   const { data: completedSentences } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
@@ -74,7 +74,7 @@ const LearnPage = ({ params }: Props) => {
     enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
   });
 
-  // ✅ 완료된 문장 등록 Mutation
+  // ✅ 완료된 문장을 DB 에 등록 Mutation
   const completeSentenceMutation = useMutation({
     mutationFn: async (sentenceNo: number) => {
       await axios.post("/api/progress", { sentenceNo });
@@ -157,7 +157,9 @@ const LearnPage = ({ params }: Props) => {
   const handleComplete = async (sentenceNo: number) => {
     try {
       await completeSentenceMutation.mutateAsync(sentenceNo);
-      markSentenceComplete(sentenceNo);
+
+      // ! 이게 필요?
+      // markSentenceComplete(sentenceNo);
 
       // 모든 문장이 완료되었는지 확인
       const completedSet = new Set(completedSentences);

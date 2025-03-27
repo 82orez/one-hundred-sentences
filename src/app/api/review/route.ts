@@ -23,6 +23,8 @@ export async function GET(req: Request) {
       dayCounts[day] = (dayCounts[day] || 0) + 1;
     });
 
+    console.log("dayCounts: ", dayCounts);
+
     // ✅ 5문장을 모두 완료한 학습일만 필터링
     const completedDays = Object.keys(dayCounts)
       .map(Number)
