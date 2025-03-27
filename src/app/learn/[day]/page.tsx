@@ -158,13 +158,23 @@ const LearnPage = ({ params }: Props) => {
     try {
       await completeSentenceMutation.mutateAsync(sentenceNo);
 
-      // markSentenceComplete(sentenceNo);
+      // ✅ 모든 문장이 완료되었는지 확인
+      let allCompleted = false;
 
-      // ! 모든 문장이 완료되었는지 확인
-      const completedSet = new Set(completedSentences);
-      completedSet.add(sentenceNo); // 방금 완료한 문장 추가
-      console.log("completedSet: ", completedSet);
-      const allCompleted = todaySentences?.every((s) => completedSet.has(s.no));
+      // todaySentences 와 completedSentences 가 모두 존재하는 경우에만 검사
+      if (todaySentences && completedSentences) {
+        // todaySentences 에서 문장 번호만 추출
+        const todaySentenceNumbers = todaySentences.map((sentence) => sentence.no);
+
+        // completedSentences 에 방금 완료한 문장 추가
+        const allCompletedSentenceNumbers = [...completedSentences, sentenceNo];
+
+        console.log("todaySentenceNumbers:", todaySentenceNumbers);
+        console.log("allCompletedSentenceNumbers:", allCompletedSentenceNumbers);
+
+        // todaySentences 의 모든 번호가 completedSentences 에 포함되어 있는지 확인
+        allCompleted = todaySentenceNumbers.every((no) => allCompletedSentenceNumbers.includes(no));
+      }
 
       // * ui 고려 필요
       if (allCompleted) {
