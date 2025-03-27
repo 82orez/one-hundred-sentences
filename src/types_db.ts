@@ -674,6 +674,35 @@ export type Database = {
         }
         Relationships: []
       }
+      UserNextDay: {
+        Row: {
+          id: string
+          totalCompleted: boolean
+          userId: string
+          userNextDay: number
+        }
+        Insert: {
+          id: string
+          totalCompleted?: boolean
+          userId: string
+          userNextDay: number
+        }
+        Update: {
+          id?: string
+          totalCompleted?: boolean
+          userId?: string
+          userNextDay?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "UserNextDay_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       VerificationToken: {
         Row: {
           expires: string

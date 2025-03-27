@@ -54,9 +54,10 @@ model User {
   Recordings        Recordings[]
   Purchase          Purchase[]
 
-  Course     Course[]
-  Enrollment Enrollment[]
-  Submission Submission[]
+  Course      Course[]
+  Enrollment  Enrollment[]
+  Submission  Submission[]
+  UserNextDay UserNextDay[]
 }
 
 model Account {
@@ -176,6 +177,15 @@ model Recordings {
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 
   @@unique([userId, sentenceNo]) // 한 문장은 한 번만 등록 가능
+}
+
+model UserNextDay {
+  id             String  @id @default(cuid())
+  userId         String
+  userNextDay    Int
+  totalCompleted Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 /// 구매 내역 모델

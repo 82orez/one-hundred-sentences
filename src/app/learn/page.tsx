@@ -18,7 +18,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const HomePage = () => {
   const { data: session, status } = useSession();
-  const { currentDay, nextDay, setNextDay } = useLearningStore();
+  const { nextDay, setNextDay, initializeNextDay, updateNextDayInDB } = useLearningStore();
   const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -47,6 +47,13 @@ const HomePage = () => {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
+  // ✅ DB 에서 nextDay 정보 초기화
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.id) {
+      initializeNextDay();
+    }
+  }, [initializeNextDay, session?.user?.id, status]);
+
   // ✅ 학습할 다음 Day(nextDay) 계산 (5문장 완료 기준)
   const getNextLearningDay = () => {
     if (!completedSentences || completedSentences.length === 0) return 1;
@@ -64,13 +71,21 @@ const HomePage = () => {
       : lastCompletedDay || 1; // 빈 경우 최소 Day 1 보장
   };
 
-  // ✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다(문장 하나를 학습 완료했을 때) nextDay 업데이트
+  // ✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다 nextDay 업데이트
   useEffect(() => {
-    if (completedSentences) {
+    if (completedSentences && status === "authenticated") {
       const calculatedNextDay = getNextLearningDay();
-      setNextDay(calculatedNextDay); // Zustand 스토어의 nextDay 업데이트
+
+      // 100문장 모두 완료했는지 확인
+      const allCompleted = completedSentences.length >= 100;
+
+      // DB에 nextDay 와 totalCompleted 업데이트
+      updateNextDayInDB(calculatedNextDay, allCompleted);
+
+      // 로컬 상태 업데이트
+      setNextDay(calculatedNextDay);
     }
-  }, [completedSentences, setNextDay]);
+  }, [completedSentences, setNextDay, updateNextDayInDB, status]);
 
   // ✅ 완료된 문장 갯수 산출
   useEffect(() => {

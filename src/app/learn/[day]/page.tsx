@@ -10,7 +10,7 @@ import { FaCheck, FaChevronLeft, FaChevronRight, FaPlay } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import { useSession } from "next-auth/react";
 import { useLearningStore } from "@/stores/useLearningStore";
-import { FaA, FaMicrophone, FaArrowLeft, FaArrowRight } from "react-icons/fa6";
+import { FaA, FaMicrophone } from "react-icons/fa6";
 import { TbAlphabetKorean } from "react-icons/tb";
 import AudioRecorder from "@/components/Recoder";
 import { RiCloseLargeFill } from "react-icons/ri";
