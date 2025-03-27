@@ -27,6 +27,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null); // 타이머 참조 추가
   const [hasNewRecording, setHasNewRecording] = useState(false);
+  const [recordMessage, setRecordMessage] = useState<string | null>(null);
 
   // ❌ 녹음 취소 및 창 닫기 함수
   const handleCancelRecording = async () => {
@@ -98,6 +99,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
       if (result.url) {
         setUploadedURL(result.url);
         setRecordCount(result.count);
+        setRecordMessage(result.message);
         console.log(`File saved at: ${result.url}`);
 
         // 제출 후 새 녹음 상태 초기화
@@ -193,7 +195,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
       {/* ✅ 업로드 완료 시 메시지 표시 */}
       {uploadedURL && (
         <div className="mt-4 text-center">
-          <p className="text-green-600">File saved successfully!</p>
+          <p className="text-green-600">{recordMessage}</p>
           {recordCount !== null && <p>오늘 저장한 파일 개수: {recordCount}개</p>}
           <audio controls src={uploadedURL} className="mx-auto" />
         </div>
