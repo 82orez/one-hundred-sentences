@@ -6,12 +6,12 @@ type LearningStore = {
   currentDay: number;
   nextDay: number;
   isLoading: boolean;
-  completedSentences: number[]; // 완료된 문장 번호 배열 추가
+  // completedSentences: number[]; // 완료된 문장 번호 배열 추가
   setCurrentDay: (day: number) => void;
   setNextDay: (day: number) => void;
   initializeNextDay: () => Promise<void>;
   updateNextDayInDB: (day: number, totalCompleted?: boolean) => Promise<void>;
-  markSentenceComplete: (sentenceNo: number) => Promise<void>; // 새로운 함수 추가
+  // markSentenceComplete: (sentenceNo: number) => Promise<void>; // 새로운 함수 추가
 };
 
 export const useLearningStore = create<LearningStore>()(
@@ -59,25 +59,25 @@ export const useLearningStore = create<LearningStore>()(
       },
 
       // ✅ 문장 완료 처리 함수 추가
-      markSentenceComplete: async (sentenceNo: number) => {
-        set({ isLoading: true });
-        try {
-          // API 를 통해 완료된 문장 저장
-          await axios.post("/api/progress", { sentenceNo });
-
-          // 로컬 상태 업데이트
-          const currentCompletedSentences = get().completedSentences;
-          if (!currentCompletedSentences.includes(sentenceNo)) {
-            set({
-              completedSentences: [...currentCompletedSentences, sentenceNo],
-            });
-          }
-        } catch (error) {
-          console.error("문장 완료 처리 중 오류:", error);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
+      // markSentenceComplete: async (sentenceNo: number) => {
+      //   set({ isLoading: true });
+      //   try {
+      //     // API 를 통해 완료된 문장 저장
+      //     await axios.post("/api/progress", { sentenceNo });
+      //
+      //     // 로컬 상태 업데이트
+      //     const currentCompletedSentences = get().completedSentences;
+      //     if (!currentCompletedSentences.includes(sentenceNo)) {
+      //       set({
+      //         completedSentences: [...currentCompletedSentences, sentenceNo],
+      //       });
+      //     }
+      //   } catch (error) {
+      //     console.error("문장 완료 처리 중 오류:", error);
+      //   } finally {
+      //     set({ isLoading: false });
+      //   }
+      // },
     }),
     {
       name: "learning-store",

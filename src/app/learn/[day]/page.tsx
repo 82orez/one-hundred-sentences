@@ -32,10 +32,9 @@ type Props = {
 };
 
 const LearnPage = ({ params }: Props) => {
-  const { markSentenceComplete } = useLearningStore();
+  // const { markSentenceComplete } = useLearningStore();
   const { day } = use(params);
-  // url 의 파라미터로 받아온 day 를 현재 페이지 no. 로 저장
-  const currentPageNumber = parseInt(day, 10);
+  const currentPageNumber = parseInt(day, 10); // url 의 파라미터로 받아온 day 를 현재 페이지 no. 로 저장
   const { nextDay } = useLearningStore();
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
@@ -52,18 +51,19 @@ const LearnPage = ({ params }: Props) => {
 
   // ✅ 해당 일차에 학습할 문장 데이터 가져오기 - todaySentences
   const {
-    data: sentences,
+    data: todaySentences,
     isLoading,
     error,
   } = useQuery({
     queryKey: ["sentences", day],
     queryFn: async () => {
       const res = await axios.get(`/api/learn?day=${day}`);
+      console.log("todaySentences: ", res.data);
       return res.data as Sentence[];
     },
   });
 
-  // ✅ 사용자가 학습 완료한 문장 목록 가져오기
+  // ✅ 사용자가 학습 완료한 문장 목록 가져오기 - useQuery
   const { data: completedSentences } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
@@ -74,7 +74,7 @@ const LearnPage = ({ params }: Props) => {
     enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
   });
 
-  // ✅ 완료된 문장을 DB 에 등록 Mutation
+  // ✅ 완료된 문장을 DB 에 등록 - useMutation
   const completeSentenceMutation = useMutation({
     mutationFn: async (sentenceNo: number) => {
       await axios.post("/api/progress", { sentenceNo });
@@ -85,16 +85,16 @@ const LearnPage = ({ params }: Props) => {
     },
   });
 
-  // ✅ 문장이 로드되면 모든 영어 문장을 기본적으로 보이게 설정
+  // ✅ 오늘 학습할 문장이 로드 되면 모든 영어 문장을 기본적으로 보이게 설정
   useEffect(() => {
-    if (sentences) {
+    if (todaySentences) {
       const initialEnglishState: { [key: number]: boolean } = {};
-      sentences.forEach((sentence) => {
+      todaySentences.forEach((sentence) => {
         initialEnglishState[sentence.no] = true; // ✅ 처음에는 모든 영어 문장이 보임
       });
       setVisibleEnglish(initialEnglishState);
     }
-  }, [sentences]);
+  }, [todaySentences]);
 
   // ✅ 개별 영문 보이기/가리기 토글
   const toggleEnglish = (sentenceNo: number) => {
@@ -115,7 +115,7 @@ const LearnPage = ({ params }: Props) => {
     setAllEnglishHidden(newHiddenState);
     setVisibleEnglish((prev) => {
       const newState: { [key: number]: boolean } = {};
-      sentences?.forEach((sentence) => {
+      todaySentences?.forEach((sentence) => {
         newState[sentence.no] = !newHiddenState; // ✅ 체크하면 모든 문장 가리기, 해제하면 보이기
       });
       return newState;
@@ -158,14 +158,13 @@ const LearnPage = ({ params }: Props) => {
     try {
       await completeSentenceMutation.mutateAsync(sentenceNo);
 
-      // ! 이게 필요?
       // markSentenceComplete(sentenceNo);
 
-      // 모든 문장이 완료되었는지 확인
+      // ! 모든 문장이 완료되었는지 확인
       const completedSet = new Set(completedSentences);
       completedSet.add(sentenceNo); // 방금 완료한 문장 추가
       console.log("completedSet: ", completedSet);
-      const allCompleted = sentences?.every((s) => completedSet.has(s.no));
+      const allCompleted = todaySentences?.every((s) => completedSet.has(s.no));
 
       // * ui 고려 필요
       if (allCompleted) {
@@ -276,7 +275,7 @@ const LearnPage = ({ params }: Props) => {
         </div>
       </div>
 
-      {sentences?.map((sentence) => (
+      {todaySentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
           {/* ✅ 처음에는 모든 영어 문장이 보이는 상태 */}
           <p className={clsx("text-lg font-semibold", { "blur-xs": !visibleEnglish[sentence.no] })}>{sentence.en}</p>
@@ -361,12 +360,12 @@ const LearnPage = ({ params }: Props) => {
           </div>
 
           {/* ✅ 녹음 모달 - Tailwind CSS 사용 */}
-          {selectedSentenceNo && sentences?.find((s) => s.no === selectedSentenceNo) && (
+          {selectedSentenceNo && todaySentences?.find((s) => s.no === selectedSentenceNo) && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/25">
               <div className="relative flex w-[90%] max-w-md items-center justify-center rounded-lg bg-white p-6 shadow-lg">
                 <AudioRecorder
-                  sentenceKo={sentences.find((s) => s.no === selectedSentenceNo)?.ko || ""}
-                  sentenceEn={sentences.find((s) => s.no === selectedSentenceNo)?.en || ""}
+                  sentenceKo={todaySentences.find((s) => s.no === selectedSentenceNo)?.ko || ""}
+                  sentenceEn={todaySentences.find((s) => s.no === selectedSentenceNo)?.en || ""}
                   sentenceNo={selectedSentenceNo}
                   handleComplete={handleComplete}
                   onClose={() => setSelectedSentenceNo(null)}
