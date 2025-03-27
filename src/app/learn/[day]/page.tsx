@@ -63,7 +63,7 @@ const LearnPage = ({ params }: Props) => {
     },
   });
 
-  // * ✅ 사용자가 완료한 문장 목록 가져오기
+  // ✅ 사용자가 완료한 문장 목록 가져오기
   const { data: completedSentences } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
@@ -74,7 +74,7 @@ const LearnPage = ({ params }: Props) => {
     enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
   });
 
-  // * ✅ 완료된 문장 등록 Mutation
+  // ✅ 완료된 문장 등록 Mutation
   const completeSentenceMutation = useMutation({
     mutationFn: async (sentenceNo: number) => {
       await axios.post("/api/progress", { sentenceNo });
@@ -130,9 +130,9 @@ const LearnPage = ({ params }: Props) => {
     }));
   };
 
+  // ✅ 클릭(선택)한 문장의 번호를 비교하여, 같은 문장의 버튼을 클릭하면 null, 다른 문장을 클릭하면 선택되 문장 번호를 변경
+  // 선택된 문장이 null 이면, Recorder 가 닫히는 시스템
   const toggleRecorder = (sentenceNo: number) => {
-    // ✅ 클릭(선택)한 문장의 번호를 비교하여, 같은 문장의 버튼을 클릭하면 null, 다른 문장을 클릭하면 선택되 문장 번호를 변경
-    // 선택된 문장이 null 이면, Recorder 가 닫히는 시스템
     setSelectedSentenceNo((prev) => (prev === sentenceNo ? null : sentenceNo));
   };
 
@@ -159,7 +159,7 @@ const LearnPage = ({ params }: Props) => {
       await completeSentenceMutation.mutateAsync(sentenceNo);
       markSentenceComplete(sentenceNo);
 
-      // ✅ 모든 문장이 완료되었는지 확인
+      // 모든 문장이 완료되었는지 확인
       const completedSet = new Set(completedSentences);
       completedSet.add(sentenceNo); // 방금 완료한 문장 추가
       console.log("completedSet: ", completedSet);
