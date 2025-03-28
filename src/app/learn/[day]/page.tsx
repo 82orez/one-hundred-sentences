@@ -32,10 +32,9 @@ type Props = {
 };
 
 const LearnPage = ({ params }: Props) => {
-  // const { markSentenceComplete } = useLearningStore();
   const { day } = use(params);
   const currentPageNumber = parseInt(day, 10); // url 의 파라미터로 받아온 day 를 현재 페이지 no. 로 저장
-  const { nextDay } = useLearningStore();
+  const { nextDay, markSentenceComplete } = useLearningStore();
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
@@ -157,6 +156,7 @@ const LearnPage = ({ params }: Props) => {
   const handleComplete = async (sentenceNo: number) => {
     try {
       await completeSentenceMutation.mutateAsync(sentenceNo);
+      // markSentenceComplete(sentenceNo);
 
       // ✅ 모든 문장이 완료되었는지 확인
       let allCompleted = false;
@@ -180,7 +180,8 @@ const LearnPage = ({ params }: Props) => {
       if (allCompleted) {
         setTimeout(() => {
           alert(`${day}일차 학습 완료!`);
-          router.push("/learn");
+          // !
+          // router.push("/dashboard");
         }, 1000);
       }
     } catch (error) {

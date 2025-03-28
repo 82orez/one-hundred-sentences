@@ -21,7 +21,15 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
+  const { nextDay, setNextDay, initializeNextDay, updateNextDayInDB } = useLearningStore();
+  const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
+  const [isQuizModalOpen, setQuizModalOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+
   const router = useRouter();
+  const supabase = createClient();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -29,15 +37,6 @@ export default function Dashboard() {
       return;
     }
   }, [status, router]);
-
-  const { nextDay } = useLearningStore();
-  const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
-  const [isQuizModalOpen, setQuizModalOpen] = useState(false);
-  const [isNavigating, setIsNavigating] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
-  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
-
-  const supabase = createClient();
 
   // ✅ Sentence 모델에 등록된 문장 갯수 가져오기
   const getSentenceCount = useQuery({
@@ -77,7 +76,47 @@ export default function Dashboard() {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // ✅ 완료된 문장 갯수 산출
+  // ✅ DB 에서 nextDay 정보 초기화
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.id) {
+      initializeNextDay();
+    }
+  }, [initializeNextDay, session?.user?.id, status]);
+
+  // ✅ 학습할 다음 Day(nextDay) 계산 (5문장 완료 기준)
+  const getNextLearningDay = () => {
+    if (!completedSentences || completedSentences.length === 0) return 1;
+
+    // 완료된 문장을 학습일 단위로 그룹화
+    const completedDays = new Set(completedSentences.map((no) => Math.ceil(no / 5)));
+
+    // Set 을 배열로 변환하고, 빈 경우 기본값 설정
+    const completedDaysArray = Array.from(completedDays) as number[];
+    const lastCompletedDay = completedDaysArray.length > 0 ? Math.max(...completedDaysArray) : 0;
+
+    // 모든 문장이 완료된 경우에만 다음 학습일(nextDay) 변경
+    return completedDays.has(lastCompletedDay) && completedSentences.length >= lastCompletedDay * 5
+      ? Math.min(lastCompletedDay + 1, 20)
+      : lastCompletedDay || 1; // 빈 경우 최소 Day 1 보장
+  };
+
+  // ✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다 nextDay 업데이트
+  useEffect(() => {
+    if (completedSentences && status === "authenticated") {
+      const calculatedNextDay = getNextLearningDay();
+
+      // 100문장 모두 완료했는지 확인
+      const allCompleted = completedSentences.length >= 100;
+
+      // DB에 nextDay 와 totalCompleted 업데이트
+      updateNextDayInDB(calculatedNextDay, allCompleted);
+
+      // 로컬 상태 업데이트
+      setNextDay(calculatedNextDay);
+    }
+  }, [completedSentences, setNextDay, updateNextDayInDB, status]);
+
+  // ✅ 학습 완료된 문장 갯수 산출
   useEffect(() => {
     if (completedSentences) {
       setProgress(Math.min((completedSentences.length / 100) * 100, 100)); // 100% 초과 방지

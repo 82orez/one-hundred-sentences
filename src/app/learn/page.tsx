@@ -25,7 +25,7 @@ const HomePage = () => {
 
   const router = useRouter();
 
-  // ✅ 사용자가 완료한 문장 정보 가져오기
+  // ✅ 사용자가 학습 완료한 문장 정보 가져오기
   const {
     data: completedSentences,
     isLoading,
