@@ -21,7 +21,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
-  const { completedSentencesStore, setCompletedSentences, nextDay, setNextDay, initializeNextDay, updateNextDayInDB } = useLearningStore();
+  const { completedSentencesStore, setCompletedSentencesStore, nextDay, setNextDay, initializeNextDay, updateNextDayInDB } = useLearningStore();
   const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -79,10 +79,10 @@ export default function Dashboard() {
   // 쿼리 결과가 변경될 때마다 store 에 저장
   useEffect(() => {
     if (completedSentences && !isCompletedSentencesLoading) {
-      setCompletedSentences(completedSentences);
+      setCompletedSentencesStore(completedSentences);
     }
     console.log("completedSentencesStore: ", completedSentencesStore);
-  }, [completedSentences, isCompletedSentencesLoading, setCompletedSentences]);
+  }, [completedSentences, isCompletedSentencesLoading, setCompletedSentencesStore]);
 
   // ✅ DB 에서 nextDay 정보 초기화
   useEffect(() => {

@@ -7,7 +7,7 @@ type LearningStore = {
   nextDay: number;
   isLoading: boolean;
   completedSentencesStore: number[]; // 완료된 문장 번호 배열 추가
-  setCompletedSentences: (sentences: number[]) => void;
+  setCompletedSentencesStore: (sentences: number[]) => void;
   setCurrentDay: (day: number) => void;
   setNextDay: (day: number) => void;
   initializeNextDay: () => Promise<void>;
@@ -23,13 +23,13 @@ export const useLearningStore = create<LearningStore>()(
       isLoading: false,
       completedSentencesStore: [], // 완료된 문장 번호 배열 초기화
       // 새 함수 추가
-      setCompletedSentences: (sentences: number[]) => set({ completedSentencesStore: sentences }),
+      setCompletedSentencesStore: (sentences: number[]) => set({ completedSentencesStore: sentences }),
 
       setCurrentDay: (day) => set({ currentDay: day }),
 
       setNextDay: (day) => set({ nextDay: day }),
 
-      // ✅ DB 에서 nextDay 정보 초기화
+      // ✅ DB 에서 nextDay 정보 초기화 - nextDay 정보를 가져오거나 없으면 1일차 생성
       initializeNextDay: async () => {
         set({ isLoading: true });
         try {
