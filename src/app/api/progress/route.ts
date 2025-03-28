@@ -40,14 +40,14 @@ export async function POST(req: Request) {
   try {
     // ✅ Sentence 테이블에서 sentenceNo가 존재하는지 확인
     const sentenceExists = await prisma.sentence.findUnique({
-      where: { no: sentenceNo }, // ✅ sentenceNo를 기준으로 확인
+      where: { no: sentenceNo }, // sentenceNo를 기준으로 확인
     });
 
     if (!sentenceExists) {
       return NextResponse.json({ error: "Invalid sentenceNo" }, { status: 400 });
     }
 
-    // ✅ 이미 완료한 문장인지 확인
+    // ✅ 이미 완료한 문장인지 확인하고 기완료된 문장이면 메세지 반환 -> error X
     const existing = await prisma.completedSentence.findUnique({
       where: { userId_sentenceNo: { userId, sentenceNo } },
     });
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Sentence already completed" });
     }
 
-    // ✅ 완료된 문장 추가
+    // ✅ 완료된 문장을 새로 추가
     const completedSentence = await prisma.completedSentence.create({
       data: {
         userId,

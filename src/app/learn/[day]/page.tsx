@@ -110,7 +110,9 @@ const LearnPage = ({ params }: Props) => {
   // ✅ 완료된 문장을 DB 에 등록 - useMutation
   const completeSentenceMutation = useMutation({
     mutationFn: async (sentenceNo: number) => {
-      await axios.post("/api/progress", { sentenceNo });
+      const res = await axios.post("/api/progress", { sentenceNo });
+      console.log("res.data: ", res.data);
+      return res.data;
     },
     onSuccess: () => {
       // @ts-ignore
