@@ -84,14 +84,14 @@ export default function Dashboard() {
     console.log("completedSentencesStore: ", completedSentencesStore);
   }, [completedSentences, isCompletedSentencesLoading, setCompletedSentencesStore]);
 
-  // ✅ DB 에서 nextDay 정보 초기화
+  // ✅ 페이지가 로드 되면 DB 에서 nextDay 정보 초기화
   useEffect(() => {
     if (status === "authenticated" && session?.user?.id) {
       initializeNextDay();
     }
   }, [initializeNextDay, session?.user?.id, status]);
 
-  // ✅ 학습할 다음 Day(nextDay) 계산 (5문장 완료 기준)
+  // *✅ 학습할 다음 Day(nextDay) 계산 (5문장 완료 기준)
   const getNextLearningDay = () => {
     if (!completedSentences || completedSentences.length === 0) return 1;
 
@@ -108,7 +108,7 @@ export default function Dashboard() {
       : lastCompletedDay || 1; // 빈 경우 최소 Day 1 보장
   };
 
-  // ✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다 nextDay 업데이트
+  // *✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다 nextDay 업데이트
   useEffect(() => {
     if (completedSentences && status === "authenticated") {
       const calculatedNextDay = getNextLearningDay();
