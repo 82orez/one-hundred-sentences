@@ -259,6 +259,20 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
+  // ✅ 녹음 횟수 데이터를 가져오는 쿼리 추가
+  const { data: recordingCounts } = useQuery({
+    queryKey: ["recordingCounts", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return {};
+      const res = await axios.get(`/api/recorder/recording-counter?userId=${session.user.id}`);
+      return res.data.reduce((acc: { [key: number]: number }, item: { sentenceNo: number; attemptCount: number }) => {
+        acc[item.sentenceNo] = item.attemptCount;
+        return acc;
+      }, {});
+    },
+    enabled: status === "authenticated" && !!session?.user?.id,
+  });
+
   // 유튜브 재생 함수
   const handlePlayYoutube = (sentence: Sentence) => {
     if (sentence.utubeUrl) {
@@ -445,6 +459,9 @@ const LearnPage = ({ params }: Props) => {
                 completedSentences?.includes(sentence.no) && <FaCheck size={20} className={"mx-auto"} />
               )}
             </button>
+
+            {/* ✅ 해당 문장 연습 횟수 */}
+            <span className="text-md text-gray-500">{recordingCounts && recordingCounts[sentence.no] && `${recordingCounts[sentence.no]}`}</span>
           </div>
 
           {/* ✅ 녹음 모달 - Tailwind CSS 사용 */}
