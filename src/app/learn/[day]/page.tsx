@@ -40,6 +40,7 @@ const LearnPage = ({ params }: Props) => {
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
   const [selectedSentenceNo, setSelectedSentenceNo] = useState<number | null>(null); // 선택된 문장 No.
   const [isPlayingSentenceNo, setIsPlayingSentenceNo] = useState<number | null>(null); // 현재 재생 중인 문장 No.
+  const [isCompletedPage, setIsCompletedPage] = useState(false);
 
   // 유튜브 모달 상태와 현재 선택된 유튜브 URL 을 저장할 상태 추가
   const [showYoutubeModal, setShowYoutubeModal] = useState(false);
@@ -68,7 +69,7 @@ const LearnPage = ({ params }: Props) => {
     queryFn: async () => {
       const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
       console.log("completedSentences: ", res.data);
-      return res.data.map((item: { sentenceNo: number }) => item.sentenceNo); // 완료된 문장 번호 리스트
+      return res.data.map((item: { sentenceNo: number }) => item.sentenceNo); // 완료된 문장 번호가 담긴 새로운 배열
     },
     enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
   });
@@ -116,6 +117,13 @@ const LearnPage = ({ params }: Props) => {
       queryClient.invalidateQueries(["completedSentences"]);
     },
   });
+
+  // ✅ 학습이 완료된 페이지인지 구분
+  useEffect(() => {
+    if (currentPageNumber < nextDay) {
+      setIsCompletedPage(true);
+    }
+  }, [currentPageNumber, nextDay]);
 
   // ✅ 오늘 학습할 문장이 로드 되면 모든 영어 문장을 기본적으로 보이게 설정
   useEffect(() => {
@@ -210,7 +218,7 @@ const LearnPage = ({ params }: Props) => {
       }
 
       // * ui 고려 필요
-      if (allCompleted) {
+      if (allCompleted && !isCompletedPage) {
         setTimeout(() => {
           alert(`${day}일차 학습 완료!`);
           // !
