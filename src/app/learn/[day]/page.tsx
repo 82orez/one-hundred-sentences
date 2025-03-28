@@ -419,9 +419,11 @@ const LearnPage = ({ params }: Props) => {
             {/* 유튜브 버튼 */}
             {sentence.utubeUrl && (
               <button
-                className="ml-2 rounded-full p-1 text-red-500 hover:bg-red-100"
+                className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 text-red-600 hover:bg-red-100 md:p-2"
+                aria-label="유튜브 재생"
                 onClick={() => handleYoutubeClick(sentence.utubeUrl!, sentence.no)}>
-                <ImYoutube2 size={20} />
+                <TfiYoutube size={30} className={"md:hidden"} />
+                <ImYoutube2 size={50} className={"hidden md:block"} />
               </button>
             )}
 
@@ -519,19 +521,23 @@ const LearnPage = ({ params }: Props) => {
 
       {/* 유튜브 모달 */}
       {showYoutubeModal && currentYoutubeUrl && (
-        <div className="bg-opacity-70 fixed inset-0 z-50 flex items-center justify-center bg-black">
-          <div className="relative h-[80vh] w-[90vw] max-w-4xl">
-            <button onClick={handleCloseYoutubeModal} className="absolute -top-2 -right-2 rounded-full bg-white p-2 text-black">
-              <RiCloseLargeFill size={24} />
-            </button>
-            <iframe
-              width="100%"
-              height="100%"
-              src={`https://www.youtube.com/embed/${extractYoutubeId(currentYoutubeUrl)}?autoplay=1`}
-              title="영어 학습 동영상"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="relative w-[90%] max-w-4xl rounded-lg bg-white p-4 shadow-xl">
+            <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-2">
+              <h3 className="text-lg font-semibold">강의 동영상</h3>
+              <button onClick={() => handleCloseYoutubeModal()} className="rounded-full p-1 hover:bg-gray-100">
+                <span className="text-2xl">&times;</span>
+              </button>
+            </div>
+            <div className="aspect-video w-full overflow-hidden rounded-lg">
+              <iframe
+                width="100%"
+                height="100%"
+                src={`https://www.youtube.com/embed/${extractYoutubeId(currentYoutubeUrl)}?autoplay=1`}
+                title="영어 학습 동영상"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen></iframe>
+            </div>
           </div>
         </div>
       )}
