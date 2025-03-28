@@ -200,7 +200,7 @@ const LearnPage = ({ params }: Props) => {
   const handlePlayUserRecording = async (sentenceNo: number) => {
     try {
       // 사용자 녹음 파일 URL 가져오기
-      const response = await axios.get(`/api/recordings?sentenceNo=${sentenceNo}&userId=${session?.user?.id}`);
+      const response = await axios.get(`/api/recorder/user-recording?sentenceNo=${sentenceNo}&userId=${session?.user?.id}`);
 
       if (response.data?.url) {
         // 오디오 객체를 생성해서 녹음된 파일 재생
@@ -352,7 +352,7 @@ const LearnPage = ({ params }: Props) => {
         {/* ✅ 완료 표시 */}
         <div className="flex items-center">
           <FaCheck size={25} className={"mr-2 rounded bg-yellow-400 p-1 text-white"} />
-          <span className="">학습 완료 표시</span>
+          <span className="">My Voice</span>
         </div>
       </div>
 
