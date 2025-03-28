@@ -40,6 +40,7 @@ const LearnPage = ({ params }: Props) => {
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
   const [selectedSentenceNo, setSelectedSentenceNo] = useState<number | null>(null); // 선택된 문장 No.
   const [isPlayingSentenceNo, setIsPlayingSentenceNo] = useState<number | null>(null); // 현재 재생 중인 문장 No.
+  const [isPlayingMyVoice, setIsPlayingMyVoice] = useState<number | null>(null);
   const [isCompletedPage, setIsCompletedPage] = useState(false);
 
   // 유튜브 모달 상태와 현재 선택된 유튜브 URL 을 저장할 상태 추가
@@ -195,6 +196,33 @@ const LearnPage = ({ params }: Props) => {
     };
   };
 
+  // ✅ User 가 녹음한 파일 재생 함수
+  const handlePlayUserRecording = async (sentenceNo: number) => {
+    try {
+      // 사용자 녹음 파일 URL 가져오기
+      const response = await axios.get(`/api/recordings?sentenceNo=${sentenceNo}&userId=${session?.user?.id}`);
+
+      if (response.data?.url) {
+        // 오디오 객체를 생성해서 녹음된 파일 재생
+        const audio = new Audio(response.data.url);
+        audio.play();
+
+        // 현재 재생 중인 문장 번호 설정 (UI 표시를 위해 필요할 경우)
+        setIsPlayingMyVoice(sentenceNo);
+
+        // 재생이 끝나면 상태 초기화
+        audio.onended = () => {
+          setIsPlayingMyVoice(null);
+        };
+      } else {
+        alert("녹음된 파일을 찾을 수 없습니다.");
+      }
+    } catch (error) {
+      console.error("녹음 파일 재생 중 오류 발생:", error);
+      alert("녹음 파일을 재생할 수 없습니다.");
+    }
+  };
+
   // ✅ 완료 버튼 클릭 핸들러
   const handleComplete = async (sentenceNo: number) => {
     try {
@@ -223,7 +251,6 @@ const LearnPage = ({ params }: Props) => {
       if (allCompleted && !isCompletedPage) {
         setTimeout(() => {
           alert(`${day}일차 학습 완료!`);
-          // !
           // router.push("/dashboard");
         }, 1000);
       }
@@ -405,12 +432,18 @@ const LearnPage = ({ params }: Props) => {
 
             {/* ✅ 완료 버튼 */}
             <button
-              className={clsx("h-9 min-w-9 rounded bg-yellow-400 text-white disabled:cursor-not-allowed", {
+              className={clsx("h-9 min-w-9 cursor-pointer rounded bg-yellow-400 text-white", {
                 hidden: !completedSentences?.includes(sentence.no),
               })}
-              // disabled={completedSentences?.includes(sentence.no)}
-            >
-              {completedSentences?.includes(sentence.no) && <FaCheck size={20} className={"mx-auto"} />}
+              disabled={isPlayingMyVoice !== null} // 다른 문장이 재생 중이면 비활성화
+              onClick={() => handlePlayUserRecording(sentence.no)}>
+              {isPlayingMyVoice === sentence.no ? (
+                <div className="flex items-center justify-center">
+                  <AiOutlineLoading3Quarters className={"animate-spin"} />
+                </div>
+              ) : (
+                completedSentences?.includes(sentence.no) && <FaCheck size={20} className={"mx-auto"} />
+              )}
             </button>
           </div>
 
