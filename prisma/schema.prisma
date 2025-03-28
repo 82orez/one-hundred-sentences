@@ -54,10 +54,11 @@ model User {
   Recordings        Recordings[]
   Purchase          Purchase[]
 
-  Course      Course[]
-  Enrollment  Enrollment[]
-  Submission  Submission[]
-  UserNextDay UserNextDay[]
+  Course             Course[]
+  Enrollment         Enrollment[]
+  Submission         Submission[]
+  UserNextDay        UserNextDay[]
+  YouTubeViewAttempt YouTubeViewAttempt[]
 }
 
 model Account {
@@ -125,15 +126,16 @@ model PasswordResetToken {
 
 /// 문장 모델 (100개의 영어 문장 저장)
 model Sentence {
-  id                String              @id @default(cuid())
-  no                Int                 @unique // 문장 번호 (1~100)
-  en                String // 영어 문장
-  ko                String // 한국어 번역
-  audioUrl          String? // MP3 파일 경로 추가
-  utubeUrl          String?
-  CompletedSentence CompletedSentence[]
-  QuizAttempt       QuizAttempt[]
-  Recordings        Recordings[]
+  id                 String               @id @default(cuid())
+  no                 Int                  @unique // 문장 번호 (1~100)
+  en                 String // 영어 문장
+  ko                 String // 한국어 번역
+  audioUrl           String? // MP3 파일 경로 추가
+  utubeUrl           String?
+  CompletedSentence  CompletedSentence[]
+  QuizAttempt        QuizAttempt[]
+  Recordings         Recordings[]
+  YouTubeViewAttempt YouTubeViewAttempt[]
 }
 
 /// 완료된 학습 문장 모델
@@ -177,6 +179,21 @@ model Recordings {
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 
   @@unique([userId, sentenceNo]) // 한 문장은 한 번만 등록 가능
+}
+
+// 유튜브 시청 시도 기록 모델
+model YouTubeViewAttempt {
+  id         String   @id @default(cuid())
+  userId     String
+  sentenceNo Int
+  viewedAt   DateTime @default(now())
+  duration   Int      @default(0) // 시청 시간(초)
+
+  // 관계 설정
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
+
+  @@index([userId, sentenceNo])
 }
 
 model UserNextDay {

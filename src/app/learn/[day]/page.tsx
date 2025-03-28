@@ -47,6 +47,13 @@ const LearnPage = ({ params }: Props) => {
   const [showYoutubeModal, setShowYoutubeModal] = useState(false);
   const [currentYoutubeUrl, setCurrentYoutubeUrl] = useState<string | null>(null);
 
+  const [youtubeStartTime, setYoutubeStartTime] = useState<number | null>(null);
+  const [videoSentenceNo, setVideoSentenceNo] = useState<number | null>(null);
+
+  // 유튜브 관련 상태 변수 추가
+  const [youtubeWatchStartTime, setYoutubeWatchStartTime] = useState<number | null>(null);
+  const [currentSentenceForYoutube, setCurrentSentenceForYoutube] = useState<number | null>(null);
+
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -273,21 +280,51 @@ const LearnPage = ({ params }: Props) => {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // 유튜브 재생 함수
+  // ✅ YouTube 재생 처리 함수 수정
   const handlePlayYoutube = (sentence: Sentence) => {
     if (sentence.utubeUrl) {
       setCurrentYoutubeUrl(sentence.utubeUrl);
+      setVideoSentenceNo(sentence.no);
       setShowYoutubeModal(true);
-    } else {
-      // 유튜브 URL 이 없을 경우 처리 (알림 등)
-      alert("이 문장에 대한 유튜브 영상이 없습니다.");
+      setYoutubeStartTime(Date.now()); // 시청 시작 시간 기록
     }
   };
 
-  // 유튜브 모달 닫기 함수
-  const closeYoutubeModal = () => {
+  // ✅ 유튜브 모달 열기 함수
+  const handleOpenYoutubeModal = (url: string, sentenceNo: number) => {
+    setCurrentYoutubeUrl(url);
+    setShowYoutubeModal(true);
+    setYoutubeWatchStartTime(Date.now());
+    setCurrentSentenceForYoutube(sentenceNo);
+  };
+
+  // ✅ 유튜브 모달 닫기 함수
+  const handleCloseYoutubeModal = async () => {
     setShowYoutubeModal(false);
-    setCurrentYoutubeUrl(null);
+
+    // 시청 시간 계산 및 서버에 전송
+    if (youtubeWatchStartTime && currentSentenceForYoutube) {
+      const duration = (Date.now() - youtubeWatchStartTime) / 1000; // 초 단위로 변환
+
+      try {
+        const response = await axios.post("/api/youtube-view", {
+          sentenceNo: currentSentenceForYoutube,
+          duration: duration,
+        });
+        console.log("유튜브 시청 기록:", response.data);
+      } catch (error) {
+        console.error("유튜브 시청 기록 실패:", error);
+      }
+
+      // 상태 초기화
+      setYoutubeWatchStartTime(null);
+      setCurrentSentenceForYoutube(null);
+    }
+  };
+
+  // 유튜브 버튼 클릭 이벤트 핸들러
+  const handleYoutubeClick = (url: string, sentenceNo: number) => {
+    handleOpenYoutubeModal(url, sentenceNo);
   };
 
   // 유튜브 URL 에서 ID를 추출하는 유틸리티 함수
@@ -379,14 +416,12 @@ const LearnPage = ({ params }: Props) => {
 
           {/* ✅ 버튼 그룹 */}
           <div className="mt-4 flex items-center gap-4">
-            {/* 유튜브 버튼 추가 */}
+            {/* 유튜브 버튼 */}
             {sentence.utubeUrl && (
               <button
-                onClick={() => handlePlayYoutube(sentence)}
-                className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 text-red-600 md:p-2"
-                aria-label="유튜브 재생">
-                <TfiYoutube size={30} className={"md:hidden"} />
-                <ImYoutube2 size={50} className={"hidden md:block"} />
+                className="ml-2 rounded-full p-1 text-red-500 hover:bg-red-100"
+                onClick={() => handleYoutubeClick(sentence.utubeUrl!, sentence.no)}>
+                <ImYoutube2 size={20} />
               </button>
             )}
 
@@ -482,24 +517,21 @@ const LearnPage = ({ params }: Props) => {
         </div>
       ))}
 
+      {/* 유튜브 모달 */}
       {showYoutubeModal && currentYoutubeUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative w-[90%] max-w-4xl rounded-lg bg-white p-4 shadow-xl">
-            <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-2">
-              <h3 className="text-lg font-semibold">강의 동영상</h3>
-              <button onClick={() => closeYoutubeModal()} className="rounded-full p-1 hover:bg-gray-100">
-                <span className="text-2xl">&times;</span>
-              </button>
-            </div>
-            <div className="aspect-video w-full overflow-hidden rounded-lg">
-              <iframe
-                width="100%"
-                height="100%"
-                src={`https://www.youtube.com/embed/${extractYoutubeId(currentYoutubeUrl)}?autoplay=1`}
-                title="영어 학습 동영상"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen></iframe>
-            </div>
+        <div className="bg-opacity-70 fixed inset-0 z-50 flex items-center justify-center bg-black">
+          <div className="relative h-[80vh] w-[90vw] max-w-4xl">
+            <button onClick={handleCloseYoutubeModal} className="absolute -top-2 -right-2 rounded-full bg-white p-2 text-black">
+              <RiCloseLargeFill size={24} />
+            </button>
+            <iframe
+              width="100%"
+              height="100%"
+              src={`https://www.youtube.com/embed/${extractYoutubeId(currentYoutubeUrl)}?autoplay=1`}
+              title="영어 학습 동영상"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           </div>
         </div>
       )}

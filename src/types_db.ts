@@ -721,6 +721,45 @@ export type Database = {
         }
         Relationships: []
       }
+      YouTubeViewAttempt: {
+        Row: {
+          duration: number
+          id: string
+          sentenceNo: number
+          userId: string
+          viewedAt: string
+        }
+        Insert: {
+          duration?: number
+          id: string
+          sentenceNo: number
+          userId: string
+          viewedAt?: string
+        }
+        Update: {
+          duration?: number
+          id?: string
+          sentenceNo?: number
+          userId?: string
+          viewedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "YouTubeViewAttempt_sentenceNo_fkey"
+            columns: ["sentenceNo"]
+            isOneToOne: false
+            referencedRelation: "Sentence"
+            referencedColumns: ["no"]
+          },
+          {
+            foreignKeyName: "YouTubeViewAttempt_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
