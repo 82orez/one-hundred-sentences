@@ -349,24 +349,6 @@ const LearnPage = ({ params }: Props) => {
               </button>
             )}
 
-            {/* ✅ 개별 영문 가리기 버튼 */}
-            <button
-              className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
-                "border opacity-50": visibleEnglish[sentence.no],
-              })}
-              onClick={() => toggleEnglish(sentence.no)}>
-              <FaA size={18} />
-            </button>
-
-            {/* ✅ 번역 보이기/가리기 버튼 */}
-            <button
-              className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
-                "border opacity-50": !visibleTranslations[sentence.no],
-              })}
-              onClick={() => toggleTranslation(sentence.no)}>
-              <TbAlphabetKorean size={27} />
-            </button>
-
             {/* ✅ 오디오 듣기 버튼 */}
             {sentence.audioUrl && (
               <button
@@ -385,6 +367,24 @@ const LearnPage = ({ params }: Props) => {
                 )}
               </button>
             )}
+
+            {/* ✅ 개별 영문 가리기 버튼 */}
+            <button
+              className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
+                "border opacity-50": visibleEnglish[sentence.no],
+              })}
+              onClick={() => toggleEnglish(sentence.no)}>
+              <FaA size={18} />
+            </button>
+
+            {/* ✅ 번역 보이기/가리기 버튼 */}
+            {/*<button*/}
+            {/*  className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {*/}
+            {/*    "border opacity-50": !visibleTranslations[sentence.no],*/}
+            {/*  })}*/}
+            {/*  onClick={() => toggleTranslation(sentence.no)}>*/}
+            {/*  <TbAlphabetKorean size={27} />*/}
+            {/*</button>*/}
 
             {/* ✅ 녹음 버튼 */}
             <button

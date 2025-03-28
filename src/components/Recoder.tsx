@@ -29,6 +29,22 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
   const [hasNewRecording, setHasNewRecording] = useState(false);
   const [recordMessage, setRecordMessage] = useState<string | null>(null);
 
+  // ✅ 컴포넌트가 마운트될 때 자동으로 녹음 시작
+  useEffect(() => {
+    const startRecordingAuto = async () => {
+      await startRecording();
+    };
+
+    startRecordingAuto();
+
+    // ✅ 컴포넌트 언마운트 시 녹음 중지
+    return () => {
+      if (isRecording) {
+        stopRecording();
+      }
+    };
+  }, []); // ✅ 의존성 배열이 비어있어 컴포넌트 마운트 시 한 번만 실행됨
+
   // ❌ 녹음 취소 및 창 닫기 함수
   const handleCancelRecording = async () => {
     if (isRecording) {
