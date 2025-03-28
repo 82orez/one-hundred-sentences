@@ -188,8 +188,8 @@ const LearnPage = ({ params }: Props) => {
   // ✅ 완료 버튼 클릭 핸들러
   const handleComplete = async (sentenceNo: number) => {
     try {
-      await completeSentenceMutation.mutateAsync(sentenceNo);
-      // markSentenceComplete(sentenceNo);
+      await completeSentenceMutation.mutateAsync(sentenceNo); // useMutation 사용
+      // markSentenceComplete(sentenceNo); // useLearningStore 사용
 
       // ✅ 모든 문장이 완료되었는지 확인
       let allCompleted = false;
