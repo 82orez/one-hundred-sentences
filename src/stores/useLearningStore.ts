@@ -6,7 +6,8 @@ type LearningStore = {
   currentDay: number;
   nextDay: number;
   isLoading: boolean;
-  completedSentences: number[]; // 완료된 문장 번호 배열 추가
+  completedSentencesStore: number[]; // 완료된 문장 번호 배열 추가
+  setCompletedSentences: (sentences: number[]) => void;
   setCurrentDay: (day: number) => void;
   setNextDay: (day: number) => void;
   initializeNextDay: () => Promise<void>;
@@ -20,7 +21,9 @@ export const useLearningStore = create<LearningStore>()(
       currentDay: 1,
       nextDay: 1,
       isLoading: false,
-      completedSentences: [], // 완료된 문장 번호 배열 초기화
+      completedSentencesStore: [], // 완료된 문장 번호 배열 초기화
+      // 새 함수 추가
+      setCompletedSentences: (sentences: number[]) => set({ completedSentencesStore: sentences }),
 
       setCurrentDay: (day) => set({ currentDay: day }),
 
@@ -66,10 +69,10 @@ export const useLearningStore = create<LearningStore>()(
           await axios.post("/api/progress", { sentenceNo });
 
           // 로컬 상태 업데이트
-          const currentCompletedSentences = get().completedSentences;
+          const currentCompletedSentences = get().completedSentencesStore;
           if (!currentCompletedSentences.includes(sentenceNo)) {
             set({
-              completedSentences: [...currentCompletedSentences, sentenceNo],
+              completedSentencesStore: [...currentCompletedSentences, sentenceNo],
             });
           }
         } catch (error) {

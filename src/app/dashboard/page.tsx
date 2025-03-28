@@ -21,7 +21,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
-  const { nextDay, setNextDay, initializeNextDay, updateNextDayInDB } = useLearningStore();
+  const { completedSentencesStore, setCompletedSentences, nextDay, setNextDay, initializeNextDay, updateNextDayInDB } = useLearningStore();
   const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -65,7 +65,7 @@ export default function Dashboard() {
       const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
 
       console.log(
-        "completedSentences@LearnPage: ",
+        "completedSentences@dashboard: ",
         res.data,
         res.data.map((item: { sentenceNo: number }) => item.sentenceNo),
       );
@@ -75,6 +75,14 @@ export default function Dashboard() {
     },
     enabled: status === "authenticated" && !!session?.user?.id,
   });
+
+  // 쿼리 결과가 변경될 때마다 store 에 저장
+  useEffect(() => {
+    if (completedSentences && !isCompletedSentencesLoading) {
+      setCompletedSentences(completedSentences);
+    }
+    console.log("completedSentencesStore: ", completedSentencesStore);
+  }, [completedSentences, isCompletedSentencesLoading, setCompletedSentences]);
 
   // ✅ DB 에서 nextDay 정보 초기화
   useEffect(() => {
