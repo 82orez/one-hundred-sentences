@@ -18,6 +18,7 @@ import { ImYoutube2 } from "react-icons/im";
 import { TfiYoutube } from "react-icons/tfi";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import FlipCounter from "@/components/FlipCounterAnimation";
 
 interface Sentence {
   no: number;
@@ -498,7 +499,11 @@ const LearnPage = ({ params }: Props) => {
             </button>
 
             {/* ✅ 해당 문장 연습 횟수 */}
-            <span className="text-md text-gray-500">{recordingCounts && recordingCounts[sentence.no] && `${recordingCounts[sentence.no]}`}</span>
+            <span className="text-md text-gray-500">
+              {recordingCounts && recordingCounts[sentence.no] && (
+                <FlipCounter value={recordingCounts[sentence.no]} className="text-md text-gray-500" />
+              )}
+            </span>
           </div>
 
           {/* ✅ 녹음 모달 - Tailwind CSS 사용 */}
