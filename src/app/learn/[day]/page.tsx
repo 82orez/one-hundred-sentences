@@ -408,7 +408,8 @@ const LearnPage = ({ params }: Props) => {
               className={clsx("h-9 min-w-9 rounded bg-yellow-400 text-white disabled:cursor-not-allowed", {
                 hidden: !completedSentences?.includes(sentence.no),
               })}
-              disabled={completedSentences?.includes(sentence.no)}>
+              // disabled={completedSentences?.includes(sentence.no)}
+            >
               {completedSentences?.includes(sentence.no) && <FaCheck size={20} className={"mx-auto"} />}
             </button>
           </div>

@@ -210,10 +210,10 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
 
       {/* ✅ 업로드 완료 시 메시지 표시 */}
       {uploadedURL && (
-        <div className="mt-4 text-center">
-          <p className="text-green-600">{recordMessage}</p>
-          {recordCount !== null && <p>문장 연습 횟수: 총 {recordCount} 회</p>}
-          <audio controls src={uploadedURL} className="mx-auto" />
+        <div className="mt-2 text-center text-lg">
+          {/*<p className="text-green-600">{recordMessage}</p>*/}
+          {recordCount !== null && <p>Speaking 연습 횟수: {recordCount} 회</p>}
+          {/*<audio controls src={uploadedURL} className="mx-auto" />*/}
         </div>
       )}
     </div>
