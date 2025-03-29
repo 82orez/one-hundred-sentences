@@ -281,16 +281,6 @@ const LearnPage = ({ params }: Props) => {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // ✅ YouTube 재생 처리 함수 수정
-  const handlePlayYoutube = (sentence: Sentence) => {
-    if (sentence.utubeUrl) {
-      setCurrentYoutubeUrl(sentence.utubeUrl);
-      setVideoSentenceNo(sentence.no);
-      setShowYoutubeModal(true);
-      setYoutubeStartTime(Date.now()); // 시청 시작 시간 기록
-    }
-  };
-
   // ✅ 유튜브 모달 열기 함수
   const handleOpenYoutubeModal = (url: string, sentenceNo: number) => {
     setCurrentYoutubeUrl(url);
