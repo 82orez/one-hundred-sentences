@@ -137,6 +137,50 @@ const LearnPage = ({ params }: Props) => {
     }
   }, [currentPageNumber, nextDay]);
 
+  // 기존 import 및 상태 정의 유지
+  // ...
+
+  // useEffect 추가
+  useEffect(() => {
+    // 유튜브 모달이 열려 있는 경우에만 이벤트 리스너 등록
+    if (showYoutubeModal) {
+      // 페이지 새로고침/닫기 처리
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        const message = "정말로 떠나시겠습니까? 시청 기록이 저장되지 않을 수 있습니다";
+        e.preventDefault();
+        e.returnValue = message;
+        return message;
+      };
+
+      // 뒤로가기 버튼 처리
+      const handlePopState = (e: PopStateEvent) => {
+        // 사용자에게 확인창 표시
+        const confirmMessage = "정말로 떠나시겠습니까? 시청 기록이 저장되지 않을 수 있습니다";
+        if (window.confirm(confirmMessage)) {
+          // 사용자가 확인을 누른 경우, 실제로 페이지 뒤로가기 허용
+          return true;
+        } else {
+          // 사용자가 취소를 누른 경우, 현재 페이지에 머물도록 history 조작
+          window.history.pushState(null, "", window.location.pathname);
+          return false;
+        }
+      };
+
+      // history 객체에 현재 상태 추가 (뒤로가기 감지 준비)
+      window.history.pushState(null, "", window.location.pathname);
+
+      // 이벤트 리스너 등록
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      window.addEventListener("popstate", handlePopState);
+
+      return () => {
+        // 이벤트 리스너 제거
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        window.removeEventListener("popstate", handlePopState);
+      };
+    }
+  }, [showYoutubeModal]);
+
   // ✅ 오늘 학습할 문장이 로드 되면 모든 영어 문장을 기본적으로 보이게 설정
   useEffect(() => {
     if (todaySentences) {
