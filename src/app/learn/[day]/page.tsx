@@ -529,12 +529,16 @@ const LearnPage = ({ params }: Props) => {
             <div className="flex flex-grow items-center justify-center">
               <div className="h-full w-full overflow-hidden rounded-lg sm:aspect-video sm:h-auto">
                 <iframe
+                  className="max-sm:scale-x-[calc(1.6)] max-sm:scale-y-[calc(1.6)] max-sm:rotate-90 max-sm:transform"
                   width="100%"
                   height="100%"
-                  src={`https://www.youtube.com/embed/${extractYoutubeId(currentYoutubeUrl)}?autoplay=1&rel=0&modestbranding=1&fs=1`}
+                  src={`https://www.youtube.com/embed/${extractYoutubeId(currentYoutubeUrl)}?autoplay=1&rel=0&modestbranding=1&controls=0`}
                   title="영어 학습 동영상"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen></iframe>
+
+                {/* 영상 하단에만 투명 오버레이 배치 */}
+                <div className="absolute right-0 bottom-0 left-0 h-14 bg-transparent" onClick={(e) => e.preventDefault()}></div>
               </div>
             </div>
           </div>
