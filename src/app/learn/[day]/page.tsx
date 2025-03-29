@@ -19,6 +19,7 @@ import { TfiYoutube } from "react-icons/tfi";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import FlipCounter from "@/components/FlipCounterAnimation";
+import { IoMdCloseCircle } from "react-icons/io";
 
 interface Sentence {
   no: number;
@@ -519,10 +520,12 @@ const LearnPage = ({ params }: Props) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
           {/* sm 화면에서는 전체 높이를 차지하고, 더 큰 화면에서는 기존 스타일 유지 */}
           <div className="relative flex h-screen w-full flex-col rounded-none bg-white p-2 shadow-xl sm:h-auto sm:w-[90%] sm:max-w-4xl sm:rounded-lg sm:p-4">
-            <div className="mb-2 flex items-center justify-between border-b border-gray-200 pb-2 sm:mb-4">
+            <div className="mt-8 flex items-center justify-between border-b border-gray-200 pb-2 md:mt-0 md:mb-4">
               <h3 className="text-lg font-semibold">강의 동영상</h3>
-              <button onClick={() => handleCloseYoutubeModal()} className="rounded-full p-1 hover:bg-gray-100">
-                <span className="text-2xl">&times;</span>
+              <button onClick={() => handleCloseYoutubeModal()} className="rounded-full hover:bg-gray-100">
+                <span className="">
+                  <IoMdCloseCircle size={38} className={"text-gray-500"} />
+                </span>
               </button>
             </div>
             {/* 모바일에서는 더 큰 비율로 영상 표시 */}
