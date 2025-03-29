@@ -516,22 +516,26 @@ const LearnPage = ({ params }: Props) => {
 
       {/* 유튜브 모달 */}
       {showYoutubeModal && currentYoutubeUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="relative w-[90%] max-w-4xl rounded-lg bg-white p-4 shadow-xl">
-            <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          {/* sm 화면에서는 전체 높이를 차지하고, 더 큰 화면에서는 기존 스타일 유지 */}
+          <div className="relative flex h-screen w-full flex-col rounded-none bg-white p-2 shadow-xl sm:h-auto sm:w-[90%] sm:max-w-4xl sm:rounded-lg sm:p-4">
+            <div className="mb-2 flex items-center justify-between border-b border-gray-200 pb-2 sm:mb-4">
               <h3 className="text-lg font-semibold">강의 동영상</h3>
               <button onClick={() => handleCloseYoutubeModal()} className="rounded-full p-1 hover:bg-gray-100">
                 <span className="text-2xl">&times;</span>
               </button>
             </div>
-            <div className="aspect-video w-full overflow-hidden rounded-lg">
-              <iframe
-                width="100%"
-                height="100%"
-                src={`https://www.youtube.com/embed/${extractYoutubeId(currentYoutubeUrl)}?autoplay=1`}
-                title="영어 학습 동영상"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen></iframe>
+            {/* 모바일에서는 더 큰 비율로 영상 표시 */}
+            <div className="flex flex-grow items-center justify-center">
+              <div className="h-full w-full overflow-hidden rounded-lg sm:aspect-video sm:h-auto">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={`https://www.youtube.com/embed/${extractYoutubeId(currentYoutubeUrl)}?autoplay=1&rel=0&modestbranding=1&fs=1`}
+                  title="영어 학습 동영상"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen></iframe>
+              </div>
             </div>
           </div>
         </div>
