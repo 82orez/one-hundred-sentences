@@ -563,9 +563,9 @@ const LearnPage = ({ params }: Props) => {
       {showYoutubeModal && currentYoutubeUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
           {/* sm 화면에서는 전체 높이를 차지하고, 더 큰 화면에서는 기존 스타일 유지 */}
-          <div className="relative flex h-screen w-full flex-col rounded-none bg-white p-2 shadow-xl sm:h-auto sm:w-[90%] sm:max-w-4xl sm:rounded-lg sm:p-4">
-            <div className="mt-8 flex items-center justify-between border-b border-gray-200 pb-2 md:mt-0 md:mb-4">
-              <h3 className="text-lg font-semibold">강의 동영상</h3>
+          <div className="relative flex h-5/6 w-full flex-col rounded-none bg-white p-2 shadow-xl sm:h-auto sm:w-[90%] sm:max-w-4xl sm:rounded-lg sm:p-4">
+            <div className="flex items-center justify-between border-b border-gray-200 pb-2 md:mb-4">
+              <h3 className={clsx("invisible text-lg font-semibold md:visible")}>강의 동영상</h3>
               <button onClick={() => handleCloseYoutubeModal()} className="rounded-full hover:bg-gray-100">
                 <span className="">
                   <IoMdCloseCircle size={38} className={"text-gray-500"} />
@@ -576,7 +576,7 @@ const LearnPage = ({ params }: Props) => {
             <div className="flex flex-grow items-center justify-center">
               <div className="h-full w-full overflow-hidden rounded-lg sm:aspect-video sm:h-auto">
                 <iframe
-                  // className="max-sm:scale-x-[calc(1.6)] max-sm:scale-y-[calc(1.6)] max-sm:rotate-90 max-sm:transform"
+                  className="max-sm:scale-x-[calc(1.6)] max-sm:scale-y-[calc(1.6)] max-sm:rotate-90 max-sm:transform"
                   width="100%"
                   height="100%"
                   src={`https://www.youtube.com/embed/${extractYoutubeId(currentYoutubeUrl)}?autoplay=1&rel=0&modestbranding=1&controls=0`}
