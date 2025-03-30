@@ -129,7 +129,7 @@ const LearnPage = ({ params }: Props) => {
 
   // ✅ 학습이 완료된 페이지인지 구분
   useEffect(() => {
-    if (currentPageNumber < nextDay) {
+    if (currentPageNumber < nextDay || (currentPageNumber === nextDay && completedSentences?.length >= 100)) {
       setIsCompletedPage(true);
     }
   }, [currentPageNumber, nextDay]);
@@ -398,7 +398,7 @@ const LearnPage = ({ params }: Props) => {
   return (
     <div className="relative mx-auto max-w-2xl p-4">
       {/* 페이지 네비게이션 버튼 */}
-      <div className="mt-2 flex items-center justify-between px-4 md:mt-8">
+      <div className="mt-2 flex items-center justify-between px-4 md:mt-4">
         <button
           onClick={handlePreviousDay}
           disabled={nextDay === 1}
