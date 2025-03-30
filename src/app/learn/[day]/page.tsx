@@ -56,6 +56,15 @@ const LearnPage = ({ params }: Props) => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
+  // ✅ 유닛 제목 불러오기 쿼리 추가
+  const { data: unitSubject, isLoading: isUnitTitleLoading } = useQuery({
+    queryKey: ["unitSubject", day],
+    queryFn: async () => {
+      const res = await axios.get(`/api/unit-subject?unitNumber=${currentPageNumber}`);
+      return res.data?.subjectKo || "학습 단원";
+    },
+  });
+
   // ✅ 해당 일차에 학습할 문장 데이터 가져오기 - todaySentences
   const {
     data: todaySentences,
@@ -398,7 +407,7 @@ const LearnPage = ({ params }: Props) => {
   return (
     <div className="relative mx-auto max-w-2xl p-4">
       {/* 페이지 네비게이션 버튼 */}
-      <div className="mt-2 flex items-center justify-between px-4 md:mt-4">
+      <div className="mt-2 flex items-center justify-between px-0 md:mt-4">
         <button
           onClick={handlePreviousDay}
           disabled={nextDay === 1}
@@ -410,7 +419,10 @@ const LearnPage = ({ params }: Props) => {
           <FaChevronLeft className={"text-xl md:text-3xl"} />
         </button>
 
-        <h1 className="text-2xl font-bold md:text-4xl">학습 {day}일차</h1>
+        <div className="flex flex-col items-center gap-1 md:gap-2">
+          <h1 className="text-2xl font-bold md:text-3xl">학습 {day}일차</h1>
+          <h1 className="text-xl font-semibold md:text-2xl">{isUnitTitleLoading ? "로딩 중..." : unitSubject}</h1>
+        </div>
 
         <button
           onClick={handleNextDay}

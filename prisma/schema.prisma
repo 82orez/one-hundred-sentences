@@ -14,14 +14,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Test {
-  id         Int       @id @default(autoincrement())
-  name       String
-  age        Int?
-  created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime? @db.Timestamptz()
-}
-
 // 파일 상단에 Role enum 추가
 enum Role {
   admin
@@ -124,7 +116,13 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 }
 
-/// 문장 모델 (100개의 영어 문장 저장)
+model unitSubject {
+  id         String  @id @default(cuid())
+  unitNumber Int?
+  subjectKo  String?
+  subjectEn  String?
+}
+
 model Sentence {
   id                 String               @id @default(cuid())
   no                 Int                  @unique // 문장 번호 (1~100)

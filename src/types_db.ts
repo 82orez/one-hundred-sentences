@@ -605,27 +605,24 @@ export type Database = {
           },
         ]
       }
-      Test: {
+      unitSubject: {
         Row: {
-          age: number | null
-          created_at: string
-          id: number
-          name: string
-          updated_at: string | null
+          id: string
+          subjectEn: string | null
+          subjectKo: string | null
+          unitNumber: number | null
         }
         Insert: {
-          age?: number | null
-          created_at?: string
-          id?: number
-          name: string
-          updated_at?: string | null
+          id: string
+          subjectEn?: string | null
+          subjectKo?: string | null
+          unitNumber?: number | null
         }
         Update: {
-          age?: number | null
-          created_at?: string
-          id?: number
-          name?: string
-          updated_at?: string | null
+          id?: string
+          subjectEn?: string | null
+          subjectKo?: string | null
+          unitNumber?: number | null
         }
         Relationships: []
       }
