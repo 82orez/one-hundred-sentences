@@ -117,10 +117,11 @@ model PasswordResetToken {
 }
 
 model unitSubject {
-  id         String  @id @default(cuid())
-  unitNumber Int?
-  subjectKo  String?
-  subjectEn  String?
+  id           String  @id @default(cuid())
+  unitNumber   Int?
+  subjectKo    String?
+  subjectEn    String?
+  unitUtubeUrl String?
 }
 
 model Sentence {

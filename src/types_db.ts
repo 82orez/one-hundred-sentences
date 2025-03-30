@@ -611,18 +611,21 @@ export type Database = {
           subjectEn: string | null
           subjectKo: string | null
           unitNumber: number | null
+          unitUtubeUrl: string | null
         }
         Insert: {
           id: string
           subjectEn?: string | null
           subjectKo?: string | null
           unitNumber?: number | null
+          unitUtubeUrl?: string | null
         }
         Update: {
           id?: string
           subjectEn?: string | null
           subjectKo?: string | null
           unitNumber?: number | null
+          unitUtubeUrl?: string | null
         }
         Relationships: []
       }

@@ -26,6 +26,7 @@ export async function GET(request: Request) {
       select: {
         subjectKo: true,
         subjectEn: true,
+        unitUtubeUrl: true, // 추가
       },
     });
 

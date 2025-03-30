@@ -56,12 +56,15 @@ const LearnPage = ({ params }: Props) => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  // ✅ 유닛 제목 불러오기 쿼리 추가
-  const { data: unitSubject, isLoading: isUnitTitleLoading } = useQuery({
+  // ✅ 유닛 제목과 유튜브 URL 불러오기 쿼리 추가
+  const { data: unitSubjectAndUtubeUrl, isLoading: isUnitSubjectAndUtubeUrlLoading } = useQuery({
     queryKey: ["unitSubject", day],
     queryFn: async () => {
       const res = await axios.get(`/api/unit-subject?unitNumber=${currentPageNumber}`);
-      return res.data?.subjectKo || "학습 단원";
+      return {
+        subjectKo: res.data?.subjectKo || null,
+        unitUtubeUrl: res.data?.unitUtubeUrl || null,
+      };
     },
   });
 
@@ -152,7 +155,7 @@ const LearnPage = ({ params }: Props) => {
     if (showYoutubeModal) {
       // 페이지 새로고침/닫기 처리
       const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-        const message = "정말로 떠나시겠습니까? 시청 기록이 저장되지 않을 수 있습니다";
+        const message = "정말로 떠나시겠습니까? 시청 기록이 저장되지 않을 수 있습니다.";
         e.preventDefault();
         e.returnValue = message;
         return message;
@@ -421,7 +424,7 @@ const LearnPage = ({ params }: Props) => {
 
         <div className="flex flex-col items-center gap-1 md:gap-2">
           <h1 className="text-2xl font-bold md:text-3xl">학습 {day}일차</h1>
-          <h1 className="text-xl font-semibold md:text-2xl">{isUnitTitleLoading ? "로딩 중..." : unitSubject}</h1>
+          <h1 className="text-xl font-semibold md:text-2xl">{isUnitSubjectAndUtubeUrlLoading ? "Loading" : unitSubjectAndUtubeUrl.subjectKo}</h1>
         </div>
 
         <button
@@ -445,6 +448,17 @@ const LearnPage = ({ params }: Props) => {
             훈련 모드
           </label>
         </div>
+
+        {/* ✅ 유튜브 버튼 */}
+        {unitSubjectAndUtubeUrl?.unitUtubeUrl && (
+          <button
+            className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 text-red-600 hover:bg-red-100 md:p-2"
+            aria-label="유튜브 재생"
+            onClick={() => handleYoutubeClick(unitSubjectAndUtubeUrl.unitUtubeUrl, currentPageNumber)}>
+            <TfiYoutube size={30} className={"md:hidden"} />
+            <ImYoutube2 size={50} className={"hidden md:block"} />
+          </button>
+        )}
 
         {/* ✅ 완료 표시 */}
         <div className="flex items-center">
