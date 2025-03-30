@@ -412,7 +412,7 @@ const LearnPage = ({ params }: Props) => {
           onClick={handlePreviousDay}
           disabled={nextDay === 1}
           className={clsx(
-            "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
+            "flex items-center gap-2 rounded-lg px-3 py-2 font-semibold md:px-4",
             currentPageNumber <= 1 ? "bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
             { invisible: nextDay === 1 },
           )}>
@@ -428,7 +428,7 @@ const LearnPage = ({ params }: Props) => {
           onClick={handleNextDay}
           disabled={nextDay === 1}
           className={clsx(
-            "flex items-center gap-2 rounded-lg px-4 py-2 font-semibold",
+            "flex items-center gap-2 rounded-lg px-3 py-2 font-semibold md:px-4",
             currentPageNumber > 20 || currentPageNumber === nextDay ? "bg-gray-200 text-gray-500" : "bg-blue-500 text-white hover:bg-blue-600",
             { invisible: nextDay === 1 },
           )}>
@@ -445,6 +445,7 @@ const LearnPage = ({ params }: Props) => {
             훈련 모드
           </label>
         </div>
+
         {/* ✅ 완료 표시 */}
         <div className="flex items-center">
           <FaCheck size={25} className={"mr-2 rounded bg-yellow-400 p-1 text-white"} />
