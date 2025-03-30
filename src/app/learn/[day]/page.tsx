@@ -561,12 +561,12 @@ const LearnPage = ({ params }: Props) => {
 
       {/* 유튜브 모달 */}
       {showYoutubeModal && currentYoutubeUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white md:bg-black/70 md:backdrop-blur-sm">
           {/* sm 화면에서는 전체 높이를 차지하고, 더 큰 화면에서는 기존 스타일 유지 */}
           <div className="relative flex h-5/6 w-full flex-col rounded-none bg-white p-2 shadow-xl sm:h-auto sm:w-[90%] sm:max-w-4xl sm:rounded-lg sm:p-4">
             <div className="flex items-center justify-between border-b border-gray-200 pb-2 md:mb-4">
               <h3 className={clsx("invisible text-lg font-semibold md:visible")}>강의 동영상</h3>
-              <button onClick={() => handleCloseYoutubeModal()} className="rounded-full hover:bg-gray-100">
+              <button onClick={() => handleCloseYoutubeModal()} className="cursor-pointer rounded-full hover:bg-gray-100">
                 <span className="">
                   <IoMdCloseCircle size={38} className={"text-gray-500"} />
                 </span>
