@@ -49,9 +49,6 @@ const LearnPage = ({ params }: Props) => {
   const [showYoutubeModal, setShowYoutubeModal] = useState(false);
   const [currentYoutubeUrl, setCurrentYoutubeUrl] = useState<string | null>(null);
 
-  const [youtubeStartTime, setYoutubeStartTime] = useState<number | null>(null);
-  const [videoSentenceNo, setVideoSentenceNo] = useState<number | null>(null);
-
   // 유튜브 관련 상태 변수 추가
   const [youtubeWatchStartTime, setYoutubeWatchStartTime] = useState<number | null>(null);
   const [currentSentenceForYoutube, setCurrentSentenceForYoutube] = useState<number | null>(null);
@@ -109,10 +106,10 @@ const LearnPage = ({ params }: Props) => {
       // 100 문장 모두 완료했는지 확인
       const allCompleted = completedSentences.length >= 100;
 
-      // DB 에 nextDay 와 totalCompleted 업데이트
+      // ! DB 에 nextDay 와 totalCompleted 업데이트하고 로컬의 nextDay 상태 업데이트
       updateNextDayInDB(calculatedNextDay, allCompleted);
 
-      // 로컬 상태 업데이트
+      // ! 꼭 필요한지? 로컬 상태 업데이트
       setNextDay(calculatedNextDay);
     }
   }, [completedSentences, setNextDay, updateNextDayInDB, status]);
