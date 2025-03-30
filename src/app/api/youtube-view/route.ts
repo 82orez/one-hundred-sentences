@@ -16,17 +16,20 @@ export async function POST(req: Request) {
 
     // ✅ 3초 이상 시청한 경우만 기록
     if (duration >= 3) {
+      // ✅ duration 이 60초를 초과하면 60으로 제한
+      const limitedDuration = duration >= 60 ? 60 : duration;
+
       const attempt = await prisma.youTubeViewAttempt.create({
         data: {
           userId: session.user.id,
           sentenceNo: sentenceNo,
-          duration: duration,
+          duration: limitedDuration,
         },
       });
 
       return NextResponse.json(attempt);
     } else {
-      return NextResponse.json({ message: "30초 미만 시청은 기록되지 않습니다" });
+      return NextResponse.json({ message: "3초 미만 시청은 기록되지 않습니다" });
     }
   } catch (error) {
     console.error("유튜브 시청 기록 중 오류 발생:", error);
