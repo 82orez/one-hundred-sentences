@@ -26,6 +26,12 @@ export default function SpeakingPage() {
   // 오디오 객체 참조 추가
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // 다른 부분을 저장할 상태 변수 추가
+  const [differences, setDifferences] = useState<{
+    missing: string[];
+    incorrect: { spoken: string; correct: string }[];
+  }>({ missing: [], incorrect: [] });
+
   // ✅ 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
@@ -201,6 +207,39 @@ export default function SpeakingPage() {
       setFeedback("정답입니다!");
       setIsVisible(true);
     } else {
+      // 차이점 찾기
+      const spokenWords = normalizedSpoken.split(" ");
+      const answerWords = normalizedAnswer.split(" ");
+
+      const findDifferences = (spoken: string[], answer: string[]) => {
+        const differences = {
+          missing: [] as string[],
+          incorrect: [] as { spoken: string; correct: string }[],
+        };
+
+        const maxLength = Math.max(spoken.length, answer.length);
+
+        for (let i = 0; i < maxLength; i++) {
+          // 말한 단어가 없는 경우 (누락)
+          if (i >= spoken.length && i < answer.length) {
+            differences.missing.push(answer[i]);
+            continue;
+          }
+
+          // 단어가 다른 경우 (오류)
+          if (i < spoken.length && i < answer.length && spoken[i] !== answer[i]) {
+            differences.incorrect.push({
+              spoken: spoken[i],
+              correct: answer[i],
+            });
+          }
+        }
+
+        return differences;
+      };
+
+      const diffs = findDifferences(spokenWords, answerWords);
+      setDifferences(diffs);
       setFeedback("❌ 다시 도전해 보세요.");
     }
   };
@@ -296,7 +335,10 @@ export default function SpeakingPage() {
             </button>
 
             <button
-              onClick={selectRandomSentence}
+              onClick={() => {
+                selectRandomSentence();
+                setDifferences({ missing: [], incorrect: [] });
+              }}
               disabled={isListening || isPlaying}
               className={clsx("w-full min-w-36 rounded-lg bg-blue-500 px-3 py-3 text-white hover:bg-blue-600")}>
               ↻ 다른 문장
@@ -311,7 +353,7 @@ export default function SpeakingPage() {
           </div>
 
           {/* 사용자가 말한 내용 */}
-          {userSpoken && (
+          {userSpoken && !isListening && (
             <div className="mb-4">
               <h3 className="mb-2 text-lg font-medium">내가 말한 내용:</h3>
               <p className="rounded-lg bg-gray-100 p-3 text-gray-800">{userSpoken}</p>
@@ -319,11 +361,50 @@ export default function SpeakingPage() {
           )}
 
           {/* 피드백 */}
-          {feedback && (
+          {feedback && !isListening && (
             <div className={clsx("mb-4 rounded-lg p-3", feedback.includes("정답") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>
               <p className="text-xl font-semibold">{feedback}</p>
             </div>
           )}
+
+          {/* 피드백 영역 */}
+          <div className="mt-6 text-center">
+            {feedback && !isListening && (
+              <div className={clsx("text-lg font-bold", feedback.includes("❌") ? "text-red-500" : "text-green-500")}>{feedback}</div>
+            )}
+
+            {/* 차이점 표시 영역 */}
+            {feedback?.includes("❌") && !isListening && (differences.missing.length > 0 || differences.incorrect.length > 0) && (
+              <div className="mt-4 space-y-3">
+                {differences.missing.length > 0 && (
+                  <div>
+                    <p className="font-medium text-amber-600">누락된 단어:</p>
+                    <div className="mt-2 flex flex-wrap justify-center gap-2">
+                      {differences.missing.map((word, index) => (
+                        <span key={index} className="rounded bg-amber-100 px-2 py-1 text-amber-800">
+                          {word}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {differences.incorrect.length > 0 && (
+                  <div>
+                    <p className="font-medium text-rose-600">잘못 말한 단어:</p>
+                    <div className="mt-2 flex flex-wrap justify-center gap-2">
+                      {differences.incorrect.map((item, index) => (
+                        <div key={index} className="flex flex-col items-center rounded bg-rose-50 p-2">
+                          <span className="text-rose-700 line-through">{item.spoken}</span>
+                          <span className="text-emerald-700">→ {item.correct}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* 블러 처리된 정답 (영어 문장) */}
           <div className="mt-6 flex flex-col md:mt-8">
