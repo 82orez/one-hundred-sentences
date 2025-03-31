@@ -617,7 +617,7 @@ const LearnPage = ({ params }: Props) => {
       )}
 
       <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": isLoading })}>
-        <Link href={"/learn"}>Back to My page</Link>
+        <Link href={"/dashboard"}>Back to My Dashboard</Link>
       </div>
     </div>
   );

@@ -18,9 +18,9 @@ export function PurchaseButton({ id, price }: Props) {
     try {
       setIsPurchasing(true);
 
-      // free plan 인 경우 /learn 페이지로 라우팅
+      // free plan 인 경우 /dashboard 페이지로 라우팅
       if (id === "free") {
-        router.push("/learn");
+        router.push("/dashboard");
         return;
       }
 

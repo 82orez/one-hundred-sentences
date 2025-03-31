@@ -352,7 +352,7 @@ export default function SpeakingPage() {
       )}
 
       <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": isLoading })}>
-        <Link href={"/learn"}>Back to My page</Link>
+        <Link href={"/dashboard"}>Back to My Dashboard</Link>
       </div>
     </div>
   );
