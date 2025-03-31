@@ -26,7 +26,7 @@ export default function SpeakingPage() {
   // 오디오 객체 참조 추가
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // 완료된 문장 목록 가져오기
+  // ✅ 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
@@ -46,7 +46,7 @@ export default function SpeakingPage() {
     enabled: !!session?.user?.id,
   });
 
-  // 랜덤 문장 선택
+  // ✅ 랜덤 문장 선택
   useEffect(() => {
     if (completedSentences && completedSentences.length > 0) {
       selectRandomSentence();
@@ -79,7 +79,7 @@ export default function SpeakingPage() {
     setIsVisible(false);
   };
 
-  // 음성 인식 시작
+  // ✅ 음성 인식 시작
   const startListening = () => {
     // 오디오 재생 중이면 음성 인식 시작하지 않음
     if (isPlaying) return;
@@ -131,7 +131,7 @@ export default function SpeakingPage() {
     recognition.start();
   };
 
-  // 음성 인식 중지
+  // ✅ 음성 인식 중지
   const stopListening = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
@@ -147,7 +147,7 @@ export default function SpeakingPage() {
     }
   };
 
-  // 정답 확인
+  // ✅ 정답 확인
   const checkAnswer = (spoken: string) => {
     if (!currentSentence) return;
 
@@ -205,12 +205,12 @@ export default function SpeakingPage() {
     }
   };
 
-  // 답안 확인하기 - 토글 형태로 변경된 함수:
+  // ✅ 답안 확인하기 - 토글 형태로 변경된 함수:
   const toggleAnswer = () => {
     setIsVisible(!isVisible);
   };
 
-  // 오디오 재생 함수 추가
+  // ✅ 오디오 재생 함수
   const playNativeAudio = () => {
     if (!currentSentence?.audioUrl) return;
 
