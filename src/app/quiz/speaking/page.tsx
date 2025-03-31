@@ -170,6 +170,10 @@ export default function SpeakingPage() {
           .replace(/\bwhere's\b/g, "where is")
           .replace(/\bwhat's\b/g, "what is")
 
+          .replace(/\ba\b/g, "the") // !
+          .replace(/\bcan\b/g, "could") // !
+          .replace(/\bcheck-in\b/g, "check in") // !
+
           // 다른 일반적인 축약형도 처리
           .replace(/\bi'll\b/g, "i will")
           .replace(/\bi've\b/g, "i have")
