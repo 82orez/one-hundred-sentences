@@ -15,6 +15,7 @@ import { createClient } from "@/utils/supabase/client";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
+import { HiOutlineSparkles } from "react-icons/hi2";
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -146,7 +147,7 @@ export default function Dashboard() {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="mb-8 text-center text-3xl font-semibold">나의 학습 현황</h1>
+      <h1 className="mb-4 text-center text-2xl font-semibold md:mb-8 md:text-4xl">나의 학습 현황</h1>
 
       {/* 학습 진행 상황 개요 */}
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -235,7 +236,7 @@ export default function Dashboard() {
                     <button
                       key={day}
                       className={clsx(
-                        "min-w-[60px] rounded-lg p-3 font-bold transition md:min-w-[100px]",
+                        "min-w-[60px] rounded-lg p-3 font-semibold transition md:min-w-[100px]",
                         isCompleted
                           ? "cursor-pointer bg-indigo-600 text-white hover:bg-indigo-500"
                           : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
@@ -254,6 +255,7 @@ export default function Dashboard() {
                 })}
               </div>
             )}
+
             <div className="flex space-x-4">
               <div className="flex items-center">
                 <div className="mr-2 h-4 w-4 rounded bg-indigo-600"></div>
@@ -264,6 +266,14 @@ export default function Dashboard() {
                 <span className="text-sm">미완료</span>
               </div>
             </div>
+          </div>
+
+          <div className="mt-4 flex items-center justify-center">
+            <button
+              className="cursor-pointer rounded-lg bg-yellow-500 px-4 py-2 text-white shadow transition hover:bg-yellow-600"
+              onClick={() => setQuizModalOpen(true)}>
+              퀴즈 풀기
+            </button>
           </div>
         </div>
 
@@ -307,7 +317,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ✅ 모달 창 (framer-motion 적용) */}
+      {/* ✅ 복습 모달 (framer-motion 적용) */}
       <AnimatePresence>
         {selectedDay && (
           <motion.div
@@ -354,6 +364,48 @@ export default function Dashboard() {
                 onClick={() => router.push(`/learn/${selectedDay}`)}>
                 {selectedDay}일차 복습 시작 🚀
               </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ✅ 퀴즈 모달 */}
+      <AnimatePresence>
+        {isQuizModalOpen && (
+          <motion.div
+            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-200"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setQuizModalOpen(false)}>
+            <motion.div
+              className="relative mx-4 w-full max-w-sm rounded-lg bg-white p-6 shadow-lg"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}>
+              <button className="absolute top-4 right-4 text-2xl font-bold text-gray-600 hover:text-gray-800" onClick={() => setQuizModalOpen(false)}>
+                ×
+              </button>
+              <h2 className="mb-4 text-center text-xl font-semibold">퀴즈 유형 선택</h2>
+              <div className="flex flex-col gap-4">
+                <button
+                  className="relative w-full rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:brightness-110"
+                  onClick={() => router.push("/quiz/speaking")}>
+                  <div className="flex animate-pulse items-center justify-center gap-2">
+                    <HiOutlineSparkles className="animate-spin-slow h-5 w-5 text-white" />
+                    <span className="drop-shadow-md">영어로 말하기 with AI</span>
+                    <HiOutlineSparkles className="animate-spin-slow h-5 w-5 text-white" />
+                  </div>
+                  <span className="absolute -top-2 -left-3 rounded-full bg-red-600 px-2 py-1 text-xs text-white shadow-md">Premium ⭐️</span>
+                </button>
+                <button
+                  className="w-full rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-green-600"
+                  onClick={() => router.push("/quiz/dictation")}>
+                  Dictation - 받아쓰기
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
