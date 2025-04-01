@@ -319,8 +319,17 @@ export default function SpeakingPage() {
       {currentSentence ? (
         <div className="mt-6">
           {/* 한글 문장 표시 */}
-          <div className="mb-6 flex min-h-24 items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-8">
+          <div className="mb-6 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-8">
             <p>{currentSentence.ko}</p>
+            {/* 원어민 음성 재생 부분 */}
+            {currentSentence && (
+              <button
+                onClick={playNativeAudio}
+                disabled={isListening || isPlaying}
+                className="btn btn-warning btn-outline mt-4 flex items-center justify-center gap-2 rounded-lg p-2 font-bold md:mt-4">
+                <FaPlay /> 원어민 음성 듣기
+              </button>
+            )}
           </div>
 
           {/* 버튼 영역 */}
@@ -374,7 +383,7 @@ export default function SpeakingPage() {
 
           {/* 힌트 표시 영역 */}
           {currentSentence && (
-            <div className={`mt-2 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "opacity-0"}`}>
+            <div className={`mt-2 font-medium text-blue-600 transition-opacity duration-1500 ${showHint ? "opacity-100" : "opacity-0"}`}>
               {currentSentence.en}
             </div>
           )}
@@ -447,14 +456,14 @@ export default function SpeakingPage() {
             </div>
 
             {/* 원어민 음성 재생 부분 */}
-            {currentSentence && (
-              <button
-                onClick={playNativeAudio}
-                disabled={isListening || isPlaying}
-                className="btn btn-warning btn-outline mt-4 flex items-center justify-center gap-2 rounded-lg py-5 font-bold md:mt-8">
-                <FaPlay /> 원어민 음성 듣기
-              </button>
-            )}
+            {/*{currentSentence && (*/}
+            {/*  <button*/}
+            {/*    onClick={playNativeAudio}*/}
+            {/*    disabled={isListening || isPlaying}*/}
+            {/*    className="btn btn-warning btn-outline mt-4 flex items-center justify-center gap-2 rounded-lg py-5 font-bold md:mt-8">*/}
+            {/*    <FaPlay /> 원어민 음성 듣기*/}
+            {/*  </button>*/}
+            {/*)}*/}
           </div>
         </div>
       ) : (
