@@ -355,6 +355,13 @@ export default function SpeakingPage() {
                 힌트 보기
               </button>
             </div>
+
+            {/* 힌트 표시 영역 */}
+            {currentSentence && (
+              <div className={`mt-4 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "opacity-0"}`}>
+                {currentSentence.en}
+              </div>
+            )}
           </div>
 
           {/* 버튼 영역 */}
@@ -407,13 +414,6 @@ export default function SpeakingPage() {
           {/*  className="mt-4 rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:outline-none">*/}
           {/*  힌트 보기*/}
           {/*</button>*/}
-
-          {/* 힌트 표시 영역 */}
-          {currentSentence && (
-            <div className={`mt-2 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "opacity-0"}`}>
-              {currentSentence.en}
-            </div>
-          )}
 
           {/* 사용자가 말한 내용 */}
           {userSpoken && !isListening && (
