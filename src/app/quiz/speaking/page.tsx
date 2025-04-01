@@ -342,7 +342,7 @@ export default function SpeakingPage() {
                 <button
                   onClick={playNativeAudio}
                   disabled={isListening || isPlaying}
-                  className="btn btn-primary btn-soft flex min-w-28 items-center justify-center gap-2 rounded-lg p-2 font-bold">
+                  className="btn btn-primary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold">
                   <FaPlay /> 원어민 음성
                 </button>
               )}
@@ -350,7 +350,7 @@ export default function SpeakingPage() {
               {/* 힌트 버튼 */}
               <button
                 onClick={handleShowHint}
-                className="btn btn-secondary btn-soft flex min-w-28 items-center justify-center gap-2 rounded-lg p-2 font-bold">
+                className="btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold">
                 <LuMousePointerClick size={24} />
                 힌트 보기
               </button>
