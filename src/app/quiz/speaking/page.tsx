@@ -189,10 +189,13 @@ export default function SpeakingPage() {
           // ... (다른 had 축약형)
           .replace(/\bwhere's\b/g, "where is")
           .replace(/\bwhat's\b/g, "what is")
+          .replace(/\bthere's\b/g, "there is")
 
           .replace(/\ba\b/g, "the") // !
-          .replace(/\bcan\b/g, "could") // !
+          // .replace(/\bcan\b/g, "could") // !
           .replace(/\bself-checking\b/g, "self check in") // !
+          .replace(/\bself check-in\b/g, "self check in") // !
+          .replace(/\bon food\b/g, "on foot") // !
 
           // 다른 일반적인 축약형도 처리
           .replace(/\bi'll\b/g, "i will")
@@ -355,6 +358,7 @@ export default function SpeakingPage() {
                 className={clsx(
                   "btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold",
                   { hidden: feedback?.includes("정답") },
+                  { "animate-pulse bg-red-300": feedback?.includes("❌") && !isListening },
                 )}>
                 <LuMousePointerClick size={24} />
                 힌트 보기
