@@ -9,7 +9,7 @@ import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa6";
 import { FaPlay, FaRegStopCircle } from "react-icons/fa";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
-import { LuMousePointerClick } from "react-icons/lu";
+import { LuMousePointerClick, LuRefreshCw } from "react-icons/lu";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -319,7 +319,20 @@ export default function SpeakingPage() {
 
       {currentSentence ? (
         <div className="mt-6">
-          <div className="mb-6 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-8">
+          <div className={"flex items-center justify-end"}>
+            <button
+              className={clsx("flex items-center gap-2 hover:cursor-pointer hover:underline", { hidden: feedback?.includes("정답") })}
+              onClick={() => {
+                selectRandomSentence();
+                setDifferences({ missing: [], incorrect: [] });
+              }}
+              disabled={isListening || isPlaying}>
+              <LuRefreshCw size={20} />
+              <span>문장 변경</span>
+            </button>
+          </div>
+
+          <div className="mt-1 mb-6 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-8">
             {/* 한글 문장 표시 */}
             <p>{currentSentence.ko}</p>
 
@@ -374,8 +387,10 @@ export default function SpeakingPage() {
                 setDifferences({ missing: [], incorrect: [] });
               }}
               disabled={isListening || isPlaying}
-              className={clsx("w-full min-w-36 rounded-lg bg-blue-500 px-3 py-3 text-white hover:bg-blue-600")}>
-              ↻ 다른 문장
+              className={clsx("w-full min-w-36 rounded-lg bg-blue-500 px-3 py-2 text-lg text-white hover:bg-blue-600", {
+                hidden: !feedback?.includes("정답"),
+              })}>
+              ↻ 다음 퀴즈
             </button>
 
             <button
@@ -395,7 +410,7 @@ export default function SpeakingPage() {
 
           {/* 힌트 표시 영역 */}
           {currentSentence && (
-            <div className={`mt-2 font-medium text-blue-600 transition-opacity duration-1500 ${showHint ? "opacity-100" : "opacity-0"}`}>
+            <div className={`mt-2 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "opacity-0"}`}>
               {currentSentence.en}
             </div>
           )}
