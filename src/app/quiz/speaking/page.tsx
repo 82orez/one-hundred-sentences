@@ -9,6 +9,7 @@ import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa6";
 import { FaPlay, FaRegStopCircle } from "react-icons/fa";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
+import { LuMousePointerClick } from "react-icons/lu";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -318,18 +319,29 @@ export default function SpeakingPage() {
 
       {currentSentence ? (
         <div className="mt-6">
-          {/* 한글 문장 표시 */}
           <div className="mb-6 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-8">
+            {/* 한글 문장 표시 */}
             <p>{currentSentence.ko}</p>
-            {/* 원어민 음성 재생 부분 */}
-            {currentSentence && (
+
+            <div className="mt-4 flex items-center justify-center gap-4">
+              {/* 원어민 음성 재생 부분 */}
+              {currentSentence && (
+                <button
+                  onClick={playNativeAudio}
+                  disabled={isListening || isPlaying}
+                  className="btn btn-primary btn-soft flex min-w-28 items-center justify-center gap-2 rounded-lg p-2 font-bold">
+                  <FaPlay /> 원어민 음성
+                </button>
+              )}
+
+              {/* 힌트 버튼 */}
               <button
-                onClick={playNativeAudio}
-                disabled={isListening || isPlaying}
-                className="btn btn-warning btn-outline mt-4 flex items-center justify-center gap-2 rounded-lg p-2 font-bold md:mt-4">
-                <FaPlay /> 원어민 음성 듣기
+                onClick={handleShowHint}
+                className="btn btn-info btn-soft flex min-w-28 items-center justify-center gap-2 rounded-lg p-2 font-bold">
+                <LuMousePointerClick size={24} />
+                힌트 보기
               </button>
-            )}
+            </div>
           </div>
 
           {/* 버튼 영역 */}
@@ -375,11 +387,11 @@ export default function SpeakingPage() {
           </div>
 
           {/* 힌트 버튼 */}
-          <button
-            onClick={handleShowHint}
-            className="mt-4 rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:outline-none">
-            힌트 보기
-          </button>
+          {/*<button*/}
+          {/*  onClick={handleShowHint}*/}
+          {/*  className="mt-4 rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:outline-none">*/}
+          {/*  힌트 보기*/}
+          {/*</button>*/}
 
           {/* 힌트 표시 영역 */}
           {currentSentence && (
