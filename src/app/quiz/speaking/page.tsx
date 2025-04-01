@@ -33,6 +33,9 @@ export default function SpeakingPage() {
     incorrect: { spoken: string; correct: string }[];
   }>({ missing: [], incorrect: [] });
 
+  // Hint 관련 상태 변수 추가 (기존 state 목록 아래에 추가)
+  const [showHint, setShowHint] = useState(false);
+
   // ✅ 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
@@ -152,6 +155,15 @@ export default function SpeakingPage() {
         setIsButtonDisabled(false);
       }, 1200);
     }
+  };
+
+  // ✅ 힌트 보기 기능을 위한 함수 추가
+  const handleShowHint = () => {
+    setShowHint(true);
+    // 1초 후에 힌트를 서서히 사라지게 함
+    setTimeout(() => {
+      setShowHint(false);
+    }, 1000);
   };
 
   // ✅ 정답 확인
@@ -352,6 +364,20 @@ export default function SpeakingPage() {
               {isVisible ? "💡 정답 숨기기" : "💡 정답 보기"}
             </button>
           </div>
+
+          {/* 힌트 버튼 */}
+          <button
+            onClick={handleShowHint}
+            className="mt-4 rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:outline-none">
+            힌트 보기
+          </button>
+
+          {/* 힌트 표시 영역 */}
+          {currentSentence && (
+            <div className={`mt-2 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "opacity-0"}`}>
+              {currentSentence.en}
+            </div>
+          )}
 
           {/* 사용자가 말한 내용 */}
           {userSpoken && !isListening && (
