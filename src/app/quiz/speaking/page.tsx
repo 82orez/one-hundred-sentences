@@ -305,7 +305,7 @@ export default function SpeakingPage() {
 
   return (
     <div className="mx-auto max-w-lg p-6 text-center">
-      <h1 className="text-4xl font-bold">Speaking quiz</h1>
+      <h1 className="text-3xl font-bold md:text-4xl">Speaking quiz</h1>
       <p className="mt-4 text-lg font-semibold text-gray-600">한글 문장을 보고 영어로 말해보세요.</p>
 
       {completedSentences?.length === 0 && (
@@ -336,7 +336,7 @@ export default function SpeakingPage() {
             {/* 한글 문장 표시 */}
             <p>{currentSentence.ko}</p>
 
-            <div className="mt-4 flex items-center justify-center gap-4">
+            <div className="mt-8 flex items-center justify-center gap-4">
               {/* 원어민 음성 재생 부분 */}
               {currentSentence && (
                 <button
@@ -350,7 +350,7 @@ export default function SpeakingPage() {
               {/* 힌트 버튼 */}
               <button
                 onClick={handleShowHint}
-                className="btn btn-info btn-soft flex min-w-28 items-center justify-center gap-2 rounded-lg p-2 font-bold">
+                className="btn btn-secondary btn-soft flex min-w-28 items-center justify-center gap-2 rounded-lg p-2 font-bold">
                 <LuMousePointerClick size={24} />
                 힌트 보기
               </button>
