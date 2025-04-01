@@ -17,6 +17,7 @@ export default function SpeakingPage() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+
   // 오디오 재생 상태를 관리할 새로운 상태 변수
   const [isPlaying, setIsPlaying] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -355,22 +356,24 @@ export default function SpeakingPage() {
           {/* 사용자가 말한 내용 */}
           {userSpoken && !isListening && (
             <div className="mb-4">
-              <h3 className="mb-2 text-lg font-medium">내가 말한 내용:</h3>
+              <h3 className="mb-2 text-lg font-medium">내가 말한 내용</h3>
               <p className="rounded-lg bg-gray-100 p-3 text-gray-800">{userSpoken}</p>
             </div>
           )}
 
           {/* 피드백 */}
-          {feedback && !isListening && (
-            <div className={clsx("mb-4 rounded-lg p-3", feedback.includes("정답") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>
-              <p className="text-xl font-semibold">{feedback}</p>
-            </div>
-          )}
+          {/*{feedback && !isListening && (*/}
+          {/*  <div className={clsx("mb-4 rounded-lg p-3", feedback.includes("정답") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>*/}
+          {/*    <p className="text-xl font-semibold">{feedback}</p>*/}
+          {/*  </div>*/}
+          {/*)}*/}
 
           {/* 피드백 영역 */}
           <div className="mt-6 text-center">
             {feedback && !isListening && (
-              <div className={clsx("text-lg font-bold", feedback.includes("❌") ? "text-red-500" : "text-green-500")}>{feedback}</div>
+              <div className={clsx("mb-4 rounded-lg p-3", feedback.includes("정답") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>
+                <p className="text-xl font-semibold">{feedback}</p>
+              </div>
             )}
 
             {/* 차이점 표시 영역 */}
@@ -406,8 +409,8 @@ export default function SpeakingPage() {
             )}
           </div>
 
-          {/* 블러 처리된 정답 (영어 문장) */}
           <div className="mt-6 flex flex-col md:mt-8">
+            {/* 정답 부분(영어 문장) */}
             {/*<h3 className="mb-2 text-lg font-medium">정답</h3>*/}
             <div
               className={clsx("flex min-h-24 items-center justify-center rounded-lg border bg-gray-100 p-4 text-xl font-semibold text-gray-800", {
