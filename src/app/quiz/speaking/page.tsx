@@ -7,7 +7,7 @@ import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa6";
-import { FaArrowRight, FaPlay, FaRegStopCircle } from "react-icons/fa";
+import { FaArrowRight, FaCheck, FaPlay, FaRegStopCircle } from "react-icons/fa";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { LuMousePointerClick, LuRefreshCw } from "react-icons/lu";
 
@@ -334,7 +334,7 @@ export default function SpeakingPage() {
           </div>
 
           {/* 출제 부분 */}
-          <div className="mt-1 mb-6 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-8">
+          <div className="mt-1 mb-1 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-1">
             {/* 한글 문장 표시 */}
             <p>{currentSentence.ko}</p>
 
@@ -370,7 +370,10 @@ export default function SpeakingPage() {
           </div>
 
           {/* 몸통 부분 */}
-          <div className="mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4">
+          <div
+            className={clsx("mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4", {
+              hidden: feedback?.includes("정답"),
+            })}>
             {/* 말하기 버튼 */}
             <button
               onClick={isListening ? stopListening : startListening}
@@ -392,23 +395,6 @@ export default function SpeakingPage() {
                   <span>말하기</span>
                 </>
               )}
-            </button>
-
-            {/* 다음 퀴즈에 도전 버튼 */}
-            <button
-              onClick={() => {
-                selectRandomSentence();
-                setDifferences({ missing: [], incorrect: [] });
-              }}
-              disabled={isListening || isPlaying}
-              className={clsx(
-                "flex w-full min-w-36 items-center justify-center gap-2 rounded-lg bg-blue-500 px-3 py-2 text-lg text-white hover:bg-blue-600",
-                {
-                  hidden: !feedback?.includes("정답"),
-                },
-              )}>
-              <span>다음 퀴즈에 도전</span>
-              <FaArrowRight />
             </button>
 
             {/*  정답 보기 버튼 */}
@@ -435,17 +421,15 @@ export default function SpeakingPage() {
             </div>
           )}
 
-          {/* 피드백 */}
-          {/*{feedback && !isListening && (*/}
-          {/*  <div className={clsx("mb-4 rounded-lg p-3", feedback.includes("정답") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>*/}
-          {/*    <p className="text-xl font-semibold">{feedback}</p>*/}
-          {/*  </div>*/}
-          {/*)}*/}
-
           {/* 피드백 영역 - 정답 or 오답 */}
           <div className="mt-6 text-center">
             {feedback && !isListening && (
-              <div className={clsx("mb-4 rounded-lg p-3", feedback.includes("정답") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>
+              <div
+                className={clsx(
+                  "mb-4 flex items-center justify-center gap-2 rounded-lg p-3",
+                  feedback.includes("정답") ? "text-green-800" : "bg-red-100 text-red-800",
+                )}>
+                <FaCheck className={clsx({ hidden: !feedback?.includes("정답") })} />
                 <p className="text-xl font-semibold">{feedback}</p>
               </div>
             )}
@@ -483,11 +467,11 @@ export default function SpeakingPage() {
             )}
           </div>
 
-          <div className="mt-6 flex flex-col md:mt-8">
+          <div className="mt-6 flex flex-col md:mt-6">
             {/* 정답 부분(영어 문장) */}
             {/*<h3 className="mb-2 text-lg font-medium">정답</h3>*/}
             <div
-              className={clsx("flex min-h-24 items-center justify-center rounded-lg border bg-gray-100 p-4 text-xl font-semibold text-gray-800", {
+              className={clsx("flex min-h-24 items-center justify-center rounded-lg border bg-green-50 p-4 text-xl font-semibold text-gray-800", {
                 invisible: !isVisible,
                 visible: isVisible,
               })}>
@@ -508,6 +492,22 @@ export default function SpeakingPage() {
       ) : (
         completedSentences?.length > 0 && <p className="mt-8 text-lg text-gray-500">문장을 불러오는 중...</p>
       )}
+
+      {/* 다음 퀴즈에 도전 버튼 */}
+      <div className="mt-8 flex justify-center">
+        <button
+          onClick={() => {
+            selectRandomSentence();
+            setDifferences({ missing: [], incorrect: [] });
+          }}
+          disabled={isListening || isPlaying}
+          className={clsx("btn btn-primary flex items-center justify-center gap-2 text-lg", {
+            hidden: !feedback?.includes("정답"),
+          })}>
+          <span>다음 퀴즈에 도전</span>
+          <FaArrowRight />
+        </button>
+      </div>
 
       <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": isLoading })}>
         <Link href={"/dashboard"}>Back to My Dashboard</Link>
