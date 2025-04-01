@@ -161,10 +161,10 @@ export default function SpeakingPage() {
   // ✅ 힌트 보기 기능을 위한 함수 추가
   const handleShowHint = () => {
     setShowHint(true);
-    // 1초 후에 힌트를 서서히 사라지게 함
+    // 3초 후에 힌트를 서서히 사라지게 함
     setTimeout(() => {
       setShowHint(false);
-    }, 1000);
+    }, 3000); // 3000ms = 3초
   };
 
   // ✅ 정답 확인
@@ -192,7 +192,7 @@ export default function SpeakingPage() {
 
           .replace(/\ba\b/g, "the") // !
           .replace(/\bcan\b/g, "could") // !
-          .replace(/\bcheck-in\b/g, "check in") // !
+          .replace(/\bself-checking\b/g, "self check in") // !
 
           // 다른 일반적인 축약형도 처리
           .replace(/\bi'll\b/g, "i will")
