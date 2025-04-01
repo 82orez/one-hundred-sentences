@@ -107,6 +107,9 @@ export default function SpeakingPage() {
       return;
     }
 
+    // 틀린 부분 초기화
+    setDifferences({ missing: [], incorrect: [] });
+
     const recognition = new (window as any).webkitSpeechRecognition();
     recognitionRef.current = recognition;
 
@@ -147,6 +150,14 @@ export default function SpeakingPage() {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       recognitionRef.current = null;
+
+      // isListening 상태를 false 로 변경
+      setIsListening(false);
+
+      // 기본적인 상태값들 초기화
+      setUserSpoken("");
+      // setFeedback(null);
+      setDifferences({ missing: [], incorrect: [] });
 
       // 버튼 비활성화
       setIsButtonDisabled(true);
@@ -355,6 +366,7 @@ export default function SpeakingPage() {
               {/* 힌트 버튼 */}
               <button
                 onClick={handleShowHint}
+                disabled={isListening || isPlaying}
                 className={clsx(
                   "btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold",
                   { hidden: feedback?.includes("정답") },
