@@ -7,7 +7,7 @@ import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa6";
-import { FaPlay, FaRegStopCircle } from "react-icons/fa";
+import { FaArrowRight, FaPlay, FaRegStopCircle } from "react-icons/fa";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { LuMousePointerClick, LuRefreshCw } from "react-icons/lu";
 
@@ -319,6 +319,7 @@ export default function SpeakingPage() {
 
       {currentSentence ? (
         <div className="mt-6">
+          {/* 문장 변경 버튼 */}
           <div className={"flex items-center justify-end"}>
             <button
               className={clsx("flex items-center gap-2 hover:cursor-pointer hover:underline", { hidden: feedback?.includes("정답") })}
@@ -332,6 +333,7 @@ export default function SpeakingPage() {
             </button>
           </div>
 
+          {/* 출제 부분 */}
           <div className="mt-1 mb-6 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-8">
             {/* 한글 문장 표시 */}
             <p>{currentSentence.ko}</p>
@@ -350,22 +352,26 @@ export default function SpeakingPage() {
               {/* 힌트 버튼 */}
               <button
                 onClick={handleShowHint}
-                className="btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold">
+                className={clsx(
+                  "btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold",
+                  { hidden: feedback?.includes("정답") },
+                )}>
                 <LuMousePointerClick size={24} />
                 힌트 보기
               </button>
             </div>
 
             {/* 힌트 표시 영역 */}
-            {currentSentence && (
+            {currentSentence && !feedback?.includes("정답") && (
               <div className={`mt-4 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "opacity-0"}`}>
                 {currentSentence.en}
               </div>
             )}
           </div>
 
-          {/* 버튼 영역 */}
+          {/* 몸통 부분 */}
           <div className="mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4">
+            {/* 말하기 버튼 */}
             <button
               onClick={isListening ? stopListening : startListening}
               disabled={isPlaying || isButtonDisabled}
@@ -388,24 +394,30 @@ export default function SpeakingPage() {
               )}
             </button>
 
+            {/* 다음 퀴즈에 도전 버튼 */}
             <button
               onClick={() => {
                 selectRandomSentence();
                 setDifferences({ missing: [], incorrect: [] });
               }}
               disabled={isListening || isPlaying}
-              className={clsx("w-full min-w-36 rounded-lg bg-blue-500 px-3 py-2 text-lg text-white hover:bg-blue-600", {
-                hidden: !feedback?.includes("정답"),
-              })}>
-              ↻ 다음 퀴즈
+              className={clsx(
+                "flex w-full min-w-36 items-center justify-center gap-2 rounded-lg bg-blue-500 px-3 py-2 text-lg text-white hover:bg-blue-600",
+                {
+                  hidden: !feedback?.includes("정답"),
+                },
+              )}>
+              <span>다음 퀴즈에 도전</span>
+              <FaArrowRight />
             </button>
 
-            <button
-              onClick={toggleAnswer}
-              disabled={isListening || isPlaying}
-              className={clsx("min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600", { hidden: feedback?.includes("정답") })}>
-              {isVisible ? "💡 정답 숨기기" : "💡 정답 보기"}
-            </button>
+            {/*  정답 보기 버튼 */}
+            {/*<button*/}
+            {/*  onClick={toggleAnswer}*/}
+            {/*  disabled={isListening || isPlaying}*/}
+            {/*  className={clsx("min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600", { hidden: feedback?.includes("정답") })}>*/}
+            {/*  {isVisible ? "💡 정답 가리기" : "💡 정답 보기"}*/}
+            {/*</button>*/}
           </div>
 
           {/* 힌트 버튼 */}
@@ -416,7 +428,7 @@ export default function SpeakingPage() {
           {/*</button>*/}
 
           {/* 사용자가 말한 내용 */}
-          {userSpoken && !isListening && (
+          {userSpoken && !isListening && !feedback?.includes("정답") && (
             <div className="mb-4">
               <h3 className="mb-2 text-lg font-medium">내가 말한 내용</h3>
               <p className="rounded-lg bg-gray-100 p-3 text-gray-800">{userSpoken}</p>
@@ -430,7 +442,7 @@ export default function SpeakingPage() {
           {/*  </div>*/}
           {/*)}*/}
 
-          {/* 피드백 영역 */}
+          {/* 피드백 영역 - 정답 or 오답 */}
           <div className="mt-6 text-center">
             {feedback && !isListening && (
               <div className={clsx("mb-4 rounded-lg p-3", feedback.includes("정답") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")}>
