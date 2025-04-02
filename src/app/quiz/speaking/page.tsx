@@ -92,13 +92,24 @@ export default function SpeakingPage() {
   };
 
   // ✅ 음성 인식 시작
-  const startListening = () => {
+  const startListening = async () => {
     // 오디오 재생 중이면 음성 인식 시작하지 않음
     if (isPlaying) return;
 
     if (!("webkitSpeechRecognition" in window)) {
       alert("이 브라우저는 음성 인식을 지원하지 않습니다.");
       return;
+    }
+
+    // 현재 문장이 있을 때만 시도 횟수 증가 API 호출
+    if (currentSentence && session?.user) {
+      try {
+        await axios.post("/api/attempts/speaking", {
+          sentenceNo: currentSentence.no,
+        });
+      } catch (error) {
+        console.error("시도 횟수 기록 실패:", error);
+      }
     }
 
     // 이미 실행 중인 recognition 객체가 있다면 중지
