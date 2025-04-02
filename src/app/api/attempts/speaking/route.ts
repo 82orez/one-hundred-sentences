@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "로그인이 필요합니다" }, { status: 401 });
     }
 
-    const { sentenceNo } = await request.json();
+    const { sentenceNo, isCorrect } = await request.json();
     if (!sentenceNo) {
       return NextResponse.json({ error: "문장 번호가 필요합니다" }, { status: 400 });
     }
@@ -21,18 +21,26 @@ export async function POST(request: Request) {
       where: {
         userId: session.user.id,
         sentenceNo: sentenceNo,
-        kind: "speaking"
-      }
+        kind: "speaking",
+      },
     });
 
     // 기존 기록이 있으면 업데이트, 없으면 새로 생성
     if (existingAttempt) {
+      const updateData: any = {
+        attempt: (existingAttempt.attempt || 0) + 1,
+      };
+
+      // 정답이면 correct 필드도 증가
+      if (isCorrect) {
+        updateData.correct = (existingAttempt.correct || 0) + 1;
+      }
+
       const updatedAttempt = await prisma.quizAttempt.update({
         where: { id: existingAttempt.id },
-        data: {
-          attempt: (existingAttempt.attempt || 0) + 1
-        }
+        data: updateData,
       });
+
       return NextResponse.json(updatedAttempt);
     } else {
       const newAttempt = await prisma.quizAttempt.create({
@@ -41,8 +49,8 @@ export async function POST(request: Request) {
           sentenceNo: sentenceNo,
           kind: "speaking",
           attempt: 1,
-          correct: 0
-        }
+          correct: isCorrect ? 1 : 0,
+        },
       });
       return NextResponse.json(newAttempt);
     }

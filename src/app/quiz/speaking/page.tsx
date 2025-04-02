@@ -102,15 +102,15 @@ export default function SpeakingPage() {
     }
 
     // 현재 문장이 있을 때만 시도 횟수 증가 API 호출
-    if (currentSentence && session?.user) {
-      try {
-        await axios.post("/api/attempts/speaking", {
-          sentenceNo: currentSentence.no,
-        });
-      } catch (error) {
-        console.error("시도 횟수 기록 실패:", error);
-      }
-    }
+    // if (currentSentence && session?.user) {
+    //   try {
+    //     await axios.post("/api/attempts/speaking", {
+    //       sentenceNo: currentSentence.no,
+    //     });
+    //   } catch (error) {
+    //     console.error("시도 횟수 기록 실패:", error);
+    //   }
+    // }
 
     // 이미 실행 중인 recognition 객체가 있다면 중지
     if (recognitionRef.current) {
@@ -181,6 +181,20 @@ export default function SpeakingPage() {
     }
   };
 
+  // ✅ 음성 인식 후 결과 관련 횟수를 서버에 저장하는 함수
+  const handleSpeechResult = async (isCorrect: boolean) => {
+    if (currentSentence && session?.user) {
+      try {
+        await axios.post("/api/attempts/speaking", {
+          sentenceNo: currentSentence.no,
+          isCorrect,
+        });
+      } catch (error) {
+        console.error("시도 기록 실패:", error);
+      }
+    }
+  };
+
   // ✅ 힌트 보기 기능을 위한 함수 추가
   const handleShowHint = () => {
     setShowHint(true);
@@ -246,6 +260,7 @@ export default function SpeakingPage() {
 
     if (normalizedSpoken === normalizedAnswer) {
       setFeedback("정답입니다!");
+      handleSpeechResult(true); // ✅ 정답일 경우 isCorrect: true
       setIsVisible(true);
     } else {
       // 차이점 찾기
@@ -282,6 +297,7 @@ export default function SpeakingPage() {
       const diffs = findDifferences(spokenWords, answerWords);
       setDifferences(diffs);
       setFeedback("❌ 다시 도전해 보세요.");
+      handleSpeechResult(false); // ❌ 오답일 경우 isCorrect: false
     }
   };
 
