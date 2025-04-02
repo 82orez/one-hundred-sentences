@@ -172,10 +172,10 @@ export default function SpeakingPage() {
   // ✅ 힌트 보기 기능을 위한 함수 추가
   const handleShowHint = () => {
     setShowHint(true);
-    // 3초 후에 힌트를 서서히 사라지게 함
+    // 시간 조절 가능 - 2초 후에 힌트를 서서히 사라지게 함
     setTimeout(() => {
       setShowHint(false);
-    }, 3000); // 3000ms = 3초
+    }, 2000); // 3000ms = 2초
   };
 
   // ✅ 정답 확인
@@ -395,7 +395,7 @@ export default function SpeakingPage() {
               onClick={isListening ? stopListening : startListening}
               disabled={isPlaying || isButtonDisabled}
               className={clsx(
-                "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-white transition-all",
+                "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-lg font-semibold text-white transition-all",
                 isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
                 { hidden: feedback?.includes("정답") },
                 { "cursor-not-allowed opacity-50": isButtonDisabled },
