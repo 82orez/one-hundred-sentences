@@ -205,6 +205,7 @@ export default function SpeakingPage() {
           .replace(/\ba\b/g, "the") // !
           // .replace(/\bcan\b/g, "could") // !
           .replace(/\bself-checking\b/g, "self check in") // !
+          .replace(/\bself checking\b/g, "self check in") // !
           .replace(/\bself check-in\b/g, "self check in") // !
           .replace(/\bon food\b/g, "on foot") // !
 
