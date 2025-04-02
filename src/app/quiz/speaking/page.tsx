@@ -13,7 +13,7 @@ import { LuMousePointerClick, LuRefreshCw } from "react-icons/lu";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
-  const [currentSentence, setCurrentSentence] = useState<{ en: string; ko: string; audioUrl: string } | null>(null);
+  const [currentSentence, setCurrentSentence] = useState<{ en: string; ko: string; audioUrl: string; no: number } | null>(null);
   const [userSpoken, setUserSpoken] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
@@ -44,10 +44,11 @@ export default function SpeakingPage() {
       try {
         const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
         console.log("🔹 API 응답 데이터:", res.data);
-        return res.data.map((item: { sentence: { en: string; ko: string; audioUrl: string } }) => ({
+        return res.data.map((item: { sentence: { en: string; ko: string; audioUrl: string; no: number } }) => ({
           en: item.sentence?.en ?? "No text found",
           ko: item.sentence?.ko ?? "번역이 없습니다.",
           audioUrl: item.sentence?.audioUrl ?? "No audio found",
+          no: item.sentence?.no,
         }));
       } catch (error) {
         console.error("❌ API 호출 오류:", error);

@@ -154,15 +154,16 @@ model CompletedSentence {
 
 /// 퀴즈 기록 모델
 model QuizAttempt {
-  id          String   @id @default(cuid())
-  userId      String
-  sentenceId  String
-  correct     Boolean // 정답 여부
-  attemptedAt DateTime @default(now())
+  id         String  @id @default(cuid())
+  userId     String
+  sentenceNo Int
+  kind       String? // speaking or dictation
+  attempt    Int?
+  correct    Int?
 
   // 관계 설정
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sentence Sentence @relation(fields: [sentenceId], references: [id], onDelete: Cascade)
+  sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 }
 
 model Recordings {

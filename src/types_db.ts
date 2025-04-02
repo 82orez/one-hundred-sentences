@@ -413,33 +413,36 @@ export type Database = {
       }
       QuizAttempt: {
         Row: {
-          attemptedAt: string
-          correct: boolean
+          attempt: number | null
+          correct: number | null
           id: string
-          sentenceId: string
+          kind: string | null
+          sentenceNo: number
           userId: string
         }
         Insert: {
-          attemptedAt?: string
-          correct: boolean
+          attempt?: number | null
+          correct?: number | null
           id: string
-          sentenceId: string
+          kind?: string | null
+          sentenceNo: number
           userId: string
         }
         Update: {
-          attemptedAt?: string
-          correct?: boolean
+          attempt?: number | null
+          correct?: number | null
           id?: string
-          sentenceId?: string
+          kind?: string | null
+          sentenceNo?: number
           userId?: string
         }
         Relationships: [
           {
-            foreignKeyName: "QuizAttempt_sentenceId_fkey"
-            columns: ["sentenceId"]
+            foreignKeyName: "QuizAttempt_sentenceNo_fkey"
+            columns: ["sentenceNo"]
             isOneToOne: false
             referencedRelation: "Sentence"
-            referencedColumns: ["id"]
+            referencedColumns: ["no"]
           },
           {
             foreignKeyName: "QuizAttempt_userId_fkey"
