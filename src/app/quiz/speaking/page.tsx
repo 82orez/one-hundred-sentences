@@ -372,7 +372,7 @@ export default function SpeakingPage() {
         <div className="mt-6">
           <div className={"mb-1 flex items-center justify-between gap-4"}>
             {/* 빈칸 힌트 토글 */}
-            <div className={"flex items-center justify-center gap-2"}>
+            <div className={clsx("flex items-center justify-center gap-2", { hidden: feedback?.includes("정답") })}>
               {/* 이 input 이 체크되면 showHint1이 false 로 변경됩니다 */}
               <input type="checkbox" checked={showHint1} onChange={() => setShowHint1(!showHint1)} className="toggle toggle-primary" />
               <span className="">Hint!</span>
@@ -400,7 +400,10 @@ export default function SpeakingPage() {
 
             {/* 빈칸 힌트 부분 */}
             {showHint1 && (
-              <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm">
+              <div
+                className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
+                  hidden: feedback?.includes("정답"),
+                })}>
                 {getMaskedSentence(currentSentence)}
               </div>
             )}
@@ -426,7 +429,7 @@ export default function SpeakingPage() {
                   { "animate-pulse bg-red-300": feedback?.includes("❌") && !isListening },
                 )}>
                 <LuMousePointerClick size={24} />
-                힌트 보기
+                정답 보기
               </button>
 
               {/*<button onClick={toggleHint} className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">*/}
