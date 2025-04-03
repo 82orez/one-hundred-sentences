@@ -38,7 +38,7 @@ export default function SpeakingPage() {
   // Hint 관련 상태 변수 추가 (기존 state 목록 아래에 추가)
   const [showHint, setShowHint] = useState(false);
 
-  const [showHint1, setShowHint1] = useState(false);
+  const [showHint1, setShowHint1] = useState(true);
 
   // ✅ 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading } = useQuery({
@@ -139,7 +139,7 @@ export default function SpeakingPage() {
     }, 2000); // 3000ms = 2초
   };
 
-  // 문장에서 중요 단어(명사, 동사 등)를 식별하고 마스킹하는 함수
+  // ✅ 문장에서 중요 단어(명사, 동사 등)를 식별하고 마스킹하는 함수
   const getMaskedSentence = () => {
     if (!currentSentence) return "";
 
@@ -182,6 +182,7 @@ export default function SpeakingPage() {
       "locals",
       "should",
       "so",
+      "all",
     ];
 
     // 항상 표시할 구문 목록 추가 (NEW)
@@ -615,18 +616,27 @@ export default function SpeakingPage() {
 
       {currentSentence ? (
         <div className="mt-6">
-          {/* 문장 변경 버튼 */}
-          <div className={"flex items-center justify-end"}>
-            <button
-              className={clsx("flex items-center gap-2 hover:cursor-pointer hover:underline", { hidden: feedback?.includes("정답") })}
-              onClick={() => {
-                selectRandomSentence();
-                setDifferences({ missing: [], incorrect: [] });
-              }}
-              disabled={isListening || isPlaying}>
-              <LuRefreshCw size={20} />
-              <span>문장 변경</span>
-            </button>
+          <div className={"mb-1 flex items-center justify-between gap-4"}>
+            {/* 빈칸 힌트 토글 */}
+            <div className={"flex items-center justify-center gap-2"}>
+              {/* 이 input 이 체크되면 showHint1이 false 로 변경됩니다 */}
+              <input type="checkbox" checked={showHint1} onChange={() => setShowHint1(!showHint1)} className="toggle toggle-primary" />
+              <span className="">Hint!</span>
+            </div>
+
+            {/* 문장 변경 버튼 */}
+            <div className={"flex items-center justify-end"}>
+              <button
+                className={clsx("flex items-center gap-2 hover:cursor-pointer hover:underline", { hidden: feedback?.includes("정답") })}
+                onClick={() => {
+                  selectRandomSentence();
+                  setDifferences({ missing: [], incorrect: [] });
+                }}
+                disabled={isListening || isPlaying}>
+                <LuRefreshCw size={20} />
+                <span>문장 변경</span>
+              </button>
+            </div>
           </div>
 
           {/* 출제 부분 */}
@@ -634,9 +644,10 @@ export default function SpeakingPage() {
             {/* 한글 문장 표시 */}
             <p>{currentSentence.ko}</p>
 
-            <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm">
-              {showHint1 ? getMaskedSentence() : "여기에 문장이 표시됩니다. 버튼을 눌러 힌트를 확인하세요."}
-            </div>
+            {/* 빈칸 힌트 부분 */}
+            {showHint1 && (
+              <div className="mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm">{getMaskedSentence()}</div>
+            )}
 
             <div className="mt-8 flex items-center justify-center gap-4">
               {/* 원어민 음성 재생 부분 */}
@@ -662,9 +673,9 @@ export default function SpeakingPage() {
                 힌트 보기
               </button>
 
-              <button onClick={toggleHint} className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">
-                {showHint1 ? "힌트 숨기기" : "힌트 보기"}
-              </button>
+              {/*<button onClick={toggleHint} className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">*/}
+              {/*  {showHint1 ? "힌트 숨기기" : "힌트 보기"}*/}
+              {/*</button>*/}
             </div>
 
             {/* 힌트 표시 영역 */}
