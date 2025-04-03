@@ -10,6 +10,7 @@ import { FaMicrophone } from "react-icons/fa6";
 import { FaArrowRight, FaCheck, FaPlay, FaRegStopCircle } from "react-icons/fa";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { LuMousePointerClick, LuRefreshCw } from "react-icons/lu";
+import nlp from "compromise";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -91,7 +92,7 @@ export default function SpeakingPage() {
     setIsVisible(false);
   };
 
-  // ✅ 오디오 재생 함수
+  // ✅ 원어민 음성 재생 함수
   const playNativeAudio = () => {
     if (!currentSentence?.audioUrl) return;
 
@@ -127,13 +128,90 @@ export default function SpeakingPage() {
     });
   };
 
-  // ✅ 힌트 보기 기능 함수
+  // ✅ 힌트 보기 함수
   const handleShowHint = () => {
     setShowHint(true);
     // 시간 조절 가능 - 2초 후에 힌트를 서서히 사라지게 함
     setTimeout(() => {
       setShowHint(false);
     }, 2000); // 3000ms = 2초
+  };
+
+  // ✅ 문장에서 중요 단어(명사, 동사 등)를 식별하고 마스킹하는 함수
+  const getMaskedSentence = () => {
+    if (!currentSentence) return "";
+
+    const doc = nlp(currentSentence.en);
+
+    // 각 단어 타입별로 추출
+    const subjects = doc.match("#Noun").if("#Pronoun").out("array"); // 주어 (대명사 포함)
+    const auxiliaries = doc.match("#Auxiliary").out("array"); // 조동사
+    const beVerbs = doc.match("(am|is|are|was|were|be|being|been)").out("array"); // be 동사
+    const questionWords = doc.match("(what|when|where|who|whom|whose|why|how)").out("array"); // 의문사
+    const prepositions = doc.match("#Preposition").out("array"); // 전치사
+    const pleaseWord = doc.match("please").out("array"); // please 단어
+
+    // 항상 표시할 예외 단어 목록 추가
+    const exceptionalWords = [
+      "the",
+      "a",
+      "there",
+      "here",
+      "any",
+      "some",
+      "can",
+      "much",
+      "many",
+      "that",
+      "this",
+      "do",
+      "does",
+      "to",
+      "please",
+      "need",
+      "two",
+      "and",
+    ];
+
+    // 화면에 표시할 단어들의 집합
+    const wordsToShow = [
+      ...subjects,
+      ...auxiliaries,
+      ...beVerbs,
+      ...questionWords,
+      ...prepositions,
+      ...pleaseWord,
+      ...exceptionalWords, // 예외 단어 목록 추가
+    ].map((w) => w.toLowerCase());
+
+    // 원본 문장을 공백으로 분리
+    const words = currentSentence.en.split(" ");
+
+    // 선택적으로 마스킹
+    const maskedWords = words.map((word) => {
+      // 단어 끝에 구두점이 있는지 확인
+      const punctuation = word.match(/[.,!?;:]$/);
+      const cleanWord = punctuation ? word.slice(0, -1) : word;
+
+      // 표시해야 할 단어인지 확인 (wordsToShow 목록에 있거나 punctuation만 있는 경우)
+      if (
+        wordsToShow.includes(cleanWord.toLowerCase()) ||
+        word.match(/^[.,!?;:]+$/) // 문장 부호만으로 이루어진 경우
+      ) {
+        return word; // 있다면 그대로 표시
+      }
+
+      // 그 외의 단어는 마스킹 처리
+      const maskedWord = "_".repeat(cleanWord.length);
+      return punctuation ? maskedWord + punctuation[0] : maskedWord;
+    });
+
+    return maskedWords.join(" ");
+  };
+
+  // ✅ 힌트 보기 기능을 위한 함수 추가
+  const toggleHint = () => {
+    setShowHint(!showHint);
   };
 
   // ✅ 음성 인식 시작
@@ -404,6 +482,10 @@ export default function SpeakingPage() {
                 <LuMousePointerClick size={24} />
                 힌트 보기
               </button>
+
+              <button onClick={toggleHint} className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">
+                {showHint ? "힌트 숨기기" : "힌트 보기"}
+              </button>
             </div>
 
             {/* 힌트 표시 영역 */}
@@ -412,6 +494,10 @@ export default function SpeakingPage() {
                 {currentSentence.en}
               </div>
             )}
+
+            <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm">
+              {showHint ? getMaskedSentence() : "여기에 문장이 표시됩니다. 버튼을 눌러 힌트를 확인하세요."}
+            </div>
           </div>
 
           {/* 몸통 부분 */}
