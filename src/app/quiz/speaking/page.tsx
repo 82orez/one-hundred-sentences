@@ -154,6 +154,11 @@ export default function SpeakingPage() {
       return;
     }
 
+    setIsVisible(false);
+    setDifferences({ missing: [], incorrect: [] });
+    // setFeedback(null);
+    setUserSpoken("");
+
     // 현재 문장이 있을 때만 시도 횟수 증가 API 호출
     // if (currentSentence && session?.user) {
     //   try {
@@ -258,7 +263,7 @@ export default function SpeakingPage() {
           .replace(/\bwhat's\b/g, "what is")
           .replace(/\bthere's\b/g, "there is")
 
-          .replace(/\ba\b/g, "the") // !
+          // .replace(/\ba\b/g, "the") // !
           // .replace(/\bcan\b/g, "could") // !
           .replace(/\bself-checking\b/g, "self check in") // !
           .replace(/\bself checking\b/g, "self check in") // !
@@ -288,47 +293,149 @@ export default function SpeakingPage() {
     console.log("📝 말한 내용:", normalizedSpoken);
     console.log("✅ 정답:", normalizedAnswer);
 
+    // 발음이 유사한 단어들의 사전을 생성하여 비교 전에 정규화
+    const similarSoundingWords: Record<string, string[]> = {
+      their: ["there", "they're"],
+      there: ["their", "they're"],
+      "they're": ["their", "there"],
+      to: ["too", "two"],
+      too: ["to", "two"],
+      two: ["to", "too"],
+      for: ["four"],
+      four: ["for"],
+      see: ["sea"],
+      sea: ["see"],
+      know: ["no"],
+      no: ["know"],
+      write: ["right"],
+      right: ["write"],
+      here: ["hear"],
+      hear: ["here"],
+      by: ["buy", "bye"],
+      buy: ["by", "bye"],
+      bye: ["by", "buy"],
+      wear: ["where"],
+      where: ["wear"],
+      your: ["you're"],
+      "you're": ["your"],
+      its: ["it's"],
+      "it's": ["its"],
+      weather: ["whether"],
+      whether: ["weather"],
+      affect: ["effect"],
+      effect: ["affect"],
+      accept: ["except"],
+      except: ["accept"],
+      then: ["than"],
+      than: ["then"],
+    };
+
+    // 두 문장이 완전히 같으면 바로 정답 처리
     if (normalizedSpoken === normalizedAnswer) {
       setFeedback("정답입니다!");
       handleSpeechResult(true); // ✅ 정답일 경우 isCorrect: true
       setIsVisible(true);
-    } else {
-      // 차이점 찾기
-      const spokenWords = normalizedSpoken.split(" ");
-      const answerWords = normalizedAnswer.split(" ");
+      return;
+    }
 
-      const findDifferences = (spoken: string[], answer: string[]) => {
-        const differences = {
-          missing: [] as string[],
-          incorrect: [] as { spoken: string; correct: string }[],
-        };
+    // 단어별로 비교하여 유사 발음 단어 체크
+    const spokenWords = normalizedSpoken.split(" ");
+    const answerWords = normalizedAnswer.split(" ");
 
-        const maxLength = Math.max(spoken.length, answer.length);
+    let isMatch = true;
+    let matchedSpokenWords = [...spokenWords];
+    const unmatchedIndices: number[] = [];
 
-        for (let i = 0; i < maxLength; i++) {
-          // 말한 단어가 없는 경우 (누락)
-          if (i >= spoken.length && i < answer.length) {
-            differences.missing.push(answer[i]);
-            continue;
-          }
+    // 단어 수가 다르면 일단 불일치로 표시
+    if (spokenWords.length !== answerWords.length) {
+      isMatch = false;
+    }
 
-          // 단어가 다른 경우 (오류)
-          if (i < spoken.length && i < answer.length && spoken[i] !== answer[i]) {
+    // 각 단어를 비교하여 발음이 유사한 단어인지 확인
+    for (let i = 0; i < Math.min(spokenWords.length, answerWords.length); i++) {
+      const spokenWord = spokenWords[i];
+      const answerWord = answerWords[i];
+
+      // 단어가 같으면 다음 단어로
+      if (spokenWord === answerWord) {
+        continue;
+      }
+
+      // 발음이 유사한 단어 목록 확인
+      const similarWords = similarSoundingWords[answerWord] || [];
+
+      if (similarWords.includes(spokenWord)) {
+        // 발음이 유사한 단어는 정답으로 인정 (matchedSpokenWords는 정답 단어로 교체)
+        matchedSpokenWords[i] = answerWord;
+      } else {
+        // 유사한 단어가 아니면 불일치로 표시
+        isMatch = false;
+        unmatchedIndices.push(i);
+      }
+    }
+
+    // 발음이 유사한 단어를 수정한 후에도 일치하는지 확인
+    if (isMatch && matchedSpokenWords.length === answerWords.length) {
+      setFeedback("정답입니다! (발음이 유사한 단어가 포함되어 있습니다)");
+      handleSpeechResult(true);
+      setIsVisible(true);
+
+      // 유사 발음 단어가 사용된 경우 피드백 표시
+      const usedSimilarWords = unmatchedIndices.map((i) => ({
+        spoken: spokenWords[i],
+        correct: answerWords[i],
+      }));
+
+      if (usedSimilarWords.length > 0) {
+        console.log("유사 발음 단어가 사용됨:", usedSimilarWords);
+      }
+
+      return;
+    }
+
+    // 차이점 찾기
+    const findDifferences = (spoken: string[], answer: string[]) => {
+      const differences = {
+        missing: [] as string[],
+        incorrect: [] as { spoken: string; correct: string }[],
+      };
+
+      const maxLength = Math.max(spoken.length, answer.length);
+
+      for (let i = 0; i < maxLength; i++) {
+        // 말한 단어가 없는 경우 (누락)
+        if (i >= spoken.length && i < answer.length) {
+          differences.missing.push(answer[i]);
+          continue;
+        }
+
+        // 단어가 다른 경우 (오류)
+        if (i < spoken.length && i < answer.length && spoken[i] !== answer[i]) {
+          // 발음이 유사한 단어인지 확인
+          const similarWords = similarSoundingWords[answer[i]] || [];
+          if (!similarWords.includes(spoken[i])) {
             differences.incorrect.push({
               spoken: spoken[i],
               correct: answer[i],
             });
           }
         }
+      }
 
-        return differences;
-      };
+      return differences;
+    };
 
-      const diffs = findDifferences(spokenWords, answerWords);
-      setDifferences(diffs);
+    const diffs = findDifferences(spokenWords, answerWords);
+    setDifferences(diffs);
+
+    if (diffs.missing.length === 0 && diffs.incorrect.length === 0) {
+      setFeedback("정답입니다! (발음이 유사한 단어가 사용되었습니다)");
+      handleSpeechResult(true);
+    } else {
       setFeedback("❌ 다시 도전해 보세요.");
       handleSpeechResult(false); // ❌ 오답일 경우 isCorrect: false
     }
+    // ! setIsVisible(true);
   };
 
   // ✅ 음성 인식 후 결과 관련 횟수를 서버에 저장하는 함수
@@ -499,7 +606,7 @@ export default function SpeakingPage() {
 
           {/* 피드백 영역 - 정답 or 오답 */}
           <div className="mt-6 text-center">
-            {feedback && !isListening && (
+            {feedback && (
               <div
                 className={clsx(
                   "mb-4 flex items-center justify-center gap-2 rounded-lg p-3",
