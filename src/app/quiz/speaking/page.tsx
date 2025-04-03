@@ -38,6 +38,8 @@ export default function SpeakingPage() {
   // Hint 관련 상태 변수 추가 (기존 state 목록 아래에 추가)
   const [showHint, setShowHint] = useState(false);
 
+  const [showHint1, setShowHint1] = useState(false);
+
   // ✅ 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
@@ -384,7 +386,7 @@ export default function SpeakingPage() {
 
   // ✅ 힌트 보기 기능을 위한 함수 추가
   const toggleHint = () => {
-    setShowHint(!showHint);
+    setShowHint1(!showHint1);
   };
 
   // ✅ 음성 인식 시작
@@ -632,6 +634,10 @@ export default function SpeakingPage() {
             {/* 한글 문장 표시 */}
             <p>{currentSentence.ko}</p>
 
+            <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm">
+              {showHint1 ? getMaskedSentence() : "여기에 문장이 표시됩니다. 버튼을 눌러 힌트를 확인하세요."}
+            </div>
+
             <div className="mt-8 flex items-center justify-center gap-4">
               {/* 원어민 음성 재생 부분 */}
               {currentSentence && (
@@ -657,7 +663,7 @@ export default function SpeakingPage() {
               </button>
 
               <button onClick={toggleHint} className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">
-                {showHint ? "힌트 숨기기" : "힌트 보기"}
+                {showHint1 ? "힌트 숨기기" : "힌트 보기"}
               </button>
             </div>
 
@@ -667,10 +673,6 @@ export default function SpeakingPage() {
                 {currentSentence.en}
               </div>
             )}
-
-            <div className="mb-6 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm">
-              {showHint ? getMaskedSentence() : "여기에 문장이 표시됩니다. 버튼을 눌러 힌트를 확인하세요."}
-            </div>
           </div>
 
           {/* 몸통 부분 */}
