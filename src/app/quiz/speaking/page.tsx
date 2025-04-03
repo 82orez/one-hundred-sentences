@@ -91,6 +91,51 @@ export default function SpeakingPage() {
     setIsVisible(false);
   };
 
+  // ✅ 오디오 재생 함수
+  const playNativeAudio = () => {
+    if (!currentSentence?.audioUrl) return;
+
+    // 이미 재생 중인 오디오가 있다면 중지
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+
+    const audio = new Audio(currentSentence.audioUrl);
+    audioRef.current = audio;
+
+    // * 재생 속도 설정
+    audio.playbackRate = 0.8;
+
+    setIsPlaying(true);
+
+    audio.onended = () => {
+      setIsPlaying(false);
+      audioRef.current = null;
+    };
+
+    audio.onerror = () => {
+      console.error("❌ 오디오 재생 오류");
+      setIsPlaying(false);
+      audioRef.current = null;
+    };
+
+    audio.play().catch((err) => {
+      console.error("❌ 오디오 재생 실패:", err);
+      setIsPlaying(false);
+      audioRef.current = null;
+    });
+  };
+
+  // ✅ 힌트 보기 기능 함수
+  const handleShowHint = () => {
+    setShowHint(true);
+    // 시간 조절 가능 - 2초 후에 힌트를 서서히 사라지게 함
+    setTimeout(() => {
+      setShowHint(false);
+    }, 2000); // 3000ms = 2초
+  };
+
   // ✅ 음성 인식 시작
   const startListening = async () => {
     // 오디오 재생 중이면 음성 인식 시작하지 않음
@@ -179,29 +224,6 @@ export default function SpeakingPage() {
         setIsButtonDisabled(false);
       }, 1200);
     }
-  };
-
-  // ✅ 음성 인식 후 결과 관련 횟수를 서버에 저장하는 함수
-  const handleSpeechResult = async (isCorrect: boolean) => {
-    if (currentSentence && session?.user) {
-      try {
-        await axios.post("/api/attempts/speaking", {
-          sentenceNo: currentSentence.no,
-          isCorrect,
-        });
-      } catch (error) {
-        console.error("시도 기록 실패:", error);
-      }
-    }
-  };
-
-  // ✅ 힌트 보기 기능을 위한 함수 추가
-  const handleShowHint = () => {
-    setShowHint(true);
-    // 시간 조절 가능 - 2초 후에 힌트를 서서히 사라지게 함
-    setTimeout(() => {
-      setShowHint(false);
-    }, 2000); // 3000ms = 2초
   };
 
   // ✅ 정답 확인
@@ -301,45 +323,23 @@ export default function SpeakingPage() {
     }
   };
 
+  // ✅ 음성 인식 후 결과 관련 횟수를 서버에 저장하는 함수
+  const handleSpeechResult = async (isCorrect: boolean) => {
+    if (currentSentence && session?.user) {
+      try {
+        await axios.post("/api/attempts/speaking", {
+          sentenceNo: currentSentence.no,
+          isCorrect,
+        });
+      } catch (error) {
+        console.error("시도 기록 실패:", error);
+      }
+    }
+  };
+
   // ✅ 답안 확인하기 - 토글 형태로 변경된 함수:
   const toggleAnswer = () => {
     setIsVisible(!isVisible);
-  };
-
-  // ✅ 오디오 재생 함수
-  const playNativeAudio = () => {
-    if (!currentSentence?.audioUrl) return;
-
-    // 이미 재생 중인 오디오가 있다면 중지
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-
-    const audio = new Audio(currentSentence.audioUrl);
-    audioRef.current = audio;
-
-    // * 재생 속도 설정
-    audio.playbackRate = 0.8;
-
-    setIsPlaying(true);
-
-    audio.onended = () => {
-      setIsPlaying(false);
-      audioRef.current = null;
-    };
-
-    audio.onerror = () => {
-      console.error("❌ 오디오 재생 오류");
-      setIsPlaying(false);
-      audioRef.current = null;
-    };
-
-    audio.play().catch((err) => {
-      console.error("❌ 오디오 재생 실패:", err);
-      setIsPlaying(false);
-      audioRef.current = null;
-    });
   };
 
   if (isLoading) {
