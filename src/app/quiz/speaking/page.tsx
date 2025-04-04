@@ -295,9 +295,10 @@ export default function SpeakingPage() {
 
     // 발음이 유사한 단어들의 사전을 생성하여 비교 전에 정규화
     const similarSoundingWords: Record<string, string[]> = {
-      their: ["there", "they're"],
+      their: ["there", "they're", "they are"],
       there: ["their", "they're"],
       "they're": ["their", "there"],
+      "they are": ["their", "there"],
       to: ["too", "two"],
       too: ["to", "two"],
       two: ["to", "too"],
@@ -316,8 +317,9 @@ export default function SpeakingPage() {
       bye: ["by", "buy"],
       wear: ["where"],
       where: ["wear"],
-      your: ["you're"],
+      your: ["you're", "you are"],
       "you're": ["your"],
+      "you are": ["your"],
       its: ["it's"],
       "it's": ["its"],
       weather: ["whether"],
@@ -620,19 +622,6 @@ export default function SpeakingPage() {
             {/* 차이점 표시 영역 */}
             {feedback?.includes("❌") && !isListening && (differences.missing.length > 0 || differences.incorrect.length > 0) && (
               <div className="mt-4 space-y-3">
-                {differences.missing.length > 0 && (
-                  <div>
-                    <p className="font-medium text-amber-600">누락된 단어:</p>
-                    <div className="mt-2 flex flex-wrap justify-center gap-2">
-                      {differences.missing.map((word, index) => (
-                        <span key={index} className="rounded bg-amber-100 px-2 py-1 text-amber-800">
-                          {word}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {differences.incorrect.length > 0 && (
                   <div>
                     <p className="font-medium text-rose-600">잘못 말한 단어:</p>
@@ -642,6 +631,19 @@ export default function SpeakingPage() {
                           <span className="text-rose-700 line-through">{item.spoken}</span>
                           <span className="text-emerald-700">→ {item.correct}</span>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {differences.missing.length > 0 && (
+                  <div>
+                    <p className="font-medium text-amber-600">누락된 단어:</p>
+                    <div className="mt-2 flex flex-wrap justify-center gap-2">
+                      {differences.missing.map((word, index) => (
+                        <span key={index} className="rounded bg-amber-100 px-2 py-1 text-amber-800">
+                          {word}
+                        </span>
                       ))}
                     </div>
                   </div>
