@@ -279,6 +279,10 @@ export default function SpeakingPage() {
     const normalizedSpoken = normalizeText(spoken);
     const normalizedAnswer = normalizeText(currentSentence.en);
 
+    // 단어 수 확인
+    const spokenWordCount = normalizedSpoken.split(" ").length;
+    const answerWordCount = normalizedAnswer.split(" ").length;
+
     console.log("📝 말한 내용:", normalizedSpoken);
     console.log("✅ 정답:", normalizedAnswer);
 
@@ -316,7 +320,7 @@ export default function SpeakingPage() {
       wear: ["where"],
       where: ["wear"],
       your: ["you're", "you are"],
-      "you're": ["your"],
+      "you're": ["your", "you are", "you"],
       "you are": ["your"],
       its: ["it's"],
       "it's": ["its"],
@@ -328,6 +332,7 @@ export default function SpeakingPage() {
       except: ["accept"],
       then: ["than"],
       than: ["then"],
+      "bus card": ["postcard"],
       // "is your": ["is there"], // !
       // ... 기존 단어들
 
@@ -342,9 +347,6 @@ export default function SpeakingPage() {
     };
 
     // ***** 의미론적 유사성 비교 개선 부분 *****
-
-    // 1. compromise 라이브러리를 활용한 문장 구조 분석
-    // import nlp from 'compromise';
 
     // 문장의 핵심 구성요소를 추출하는 함수
     const extractCoreComponents = (text: string) => {
@@ -405,8 +407,9 @@ export default function SpeakingPage() {
     const similarityScore = calculateSimilarityScore(spokenCore, answerCore);
 
     // ! 문맥적 의미가 충분히 유사하다면 정답으로 처리
-    if (similarityScore >= 0.8) {
+    if (similarityScore >= 0.8 && spokenWordCount >= answerWordCount) {
       // 70% 이상 일치하면 정답으로 간주
+      console.log("similarityScore: ", similarityScore);
       setFeedback(`정답입니다! (문맥적으로 같은 의미로 인정됨)`);
       handleSpeechResult(true);
       setIsVisible(true);
@@ -456,8 +459,9 @@ export default function SpeakingPage() {
     const wordMatchRatio = correctWordCount / maxWordIndex;
 
     // ! 단어 일치율이 충분히 높으면 정답으로 간주
-    if (wordMatchRatio >= 0.9) {
+    if (wordMatchRatio >= 0.9 && spokenWordCount >= answerWordCount) {
       // 80% 이상의 단어가 일치하면 정답으로 간주
+      console.log("wordMatchRatio: ", wordMatchRatio);
       setFeedback("정답입니다! (단어 대부분이 일치합니다)");
       handleSpeechResult(true);
       setIsVisible(true);
