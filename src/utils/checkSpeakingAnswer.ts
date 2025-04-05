@@ -178,6 +178,45 @@ export const checkAnswer = (
     return false;
   };
 
+  // 차이점 찾기 (기존 로직 유지)
+  const findDifferences = (spoken: string[], answer: string[]) => {
+    const differences = {
+      missing: [] as string[],
+      incorrect: [] as { spoken: string; correct: string }[],
+    };
+
+    const maxLength = Math.max(spoken.length, answer.length);
+
+    for (let i = 0; i < maxLength; i++) {
+      // 말한 단어가 없는 경우 (누락)
+      if (i >= spoken.length && i < answer.length) {
+        differences.missing.push(answer[i]);
+        continue;
+      }
+
+      // 단어가 다른 경우 (오류)
+      if (i < spoken.length && i < answer.length && spoken[i] !== answer[i]) {
+        // 발음이 유사한 단어인지 확인
+        const similarWords = similarSoundingWords[answer[i]] || [];
+        if (!similarWords.includes(spoken[i])) {
+          differences.incorrect.push({
+            spoken: spoken[i],
+            correct: answer[i],
+          });
+        }
+      }
+    }
+
+    return differences;
+  };
+
+  // 기존 단어별 비교 로직 수행 (보조적으로 사용)
+  const spokenWords = normalizedSpoken.split(" ");
+  const answerWords = normalizedAnswer.split(" ");
+
+  const diffs = findDifferences(spokenWords, answerWords);
+  setDifferences(diffs);
+
   // 유사도 점수 계산
   const similarityScore = calculateSimilarityScore(spokenCore, answerCore);
 
@@ -190,10 +229,6 @@ export const checkAnswer = (
     setIsVisible(true);
     return true;
   }
-
-  // 기존 단어별 비교 로직 수행 (보조적으로 사용)
-  const spokenWords = normalizedSpoken.split(" ");
-  const answerWords = normalizedAnswer.split(" ");
 
   const unmatchedIndices: number[] = [];
 
@@ -235,41 +270,6 @@ export const checkAnswer = (
     setIsVisible(true);
     return true;
   }
-
-  // 차이점 찾기 (기존 로직 유지)
-  const findDifferences = (spoken: string[], answer: string[]) => {
-    const differences = {
-      missing: [] as string[],
-      incorrect: [] as { spoken: string; correct: string }[],
-    };
-
-    const maxLength = Math.max(spoken.length, answer.length);
-
-    for (let i = 0; i < maxLength; i++) {
-      // 말한 단어가 없는 경우 (누락)
-      if (i >= spoken.length && i < answer.length) {
-        differences.missing.push(answer[i]);
-        continue;
-      }
-
-      // 단어가 다른 경우 (오류)
-      if (i < spoken.length && i < answer.length && spoken[i] !== answer[i]) {
-        // 발음이 유사한 단어인지 확인
-        const similarWords = similarSoundingWords[answer[i]] || [];
-        if (!similarWords.includes(spoken[i])) {
-          differences.incorrect.push({
-            spoken: spoken[i],
-            correct: answer[i],
-          });
-        }
-      }
-    }
-
-    return differences;
-  };
-
-  const diffs = findDifferences(spokenWords, answerWords);
-  setDifferences(diffs);
 
   // 최종 판단
   if (diffs.missing.length === 0 && diffs.incorrect.length === 0) {

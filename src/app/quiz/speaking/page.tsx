@@ -11,7 +11,6 @@ import { FaArrowRight, FaCheck, FaPlay, FaRegStopCircle } from "react-icons/fa";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { LuMousePointerClick, LuRefreshCw } from "react-icons/lu";
 import { getMaskedSentence } from "@/utils/getMaskedSentence";
-import nlp from "compromise";
 import { checkAnswer } from "@/utils/checkSpeakingAnswer";
 
 export default function SpeakingPage() {
@@ -358,7 +357,7 @@ export default function SpeakingPage() {
           {/* 몸통 부분 */}
           <div
             className={clsx("mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4", {
-              hidden: feedback?.includes("정답"),
+              hidden: feedback?.includes("정답") && !feedback?.includes("문맥"),
             })}>
             {/* 말하기 버튼 */}
             <button
@@ -367,7 +366,6 @@ export default function SpeakingPage() {
               className={clsx(
                 "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-lg font-semibold text-white transition-all",
                 isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
-                { hidden: feedback?.includes("정답") },
                 { "cursor-not-allowed opacity-50": isButtonDisabled },
               )}>
               {isListening ? (
@@ -421,14 +419,22 @@ export default function SpeakingPage() {
             )}
 
             {/* 차이점 표시 영역 */}
-            {feedback?.includes("❌") && !isListening && (differences.missing.length > 0 || differences.incorrect.length > 0) && (
+            {!isListening && (differences.missing.length > 0 || differences.incorrect.length > 0) && (
               <div className="mt-4 space-y-3">
                 {differences.incorrect.length > 0 && (
                   <div>
-                    <p className="font-medium text-rose-600">잘못 말한 단어:</p>
+                    <p className={clsx("font-medium", { "text-blue-400": feedback?.includes("문맥") }, { "text-red-400": feedback?.includes("❌") })}>
+                      {feedback?.includes("문맥") ? "정답과 다른 표현" : "잘못된 표현"}
+                    </p>
                     <div className="mt-2 flex flex-wrap justify-center gap-2">
                       {differences.incorrect.map((item, index) => (
-                        <div key={index} className="flex flex-col items-center rounded bg-rose-50 p-2">
+                        <div
+                          key={index}
+                          className={clsx(
+                            "flex flex-col items-center rounded p-2",
+                            { "bg-blue-100": feedback?.includes("문맥") },
+                            { "bg-rose-50": feedback?.includes("❌") },
+                          )}>
                           <span className="text-rose-700 line-through">{item.spoken}</span>
                           <span className="text-emerald-700">→ {item.correct}</span>
                         </div>
@@ -463,16 +469,6 @@ export default function SpeakingPage() {
               })}>
               <p>{currentSentence.en}</p>
             </div>
-
-            {/* 원어민 음성 재생 부분 */}
-            {/*{currentSentence && (*/}
-            {/*  <button*/}
-            {/*    onClick={playNativeAudio}*/}
-            {/*    disabled={isListening || isPlaying}*/}
-            {/*    className="btn btn-warning btn-outline mt-4 flex items-center justify-center gap-2 rounded-lg py-5 font-bold md:mt-8">*/}
-            {/*    <FaPlay /> 원어민 음성 듣기*/}
-            {/*  </button>*/}
-            {/*)}*/}
           </div>
         </div>
       ) : (
