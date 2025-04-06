@@ -23,6 +23,68 @@ export const checkAnswer = (
 ) => {
   if (!currentSentence) return;
 
+  // checkSpeakingAnswer.ts 파일에 아래 코드 추가
+
+  const compareNormalized = (spoken: string, answer: string) => {
+    // 기존 정확히 일치하는 경우
+    if (spoken === answer) return true;
+
+    // NLP 분석을 통한 구조적 비교
+    const docSpoken = nlp(spoken);
+    const docAnswer = nlp(answer);
+
+    // 문장의 주요 구조를 파싱
+    const normalizeRelativeClauses = (doc: any) => {
+      // 관계대명사 'that', 'who', 'which' 등이 생략된 경우와 포함된 경우를 동일하게 처리
+      // 예: "restaurant locals go to" vs "restaurant that locals go to"
+      return doc
+        .text({ trim: true, whitespace: true })
+        .replace(/\b(a|an|the)\s+(\w+)\s+(\w+)/g, (match: string, article: string, noun: string, verb: string) => {
+          // 명사 다음에 동사가 바로 오는 패턴 확인
+          return match;
+        });
+    };
+
+    // 명사구 추출 (예: "restaurant locals go to" vs "restaurant that locals go to")
+    const extractNounPhrases = (doc: any) => {
+      return doc.match("#Noun+ (#Preposition? #Noun+)?").out("array");
+    };
+
+    // 핵심 구조 비교
+    const spokenStructure = docSpoken.json();
+    const answerStructure = docAnswer.json();
+
+    // 관계절 정규화
+    const normalizeClause = (text: string) => {
+      return text
+        .replace(/\s+that\s+/, " ") // "that" 관계대명사 제거
+        .replace(/\s+who\s+/, " ") // "who" 관계대명사 제거
+        .replace(/\s+which\s+/, " ") // "which" 관계대명사 제거
+        .replace(/\s+whom\s+/, " "); // "whom" 관계대명사 제거
+    };
+
+    // 정규화된 문장 비교
+    const normalizedSpoken = normalizeClause(spoken);
+    const normalizedAnswer = normalizeClause(answer);
+
+    if (normalizedSpoken === normalizedAnswer) return true;
+
+    // 주요 명사구와 동사 추출하여 비교
+    const spokenNouns = extractNounPhrases(docSpoken);
+    const answerNouns = extractNounPhrases(docAnswer);
+
+    // 동사 추출
+    const spokenVerbs = docSpoken.verbs().out("array");
+    const answerVerbs = docAnswer.verbs().out("array");
+
+    // 주어, 동사, 목적어 구조가 유사한지 확인
+    const structuralSimilarity =
+      JSON.stringify(spokenNouns.sort()) === JSON.stringify(answerNouns.sort()) &&
+      JSON.stringify(spokenVerbs.sort()) === JSON.stringify(answerVerbs.sort());
+
+    return structuralSimilarity;
+  };
+
   const normalizeText = (text: string) => {
     // 기존 정규화 코드 유지
     // 다양한 종류의 아포스트로피를 단일 형태로 통일
@@ -37,10 +99,17 @@ export const checkAnswer = (
         .replace(/\bwhere's\b/g, "where is")
         .replace(/\bwhat's\b/g, "what is")
         .replace(/\bthere's\b/g, "there is")
+
         .replace(/\bself-checking\b/g, "self check in")
         .replace(/\bself checking\b/g, "self check in")
         .replace(/\bself check-in\b/g, "self check in")
         // .replace(/\bon food\b/g, "on foot")
+        .replace(/\bhuman I can\b/g, "you mean")
+        .replace(/\bis there a dog\b/g, "is your dog")
+        .replace(/\bI don't have a pizza\b/g, "i will have a pizza")
+        .replace(/\bwhat brand is your dog\b/g, "what breed is your dog")
+        .replace(/\bhere we go\b/g, "here you go")
+
         .replace(/\bi'll\b/g, "i will")
         .replace(/\bi've\b/g, "i have")
         .replace(/\bi'm\b/g, "i am")
@@ -66,7 +135,10 @@ export const checkAnswer = (
   console.log("✅ 정답:", normalizedAnswer);
 
   // 두 문장이 완전히 같으면 바로 정답 처리
-  if (normalizedSpoken === normalizedAnswer) {
+  // 개선된 비교 로직 적용
+  const isCorrect = compareNormalized(normalizedSpoken, normalizedAnswer);
+
+  if (isCorrect) {
     setFeedback("정답입니다!");
     handleSpeechResult(true);
     setIsVisible(true);
@@ -112,7 +184,16 @@ export const checkAnswer = (
     then: ["than"],
     than: ["then"],
     "bus card": ["postcard"],
-    "is your": ["is there"],
+    postcard: ["bus card"],
+    taurus: ["tour"],
+    tour: ["taurus"],
+    "is this bread": ["is the spread", "is the brand"],
+    "is the spread": ["is this bread"],
+    "is the brand": ["is this bread"],
+    "here we go": ["here you"],
+    "here you go": ["here we"],
+    "I don't have a pizza": ["I'll have a pizza"],
+    "I'll have a pizza": ["I don't have a pizza"],
 
     // 의미적으로 유사한 단어/표현 추가
     good: ["great", "nice", "excellent", "perfect", "wonderful", "terrific"],
