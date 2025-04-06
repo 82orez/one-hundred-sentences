@@ -231,6 +231,7 @@ export default function Dashboard() {
                 {[...Array(20)].map((_, index) => {
                   const day = index + 1;
                   const isCompleted = completedDays?.includes(day); // ✅ 5문장을 완료한 학습일만 활성화
+                  const isInProgress = day === nextDay && !isCompleted; // ✅ 현재 진행 중인 학습일(오늘 학습일)
 
                   return (
                     <button
@@ -239,11 +240,13 @@ export default function Dashboard() {
                         "min-w-[60px] rounded-lg p-3 font-semibold transition md:min-w-[100px]",
                         isCompleted
                           ? "cursor-pointer bg-indigo-600 text-white hover:bg-indigo-500"
-                          : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
+                          : isInProgress
+                            ? "cursor-pointer bg-amber-500 text-white hover:bg-amber-400" // 진행 중인 학습일 스타일
+                            : "cursor-not-allowed bg-gray-300 text-gray-500 opacity-50",
                       )}
-                      disabled={!isCompleted}
+                      disabled={!isCompleted && !isInProgress}
                       onClick={() => {
-                        if (isCompleted && selectedDay !== day) {
+                        if ((isCompleted || isInProgress) && selectedDay !== day) {
                           // selectedDay 에 특정 숫자가 설정되면 복습하기 모달창이 열림.
                           setSelectedDay(day);
                         }
@@ -256,14 +259,18 @@ export default function Dashboard() {
               </div>
             )}
 
-            <div className="flex space-x-4">
+            <div className="flex justify-center space-x-4">
               <div className="flex items-center">
                 <div className="mr-2 h-4 w-4 rounded bg-indigo-600"></div>
                 <span className="text-sm">완료</span>
               </div>
               <div className="flex items-center">
-                <div className="mr-2 h-4 w-4 rounded bg-gray-100"></div>
-                <span className="text-sm">미완료</span>
+                <div className="mr-2 h-4 w-4 rounded bg-amber-500"></div>
+                <span className="text-sm">진행중</span>
+              </div>
+              <div className="flex items-center">
+                <div className="mr-2 h-4 w-4 rounded bg-gray-300"></div>
+                <span className="text-sm">대기중</span>
               </div>
             </div>
           </div>
