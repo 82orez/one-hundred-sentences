@@ -143,6 +143,7 @@ model CompletedSentence {
   userId      String
   userEmail   String?
   sentenceNo  Int
+  favorite    Boolean  @default(false)
   completedAt DateTime @default(now()) // 학습 완료 날짜
 
   // 관계 설정

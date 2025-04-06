@@ -120,9 +120,6 @@ const LearnPage = ({ params }: Props) => {
 
       // ! DB 에 nextDay 와 totalCompleted 업데이트하고 로컬의 nextDay 상태 업데이트
       updateNextDayInDB(calculatedNextDay, allCompleted);
-
-      // ! 꼭 필요한지? 로컬 상태 업데이트
-      setNextDay(calculatedNextDay);
     }
   }, [completedSentences, setNextDay, updateNextDayInDB, status]);
 

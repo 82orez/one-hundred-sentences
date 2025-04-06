@@ -12,6 +12,8 @@ import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { LuMousePointerClick, LuRefreshCw } from "react-icons/lu";
 import { getMaskedSentence } from "@/utils/getMaskedSentence";
 import { checkAnswer } from "@/utils/checkSpeakingAnswer";
+import { GrFavorite } from "react-icons/gr";
+import { MdOutlineFavorite } from "react-icons/md";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -20,6 +22,7 @@ export default function SpeakingPage() {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   // 오디오 재생 상태를 관리할 새로운 상태 변수
   const [isPlaying, setIsPlaying] = useState(false);
@@ -259,6 +262,35 @@ export default function SpeakingPage() {
     setIsVisible(!isVisible);
   };
 
+  // ✅ 즐겨 찾기 - 토글 형태
+  const toggleFavorite = async () => {
+    // 현재 상태의 반대값
+    const newFavoriteStatus = !isFavorite;
+
+    try {
+      // 현재 선택된 문장의 번호가 있는지 확인
+      if (!currentSentence?.no) return;
+
+      // API 를 호출하여 문장의 즐겨찾기 상태 업데이트
+      await axios.post("/api/favorite", {
+        sentenceNo: currentSentence.no,
+        favorite: newFavoriteStatus,
+        userId: session?.user?.id,
+      });
+
+      // 상태 업데이트
+      setIsFavorite(newFavoriteStatus);
+
+      // 성공 메시지 표시(선택사항)
+      console.log(`즐겨찾기 ${newFavoriteStatus ? "추가" : "제거"} 완료`);
+      console.log(currentSentence.no);
+    } catch (error) {
+      console.error("즐겨찾기 업데이트 오류:", error);
+      // 실패 시 사용자에게 알림(선택사항)
+      alert("즐겨찾기 업데이트 중 오류가 발생했습니다.");
+    }
+  };
+
   if (isLoading) {
     return <LoadingPageSkeleton />;
   }
@@ -286,6 +318,14 @@ export default function SpeakingPage() {
               <input type="checkbox" checked={showHint1} onChange={() => setShowHint1(!showHint1)} className="toggle toggle-primary" />
               <span className="">Hint!</span>
             </div>
+
+            <button className={"flex items-center justify-center gap-2"} onClick={toggleFavorite}>
+              <div>
+                <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite }, { hidden: isFavorite })} />
+                <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite }, { hidden: !isFavorite })} />
+              </div>
+              <span>즐겨찾기</span>
+            </button>
 
             {/* 문장 변경 버튼 */}
             <div className={"flex items-center justify-end"}>

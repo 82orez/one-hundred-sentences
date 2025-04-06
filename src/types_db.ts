@@ -142,6 +142,7 @@ export type Database = {
       CompletedSentence: {
         Row: {
           completedAt: string
+          favorite: boolean
           id: string
           sentenceNo: number
           userEmail: string | null
@@ -149,6 +150,7 @@ export type Database = {
         }
         Insert: {
           completedAt?: string
+          favorite?: boolean
           id: string
           sentenceNo: number
           userEmail?: string | null
@@ -156,6 +158,7 @@ export type Database = {
         }
         Update: {
           completedAt?: string
+          favorite?: boolean
           id?: string
           sentenceNo?: number
           userEmail?: string | null
