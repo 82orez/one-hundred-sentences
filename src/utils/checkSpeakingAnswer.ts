@@ -109,6 +109,8 @@ export const checkAnswer = (
         .replace(/\bI don't have a pizza\b/g, "i will have a pizza")
         .replace(/\bwhat brand is your dog\b/g, "what breed is your dog")
         .replace(/\bhere we go\b/g, "here you go")
+        .replace(/\bthe toy cost\b/g, "the tour cost")
+        .replace(/\bthe torque cost\b/g, "the tour cost")
 
         .replace(/\bi'll\b/g, "i will")
         .replace(/\bi've\b/g, "i have")
