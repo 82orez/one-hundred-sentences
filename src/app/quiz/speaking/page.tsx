@@ -27,6 +27,8 @@ export default function SpeakingPage() {
 
   // 초기 로딩 상태를 추적하는 ref 추가 - 랜덤 문장 선택과 연관
   const isInitialLoadRef = useRef(true);
+  // 문장 번호 배열 - 문장별 한 번씩 램덤 재생
+  const remainingSentenceNosRef = useRef<number[]>([]);
 
   // 오디오 재생 상태를 관리할 새로운 상태 변수
   const [isPlaying, setIsPlaying] = useState(false);
@@ -70,8 +72,7 @@ export default function SpeakingPage() {
   });
 
   // ✅ 랜덤 문장 선택
-
-  // 수정된 useEffect - 초기 로딩과 수동 갱신 구분
+  // 수정된 useEffect - 초기 로딩과 수동 갱신 구분: 즐겨찾기 관련
   useEffect(() => {
     // 초기 로딩 시에만 문장 선택
     if (completedSentences && completedSentences.length > 0) {
@@ -103,16 +104,34 @@ export default function SpeakingPage() {
     }
   }, [currentSentence]);
 
+  // ✅ 램덤 문장 선택 함수: 각 문장이 한 번씩 램덤 선택
   const selectRandomSentence = () => {
     if (!completedSentences || completedSentences.length === 0) return;
-    const randomIndex = Math.floor(Math.random() * completedSentences.length);
-    const selected = completedSentences[randomIndex];
 
-    console.log("🔹 선택된 문장:", selected);
-    setCurrentSentence(selected);
-    setUserSpoken("");
-    setFeedback(null);
-    setIsVisible(false);
+    // 초기화: 아직 남은 문장이 없으면 전체에서 다시 가져옴
+    if (remainingSentenceNosRef.current.length === 0) {
+      remainingSentenceNosRef.current = completedSentences.map((s) => s.no);
+      console.log("🔄 문장 풀 리셋됨: ", remainingSentenceNosRef.current);
+    }
+
+    // 랜덤으로 번호 선택
+    const randomIndex = Math.floor(Math.random() * remainingSentenceNosRef.current.length);
+    const selectedNo = remainingSentenceNosRef.current[randomIndex];
+
+    // 선택된 번호를 제거
+    remainingSentenceNosRef.current.splice(randomIndex, 1);
+
+    // 해당 번호에 해당하는 문장 찾기
+    const selectedSentence = completedSentences.find((s) => s.no === selectedNo);
+    if (selectedSentence) {
+      setCurrentSentence(selectedSentence);
+      setUserSpoken("");
+      setFeedback(null);
+      setIsVisible(false);
+
+      console.log("🔹 선택된 문장:", selectedSentence);
+      console.log("📊 남은 문장 수:", remainingSentenceNosRef.current);
+    }
   };
 
   // ✅ 즐겨찾기 상태 변경 뮤테이션 추가
