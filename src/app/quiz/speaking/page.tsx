@@ -17,7 +17,7 @@ import { MdOutlineFavorite } from "react-icons/md";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
-  const [currentSentence, setCurrentSentence] = useState<{ en: string; ko: string; audioUrl: string; no: number } | null>(null);
+  const [currentSentence, setCurrentSentence] = useState<{ en: string; ko: string; audioUrl: string; no: number; favorite?: boolean } | null>(null);
   const [userSpoken, setUserSpoken] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
@@ -51,11 +51,12 @@ export default function SpeakingPage() {
       try {
         const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
         console.log("🔹 API 응답 데이터:", res.data);
-        return res.data.map((item: { sentence: { en: string; ko: string; audioUrl: string; no: number } }) => ({
+        return res.data.map((item: { sentence: { en: string; ko: string; audioUrl: string; no: number }; favorite: boolean }) => ({
           en: item.sentence?.en ?? "No text found",
           ko: item.sentence?.ko ?? "번역이 없습니다.",
           audioUrl: item.sentence?.audioUrl ?? "No audio found",
           no: item.sentence?.no,
+          favorite: item.favorite ?? false, // favorite 필드 추가
         }));
       } catch (error) {
         console.error("❌ API 호출 오류:", error);
@@ -85,6 +86,13 @@ export default function SpeakingPage() {
       }
     };
   }, []);
+
+  // ✅ 선택된 문장이 변경될 때 favorite 상태도 업데이트
+  useEffect(() => {
+    if (currentSentence) {
+      setIsFavorite(currentSentence.favorite || false);
+    }
+  }, [currentSentence]);
 
   const selectRandomSentence = () => {
     if (!completedSentences || completedSentences.length === 0) return;
