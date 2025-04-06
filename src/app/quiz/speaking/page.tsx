@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import clsx from "clsx";
@@ -14,6 +14,7 @@ import { getMaskedSentence } from "@/utils/getMaskedSentence";
 import { checkAnswer } from "@/utils/checkSpeakingAnswer";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
+import { queryClient } from "@/app/providers";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -24,6 +25,9 @@ export default function SpeakingPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
+  // 초기 로딩 상태를 추적하는 ref 추가 - 랜덤 문장 선택과 연관
+  const isInitialLoadRef = useRef(true);
+
   // 오디오 재생 상태를 관리할 새로운 상태 변수
   const [isPlaying, setIsPlaying] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -33,16 +37,15 @@ export default function SpeakingPage() {
   // 오디오 객체 참조 추가
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // 다른 부분을 저장할 상태 변수 추가
+  // Hint 관련 상태 변수 추가 (기존 state 목록 아래에 추가)
+  const [showHint, setShowHint] = useState(false); // 정답 보기
+  const [showHint1, setShowHint1] = useState(true); // Hint
+
+  // 정답과 다른 부분을 저장할 상태 변수 추가
   const [differences, setDifferences] = useState<{
     missing: string[];
     incorrect: { spoken: string; correct: string }[];
   }>({ missing: [], incorrect: [] });
-
-  // Hint 관련 상태 변수 추가 (기존 state 목록 아래에 추가)
-  const [showHint, setShowHint] = useState(false);
-
-  const [showHint1, setShowHint1] = useState(true);
 
   // ✅ 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading } = useQuery({
@@ -67,9 +70,15 @@ export default function SpeakingPage() {
   });
 
   // ✅ 랜덤 문장 선택
+
+  // 수정된 useEffect - 초기 로딩과 수동 갱신 구분
   useEffect(() => {
+    // 초기 로딩 시에만 문장 선택
     if (completedSentences && completedSentences.length > 0) {
-      selectRandomSentence();
+      if (isInitialLoadRef.current) {
+        selectRandomSentence();
+        isInitialLoadRef.current = false;
+      }
     }
   }, [completedSentences]);
 
@@ -105,6 +114,21 @@ export default function SpeakingPage() {
     setFeedback(null);
     setIsVisible(false);
   };
+
+  // ✅ 즐겨찾기 상태 변경 뮤테이션 추가
+  const favoriteUpdateMutation = useMutation({
+    mutationFn: async ({ sentenceNo, favorite }: { sentenceNo: number; favorite: boolean }) => {
+      return axios.post("/api/favorite", {
+        sentenceNo,
+        favorite,
+        userId: session?.user?.id,
+      });
+    },
+    onSuccess: () => {
+      // 뮤테이션 성공 시 completedSentences 쿼리 캐시 업데이트
+      queryClient.invalidateQueries({ queryKey: ["completedSentences", session?.user?.id] });
+    },
+  });
 
   // ✅ 원어민 음성 재생 함수
   const playNativeAudio = () => {
@@ -271,32 +295,25 @@ export default function SpeakingPage() {
   };
 
   // ✅ 즐겨 찾기 - 토글 형태
-  const toggleFavorite = async () => {
-    // 현재 상태의 반대값
-    const newFavoriteStatus = !isFavorite;
+  const toggleFavorite = () => {
+    if (!currentSentence || !session?.user?.id) return;
 
-    try {
-      // 현재 선택된 문장의 번호가 있는지 확인
-      if (!currentSentence?.no) return;
+    const newFavoriteValue = !isFavorite;
 
-      // API 를 호출하여 문장의 즐겨찾기 상태 업데이트
-      await axios.post("/api/favorite", {
-        sentenceNo: currentSentence.no,
-        favorite: newFavoriteStatus,
-        userId: session?.user?.id,
-      });
+    // 즉시 UI 상태 업데이트 (낙관적 업데이트)
+    setIsFavorite(newFavoriteValue);
 
-      // 상태 업데이트
-      setIsFavorite(newFavoriteStatus);
+    // 현재 문장의 favorite 상태도 업데이트
+    setCurrentSentence({
+      ...currentSentence,
+      favorite: newFavoriteValue,
+    });
 
-      // 성공 메시지 표시(선택사항)
-      console.log(`즐겨찾기 ${newFavoriteStatus ? "추가" : "제거"} 완료`);
-      console.log(currentSentence.no);
-    } catch (error) {
-      console.error("즐겨찾기 업데이트 오류:", error);
-      // 실패 시 사용자에게 알림(선택사항)
-      alert("즐겨찾기 업데이트 중 오류가 발생했습니다.");
-    }
+    // API 호출로 서버에 업데이트
+    favoriteUpdateMutation.mutate({
+      sentenceNo: currentSentence.no,
+      favorite: newFavoriteValue,
+    });
   };
 
   if (isLoading) {
