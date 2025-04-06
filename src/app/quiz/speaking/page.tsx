@@ -311,7 +311,7 @@ export default function SpeakingPage() {
       {completedSentences?.length === 0 && (
         <div className="my-8 rounded-lg bg-yellow-100 p-4 text-yellow-800">
           <p>학습 완료된 문장이 없습니다. 먼저 학습을 진행해주세요.</p>
-          <Link href="/learn" className="mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+          <Link href="/dashboard" className="mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
             학습하러 가기
           </Link>
         </div>
