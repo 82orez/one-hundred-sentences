@@ -142,7 +142,6 @@ export type Database = {
       CompletedSentence: {
         Row: {
           completedAt: string
-          favorite: boolean
           id: string
           sentenceNo: number
           userEmail: string | null
@@ -150,7 +149,6 @@ export type Database = {
         }
         Insert: {
           completedAt?: string
-          favorite?: boolean
           id: string
           sentenceNo: number
           userEmail?: string | null
@@ -158,7 +156,6 @@ export type Database = {
         }
         Update: {
           completedAt?: string
-          favorite?: boolean
           id?: string
           sentenceNo?: number
           userEmail?: string | null
@@ -276,6 +273,42 @@ export type Database = {
           {
             foreignKeyName: "Enrollment_studentId_fkey"
             columns: ["studentId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      favoriteSentence: {
+        Row: {
+          completedAt: string
+          id: string
+          sentenceNo: number
+          userId: string
+        }
+        Insert: {
+          completedAt?: string
+          id: string
+          sentenceNo: number
+          userId: string
+        }
+        Update: {
+          completedAt?: string
+          id?: string
+          sentenceNo?: number
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favoriteSentence_sentenceNo_fkey"
+            columns: ["sentenceNo"]
+            isOneToOne: false
+            referencedRelation: "Sentence"
+            referencedColumns: ["no"]
+          },
+          {
+            foreignKeyName: "favoriteSentence_userId_fkey"
+            columns: ["userId"]
             isOneToOne: false
             referencedRelation: "User"
             referencedColumns: ["id"]
