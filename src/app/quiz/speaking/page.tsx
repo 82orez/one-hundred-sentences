@@ -128,11 +128,9 @@ export default function SpeakingPage() {
 
   // ! ✅ 즐겨찾기 상태 변경 뮤테이션 추가
   // const favoriteUpdateMutation = useMutation({
-  //   mutationFn: async ({ sentenceNo, favorite }: { sentenceNo: number; favorite: boolean }) => {
-  //     return axios.post("/api/favorite", {
+  //   mutationFn: async ({ sentenceNo }: { sentenceNo: number;  }) => {
+  //     return axios.post("/api/favorites", {
   //       sentenceNo,
-  //       favorite,
-  //       userId: session?.user?.id,
   //     });
   //   },
   //   onSuccess: () => {
