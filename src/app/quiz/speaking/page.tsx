@@ -25,8 +25,9 @@ export default function SpeakingPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // 초기 로딩 상태를 추적하는 ref 추가 - 랜덤 문장 선택과 연관
+  // * 초기 로딩 상태를 추적하는 ref 추가 - 랜덤 문장 선택과 연관
   const isInitialLoadRef = useRef(true);
+
   // 문장 번호 배열 - 문장별 한 번씩 램덤 재생
   const remainingSentenceNosRef = useRef<number[]>([]);
 
@@ -72,14 +73,9 @@ export default function SpeakingPage() {
   });
 
   // ✅ 랜덤 문장 선택
-  // 수정된 useEffect - 초기 로딩과 수동 갱신 구분: 즐겨찾기 관련
   useEffect(() => {
-    // 초기 로딩 시에만 문장 선택
     if (completedSentences && completedSentences.length > 0) {
-      if (isInitialLoadRef.current) {
-        selectRandomSentence();
-        isInitialLoadRef.current = false;
-      }
+      selectRandomSentence();
     }
   }, [completedSentences]);
 
@@ -134,7 +130,7 @@ export default function SpeakingPage() {
     }
   };
 
-  // ✅ 즐겨찾기 상태 변경 뮤테이션 추가
+  // ! ✅ 즐겨찾기 상태 변경 뮤테이션 추가
   const favoriteUpdateMutation = useMutation({
     mutationFn: async ({ sentenceNo, favorite }: { sentenceNo: number; favorite: boolean }) => {
       return axios.post("/api/favorite", {
@@ -313,7 +309,7 @@ export default function SpeakingPage() {
     setIsVisible(!isVisible);
   };
 
-  // ✅ 즐겨 찾기 - 토글 형태
+  // ! ✅ 즐겨 찾기 - 토글 형태
   const toggleFavorite = () => {
     if (!currentSentence || !session?.user?.id) return;
 
