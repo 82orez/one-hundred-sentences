@@ -119,20 +119,7 @@ export default function SpeakingPage() {
     }
   };
 
-  // ! ✅ 즐겨찾기 상태 변경 뮤테이션 추가
-  // const favoriteUpdateMutation = useMutation({
-  //   mutationFn: async ({ sentenceNo }: { sentenceNo: number;  }) => {
-  //     return axios.post("/api/favorites", {
-  //       sentenceNo,
-  //     });
-  //   },
-  //   onSuccess: () => {
-  //     // 뮤테이션 성공 시 completedSentences 쿼리 캐시 업데이트
-  //     queryClient.invalidateQueries({ queryKey: ["completedSentences", session?.user?.id] });
-  //   },
-  // });
-
-  // ✅ 즐겨찾기 상태 확인
+  // ✅ 즐겨찾기 상태 확인 useQuery
   const { data: favoriteStatus } = useQuery({
     queryKey: ["favoriteStatus", session?.user?.id, currentSentence?.no],
     queryFn: async () => {
@@ -153,21 +140,26 @@ export default function SpeakingPage() {
     }
   }, [favoriteStatus]);
 
-  // ✅ 즐겨찾기 토글 함수
-  const toggleFavorite = async () => {
-    if (!session?.user || !currentSentence) return;
-
-    try {
-      const response = await axios.post("/api/favorites", {
-        sentenceNo: currentSentence.no,
-      });
-      setIsFavorite(response.data.isFavorite);
-
-      // 쿼리 캐시 무효화 (선택적)
+  // ✅ 즐겨찾기 토글 useMutation
+  const toggleFavoriteMutation = useMutation({
+    mutationFn: async (sentenceNo: number) => {
+      const response = await axios.post("/api/favorites", { sentenceNo });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setIsFavorite(data.isFavorite);
+      // 쿼리 캐시 무효화
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error("즐겨찾기 토글 중 오류:", error);
-    }
+    },
+  });
+
+  // ✅ 즐겨찾기 토글 함수
+  const toggleFavorite = () => {
+    if (!session?.user || !currentSentence.no) return;
+    toggleFavoriteMutation.mutate(currentSentence.no);
   };
 
   // ✅ 원어민 음성 재생 함수
