@@ -16,8 +16,8 @@ export async function POST(req: Request) {
 
     // ✅ 3초 이상 시청한 경우만 기록
     if (duration >= 3) {
-      // ✅ duration 이 60초를 초과하면 60으로 제한
-      const limitedDuration = duration >= 60 ? 60 : duration;
+      // ✅ duration 이 120초를 초과하면 120으로 제한
+      const limitedDuration = duration >= 120 ? 120 : duration;
 
       const attempt = await prisma.youTubeViewAttempt.create({
         data: {

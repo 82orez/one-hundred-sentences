@@ -118,7 +118,7 @@ const LearnPage = ({ params }: Props) => {
       // 100 문장 모두 완료했는지 확인
       const allCompleted = completedSentences.length >= 100;
 
-      // ! DB 에 nextDay 와 totalCompleted 업데이트하고 로컬의 nextDay 상태 업데이트
+      // ✅ DB 에 nextDay 와 totalCompleted 업데이트하고 로컬의 nextDay 상태 업데이트
       updateNextDayInDB(calculatedNextDay, allCompleted);
     }
   }, [completedSentences, setNextDay, updateNextDayInDB, status]);
@@ -143,10 +143,7 @@ const LearnPage = ({ params }: Props) => {
     }
   }, [currentPageNumber, nextDay]);
 
-  // 기존 import 및 상태 정의 유지
-  // ...
-
-  // useEffect 추가
+  // ✅ 유튜브 시청 시간 기록을 위해 페이지를 떠날 시에 확인창 - 반드시 close 버튼을 클릭해야 시청 시간이 등록도임.
   useEffect(() => {
     // 유튜브 모달이 열려 있는 경우에만 이벤트 리스너 등록
     if (showYoutubeModal) {
@@ -306,11 +303,11 @@ const LearnPage = ({ params }: Props) => {
         allCompleted = todaySentenceNumbers.every((no) => allCompletedSentenceNumbers.includes(no));
       }
 
-      // * ui 고려 필요
+      // ui 고려 필요
       if (allCompleted && !isCompletedPage) {
         setTimeout(() => {
           alert(`${day}일차 학습 완료!`);
-          // router.push("/dashboard");
+          // router.push("/dashboard"); // 강제 라우팅 안하기로 함.
         }, 1000);
       }
     } catch (error) {
@@ -364,7 +361,7 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
-  // 유튜브 버튼 클릭 이벤트 핸들러
+  // ✅ 유튜브 버튼 클릭 이벤트 핸들러
   const handleYoutubeClick = (url: string, sentenceNo: number) => {
     handleOpenYoutubeModal(url, sentenceNo);
   };
@@ -383,7 +380,7 @@ const LearnPage = ({ params }: Props) => {
     return match && match[2].length === 11 ? match[2] : url; // 정규 ID가 추출되지 않으면 원래 URL 반환
   };
 
-  // 페이지 네비게이션 핸들러
+  // ✅ 페이지 네비게이션 핸들러(전일)
   const handlePreviousDay = () => {
     if (nextDay !== 1 && currentPageNumber === 1) {
       router.push(`/learn/${nextDay}`);
@@ -392,6 +389,7 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
+  // ✅ 페이지 네비게이션 핸들러(후일)
   const handleNextDay = () => {
     // 총 학습일(day)의 최대값을 20이라고 가정
     if (currentPageNumber === nextDay) {
@@ -589,7 +587,7 @@ const LearnPage = ({ params }: Props) => {
               <h3 className={clsx("invisible text-lg font-semibold md:visible")}>강의 동영상</h3>
               <button onClick={() => handleCloseYoutubeModal()} className="cursor-pointer rounded-full hover:bg-gray-100">
                 <span className="">
-                  <IoMdCloseCircle size={38} className={"text-gray-500"} />
+                  <IoMdCloseCircle size={38} className={"text-gray-400 hover:text-gray-500"} />
                 </span>
               </button>
             </div>
