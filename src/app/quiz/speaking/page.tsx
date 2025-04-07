@@ -75,13 +75,6 @@ export default function SpeakingPage() {
     }
   }, [completedSentences]);
 
-  // ✅ 문장이 변경될 때 즐겨찾기 상태 확인
-  useEffect(() => {
-    if (currentSentence?.no && session?.user) {
-      checkFavoriteStatus(currentSentence.no);
-    }
-  }, [currentSentence?.no, session?.user]);
-
   // 컴포넌트 언마운트 시 음성 인식 중지
   useEffect(() => {
     return () => {
@@ -139,17 +132,26 @@ export default function SpeakingPage() {
   //   },
   // });
 
-  // 즐겨찾기 상태 확인
-  const checkFavoriteStatus = async (sentenceNo: number | undefined) => {
-    if (!session?.user || typeof sentenceNo !== "number") return;
+  // ✅ 즐겨찾기 상태 확인
+  const { data: favoriteStatus } = useQuery({
+    queryKey: ["favoriteStatus", session?.user?.id, currentSentence?.no],
+    queryFn: async () => {
+      if (!session?.user || typeof currentSentence?.no !== "number") {
+        return { isFavorite: false };
+      }
 
-    try {
-      const response = await axios.get(`/api/favorites?sentenceNo=${sentenceNo}`);
-      setIsFavorite(response.data.isFavorite);
-    } catch (error) {
-      console.error("즐겨찾기 상태 확인 중 오류:", error);
+      const response = await axios.get(`/api/favorites?sentenceNo=${currentSentence.no}`);
+      return response.data;
+    },
+    enabled: !!session?.user && typeof currentSentence?.no === "number",
+  });
+
+  // ✅ isFavorite 상태 업데이트
+  useEffect(() => {
+    if (favoriteStatus) {
+      setIsFavorite(favoriteStatus.isFavorite);
     }
-  };
+  }, [favoriteStatus]);
 
   // ✅ 즐겨찾기 토글 함수
   const toggleFavorite = async () => {
