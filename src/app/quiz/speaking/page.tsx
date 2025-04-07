@@ -112,7 +112,8 @@ export default function SpeakingPage() {
 
     const selected = completedSentences[sentenceIdx];
     console.log(`🔹 선택된 문장(${sentenceIdx}):`, selected);
-    console.log(`📊 남은 문장 수: ${remainingSentenceNosRef.current.length}/${completedSentences.length}`);
+    console.log("남은 문장: ", remainingSentenceNosRef.current);
+    console.log(`📊 남은 문장 수: ${remainingSentenceNosRef.current.length}`);
 
     setCurrentSentence(selected);
     setUserSpoken("");

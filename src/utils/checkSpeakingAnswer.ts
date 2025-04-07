@@ -99,6 +99,7 @@ export const checkAnswer = (
         .replace(/\bwhere's\b/g, "where is")
         .replace(/\bwhat's\b/g, "what is")
         .replace(/\bthere's\b/g, "there is")
+        // .replace(/\bthere're\b/g, "there are")
 
         .replace(/\bself-checking\b/g, "self check in")
         .replace(/\bself checking\b/g, "self check in")
