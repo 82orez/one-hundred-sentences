@@ -25,20 +25,8 @@ export default function SpeakingPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // * 초기 로딩 상태를 추적하는 ref 추가 - 랜덤 문장 선택과 연관
-  // const isInitialLoadRef = useRef(true);
-
   // 문장 번호 배열 - 문장별 한 번씩 램덤 재생
   const remainingSentenceNosRef = useRef<number[]>([]);
-
-  // 오디오 재생 상태를 관리할 새로운 상태 변수
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
-  // 음성 인식 객체 참조
-  const recognitionRef = useRef<any>(null);
-  // 오디오 객체 참조 추가
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Hint 관련 상태 변수 추가 (기존 state 목록 아래에 추가)
   const [showHint, setShowHint] = useState(false); // 정답 보기
@@ -49,6 +37,15 @@ export default function SpeakingPage() {
     missing: string[];
     incorrect: { spoken: string; correct: string }[];
   }>({ missing: [], incorrect: [] });
+
+  // 오디오 재생 상태를 관리할 새로운 상태 변수
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  // 음성 인식 객체 참조
+  const recognitionRef = useRef<any>(null);
+  // 오디오 객체 참조 추가
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // ✅ 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading } = useQuery({
@@ -78,7 +75,7 @@ export default function SpeakingPage() {
     }
   }, [completedSentences]);
 
-  // 문장이 변경될 때 즐겨찾기 상태 확인
+  // ✅ 문장이 변경될 때 즐겨찾기 상태 확인
   useEffect(() => {
     if (currentSentence?.no && session?.user) {
       checkFavoriteStatus(currentSentence.no);
@@ -98,13 +95,6 @@ export default function SpeakingPage() {
       }
     };
   }, []);
-
-  // ! ✅ 선택된 문장이 변경될 때 favorite 상태도 업데이트
-  // useEffect(() => {
-  //   if (currentSentence) {
-  //     setIsFavorite(currentSentence.favorite || false);
-  //   }
-  // }, [currentSentence]);
 
   // ✅ 램덤 문장 선택 함수: 각 문장이 한 번씩 램덤 선택
   const selectRandomSentence = () => {
@@ -163,7 +153,7 @@ export default function SpeakingPage() {
     }
   };
 
-  // 즐겨찾기 토글 함수
+  // ✅ 즐겨찾기 토글 함수
   const toggleFavorite = async () => {
     if (!session?.user || !currentSentence) return;
 
@@ -343,28 +333,6 @@ export default function SpeakingPage() {
   const toggleAnswer = () => {
     setIsVisible(!isVisible);
   };
-
-  // ! ✅ 즐겨 찾기 - 토글 형태
-  // const toggleFavorite = () => {
-  //   if (!currentSentence || !session?.user?.id) return;
-  //
-  //   const newFavoriteValue = !isFavorite;
-  //
-  //   // 즉시 UI 상태 업데이트 (낙관적 업데이트)
-  //   setIsFavorite(newFavoriteValue);
-  //
-  //   // 현재 문장의 favorite 상태도 업데이트
-  //   setCurrentSentence({
-  //     ...currentSentence,
-  //     favorite: newFavoriteValue,
-  //   });
-  //
-  //   // API 호출로 서버에 업데이트
-  //   favoriteUpdateMutation.mutate({
-  //     sentenceNo: currentSentence.no,
-  //     favorite: newFavoriteValue,
-  //   });
-  // };
 
   if (isLoading) {
     return <LoadingPageSkeleton />;
