@@ -26,7 +26,7 @@ export default function SpeakingPage() {
   const [isFavorite, setIsFavorite] = useState(false);
 
   // 문장 번호 배열 - 문장별 한 번씩 램덤 재생
-  const remainingSentenceNosRef = useRef<number[]>([]);
+  // const remainingSentenceNosRef = useRef<number[]>([]);
 
   // Hint 관련 상태 변수 추가 (기존 state 목록 아래에 추가)
   const [showHint, setShowHint] = useState(false); // 정답 보기
@@ -92,31 +92,14 @@ export default function SpeakingPage() {
   // ✅ 램덤 문장 선택 함수: 각 문장이 한 번씩 램덤 선택
   const selectRandomSentence = () => {
     if (!completedSentences || completedSentences.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * completedSentences.length);
+    const selected = completedSentences[randomIndex];
 
-    // 초기화: 아직 남은 문장이 없으면 전체에서 다시 가져옴
-    if (remainingSentenceNosRef.current.length === 0) {
-      remainingSentenceNosRef.current = completedSentences.map((s) => s.no);
-      console.log("🔄 문장 풀 리셋됨: ", remainingSentenceNosRef.current);
-    }
-
-    // 랜덤으로 번호 선택
-    const randomIndex = Math.floor(Math.random() * remainingSentenceNosRef.current.length);
-    const selectedNo = remainingSentenceNosRef.current[randomIndex];
-
-    // 선택된 번호를 제거
-    remainingSentenceNosRef.current.splice(randomIndex, 1);
-
-    // 해당 번호에 해당하는 문장 찾기
-    const selectedSentence = completedSentences.find((s) => s.no === selectedNo);
-    if (selectedSentence) {
-      setCurrentSentence(selectedSentence);
-      setUserSpoken("");
-      setFeedback(null);
-      setIsVisible(false);
-
-      console.log("🔹 선택된 문장:", selectedSentence);
-      console.log("📊 남은 문장 수:", remainingSentenceNosRef.current);
-    }
+    console.log("🔹 선택된 문장:", selected);
+    setCurrentSentence(selected);
+    setUserSpoken("");
+    setFeedback(null);
+    setIsVisible(false);
   };
 
   // ✅ 즐겨찾기 상태 확인 useQuery
@@ -208,9 +191,9 @@ export default function SpeakingPage() {
   };
 
   // ✅ 힌트 보기 기능을 위한 함수 추가
-  const toggleHint = () => {
-    setShowHint1(!showHint1);
-  };
+  // const toggleHint = () => {
+  //   setShowHint1(!showHint1);
+  // };
 
   // ✅ 음성 인식 시작
   const startListening = async () => {
@@ -322,9 +305,9 @@ export default function SpeakingPage() {
   };
 
   // ✅ 답안 확인하기 - 토글 형태로 변경된 함수:
-  const toggleAnswer = () => {
-    setIsVisible(!isVisible);
-  };
+  // const toggleAnswer = () => {
+  //   setIsVisible(!isVisible);
+  // };
 
   if (isLoading) {
     return <LoadingPageSkeleton />;
