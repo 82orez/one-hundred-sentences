@@ -26,7 +26,7 @@ export default function SpeakingPage() {
   const [isFavorite, setIsFavorite] = useState(false);
 
   // 문장 번호 배열 - 문장별 한 번씩 램덤 재생
-  // const remainingSentenceNosRef = useRef<number[]>([]);
+  const remainingSentenceNosRef = useRef<number[]>([]);
 
   // Hint 관련 상태 변수 추가 (기존 state 목록 아래에 추가)
   const [showHint, setShowHint] = useState(false); // 정답 보기
@@ -71,6 +71,10 @@ export default function SpeakingPage() {
   // ✅ 랜덤 문장 선택
   useEffect(() => {
     if (completedSentences && completedSentences.length > 0) {
+      // 남은 문장 배열이 비어있으면 모든 문장 번호로 초기화
+      if (remainingSentenceNosRef.current.length === 0) {
+        remainingSentenceNosRef.current = Array.from({ length: completedSentences.length }, (_, i) => i);
+      }
       selectRandomSentence();
     }
   }, [completedSentences]);
@@ -92,10 +96,24 @@ export default function SpeakingPage() {
   // ✅ 램덤 문장 선택 함수: 각 문장이 한 번씩 램덤 선택
   const selectRandomSentence = () => {
     if (!completedSentences || completedSentences.length === 0) return;
-    const randomIndex = Math.floor(Math.random() * completedSentences.length);
-    const selected = completedSentences[randomIndex];
 
-    console.log("🔹 선택된 문장:", selected);
+    // 남은 문장이 없으면 모든 문장 번호로 초기화
+    if (remainingSentenceNosRef.current.length === 0) {
+      remainingSentenceNosRef.current = Array.from({ length: completedSentences.length }, (_, i) => i);
+      console.log("🔄 모든 문장을 다시 배열에 추가했습니다.");
+    }
+
+    // 남은 문장 중 랜덤으로 하나 선택
+    const randomIdx = Math.floor(Math.random() * remainingSentenceNosRef.current.length);
+    const sentenceIdx = remainingSentenceNosRef.current[randomIdx];
+
+    // 선택된 문장은 배열에서 제거 (중복 선택 방지)
+    remainingSentenceNosRef.current.splice(randomIdx, 1);
+
+    const selected = completedSentences[sentenceIdx];
+    console.log(`🔹 선택된 문장(${sentenceIdx}):`, selected);
+    console.log(`📊 남은 문장 수: ${remainingSentenceNosRef.current.length}/${completedSentences.length}`);
+
     setCurrentSentence(selected);
     setUserSpoken("");
     setFeedback(null);
