@@ -133,6 +133,7 @@ export default function Dashboard() {
     enabled: !!selectedDay,
   });
 
+  // ✅ 원어민 음성 듣기 횟수 조회
   const { data: nativeAudioData } = useQuery({
     queryKey: ["nativeAudioCount", session?.user?.id],
     queryFn: async () => {
@@ -142,7 +143,7 @@ export default function Dashboard() {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // 영상 시청 시간 합계 가져오기
+  // ✅ 영상 시청 시간 합계 가져오기
   const { data: totalVideoDuration, isLoading: isVideoDurationLoading } = useQuery({
     queryKey: ["videoDuration", session?.user?.id],
     queryFn: async () => {
@@ -154,7 +155,7 @@ export default function Dashboard() {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // 시간을 포맷팅하는 함수: 초 단위를 시간:분:초 형식으로 변환
+  // ✅ 시간을 포맷팅하는 함수: 초 단위를 시간:분:초 형식으로 변환
   const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -162,6 +163,16 @@ export default function Dashboard() {
 
     return `${hours > 0 ? `${hours}시간 ` : ""}${minutes}분 ${remainingSeconds}초`;
   };
+
+  // ✅ 숙제 제출 횟수 조회
+  const { data: totalRecordingAttempts, isLoading: isRecordingAttemptsLoading } = useQuery({
+    queryKey: ["totalRecordingAttempts", session?.user?.id],
+    queryFn: async () => {
+      const res = await axios.get(`/api/recorder/total?userId=${session?.user?.id}`);
+      return res.data.totalAttempts;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id,
+  });
 
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
@@ -221,16 +232,17 @@ export default function Dashboard() {
           {/*</div>*/}
           <div className="flex items-center justify-between">
             <div>강의 영상 시청</div>
-            <div>
-              {!isVideoDurationLoading && <span className="ml-2 text-sm font-medium text-gray-600">(총 {formatDuration(totalVideoDuration)})</span>}
-            </div>
+            <div>{!isVideoDurationLoading && <span className="font-semibold text-blue-600">총 {formatDuration(totalVideoDuration)}</span>}</div>
           </div>
           <div className="flex items-center justify-between">
             <div>원어민 음성 듣기</div>
             <div className="font-semibold text-blue-600">{nativeAudioData?.totalAttempts || 0}회</div>
           </div>
+          <div className="flex items-center justify-between">
+            <div>숙제 제출</div>
+            <div className="font-semibold text-blue-600">{totalRecordingAttempts || 0}회</div>
+          </div>
 
-          <div>숙제 제출</div>
           <div>퀴즈 풀이 및 정답율</div>
         </div>
 
