@@ -20,7 +20,6 @@ import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import FlipCounter from "@/components/FlipCounterAnimation";
 import { IoMdCloseCircle } from "react-icons/io";
-import { useRecordingCounts } from "@/hooks/useRecordingCounts";
 import { useNativeAudioAttempt } from "@/hooks/NativeAudioAttemptHook";
 
 interface Sentence {
@@ -322,8 +321,19 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
-  // ✅ 녹음 횟수 데이터를 가져오는 쿼리 추가
-  const { data: recordingCounts } = useRecordingCounts();
+  // ✅ 해당 문장의 녹음 횟수 데이터를 가져오는 쿼리 추가
+  const { data: recordingCounts } = useQuery({
+    queryKey: ["recordingCounts", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return {};
+      const res = await axios.get(`/api/recorder/recording-counter?userId=${session.user.id}`);
+      return res.data.reduce((acc: { [key: number]: number }, item: { sentenceNo: number; attemptCount: number }) => {
+        acc[item.sentenceNo] = item.attemptCount;
+        return acc;
+      }, {});
+    },
+    enabled: status === "authenticated" && !!session?.user?.id,
+  });
 
   // ✅ 유튜브 모달 열기 함수
   const handleOpenYoutubeModal = (url: string, sentenceNo: number) => {
