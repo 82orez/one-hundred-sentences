@@ -21,6 +21,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import FlipCounter from "@/components/FlipCounterAnimation";
 import { IoMdCloseCircle } from "react-icons/io";
 import { useRecordingCounts } from "@/hooks/useRecordingCounts";
+import { useNativeAudioAttempt } from "@/hooks/NativeAudioAttemptHook";
 
 interface Sentence {
   no: number;
@@ -56,6 +57,8 @@ const LearnPage = ({ params }: Props) => {
 
   const router = useRouter();
   const { data: session, status } = useSession();
+
+  const { mutate: recordNativeAudioAttempt } = useNativeAudioAttempt();
 
   // ✅ 유닛 제목과 유튜브 URL 불러오기 쿼리 추가
   const { data: unitSubjectAndUtubeUrl, isLoading: isUnitSubjectAndUtubeUrlLoading } = useQuery({
@@ -242,8 +245,11 @@ const LearnPage = ({ params }: Props) => {
 
     setIsPlayingSentenceNo(sentenceNo);
 
+    // ✅ 네이티브 오디오 시도 기록 추가
+    recordNativeAudioAttempt({ sentenceNo });
+
     const audio = new Audio(audioUrl);
-    // * 재생 속도 설정
+    // ✅ 재생 속도 설정
     audio.playbackRate = 0.8;
 
     audio.play();

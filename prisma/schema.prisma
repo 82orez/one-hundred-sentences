@@ -52,6 +52,7 @@ model User {
   UserNextDay        UserNextDay[]
   YouTubeViewAttempt YouTubeViewAttempt[]
   favoriteSentence   favoriteSentence[]
+  NativeAudioAttempt NativeAudioAttempt[]
 }
 
 model Account {
@@ -137,6 +138,7 @@ model Sentence {
   Recordings         Recordings[]
   YouTubeViewAttempt YouTubeViewAttempt[]
   favoriteSentence   favoriteSentence[]
+  NativeAudioAttempt NativeAudioAttempt[]
 }
 
 /// 완료된 학습 문장 모델
@@ -167,12 +169,25 @@ model favoriteSentence {
 
 /// 퀴즈 기록 모델
 model QuizAttempt {
-  id         String  @id @default(cuid())
-  userId     String
-  sentenceNo Int
-  kind       String? // speaking or dictation
-  attempt    Int?
-  correct    Int?
+  id           String   @id @default(cuid())
+  userId       String
+  sentenceNo   Int
+  kind         String? // speaking or dictation
+  attemptQuiz  Int?
+  correctCount Int?
+  createdAt    DateTime @default(now())
+
+  // 관계 설정
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
+}
+
+model NativeAudioAttempt {
+  id                 String   @id @default(cuid())
+  userId             String
+  sentenceNo         Int
+  attemptNativeAudio Int?
+  createdAt          DateTime @default(now())
 
   // 관계 설정
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
