@@ -20,7 +20,6 @@ import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import FlipCounter from "@/components/FlipCounterAnimation";
 import { IoMdCloseCircle } from "react-icons/io";
-import { useNativeAudioAttempt } from "@/hooks/NativeAudioAttemptHook";
 
 interface Sentence {
   no: number;
@@ -56,8 +55,6 @@ const LearnPage = ({ params }: Props) => {
 
   const router = useRouter();
   const { data: session, status } = useSession();
-
-  const { mutate: recordNativeAudioAttempt } = useNativeAudioAttempt();
 
   // ✅ 유닛 제목과 유튜브 URL 불러오기 쿼리 추가
   const { data: unitSubjectAndUtubeUrl, isLoading: isUnitSubjectAndUtubeUrlLoading } = useQuery({
@@ -145,6 +142,19 @@ const LearnPage = ({ params }: Props) => {
       setIsCompletedPage(true);
     }
   }, [currentPageNumber, nextDay]);
+
+  // ✅ 원어민 음성 시청 기록
+  const recordNativeAudioAttemptMutation = useMutation({
+    mutationFn: async (params: { sentenceNo: number }) => {
+      const response = await axios.post("/api/native-audio/attempt", params);
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      // 필요한 경우 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["nativeAudioAttempts", variables.sentenceNo] });
+      queryClient.invalidateQueries({ queryKey: ["nativeAudioAttempts"] });
+    },
+  });
 
   // ✅ 유튜브 시청 시간 기록을 위해 페이지를 떠날 시에 확인창 - 반드시 close 버튼을 클릭해야 시청 시간이 등록도임.
   useEffect(() => {
@@ -245,7 +255,7 @@ const LearnPage = ({ params }: Props) => {
     setIsPlayingSentenceNo(sentenceNo);
 
     // ✅ 네이티브 오디오 시도 기록 추가
-    recordNativeAudioAttempt({ sentenceNo });
+    recordNativeAudioAttemptMutation.mutate({ sentenceNo });
 
     const audio = new Audio(audioUrl);
     // ✅ 재생 속도 설정
