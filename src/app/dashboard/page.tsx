@@ -142,6 +142,27 @@ export default function Dashboard() {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
+  // 영상 시청 시간 합계 가져오기
+  const { data: totalVideoDuration, isLoading: isVideoDurationLoading } = useQuery({
+    queryKey: ["videoDuration", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return 0;
+
+      const res = await axios.get(`/api/youtube-view/total?userId=${session.user.id}`);
+      return res.data.totalDuration || 0;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id,
+  });
+
+  // 시간을 포맷팅하는 함수: 초 단위를 시간:분:초 형식으로 변환
+  const formatDuration = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+
+    return `${hours > 0 ? `${hours}시간 ` : ""}${minutes}분 ${remainingSeconds}초`;
+  };
+
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
     console.log(getSentenceCount.error.message);
@@ -198,7 +219,12 @@ export default function Dashboard() {
           {/*      style={{ width: `${progress === 100 ? 100 : ((nextDay - 1) / (getSentenceCount.data?.count / 5)) * 100}%` }}></div>*/}
           {/*  </div>*/}
           {/*</div>*/}
-          <div>강의 영상 시청</div>
+          <div className="flex items-center justify-between">
+            <div>강의 영상 시청</div>
+            <div>
+              {!isVideoDurationLoading && <span className="ml-2 text-sm font-medium text-gray-600">(총 {formatDuration(totalVideoDuration)})</span>}
+            </div>
+          </div>
           <div className="flex items-center justify-between">
             <div>원어민 음성 듣기</div>
             <div className="font-semibold text-blue-600">{nativeAudioData?.totalAttempts || 0}회</div>
