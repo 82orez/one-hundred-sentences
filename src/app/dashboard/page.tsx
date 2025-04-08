@@ -243,7 +243,8 @@ export default function Dashboard() {
             <div className="font-semibold text-blue-600">{totalRecordingAttempts || 0}회</div>
           </div>
 
-          <div>퀴즈 풀이 및 정답율</div>
+          <div>퀴즈 풀이 횟수</div>
+          <div>퀴즈 풀이 정답</div>
         </div>
 
         <div className="rounded-lg bg-white p-6 shadow-md">

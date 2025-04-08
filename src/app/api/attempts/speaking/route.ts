@@ -28,12 +28,12 @@ export async function POST(request: Request) {
     // 기존 기록이 있으면 업데이트, 없으면 새로 생성
     if (existingAttempt) {
       const updateData: any = {
-        attempt: (existingAttempt.attempt || 0) + 1,
+        attemptQuiz: (existingAttempt.attemptQuiz || 0) + 1,
       };
 
       // 정답이면 correct 필드도 증가
       if (isCorrect) {
-        updateData.correct = (existingAttempt.correct || 0) + 1;
+        updateData.correctCount = (existingAttempt.correctCount || 0) + 1;
       }
 
       const updatedAttempt = await prisma.quizAttempt.update({
@@ -48,8 +48,8 @@ export async function POST(request: Request) {
           userId: session.user.id,
           sentenceNo: sentenceNo,
           kind: "speaking",
-          attempt: 1,
-          correct: isCorrect ? 1 : 0,
+          attemptQuiz: 1,
+          correctCount: isCorrect ? 1 : 0,
         },
       });
       return NextResponse.json(newAttempt);
