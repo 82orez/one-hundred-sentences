@@ -174,6 +174,16 @@ export default function Dashboard() {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
+  // ✅ 퀴즈 풀이 통계 조회
+  const { data: quizStats, isLoading: isQuizStatsLoading } = useQuery({
+    queryKey: ["quizStats", session?.user?.id],
+    queryFn: async () => {
+      const res = await axios.get(`/api/attempts/quiz-stats?userId=${session?.user?.id}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id,
+  });
+
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
     console.log(getSentenceCount.error.message);
@@ -243,8 +253,14 @@ export default function Dashboard() {
             <div className="font-semibold text-blue-600">{totalRecordingAttempts || 0}회</div>
           </div>
 
-          <div>퀴즈 풀이 횟수</div>
-          <div>퀴즈 풀이 정답</div>
+          <div className="flex items-center justify-between">
+            <div>퀴즈 풀이 횟수</div>
+            <div className="font-semibold text-blue-600">{quizStats?.totalAttempts || 0}회</div>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>퀴즈 풀이 정답 횟수</div>
+            <div className="font-semibold text-blue-600">{quizStats?.totalCorrect || 0}회</div>
+          </div>
         </div>
 
         <div className="rounded-lg bg-white p-6 shadow-md">
