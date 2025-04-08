@@ -164,6 +164,19 @@ export default function SpeakingPage() {
     toggleFavoriteMutation.mutate(currentSentence.no);
   };
 
+  // ✅ 원어민 음성 시청 기록
+  const recordNativeAudioAttemptMutation = useMutation({
+    mutationFn: async (params: { sentenceNo: number }) => {
+      const response = await axios.post("/api/native-audio/attempt", params);
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      // 필요한 경우 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["nativeAudioAttempts", variables.sentenceNo] });
+      queryClient.invalidateQueries({ queryKey: ["nativeAudioAttempts"] });
+    },
+  });
+
   // ✅ 원어민 음성 재생 함수
   const playNativeAudio = () => {
     if (!currentSentence?.audioUrl) return;
@@ -181,6 +194,8 @@ export default function SpeakingPage() {
     audio.playbackRate = 0.8;
 
     setIsPlaying(true);
+
+    recordNativeAudioAttemptMutation.mutate({ sentenceNo: currentSentence.no });
 
     audio.onended = () => {
       setIsPlaying(false);
