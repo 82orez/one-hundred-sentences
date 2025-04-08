@@ -16,6 +16,7 @@ import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { HiOutlineSparkles } from "react-icons/hi2";
+import FlipCounter from "@/components/FlipCounterAnimation";
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -184,6 +185,48 @@ export default function Dashboard() {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
+  // 포인트 계산을 위한 useState 추가
+  const [totalPoints, setTotalPoints] = useState(0);
+
+  // 포인트 계산 로직
+  useEffect(() => {
+    if (isQuizStatsLoading || isVideoDurationLoading) return;
+
+    // 각 활동별 포인트 가중치 설정
+    const VIDEO_POINT_PER_SECOND = 0.1; // 영상 시청 1초당 0.1 포인트
+    const AUDIO_POINT_PER_ATTEMPT = 5; // 원어민 음성 듣기 1회당 5 포인트
+    const RECORDING_POINT_PER_ATTEMPT = 10; // 숙제 제출 1회당 10 포인트
+    const QUIZ_ATTEMPT_POINT = 3; // 퀴즈 풀이 1회당 3 포인트
+    const QUIZ_CORRECT_POINT = 5; // 퀴즈 정답 1회당 5 포인트 추가
+
+    // 영상 시청 포인트 (초 단위 시청 시간 * 포인트)
+    const videoPoints = totalVideoDuration * VIDEO_POINT_PER_SECOND;
+
+    // 원어민 음성 듣기 포인트
+    const audioPoints = (nativeAudioData?.totalAttempts || 0) * AUDIO_POINT_PER_ATTEMPT;
+
+    // 숙제 제출 포인트
+    const recordingPoints = (totalRecordingAttempts || 0) * RECORDING_POINT_PER_ATTEMPT;
+
+    // 퀴즈 풀이 및 정답 포인트
+    const quizAttemptPoints = (quizStats?.totalAttempts || 0) * QUIZ_ATTEMPT_POINT;
+    const quizCorrectPoints = (quizStats?.totalCorrect || 0) * QUIZ_CORRECT_POINT;
+
+    // 총 포인트 계산
+    const total = Math.round(videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints);
+
+    // 상태 업데이트
+    setTotalPoints(total);
+  }, [
+    totalVideoDuration,
+    nativeAudioData?.totalAttempts,
+    totalRecordingAttempts,
+    quizStats?.totalAttempts,
+    quizStats?.totalCorrect,
+    isQuizStatsLoading,
+    isVideoDurationLoading,
+  ]);
+
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
     console.log(getSentenceCount.error.message);
@@ -257,6 +300,18 @@ export default function Dashboard() {
             <div>퀴즈풀이 (정답)횟수</div>
             <div className="font-semibold text-blue-600">
               ({quizStats?.totalCorrect || 0}){quizStats?.totalAttempts || 0}회
+            </div>
+          </div>
+
+          {/* 구분선 */}
+          <div className="my-3 border-t border-gray-200"></div>
+
+          {/* 총 획득 포인트 표시 */}
+          <div className="flex items-center justify-between">
+            <div className="text-lg font-medium">총 획득 포인트</div>
+            <div className="flex text-xl font-bold text-indigo-600">
+              <FlipCounter value={totalPoints} className={""} />
+              <span className="ml-1">P</span>
             </div>
           </div>
         </div>
