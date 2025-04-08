@@ -112,6 +112,8 @@ export const checkAnswer = (
         .replace(/\bhere we go\b/g, "here you go")
         .replace(/\bthe toy cost\b/g, "the tour cost")
         .replace(/\bthe torque cost\b/g, "the tour cost")
+        .replace(/\bthe alper bus\b/g, "the airport bus")
+        .replace(/\bthe helper bus\b/g, "the airport bus")
 
         .replace(/\bi'll\b/g, "i will")
         .replace(/\bi've\b/g, "i have")
