@@ -254,12 +254,10 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center justify-between">
-            <div>퀴즈 풀이 횟수</div>
-            <div className="font-semibold text-blue-600">{quizStats?.totalAttempts || 0}회</div>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>퀴즈 풀이 정답 횟수</div>
-            <div className="font-semibold text-blue-600">{quizStats?.totalCorrect || 0}회</div>
+            <div>퀴즈풀이 (정답)횟수</div>
+            <div className="font-semibold text-blue-600">
+              ({quizStats?.totalCorrect || 0}){quizStats?.totalAttempts || 0}회
+            </div>
           </div>
         </div>
 
