@@ -8,6 +8,7 @@ import { Heart, Bookmark, Trash2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { motion } from "framer-motion";
+import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 
 // 즐겨찾기 문장 타입 정의
 interface FavoriteSentence {
@@ -28,6 +29,7 @@ export default function FavoriteSentencesPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   // 현재 재생 중인 오디오의 문장 번호를 저장하는 상태 추가
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
+  const recordNativeAudioAttemptMutation = useNativeAudioAttempt();
 
   // 인증 확인
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function FavoriteSentencesPage() {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // 즐겨찾기 삭제 함수
+  // ✅ 즐겨찾기 삭제 함수
   const handleRemoveFavorite = async (sentenceNo: number) => {
     try {
       setIsDeleting(true);
@@ -66,7 +68,7 @@ export default function FavoriteSentencesPage() {
     }
   };
 
-  // ✅ 오디오 재생 함수 수정
+  // ✅ 오디오 재생 함수
   const playAudio = (sentenceNo: number, audioUrl?: string) => {
     if (!audioUrl) return;
 
@@ -77,6 +79,8 @@ export default function FavoriteSentencesPage() {
 
     // 현재 재생 중인 오디오를 설정
     setCurrentlyPlaying(sentenceNo);
+
+    recordNativeAudioAttemptMutation.mutate({ sentenceNo });
 
     const audio = new Audio(audioUrl);
 
