@@ -26,6 +26,8 @@ export default function FavoriteSentencesPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
+  // 현재 재생 중인 오디오의 문장 번호를 저장하는 상태 추가
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
 
   // 인증 확인
   useEffect(() => {
@@ -64,10 +66,25 @@ export default function FavoriteSentencesPage() {
     }
   };
 
-  // ✅ 오디오 재생 함수
-  const playAudio = (audioUrl?: string) => {
+  // ✅ 오디오 재생 함수 수정
+  const playAudio = (sentenceNo: number, audioUrl?: string) => {
     if (!audioUrl) return;
+
+    // 현재 재생 중인 오디오가 있으면 중지
+    if (currentlyPlaying !== null) {
+      // 선택적: 기존 오디오 중지 로직 추가
+    }
+
+    // 현재 재생 중인 오디오를 설정
+    setCurrentlyPlaying(sentenceNo);
+
     const audio = new Audio(audioUrl);
+
+    // 오디오 재생이 끝나면 상태 초기화
+    audio.onended = () => {
+      setCurrentlyPlaying(null);
+    };
+
     audio.play();
   };
 
@@ -125,13 +142,17 @@ export default function FavoriteSentencesPage() {
 
               {item.sentence.audioUrl && (
                 <button
-                  onClick={() => playAudio(item.sentence.audioUrl)}
-                  className="flex items-center text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
-                  <span className="mr-1">🔊</span> 발음 듣기
+                  onClick={() => playAudio(item.sentence.no, item.sentence.audioUrl)}
+                  disabled={currentlyPlaying !== null && currentlyPlaying !== item.sentence.no}
+                  className={`flex items-center text-sm ${
+                    currentlyPlaying !== null && currentlyPlaying !== item.sentence.no
+                      ? "cursor-not-allowed text-gray-400"
+                      : "text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
+                  }`}>
+                  <span className="mr-1">🔊</span>
+                  {currentlyPlaying === item.sentence.no ? "재생 중..." : "발음 듣기"}
                 </button>
               )}
-
-              <div className="mt-2 text-xs text-gray-500">{new Date(item.createdAt).toLocaleDateString()} 저장</div>
             </motion.div>
           ))}
         </div>
