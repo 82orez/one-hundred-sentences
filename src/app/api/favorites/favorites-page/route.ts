@@ -21,7 +21,7 @@ export async function GET() {
         sentence: true, // 문장 정보도 가져옴
       },
       orderBy: {
-        completedAt: "desc", // 최신순 정렬
+        createdAt: "desc", // 최신순 정렬
       },
     });
 

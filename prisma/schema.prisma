@@ -157,10 +157,10 @@ model CompletedSentence {
 }
 
 model favoriteSentence {
-  id          String   @id @default(cuid())
-  userId      String
-  sentenceNo  Int
-  completedAt DateTime @default(now()) // 학습 완료 날짜
+  id         String   @id @default(cuid())
+  userId     String
+  sentenceNo Int
+  createdAt  DateTime @default(now()) // 학습 완료 날짜
 
   // 관계 설정
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)

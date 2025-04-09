@@ -281,19 +281,19 @@ export type Database = {
       }
       favoriteSentence: {
         Row: {
-          completedAt: string
+          createdAt: string
           id: string
           sentenceNo: number
           userId: string
         }
         Insert: {
-          completedAt?: string
+          createdAt?: string
           id: string
           sentenceNo: number
           userId: string
         }
         Update: {
-          completedAt?: string
+          createdAt?: string
           id?: string
           sentenceNo?: number
           userId?: string
