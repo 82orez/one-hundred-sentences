@@ -494,7 +494,7 @@ export default function Dashboard() {
               <button
                 className="mt-6 w-full rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
                 onClick={() => router.push(`/learn/${selectedDay}`)}>
-                {selectedDay}일차 복습 시작 🚀
+                {selectedDay}일차 학습 시작 🚀
               </button>
             </motion.div>
           </motion.div>

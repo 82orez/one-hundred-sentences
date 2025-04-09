@@ -35,7 +35,7 @@ export default function FavoriteSentencesPage() {
     }
   }, [status, router]);
 
-  // 즐겨찾기 문장 데이터 가져오기
+  // ✅ 즐겨찾기 문장 데이터 가져오기
   const {
     data: favoriteSentences,
     isLoading,
@@ -64,7 +64,7 @@ export default function FavoriteSentencesPage() {
     }
   };
 
-  // 오디오 재생 함수
+  // ✅ 오디오 재생 함수
   const playAudio = (audioUrl?: string) => {
     if (!audioUrl) return;
     const audio = new Audio(audioUrl);
