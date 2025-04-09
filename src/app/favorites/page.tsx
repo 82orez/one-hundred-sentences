@@ -107,9 +107,9 @@ export default function FavoriteSentencesPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-6 flex items-center text-2xl font-bold">
-        <Heart className="mr-2 text-red-500" size={24} />내 즐겨찾기 문장
+    <div className="container mx-auto w-full max-w-md px-4 py-8">
+      <h1 className="mb-6 flex items-center justify-center text-2xl font-bold">
+        <Heart className="mr-2 text-red-500" size={24} />내 즐겨찾기 문장 목록
       </h1>
 
       {favoriteSentences?.length === 0 ? (

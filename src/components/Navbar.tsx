@@ -66,7 +66,7 @@ export default function Navbar() {
               href="/favorites"
               className="flex items-center rounded-md bg-white px-4 py-2 text-indigo-600 shadow-sm transition-colors hover:bg-indigo-50">
               <Heart className="mr-2" size={18} />
-              즐겨찾기 문장
+              즐겨찾기 목록
             </Link>
 
             <Link href="/users/profile" className={clsx("hover:underline")}>
