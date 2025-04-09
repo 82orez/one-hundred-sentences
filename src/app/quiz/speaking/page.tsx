@@ -27,6 +27,9 @@ export default function SpeakingPage() {
   const [isFavorite, setIsFavorite] = useState(false);
   const recordNativeAudioAttemptMutation = useNativeAudioAttempt();
 
+  // 탭 모드 상태 추가
+  const [mode, setMode] = useState<"normal" | "favorite">("normal");
+
   // 문장 번호 배열 - 문장별 한 번씩 램덤 재생
   const remainingSentenceNosRef = useRef<number[]>([]);
 
@@ -50,7 +53,7 @@ export default function SpeakingPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // ✅ 완료된 문장 목록 가져오기
-  const { data: completedSentences, isLoading } = useQuery({
+  const { data: completedSentences, isLoading: isLoadingCompleted } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
       try {
@@ -70,16 +73,49 @@ export default function SpeakingPage() {
     enabled: !!session?.user?.id,
   });
 
+  // ✅ 즐겨찾기 문장 목록 가져오기
+  const { data: favoriteSentences, isLoading: isLoadingFavorites } = useQuery({
+    queryKey: ["favoriteSentences", session?.user?.id],
+    queryFn: async () => {
+      try {
+        const res = await axios.get("/api/favorites/favorites-page");
+        console.log("🔹 즐겨찾기 API 응답:", res.data);
+        return res.data.map((item: { sentence: { en: string; ko: string; audioUrl: string; no: number } }) => ({
+          en: item.sentence?.en ?? "No text found",
+          ko: item.sentence?.ko ?? "번역이 없습니다.",
+          audioUrl: item.sentence?.audioUrl ?? "No audio found",
+          no: item.sentence?.no,
+        }));
+      } catch (error) {
+        console.error("❌ 즐겨찾기 API 호출 오류:", error);
+        return [];
+      }
+    },
+    enabled: !!session?.user?.id && mode === "favorite",
+  });
+
+  // ✅ 현재 모드에 따라 올바른 데이터 사용
+  const currentData = mode === "normal" ? completedSentences : favoriteSentences;
+  const isLoading = mode === "normal" ? isLoadingCompleted : isLoadingFavorites;
+
+  // ✅ 모드 변경 시 남은 문장 배열 초기화
+  useEffect(() => {
+    remainingSentenceNosRef.current = [];
+    setFeedback(null);
+    setUserSpoken("");
+    setCurrentSentence(null);
+  }, [mode]);
+
   // ✅ 랜덤 문장 선택
   useEffect(() => {
-    if (completedSentences && completedSentences.length > 0) {
+    if (currentData && currentData.length > 0) {
       // 남은 문장 배열이 비어있으면 모든 문장 번호로 초기화
       if (remainingSentenceNosRef.current.length === 0) {
-        remainingSentenceNosRef.current = Array.from({ length: completedSentences.length }, (_, i) => i);
+        remainingSentenceNosRef.current = Array.from({ length: currentData.length }, (_, i) => i);
       }
       selectRandomSentence();
     }
-  }, [completedSentences]);
+  }, [currentData]);
 
   // 컴포넌트 언마운트 시 음성 인식 중지
   useEffect(() => {
@@ -97,30 +133,29 @@ export default function SpeakingPage() {
 
   // ✅ 램덤 문장 선택 함수: 각 문장이 한 번씩 램덤 선택
   const selectRandomSentence = () => {
-    if (!completedSentences || completedSentences.length === 0) return;
+    if (!currentData || currentData.length === 0) return;
 
     // 남은 문장이 없으면 모든 문장 번호로 초기화
     if (remainingSentenceNosRef.current.length === 0) {
-      remainingSentenceNosRef.current = Array.from({ length: completedSentences.length }, (_, i) => i);
+      remainingSentenceNosRef.current = Array.from({ length: currentData.length }, (_, i) => i);
       console.log("🔄 모든 문장을 다시 배열에 추가했습니다.");
     }
 
-    // 남은 문장 중 랜덤으로 하나 선택
-    const randomIdx = Math.floor(Math.random() * remainingSentenceNosRef.current.length);
-    const sentenceIdx = remainingSentenceNosRef.current[randomIdx];
+    // 램덤 인덱스 선택
+    const randomIndex = Math.floor(Math.random() * remainingSentenceNosRef.current.length);
+    const selectedSentenceIndex = remainingSentenceNosRef.current[randomIndex];
 
-    // 선택된 문장은 배열에서 제거 (중복 선택 방지)
-    remainingSentenceNosRef.current.splice(randomIdx, 1);
+    // 선택된 문장 정보 설정
+    setCurrentSentence(currentData[selectedSentenceIndex]);
 
-    const selected = completedSentences[sentenceIdx];
-    console.log(`🔹 선택된 문장(${sentenceIdx}):`, selected);
-    console.log("남은 문장: ", remainingSentenceNosRef.current);
-    console.log(`📊 남은 문장 수: ${remainingSentenceNosRef.current.length}`);
+    // 선택된 인덱스 배열에서 제거
+    remainingSentenceNosRef.current.splice(randomIndex, 1);
 
-    setCurrentSentence(selected);
+    // 상태 초기화
     setUserSpoken("");
     setFeedback(null);
-    setIsVisible(false);
+    setShowHint(false);
+    setDifferences({ missing: [], incorrect: [] });
   };
 
   // ✅ 즐겨찾기 상태 확인 useQuery
@@ -153,7 +188,8 @@ export default function SpeakingPage() {
     onSuccess: (data) => {
       setIsFavorite(data.isFavorite);
       // 쿼리 캐시 무효화
-      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+      queryClient.invalidateQueries({ queryKey: ["favoriteSentences", session?.user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["favoriteStatus", session?.user?.id, currentSentence?.no] });
     },
     onError: (error) => {
       console.error("즐겨찾기 토글 중 오류:", error);
@@ -341,17 +377,27 @@ export default function SpeakingPage() {
       <h1 className="text-3xl font-bold md:text-4xl">Speaking quiz</h1>
       <p className="mt-4 text-lg font-semibold text-gray-600">한글 문장을 보고 영어로 말해보세요.</p>
 
-      {completedSentences?.length === 0 && (
+      {/* 탭 메뉴 추가 */}
+      <div className="tabs tabs-boxed mb-6">
+        <button className={clsx("tab tab-lg", mode === "normal" && "tab-active")} onClick={() => setMode("normal")}>
+          일반 모드
+        </button>
+        <button className={clsx("tab tab-lg", mode === "favorite" && "tab-active")} onClick={() => setMode("favorite")}>
+          즐겨찾기 모드
+        </button>
+      </div>
+
+      {currentData?.length === 0 && (
         <div className="my-8 rounded-lg bg-yellow-100 p-4 text-yellow-800">
-          <p>학습 완료된 문장이 없습니다. 먼저 학습을 진행해주세요.</p>
+          {mode === "normal" ? <p>학습 완료된 문장이 없습니다. 먼저 학습을 진행해주세요.</p> : <p>등록된 즐겨찾기 문장이 없습니다.</p>}
           <Link href="/dashboard" className="mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
             학습하러 가기
           </Link>
         </div>
       )}
 
-      {currentSentence ? (
-        <div className="mt-6">
+      {currentData ? (
+        <div className={clsx("mt-6", {})}>
           <div className={"mb-1 flex items-center justify-between gap-4"}>
             {/* 빈칸 힌트 토글 */}
             <div className={clsx("flex items-center justify-center gap-2", { hidden: feedback?.includes("정답") })}>
@@ -386,7 +432,7 @@ export default function SpeakingPage() {
           {/* 출제 부분 */}
           <div className="mt-1 mb-1 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-1">
             {/* 한글 문장 표시 */}
-            <p>{currentSentence.ko}</p>
+            <p>{currentData.ko}</p>
 
             {/* 빈칸 힌트 부분 */}
             {showHint1 && (
@@ -548,7 +594,7 @@ export default function SpeakingPage() {
                 invisible: !isVisible,
                 visible: isVisible,
               })}>
-              <p>{currentSentence.en}</p>
+              <p>{currentData.en}</p>
             </div>
           </div>
         </div>
