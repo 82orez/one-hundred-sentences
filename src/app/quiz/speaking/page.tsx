@@ -15,6 +15,7 @@ import { checkAnswer } from "@/utils/checkSpeakingAnswer";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
 import { queryClient } from "@/app/providers";
+import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -24,6 +25,7 @@ export default function SpeakingPage() {
   const [isListening, setIsListening] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const recordNativeAudioAttemptMutation = useNativeAudioAttempt();
 
   // 문장 번호 배열 - 문장별 한 번씩 램덤 재생
   const remainingSentenceNosRef = useRef<number[]>([]);
@@ -163,19 +165,6 @@ export default function SpeakingPage() {
     if (!session?.user || !currentSentence.no) return;
     toggleFavoriteMutation.mutate(currentSentence.no);
   };
-
-  // ✅ 원어민 음성 시청 기록
-  const recordNativeAudioAttemptMutation = useMutation({
-    mutationFn: async (params: { sentenceNo: number }) => {
-      const response = await axios.post("/api/native-audio/attempt", params);
-      return response.data;
-    },
-    onSuccess: (data, variables) => {
-      // 필요한 경우 캐시 무효화
-      queryClient.invalidateQueries({ queryKey: ["nativeAudioAttempts", variables.sentenceNo] });
-      queryClient.invalidateQueries({ queryKey: ["nativeAudioAttempts"] });
-    },
-  });
 
   // ✅ 원어민 음성 재생 함수
   const playNativeAudio = () => {

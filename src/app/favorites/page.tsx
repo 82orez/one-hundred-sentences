@@ -9,6 +9,8 @@ import { useQuery } from "@tanstack/react-query";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { motion } from "framer-motion";
 import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
+import clsx from "clsx";
+import Link from "next/link";
 
 // 즐겨찾기 문장 타입 정의
 interface FavoriteSentence {
@@ -135,7 +137,7 @@ export default function FavoriteSentencesPage() {
                 </span>
                 <button
                   onClick={() => handleRemoveFavorite(item.sentence.no)}
-                  disabled={isDeleting}
+                  disabled={isDeleting || currentlyPlaying !== null}
                   className="text-gray-500 transition-colors hover:text-red-500">
                   <Trash2 size={18} />
                 </button>
@@ -161,6 +163,10 @@ export default function FavoriteSentencesPage() {
           ))}
         </div>
       )}
+
+      <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": isLoading })}>
+        <Link href={"/dashboard"}>Back to My Dashboard</Link>
+      </div>
     </div>
   );
 }
