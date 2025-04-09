@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { useState, useEffect } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { usePathname } from "next/navigation";
+import { Heart } from "lucide-react";
 
 export default function Navbar() {
   const router = useRouter();
@@ -59,6 +60,13 @@ export default function Navbar() {
 
             <Link href="/dashboard" className="text-gray-700 hover:text-blue-600">
               대시보드
+            </Link>
+
+            <Link
+              href="/favorites"
+              className="flex items-center rounded-md bg-white px-4 py-2 text-indigo-600 shadow-sm transition-colors hover:bg-indigo-50">
+              <Heart className="mr-2" size={18} />
+              즐겨찾기 문장
             </Link>
 
             <Link href="/users/profile" className={clsx("hover:underline")}>
