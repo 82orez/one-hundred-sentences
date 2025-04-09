@@ -94,6 +94,7 @@ export const checkAnswer = (
       standardizedText
         .toLowerCase()
         // 조동사 축약형 처리
+        // ! 무조건 소문자로
         .replace(/\b(i|he|she|it|we|they|you|who)'d\b/gi, "$1 would")
         .replace(/\b(\w+)'d\b/gi, "$1 would")
         .replace(/\bwhere's\b/g, "where is")
@@ -105,9 +106,10 @@ export const checkAnswer = (
         .replace(/\bself checking\b/g, "self check in")
         .replace(/\bself check-in\b/g, "self check in")
         // .replace(/\bon food\b/g, "on foot")
-        .replace(/\bhuman I can\b/g, "you mean")
+        .replace(/\bhuman i can\b/g, "you mean i can")
         .replace(/\bis there a dog\b/g, "is your dog")
-        .replace(/\bI don't have a pizza\b/g, "i will have a pizza")
+        .replace(/\bi don't have a pizza\b/g, "i will have a pizza")
+        .replace(/\bi don't have the chicken\b/g, "i will have the chicken")
         .replace(/\bwhat brand is your dog\b/g, "what breed is your dog")
         .replace(/\bhere we go\b/g, "here you go")
         .replace(/\bthe toy cost\b/g, "the tour cost")
@@ -197,8 +199,8 @@ export const checkAnswer = (
     "is the brand": ["is this bread"],
     "here we go": ["here you"],
     "here you go": ["here we"],
-    "I don't have a pizza": ["I'll have a pizza"],
-    "I'll have a pizza": ["I don't have a pizza"],
+    // "I don't have a pizza": ["I'll have a pizza"],
+    // "I'll have a pizza": ["I don't have a pizza"],
 
     // 의미적으로 유사한 단어/표현 추가
     good: ["great", "nice", "excellent", "perfect", "wonderful", "terrific"],
