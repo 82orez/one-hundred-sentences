@@ -387,219 +387,226 @@ export default function SpeakingPage() {
         </button>
       </div>
 
-      {currentData?.length === 0 && (
+      {currentData?.length === 0 ? (
         <div className="my-8 rounded-lg bg-yellow-100 p-4 text-yellow-800">
           {mode === "normal" ? <p>학습 완료된 문장이 없습니다. 먼저 학습을 진행해주세요.</p> : <p>등록된 즐겨찾기 문장이 없습니다.</p>}
           <Link href="/dashboard" className="mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
             학습하러 가기
           </Link>
         </div>
-      )}
+      ) : (
+        <div>
+          {currentData ? (
+            <div className={clsx("mt-6", {})}>
+              <div className={"mb-1 flex items-center justify-between gap-4"}>
+                {/* 빈칸 힌트 토글 */}
+                <div className={clsx("flex items-center justify-center gap-2", { hidden: feedback?.includes("정답") })}>
+                  {/* 이 input 이 체크되면 showHint1이 false 로 변경됩니다 */}
+                  <input type="checkbox" checked={showHint1} onChange={() => setShowHint1(!showHint1)} className="toggle toggle-primary" />
+                  <span className="">Hint!</span>
+                </div>
 
-      {currentData ? (
-        <div className={clsx("mt-6", {})}>
-          <div className={"mb-1 flex items-center justify-between gap-4"}>
-            {/* 빈칸 힌트 토글 */}
-            <div className={clsx("flex items-center justify-center gap-2", { hidden: feedback?.includes("정답") })}>
-              {/* 이 input 이 체크되면 showHint1이 false 로 변경됩니다 */}
-              <input type="checkbox" checked={showHint1} onChange={() => setShowHint1(!showHint1)} className="toggle toggle-primary" />
-              <span className="">Hint!</span>
-            </div>
-
-            <button className={"flex items-center justify-center gap-2"} onClick={toggleFavorite}>
-              <div>
-                <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite }, { hidden: isFavorite })} />
-                <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite }, { hidden: !isFavorite })} />
-              </div>
-              <span>즐겨찾기</span>
-            </button>
-
-            {/* 문장 변경 버튼 */}
-            <div className={"flex items-center justify-end"}>
-              <button
-                className={clsx("flex items-center gap-2 hover:cursor-pointer hover:underline", { hidden: feedback?.includes("정답") })}
-                onClick={() => {
-                  selectRandomSentence();
-                  setDifferences({ missing: [], incorrect: [] });
-                }}
-                disabled={isListening || isPlaying}>
-                <LuRefreshCw size={20} />
-                <span>문장 변경</span>
-              </button>
-            </div>
-          </div>
-
-          {/* 출제 부분 */}
-          <div className="mt-1 mb-1 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-1">
-            {/* 한글 문장 표시 */}
-            <p>{currentData.ko}</p>
-
-            {/* 빈칸 힌트 부분 */}
-            {showHint1 && (
-              <div
-                className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
-                  hidden: feedback?.includes("정답"),
-                })}>
-                {getMaskedSentence(currentSentence)}
-              </div>
-            )}
-
-            <div className="mt-8 flex items-center justify-center gap-4">
-              {/* 원어민 음성 재생 부분 */}
-              {currentSentence && (
-                <button
-                  onClick={playNativeAudio}
-                  disabled={isListening || isPlaying}
-                  className="btn btn-primary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold">
-                  <FaPlay /> 원어민 음성
+                <button className={"flex items-center justify-center gap-2"} onClick={toggleFavorite}>
+                  <div>
+                    <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite }, { hidden: isFavorite })} />
+                    <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite }, { hidden: !isFavorite })} />
+                  </div>
+                  <span>즐겨찾기</span>
                 </button>
-              )}
+
+                {/* 문장 변경 버튼 */}
+                <div className={"flex items-center justify-end"}>
+                  <button
+                    className={clsx("flex items-center gap-2 hover:cursor-pointer hover:underline", { hidden: feedback?.includes("정답") })}
+                    onClick={() => {
+                      selectRandomSentence();
+                      setDifferences({ missing: [], incorrect: [] });
+                    }}
+                    disabled={isListening || isPlaying}>
+                    <LuRefreshCw size={20} />
+                    <span>문장 변경</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 출제 부분 */}
+              <div className="mt-1 mb-1 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-1">
+                {/* 한글 문장 표시 */}
+                <p>{currentData.ko}</p>
+
+                {/* 빈칸 힌트 부분 */}
+                {showHint1 && (
+                  <div
+                    className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
+                      hidden: feedback?.includes("정답"),
+                    })}>
+                    {getMaskedSentence(currentSentence)}
+                  </div>
+                )}
+
+                <div className="mt-8 flex items-center justify-center gap-4">
+                  {/* 원어민 음성 재생 부분 */}
+                  {currentSentence && (
+                    <button
+                      onClick={playNativeAudio}
+                      disabled={isListening || isPlaying}
+                      className="btn btn-primary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold">
+                      <FaPlay /> 원어민 음성
+                    </button>
+                  )}
+
+                  {/* 힌트 버튼 */}
+                  <button
+                    onClick={handleShowHint}
+                    disabled={isListening || isPlaying}
+                    className={clsx(
+                      "btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold",
+                      { hidden: feedback?.includes("정답") },
+                      { "animate-pulse bg-red-300": feedback?.includes("❌") && !isListening },
+                    )}>
+                    <LuMousePointerClick size={24} />
+                    정답 보기
+                  </button>
+
+                  {/*<button onClick={toggleHint} className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">*/}
+                  {/*  {showHint1 ? "힌트 숨기기" : "힌트 보기"}*/}
+                  {/*</button>*/}
+                </div>
+
+                {/* 힌트 표시 영역 */}
+                {currentSentence && !feedback?.includes("정답") && (
+                  <div className={`mt-4 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "opacity-0"}`}>
+                    {currentSentence.en}
+                  </div>
+                )}
+              </div>
+
+              {/* 몸통 부분 */}
+              <div
+                className={clsx("mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4", {
+                  hidden: feedback?.includes("정답") && !feedback?.includes("문맥"),
+                })}>
+                {/* 말하기 버튼 */}
+                <button
+                  onClick={isListening ? stopListening : startListening}
+                  disabled={isPlaying || isButtonDisabled}
+                  className={clsx(
+                    "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-lg font-semibold text-white transition-all",
+                    isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
+                    { "cursor-not-allowed opacity-50": isButtonDisabled },
+                  )}>
+                  {isListening ? (
+                    <>
+                      <FaRegStopCircle size={24} className="" />
+                      <span>Cancel</span>
+                    </>
+                  ) : (
+                    <>
+                      <FaMicrophone size={24} className="" />
+                      <span>말하기</span>
+                    </>
+                  )}
+                </button>
+
+                {/*  정답 보기 버튼 */}
+                {/*<button*/}
+                {/*  onClick={toggleAnswer}*/}
+                {/*  disabled={isListening || isPlaying}*/}
+                {/*  className={clsx("min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600", { hidden: feedback?.includes("정답") })}>*/}
+                {/*  {isVisible ? "💡 정답 가리기" : "💡 정답 보기"}*/}
+                {/*</button>*/}
+              </div>
 
               {/* 힌트 버튼 */}
-              <button
-                onClick={handleShowHint}
-                disabled={isListening || isPlaying}
-                className={clsx(
-                  "btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold",
-                  { hidden: feedback?.includes("정답") },
-                  { "animate-pulse bg-red-300": feedback?.includes("❌") && !isListening },
-                )}>
-                <LuMousePointerClick size={24} />
-                정답 보기
-              </button>
-
-              {/*<button onClick={toggleHint} className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">*/}
-              {/*  {showHint1 ? "힌트 숨기기" : "힌트 보기"}*/}
+              {/*<button*/}
+              {/*  onClick={handleShowHint}*/}
+              {/*  className="mt-4 rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:outline-none">*/}
+              {/*  힌트 보기*/}
               {/*</button>*/}
-            </div>
 
-            {/* 힌트 표시 영역 */}
-            {currentSentence && !feedback?.includes("정답") && (
-              <div className={`mt-4 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "opacity-0"}`}>
-                {currentSentence.en}
-              </div>
-            )}
-          </div>
-
-          {/* 몸통 부분 */}
-          <div
-            className={clsx("mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4", {
-              hidden: feedback?.includes("정답") && !feedback?.includes("문맥"),
-            })}>
-            {/* 말하기 버튼 */}
-            <button
-              onClick={isListening ? stopListening : startListening}
-              disabled={isPlaying || isButtonDisabled}
-              className={clsx(
-                "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-lg font-semibold text-white transition-all",
-                isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
-                { "cursor-not-allowed opacity-50": isButtonDisabled },
-              )}>
-              {isListening ? (
-                <>
-                  <FaRegStopCircle size={24} className="" />
-                  <span>Cancel</span>
-                </>
-              ) : (
-                <>
-                  <FaMicrophone size={24} className="" />
-                  <span>말하기</span>
-                </>
+              {/* 사용자가 말한 내용 */}
+              {userSpoken && !isListening && (!feedback?.includes("정답") || feedback?.includes("문맥")) && (
+                <div className="mb-4">
+                  <h3 className="mb-2 text-lg font-medium">내가 말한 내용</h3>
+                  <p className="rounded-lg bg-gray-100 p-3 text-gray-800">{userSpoken}</p>
+                </div>
               )}
-            </button>
 
-            {/*  정답 보기 버튼 */}
-            {/*<button*/}
-            {/*  onClick={toggleAnswer}*/}
-            {/*  disabled={isListening || isPlaying}*/}
-            {/*  className={clsx("min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600", { hidden: feedback?.includes("정답") })}>*/}
-            {/*  {isVisible ? "💡 정답 가리기" : "💡 정답 보기"}*/}
-            {/*</button>*/}
-          </div>
+              {/* 피드백 영역 - 정답 or 오답 */}
+              <div className="mt-6 text-center">
+                {feedback && (
+                  <div
+                    className={clsx(
+                      "mb-4 flex items-center justify-center gap-2 rounded-lg p-3",
+                      feedback.includes("정답") ? "text-green-800" : "bg-red-100 text-red-800",
+                    )}>
+                    <FaCheck className={clsx({ hidden: !feedback?.includes("정답") })} />
+                    <p className="text-xl font-semibold">{feedback}</p>
+                  </div>
+                )}
 
-          {/* 힌트 버튼 */}
-          {/*<button*/}
-          {/*  onClick={handleShowHint}*/}
-          {/*  className="mt-4 rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:outline-none">*/}
-          {/*  힌트 보기*/}
-          {/*</button>*/}
-
-          {/* 사용자가 말한 내용 */}
-          {userSpoken && !isListening && (!feedback?.includes("정답") || feedback?.includes("문맥")) && (
-            <div className="mb-4">
-              <h3 className="mb-2 text-lg font-medium">내가 말한 내용</h3>
-              <p className="rounded-lg bg-gray-100 p-3 text-gray-800">{userSpoken}</p>
-            </div>
-          )}
-
-          {/* 피드백 영역 - 정답 or 오답 */}
-          <div className="mt-6 text-center">
-            {feedback && (
-              <div
-                className={clsx(
-                  "mb-4 flex items-center justify-center gap-2 rounded-lg p-3",
-                  feedback.includes("정답") ? "text-green-800" : "bg-red-100 text-red-800",
-                )}>
-                <FaCheck className={clsx({ hidden: !feedback?.includes("정답") })} />
-                <p className="text-xl font-semibold">{feedback}</p>
-              </div>
-            )}
-
-            {/* 차이점 표시 영역 */}
-            {!isListening && (differences.missing.length > 0 || differences.incorrect.length > 0) && (
-              <div className="mt-4 space-y-3">
-                {differences.incorrect.length > 0 && (
-                  <div>
-                    <p className={clsx("font-medium", { "text-blue-400": feedback?.includes("문맥") }, { "text-red-400": feedback?.includes("❌") })}>
-                      {feedback?.includes("문맥") ? "정답과 다른 표현" : "잘못된 표현"}
-                    </p>
-                    <div className="mt-2 flex flex-wrap justify-center gap-2">
-                      {differences.incorrect.map((item, index) => (
-                        <div
-                          key={index}
+                {/* 차이점 표시 영역 */}
+                {!isListening && (differences.missing.length > 0 || differences.incorrect.length > 0) && (
+                  <div className="mt-4 space-y-3">
+                    {differences.incorrect.length > 0 && (
+                      <div>
+                        <p
                           className={clsx(
-                            "flex flex-col items-center rounded p-2",
-                            { "bg-blue-100": feedback?.includes("문맥") },
-                            { "bg-rose-50": feedback?.includes("❌") },
+                            "font-medium",
+                            { "text-blue-400": feedback?.includes("문맥") },
+                            { "text-red-400": feedback?.includes("❌") },
                           )}>
-                          <span className="text-rose-700 line-through">{item.spoken}</span>
-                          <span className="text-emerald-700">→ {item.correct}</span>
+                          {feedback?.includes("문맥") ? "정답과 다른 표현" : "잘못된 표현"}
+                        </p>
+                        <div className="mt-2 flex flex-wrap justify-center gap-2">
+                          {differences.incorrect.map((item, index) => (
+                            <div
+                              key={index}
+                              className={clsx(
+                                "flex flex-col items-center rounded p-2",
+                                { "bg-blue-100": feedback?.includes("문맥") },
+                                { "bg-rose-50": feedback?.includes("❌") },
+                              )}>
+                              <span className="text-rose-700 line-through">{item.spoken}</span>
+                              <span className="text-emerald-700">→ {item.correct}</span>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                      </div>
+                    )}
 
-                {differences.missing.length > 0 && (
-                  <div>
-                    <p className="font-medium text-amber-600">누락된 단어:</p>
-                    <div className="mt-2 flex flex-wrap justify-center gap-2">
-                      {differences.missing.map((word, index) => (
-                        <span key={index} className="rounded bg-amber-100 px-2 py-1 text-amber-800">
-                          {word}
-                        </span>
-                      ))}
-                    </div>
+                    {differences.missing.length > 0 && (
+                      <div>
+                        <p className="font-medium text-amber-600">누락된 단어:</p>
+                        <div className="mt-2 flex flex-wrap justify-center gap-2">
+                          {differences.missing.map((word, index) => (
+                            <span key={index} className="rounded bg-amber-100 px-2 py-1 text-amber-800">
+                              {word}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
-            )}
-          </div>
 
-          <div className="mt-6 flex flex-col md:mt-6">
-            {/* 정답 부분(영어 문장) */}
-            {/*<h3 className="mb-2 text-lg font-medium">정답</h3>*/}
-            <div
-              className={clsx("flex min-h-24 items-center justify-center rounded-lg border bg-green-50 p-4 text-xl font-semibold text-gray-800", {
-                invisible: !isVisible,
-                visible: isVisible,
-              })}>
-              <p>{currentData.en}</p>
+              <div className="mt-6 flex flex-col md:mt-6">
+                {/* 정답 부분(영어 문장) */}
+                {/*<h3 className="mb-2 text-lg font-medium">정답</h3>*/}
+                <div
+                  className={clsx("flex min-h-24 items-center justify-center rounded-lg border bg-green-50 p-4 text-xl font-semibold text-gray-800", {
+                    invisible: !isVisible,
+                    visible: isVisible,
+                  })}>
+                  <p>{currentData.en}</p>
+                </div>
+              </div>
             </div>
-          </div>
+          ) : (
+            completedSentences?.length > 0 && <p className="mt-8 text-lg text-gray-500">문장을 불러오는 중...</p>
+          )}
         </div>
-      ) : (
-        completedSentences?.length > 0 && <p className="mt-8 text-lg text-gray-500">문장을 불러오는 중...</p>
       )}
 
       {/* 다음 퀴즈에 도전 버튼 */}
