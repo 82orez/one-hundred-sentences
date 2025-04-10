@@ -156,6 +156,7 @@ export default function SpeakingPage() {
     setFeedback(null);
     setShowHint(false);
     setDifferences({ missing: [], incorrect: [] });
+    setIsVisible(false);
   };
 
   // ✅ 즐겨찾기 상태 확인 useQuery
@@ -377,20 +378,34 @@ export default function SpeakingPage() {
       <h1 className="text-3xl font-bold md:text-4xl">Speaking quiz</h1>
       <p className="mt-4 text-lg font-semibold text-gray-600">한글 문장을 보고 영어로 말해보세요.</p>
 
-      {/* 탭 메뉴 추가 */}
-      <div className="tabs tabs-boxed mb-6">
-        <button className={clsx("tab tab-lg", mode === "normal" && "tab-active")} onClick={() => setMode("normal")}>
-          일반 모드
-        </button>
-        <button className={clsx("tab tab-lg", mode === "favorite" && "tab-active")} onClick={() => setMode("favorite")}>
-          즐겨찾기 모드
-        </button>
+      {/* 탭 메뉴 */}
+      <div className="mx-auto mt-4 mb-4 max-w-3xl md:my-8">
+        <div className="flex justify-center">
+          <div className="tabs tabs-lifted bg-base-100 w-full rounded-t-lg shadow-md">
+            <button
+              className={clsx(
+                "tab tab-lg flex-1 border-b-2 font-medium transition-all duration-200 ease-in-out",
+                mode === "normal" ? "tab-active !border-primary text-primary bg-base-200" : "hover:text-primary text-gray-600",
+              )}
+              onClick={() => setMode("normal")}>
+              일반 모드
+            </button>
+            <button
+              className={clsx(
+                "tab tab-lg flex-1 border-b-2 font-medium transition-all duration-200 ease-in-out",
+                mode === "favorite" ? "tab-active !border-primary text-primary bg-base-200" : "hover:text-primary text-gray-600",
+              )}
+              onClick={() => setMode("favorite")}>
+              즐겨찾기 모드
+            </button>
+          </div>
+        </div>
       </div>
 
       {currentData?.length === 0 ? (
-        <div className="my-8 rounded-lg bg-yellow-100 p-4 text-yellow-800">
+        <div className="my-8 rounded-lg bg-gray-100 p-4 text-yellow-800">
           {mode === "normal" ? <p>학습 완료된 문장이 없습니다. 먼저 학습을 진행해주세요.</p> : <p>등록된 즐겨찾기 문장이 없습니다.</p>}
-          <Link href="/dashboard" className="mt-2 inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+          <Link href="/dashboard" className={clsx("mt-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600", { hidden: mode !== "normal" })}>
             학습하러 가기
           </Link>
         </div>
@@ -432,7 +447,7 @@ export default function SpeakingPage() {
               {/* 출제 부분 */}
               <div className="mt-1 mb-1 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-1">
                 {/* 한글 문장 표시 */}
-                <p>{currentData.ko}</p>
+                <p>{currentSentence?.ko}</p>
 
                 {/* 빈칸 힌트 부분 */}
                 {showHint1 && (
@@ -599,7 +614,7 @@ export default function SpeakingPage() {
                     invisible: !isVisible,
                     visible: isVisible,
                   })}>
-                  <p>{currentData.en}</p>
+                  <p>{currentSentence?.en}</p>
                 </div>
               </div>
             </div>

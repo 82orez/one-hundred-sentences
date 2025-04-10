@@ -28,6 +28,7 @@ interface FavoriteSentence {
 export default function FavoriteSentencesPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [isPlayingNativeAudio, setIsPlayingNativeAudio] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   // 현재 재생 중인 오디오의 문장 번호를 저장하는 상태 추가
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
@@ -79,6 +80,8 @@ export default function FavoriteSentencesPage() {
       // 선택적: 기존 오디오 중지 로직 추가
     }
 
+    setIsPlayingNativeAudio(true);
+
     // 현재 재생 중인 오디오를 설정
     setCurrentlyPlaying(sentenceNo);
 
@@ -88,6 +91,7 @@ export default function FavoriteSentencesPage() {
 
     // 오디오 재생이 끝나면 상태 초기화
     audio.onended = () => {
+      setIsPlayingNativeAudio(false);
       setCurrentlyPlaying(null);
     };
 
@@ -126,7 +130,7 @@ export default function FavoriteSentencesPage() {
         <div className="grid gap-4">
           {favoriteSentences?.map((item, index) => (
             <motion.div
-              key={item.id}
+              key={item.id || index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -143,13 +147,13 @@ export default function FavoriteSentencesPage() {
                 </button>
               </div>
 
-              <p className="mb-2 text-lg font-medium">{item.sentence.en}</p>
-              <p className="mb-3 text-gray-600 dark:text-gray-400">{item.sentence.ko}</p>
+              <p className="mb-2 text-lg font-medium">{item.sentence?.en}</p>
+              <p className="mb-3 text-gray-600 dark:text-gray-400">{item.sentence?.ko}</p>
 
-              {item.sentence.audioUrl && (
+              {item.sentence?.audioUrl && (
                 <button
                   onClick={() => playAudio(item.sentence.no, item.sentence.audioUrl)}
-                  disabled={currentlyPlaying !== null && currentlyPlaying !== item.sentence.no}
+                  disabled={(currentlyPlaying !== null && currentlyPlaying !== item.sentence.no) || isPlayingNativeAudio}
                   className={`flex items-center text-sm ${
                     currentlyPlaying !== null && currentlyPlaying !== item.sentence.no
                       ? "cursor-not-allowed text-gray-400"
