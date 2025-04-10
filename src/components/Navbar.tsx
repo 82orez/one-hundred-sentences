@@ -49,12 +49,12 @@ export default function Navbar() {
         {status === "authenticated" ? (
           <>
             <div className="hidden text-gray-700">{session?.user?.email}</div>
-            <Link href="/users/admin" className={clsx("hover:underline", { hidden: isTeacher || isStudent })}>
+            <Link href="/users/admin" className={clsx("hover:underline", { hidden: !isAdmin })}>
               Admin
             </Link>
 
             {/* 교사 전용 링크 추가 */}
-            <Link href="/users/teacher" className={clsx("hover:underline", { hidden: !isTeacher })}>
+            <Link href="/users/teacher" className={clsx("hover:underline", { hidden: isStudent })}>
               강사 페이지
             </Link>
 
