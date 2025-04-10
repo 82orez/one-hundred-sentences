@@ -117,6 +117,23 @@ export default function SpeakingPage() {
     }
   }, [currentData]);
 
+  // ! 두 문장만 남았을 때 즐겨찾기 모드에서 목록 변경 감지 및 처리
+  useEffect(() => {
+    if (mode === "favorite" && favoriteSentences) {
+      // 현재 문장이 없거나 현재 문장이 즐겨찾기 목록에 더 이상 없는 경우
+      const currentSentenceExists = currentSentence && favoriteSentences.some((sentence) => sentence.no === currentSentence.no);
+
+      if (!currentSentence || !currentSentenceExists) {
+        // 즐겨찾기 목록이 비어있지 않으면 첫 번째 문장 선택
+        if (favoriteSentences.length > 0) {
+          setCurrentSentence(favoriteSentences[0]);
+        } else {
+          setCurrentSentence(null);
+        }
+      }
+    }
+  }, [mode, favoriteSentences, currentSentence]);
+
   // 컴포넌트 언마운트 시 음성 인식 중지
   useEffect(() => {
     return () => {

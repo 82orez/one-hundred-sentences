@@ -193,11 +193,11 @@ export default function Dashboard() {
     if (isQuizStatsLoading || isVideoDurationLoading) return;
 
     // 각 활동별 포인트 가중치 설정
-    const VIDEO_POINT_PER_SECOND = 0.1; // 영상 시청 1초당 0.1 포인트
-    const AUDIO_POINT_PER_ATTEMPT = 5; // 원어민 음성 듣기 1회당 5 포인트
-    const RECORDING_POINT_PER_ATTEMPT = 10; // 숙제 제출 1회당 10 포인트
+    const VIDEO_POINT_PER_SECOND = 0.5; // 영상 시청 1초당 0.5 포인트
+    const AUDIO_POINT_PER_ATTEMPT = 1; // 원어민 음성 듣기 1회당 1 포인트
+    const RECORDING_POINT_PER_ATTEMPT = 20; // 숙제 제출 1회당 10 포인트
     const QUIZ_ATTEMPT_POINT = 3; // 퀴즈 풀이 1회당 3 포인트
-    const QUIZ_CORRECT_POINT = 5; // 퀴즈 정답 1회당 5 포인트 추가
+    const QUIZ_CORRECT_POINT = 3; // 퀴즈 정답 1회당 3 포인트 추가
 
     // 영상 시청 포인트 (초 단위 시청 시간 * 포인트)
     const videoPoints = totalVideoDuration * VIDEO_POINT_PER_SECOND;
