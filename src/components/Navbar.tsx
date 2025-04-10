@@ -20,7 +20,7 @@ export default function Navbar() {
   // 로딩 상태 추가
   const [isLoading, setIsLoading] = useState(false);
 
-  // 경로가 변경될 때마다 로딩 상태 초기화
+  // 경로가 변경될 때마다 로딩 상태 초기화 - 로그인 페이지에서는 로딩 상태 false
   useEffect(() => {
     setIsLoading(false);
     console.log(`pathname: ${pathname}`);
@@ -72,6 +72,9 @@ export default function Navbar() {
             <Link href="/users/profile" className={clsx("hover:underline")}>
               회원 정보
             </Link>
+
+            <div className={""}>❤️ {session.user?.realName ? session.user.realName : session.user.email} 님</div>
+
             <button onClick={() => signOut({ callbackUrl: "/" })} className={"btn"}>
               로그아웃
             </button>
