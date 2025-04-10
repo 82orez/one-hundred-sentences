@@ -419,7 +419,7 @@ const LearnPage = ({ params }: Props) => {
   if (error) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
   return (
-    <div className="relative mx-auto max-w-2xl p-4">
+    <div className="relative mx-auto max-w-xl p-4">
       {/* 페이지 네비게이션 버튼 */}
       <div className="mt-2 flex items-center justify-between px-0 md:mt-4">
         <button
@@ -480,13 +480,12 @@ const LearnPage = ({ params }: Props) => {
 
       {todaySentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
-          {/* ✅ 처음에는 모든 영어 문장이 보이는 상태 */}
           <span className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
             {sentence.no}번 문장
           </span>
 
+          {/* ✅ 처음에는 모든 영어 문장이 보이는 상태 */}
           <p className={clsx("mt-4 text-lg font-semibold", { "blur-xs": !visibleEnglish[sentence.no] })}>{sentence.en}</p>
-
           <p className={clsx("mt-2 text-lg text-gray-600", { "blur-xs": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
 
           {/* ✅ 버튼 그룹 */}
