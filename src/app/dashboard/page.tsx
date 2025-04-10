@@ -264,7 +264,7 @@ export default function Dashboard() {
         <div className="rounded-lg bg-white p-6 shadow-md">
           <div className="mb-4 flex items-center">
             <Calendar className="mr-2 h-6 w-6 text-purple-500" />
-            <h2 className="text-xl font-semibold">학습일 기준 완료 현황</h2>
+            <h2 className="text-xl font-semibold">나의 학업 성취 Point</h2>
           </div>
           {/*<p className="text-3xl font-bold">*/}
           {/*  {progress === 100 ? 20 : nextDay - 1}/{getSentenceCount.data?.count / 5 || 100}*/}

@@ -89,6 +89,9 @@ export default function FavoriteSentencesPage() {
 
     const audio = new Audio(audioUrl);
 
+    // * 재생 속도 설정
+    audio.playbackRate = 0.8;
+
     // 오디오 재생이 끝나면 상태 초기화
     audio.onended = () => {
       setIsPlayingNativeAudio(false);

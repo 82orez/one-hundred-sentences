@@ -481,7 +481,11 @@ const LearnPage = ({ params }: Props) => {
       {todaySentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
           {/* ✅ 처음에는 모든 영어 문장이 보이는 상태 */}
-          <p className={clsx("text-lg font-semibold", { "blur-xs": !visibleEnglish[sentence.no] })}>{sentence.en}</p>
+          <span className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
+            {sentence.no}번 문장
+          </span>
+
+          <p className={clsx("mt-4 text-lg font-semibold", { "blur-xs": !visibleEnglish[sentence.no] })}>{sentence.en}</p>
 
           <p className={clsx("mt-2 text-lg text-gray-600", { "blur-xs": visibleTranslations[sentence.no] })}>{sentence.ko}</p>
 
