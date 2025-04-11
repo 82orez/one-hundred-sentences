@@ -65,6 +65,15 @@ export default function Navbar() {
         {status === "authenticated" ? (
           <>
             {/* 이 부분은 navbar 메뉴 영역*/}
+            {isAdmin && (
+              <Link
+                href="/users/admin"
+                className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
+                onClick={() => setMenuOpen(false)}>
+                Admin
+              </Link>
+            )}
+
             <Link
               href="/dashboard"
               className={clsx("hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block")}
