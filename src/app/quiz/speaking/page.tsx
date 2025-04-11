@@ -438,14 +438,6 @@ export default function SpeakingPage() {
                   <span className="">Hint!</span>
                 </div>
 
-                <button className={"flex items-center justify-center gap-2"} onClick={toggleFavorite}>
-                  <div>
-                    <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite }, { hidden: isFavorite })} />
-                    <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite }, { hidden: !isFavorite })} />
-                  </div>
-                  <span>즐겨찾기</span>
-                </button>
-
                 {/* 문장 변경 버튼 */}
                 <div className={"flex items-center justify-end"}>
                   <button
@@ -463,12 +455,20 @@ export default function SpeakingPage() {
 
               {/* 출제 부분 */}
               <div className="mt-1 mb-1 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-1">
+                <div className={"mb-4 flex w-full items-center justify-around"}>
+                  <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
+                    {currentSentence?.no}번 문장
+                  </div>
+                  <button className={"flex items-center justify-center gap-2 text-sm"} onClick={toggleFavorite}>
+                    <div>
+                      <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite }, { hidden: isFavorite })} />
+                      <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite }, { hidden: !isFavorite })} />
+                    </div>
+                    <div className={""}>즐겨찾기</div>
+                  </button>
+                </div>
+
                 {/* 한글 문장 표시 */}
-
-                <span className="mb-4 rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-                  {currentSentence?.no}번 문장
-                </span>
-
                 <p>{currentSentence?.ko}</p>
 
                 {/* 빈칸 힌트 부분 */}

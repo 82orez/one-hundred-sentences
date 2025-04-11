@@ -118,6 +118,7 @@ export const checkAnswer = (
         .replace(/\bthe alper best\b/g, "the airport bus")
         .replace(/\bthe helper bus\b/g, "the airport bus")
         .replace(/\bthe upper bus\b/g, "the airport bus")
+        .replace(/\bthe amber bus\b/g, "the airport bus")
 
         .replace(/\bi'll\b/g, "i will")
         .replace(/\bi've\b/g, "i have")
