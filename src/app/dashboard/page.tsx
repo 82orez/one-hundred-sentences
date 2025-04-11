@@ -37,6 +37,10 @@ export default function Dashboard() {
     if (status === "unauthenticated") {
       router.push("/users/sign-in");
       return;
+    } else if (!session?.user?.realName || !session?.user?.phone) {
+      // alert("회원 가입 후에는 반드시 회원 정보를 입력해 주세요.");
+      router.push("/users/edit");
+      return;
     }
   }, [status, router]);
 
