@@ -20,6 +20,8 @@ import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import FlipCounter from "@/components/FlipCounterAnimation";
 import { IoMdCloseCircle } from "react-icons/io";
+import { GrFavorite } from "react-icons/gr";
+import { MdOutlineFavorite } from "react-icons/md";
 
 interface Sentence {
   no: number;
@@ -44,6 +46,9 @@ const LearnPage = ({ params }: Props) => {
   const [isPlayingSentenceNo, setIsPlayingSentenceNo] = useState<number | null>(null); // 현재 재생 중인 문장 No.
   const [isPlayingMyVoice, setIsPlayingMyVoice] = useState<number | null>(null);
   const [isCompletedPage, setIsCompletedPage] = useState(false);
+
+  // 문장별 즐겨찾기 상태를 추적하기 위한 상태 변수
+  const [isFavorite, setIsFavorite] = useState<{ [key: number]: boolean }>({});
 
   // 유튜브 모달 상태와 현재 선택된 유튜브 URL 을 저장할 상태 추가
   const [showYoutubeModal, setShowYoutubeModal] = useState(false);
@@ -415,6 +420,51 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
+  // 페이지 로드 시 즐겨찾기 상태를 가져오는 쿼리 추가
+  const { data: favoritesData } = useQuery({
+    queryKey: ["favorites", session?.user?.id, day],
+    queryFn: async () => {
+      if (!todaySentences) return {};
+
+      const favoriteStatuses: { [key: number]: boolean } = {};
+      for (const sentence of todaySentences) {
+        const res = await axios.get(`/api/favorites?sentenceNo=${sentence.no}`);
+        favoriteStatuses[sentence.no] = res.data.isFavorite;
+      }
+      return favoriteStatuses;
+    },
+    enabled: !!todaySentences && status === "authenticated",
+  });
+
+  // 즐겨찾기 데이터가 로드되면 상태 업데이트
+  useEffect(() => {
+    if (favoritesData) {
+      setIsFavorite(favoritesData);
+    }
+  }, [favoritesData]);
+
+  // 즐겨찾기 토글 뮤테이션
+  const toggleFavoriteMutation = useMutation({
+    mutationFn: async (sentenceNo: number) => {
+      const res = await axios.post("/api/favorites", { sentenceNo });
+      return res.data;
+    },
+    onSuccess: (data, sentenceNo) => {
+      // 상태 업데이트
+      setIsFavorite((prev) => ({
+        ...prev,
+        [sentenceNo]: data.isFavorite,
+      }));
+      // 캐시 무효화하여 데이터 새로고침
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    },
+  });
+
+  // 버튼 클릭 핸들러
+  const handleToggleFavorite = (sentenceNo: number) => {
+    toggleFavoriteMutation.mutate(sentenceNo);
+  };
+
   if (isLoading) return <LoadingPageSkeleton />;
   if (error) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
@@ -473,16 +523,26 @@ const LearnPage = ({ params }: Props) => {
 
         {/* ✅ 완료 표시 */}
         <div className="flex items-center">
-          <FaCheck size={25} className={"mr-2 rounded bg-yellow-400 p-1 text-white"} />
+          <FaCheck size={25} className={"mr-2 rounded bg-cyan-400 p-1 text-white"} />
           <span className="">My Voice</span>
         </div>
       </div>
 
       {todaySentences?.map((sentence) => (
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
-          <span className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-            {sentence.no}번 문장
-          </span>
+          <div className={"flex items-center justify-between gap-4"}>
+            <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
+              {sentence.no}번 문장
+            </div>
+
+            <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentence.no)}>
+              <div>
+                <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite[sentence.no] }, { hidden: isFavorite[sentence.no] })} />
+                <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite[sentence.no] }, { hidden: !isFavorite[sentence.no] })} />
+              </div>
+              <span className={"hidden md:inline"}>즐겨찾기</span>
+            </button>
+          </div>
 
           {/* ✅ 처음에는 모든 영어 문장이 보이는 상태 */}
           <p className={clsx("mt-4 text-lg font-semibold", { "blur-xs": !visibleEnglish[sentence.no] })}>{sentence.en}</p>
@@ -557,7 +617,7 @@ const LearnPage = ({ params }: Props) => {
 
             {/* ✅ 완료 버튼 */}
             <button
-              className={clsx("h-9 min-w-9 cursor-pointer rounded bg-yellow-400 text-white", {
+              className={clsx("h-9 min-w-9 cursor-pointer rounded bg-cyan-400 text-white", {
                 hidden: !completedSentences?.includes(sentence.no),
               })}
               disabled={isPlayingMyVoice !== null} // 다른 문장이 재생 중이면 비활성화
