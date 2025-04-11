@@ -18,6 +18,15 @@ const MOCK_USERS = [
   { id: 5, name: "최수진", email: "choi@example.com", role: "사용자", status: "활성" },
 ];
 
+// 가상 Teacher 데이터
+const MOCK_Teachers = [
+  { id: 1, name: "김철수2", email: "kim2@example.com", role: "영어", status: "활성" },
+  { id: 2, name: "이영희2", email: "lee2@example.com", role: "일본어", status: "활성" },
+  { id: 3, name: "박지민2", email: "park2@example.com", role: "영어", status: "비활성" },
+  { id: 4, name: "정민준2", email: "jung2@example.com", role: "영어", status: "활성" },
+  { id: 5, name: "최수진2", email: "choi2@example.com", role: "중국어", status: "활성" },
+];
+
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const router = useRouter();
