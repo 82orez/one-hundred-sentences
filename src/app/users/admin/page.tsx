@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
-import { User, Users, BarChart3, Settings, Home } from "lucide-react";
+import { User, Users, BarChart3, Settings, Home, BookOpen } from "lucide-react";
 
 // Chart 등록
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -64,6 +64,17 @@ export default function AdminPage() {
                 <span>대시보드</span>
               </button>
             </li>
+            <li>
+              <button
+                onClick={() => setActiveTab("courses")}
+                className={`flex w-full items-center rounded-lg px-4 py-2 ${
+                  activeTab === "courses" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-100"
+                }`}>
+                <BookOpen className="mr-3 h-5 w-5" />
+                <span>강좌 관리</span>
+              </button>
+            </li>
+
             <li>
               <button
                 onClick={() => setActiveTab("users")}
@@ -142,6 +153,20 @@ export default function AdminPage() {
               <h3 className="mb-4 text-lg font-semibold">사용자 통계</h3>
               <div className="h-80">
                 <Bar data={chartData} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/*강좌 관리 탭 콘텐츠 추가 */}
+        {activeTab === "courses" && (
+          <div>
+            <h2 className="mb-6 text-2xl font-bold">강좌 관리</h2>
+            <div className="rounded-lg bg-white p-6 shadow-md">
+              <p className="text-gray-600">강좌 관리 페이지입니다. 여기에서 강좌를 추가, 수정, 삭제할 수 있습니다.</p>
+              {/* 강좌 목록 또는 관리 UI를 여기에 추가할 수 있습니다 */}
+              <div className="mt-4">
+                <button className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">새 강좌 추가</button>
               </div>
             </div>
           </div>
