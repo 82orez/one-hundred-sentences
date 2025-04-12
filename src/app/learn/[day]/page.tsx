@@ -580,6 +580,8 @@ const LearnPage = ({ params }: Props) => {
               </button>
             )}
 
+            {/* 퀴즈 풀이 추가 부분 */}
+
             {/* ✅ 개별 영문 가리기 버튼 */}
             <button
               className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
@@ -598,7 +600,7 @@ const LearnPage = ({ params }: Props) => {
             {/*  <TbAlphabetKorean size={27} />*/}
             {/*</button>*/}
 
-            {/* ✅ 녹음 버튼 */}
+            {/* ✅ 숙제 제출 녹음 버튼 */}
             <button
               className={clsx("h-9 min-w-9 cursor-pointer rounded text-white disabled:cursor-not-allowed", {
                 "bg-gray-400": completedSentences?.includes(sentence.no),
