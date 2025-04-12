@@ -25,7 +25,7 @@ export async function GET() {
     // 강사의 강좌 수 조회
     const totalCourses = await prisma.course.count({
       where: {
-        teacherId: user.id,
+        generatorId: user.id,
       },
     });
 
@@ -33,7 +33,7 @@ export async function GET() {
     const enrollments = await prisma.enrollment.findMany({
       where: {
         course: {
-          teacherId: user.id,
+          generatorId: user.id,
         },
       },
       select: {
@@ -49,7 +49,7 @@ export async function GET() {
       where: {
         assignment: {
           course: {
-            teacherId: user.id,
+            generatorId: user.id,
           },
         },
         gradedAt: null, // evaluated 대신 gradedAt이 null 인 경우를 미확인 과제로 간주

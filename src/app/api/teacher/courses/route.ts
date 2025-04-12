@@ -27,7 +27,7 @@ export async function GET() {
     // 강사의 강좌 목록 조회
     const courses = await prisma.course.findMany({
       where: {
-        teacherId: session.user.id,
+        generatorId: session.user.id,
       },
       include: {
         _count: {
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
       data: {
         title,
         description,
-        teacherId: session.user.id,
+        generatorId: session.user.id,
       },
     });
 

@@ -17,7 +17,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ courseId
     const course = await prisma.course.findUnique({
       where: {
         id: courseId,
-        teacherId: session.user.id, // 해당 강사의 강좌인지 확인
+        generatorId: session.user.id, // 해당 강사의 강좌인지 확인
       },
       include: {
         _count: {
@@ -58,7 +58,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ courseId
     const courseExists = await prisma.course.findFirst({
       where: {
         id: courseId,
-        teacherId: session.user.id,
+        generatorId: session.user.id,
       },
     });
 
@@ -99,7 +99,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ cours
     const courseExists = await prisma.course.findFirst({
       where: {
         id: courseId,
-        teacherId: session.user.id,
+        generatorId: session.user.id,
       },
     });
 

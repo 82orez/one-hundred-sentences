@@ -182,31 +182,31 @@ export type Database = {
         Row: {
           createdAt: string
           description: string | null
+          generatorId: string
           id: string
-          teacherId: string
           title: string
           updatedAt: string
         }
         Insert: {
           createdAt?: string
           description?: string | null
+          generatorId: string
           id: string
-          teacherId: string
           title: string
           updatedAt: string
         }
         Update: {
           createdAt?: string
           description?: string | null
+          generatorId?: string
           id?: string
-          teacherId?: string
           title?: string
           updatedAt?: string
         }
         Relationships: [
           {
-            foreignKeyName: "Course_teacherId_fkey"
-            columns: ["teacherId"]
+            foreignKeyName: "Course_generatorId_fkey"
+            columns: ["generatorId"]
             isOneToOne: false
             referencedRelation: "User"
             referencedColumns: ["id"]

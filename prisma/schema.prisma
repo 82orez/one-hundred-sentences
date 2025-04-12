@@ -249,17 +249,15 @@ model Purchase {
   @@index([userId])
 }
 
-// 강사(Teacher) 관련 prisma/schema.prisma 에 추가
 model Course {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   title       String
   description String?
-  teacherId   String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
+  generatorId String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   // 관계 설정
-  teacher     User         @relation(fields: [teacherId], references: [id])
+  generator   User         @relation(fields: [generatorId], references: [id])
   lessons     Lesson[]
   enrollments Enrollment[]
   assignments Assignment[]
