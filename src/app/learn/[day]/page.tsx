@@ -756,12 +756,12 @@ const LearnPage = ({ params }: Props) => {
       {showQuizModal && quizSentenceNo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
           <div className="fixed inset-0 bg-black/50" onClick={() => setShowQuizModal(false)} />
-          <div className="relative z-10 my-6 max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
+          <div className="relative z-10 max-h-[80vh] w-full max-w-xl overflow-y-auto rounded-lg bg-white p-2 py-6 shadow-xl">
             <button className="sticky top-4 right-4 float-right text-gray-500 hover:text-gray-700" onClick={() => setShowQuizModal(false)}>
               <IoMdCloseCircle size={24} />
             </button>
 
-            <h2 className="mb-4 text-center text-xl font-bold">문장 퀴즈</h2>
+            <h2 className="text-center text-xl font-bold">문장 퀴즈</h2>
 
             <SpeakingQuizComponent
               currentSentenceNumber={quizSentenceNo}
