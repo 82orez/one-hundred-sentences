@@ -22,6 +22,8 @@ import FlipCounter from "@/components/FlipCounterAnimation";
 import { IoMdCloseCircle } from "react-icons/io";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
+import SpeakingQuizComponent from "@/components/SpeakingQuizComponent";
+import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 
 interface Sentence {
   no: number;
@@ -46,6 +48,29 @@ const LearnPage = ({ params }: Props) => {
   const [isPlayingSentenceNo, setIsPlayingSentenceNo] = useState<number | null>(null); // 현재 재생 중인 문장 No.
   const [isPlayingMyVoice, setIsPlayingMyVoice] = useState<number | null>(null);
   const [isCompletedPage, setIsCompletedPage] = useState(false);
+
+  // 퀴즈 모달 관련 상태 추가
+  const [showQuizModal, setShowQuizModal] = useState(false);
+  const [quizSentenceNo, setQuizSentenceNo] = useState<number | null>(null);
+
+  // useNativeAudioAttempt 훅 사용
+  const nativeAudioAttemptMutation = useNativeAudioAttempt();
+
+  // 퀴즈 완료 핸들러
+  // const handleQuizComplete = (sentenceNo: number, isCorrect: boolean) => {
+  //   if (isCorrect) {
+  //     // 퀴즈를 성공적으로 완료한 경우 문장 완료 표시
+  //     // markSentenceComplete(sentenceNo);
+  //   }
+  //   // 모달 닫기 (또는 다음 문장으로 이동 등의 로직 추가 가능)
+  //   setShowQuizModal(false);
+  // };
+
+  // 퀴즈 모달 열기 함수
+  const openQuizModal = (sentenceNo: number) => {
+    setQuizSentenceNo(sentenceNo);
+    setShowQuizModal(true);
+  };
 
   // 문장별 즐겨찾기 상태를 추적하기 위한 상태 변수
   const [isFavorite, setIsFavorite] = useState<{ [key: number]: boolean }>({});
@@ -535,6 +560,12 @@ const LearnPage = ({ params }: Props) => {
               {sentence.no}번 문장
             </div>
 
+            <button
+              onClick={() => openQuizModal(sentence.no)}
+              className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">
+              Speaking
+            </button>
+
             <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentence.no)}>
               <div>
                 <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite[sentence.no] }, { hidden: isFavorite[sentence.no] })} />
@@ -579,8 +610,6 @@ const LearnPage = ({ params }: Props) => {
                 )}
               </button>
             )}
-
-            {/* 퀴즈 풀이 추가 부분 */}
 
             {/* ✅ 개별 영문 가리기 버튼 */}
             <button
@@ -687,6 +716,35 @@ const LearnPage = ({ params }: Props) => {
                 {/* 영상 하단에만 투명 오버레이 배치 */}
                 <div className="absolute right-0 bottom-0 left-0 h-14 bg-transparent" onClick={(e) => e.preventDefault()}></div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 퀴즈 모달 */}
+      {showQuizModal && quizSentenceNo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-black/50" onClick={() => setShowQuizModal(false)} />
+          <div className="relative z-10 w-full max-w-3xl rounded-lg bg-white p-6 shadow-xl">
+            <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" onClick={() => setShowQuizModal(false)}>
+              <IoMdCloseCircle size={24} />
+            </button>
+
+            <h2 className="mb-4 text-center text-xl font-bold">문장 퀴즈</h2>
+
+            <SpeakingQuizComponent
+              currentSentenceNumber={quizSentenceNo}
+              // onComplete={handleQuizComplete}
+              nativeAudioAttemptMutation={nativeAudioAttemptMutation}
+              showNavigation={false}
+            />
+
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={() => setShowQuizModal(false)}
+                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">
+                닫기
+              </button>
             </div>
           </div>
         </div>
