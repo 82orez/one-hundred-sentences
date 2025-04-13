@@ -23,7 +23,6 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
 import SpeakingQuizComponent from "@/components/SpeakingQuizComponent";
-import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 
 interface Sentence {
   no: number;
@@ -54,7 +53,7 @@ const LearnPage = ({ params }: Props) => {
   const [quizSentenceNo, setQuizSentenceNo] = useState<number | null>(null);
 
   // useNativeAudioAttempt 훅 사용
-  const nativeAudioAttemptMutation = useNativeAudioAttempt();
+  // const nativeAudioAttemptMutation = useNativeAudioAttempt();
 
   // 퀴즈 완료 핸들러
   // const handleQuizComplete = (sentenceNo: number, isCorrect: boolean) => {
@@ -735,7 +734,7 @@ const LearnPage = ({ params }: Props) => {
             <SpeakingQuizComponent
               currentSentenceNumber={quizSentenceNo}
               // onComplete={handleQuizComplete}
-              nativeAudioAttemptMutation={nativeAudioAttemptMutation}
+              nativeAudioAttemptMutation={recordNativeAudioAttemptMutation}
               showNavigation={false}
             />
 
