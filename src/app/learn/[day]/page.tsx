@@ -13,7 +13,7 @@ import { useLearningStore } from "@/stores/useLearningStore";
 import { FaA, FaMicrophone } from "react-icons/fa6";
 import { TbAlphabetKorean } from "react-icons/tb";
 import AudioRecorder from "@/components/Recoder";
-import { RiCloseLargeFill } from "react-icons/ri";
+import { RiCloseLargeFill, RiSpeakLine } from "react-icons/ri";
 import { ImYoutube2 } from "react-icons/im";
 import { TfiYoutube } from "react-icons/tfi";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
@@ -583,13 +583,18 @@ const LearnPage = ({ params }: Props) => {
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
           <div className={"flex items-center justify-between gap-4"}>
             <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-              {sentence.no}번 문장
+              {sentence.no}번 <span className={"hidden md:inline"}>문장</span>
             </div>
 
+            {/*<button*/}
+            {/*  onClick={() => openQuizModal(sentence.no)}*/}
+            {/*  className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">*/}
+            {/*  Speaking*/}
+            {/*</button>*/}
             <button
               onClick={() => openQuizModal(sentence.no)}
-              className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">
-              Speaking
+              className="rounded-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">
+              <RiSpeakLine size={40} className={"cursor-pointer rounded-md p-1 hover:bg-gray-200"} />
             </button>
 
             <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentence.no)}>
