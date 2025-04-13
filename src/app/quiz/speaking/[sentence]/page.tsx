@@ -18,12 +18,12 @@ import { queryClient } from "@/app/providers";
 import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 
 type Props = {
-  params: Promise<{ sentenceNo: string }>;
+  params: Promise<{ sentence: string }>;
 };
 
 export default function SpeakingPage({ params }: Props) {
-  const { sentenceNo } = use(params);
-  const currentSentenceNumber = parseInt(sentenceNo, 10);
+  const { sentence } = use(params);
+  const currentSentenceNumber = parseInt(sentence, 10);
 
   const { data: session } = useSession();
   const [currentSentence, setCurrentSentence] = useState<{ en: string; ko: string; audioUrl: string; no: number } | null>(null);
@@ -54,55 +54,33 @@ export default function SpeakingPage({ params }: Props) {
   // 오디오 객체 참조 추가
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // ✅ 완료된 문장 목록 가져오기
-  const { data: completedSentences, isLoading: isLoadingCompleted } = useQuery({
-    queryKey: ["completedSentences", session?.user?.id],
+  // ✅ 현재 문장 불러오기
+  const { data: sentenceData, isLoading: isLoadingSentence } = useQuery({
+    queryKey: ["sentence", currentSentenceNumber],
     queryFn: async () => {
       try {
-        const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
-        console.log("🔹 API 응답 데이터:", res.data);
-        return res.data.map((item: { sentence: { en: string; ko: string; audioUrl: string; no: number } }) => ({
-          en: item.sentence?.en ?? "No text found",
-          ko: item.sentence?.ko ?? "번역이 없습니다.",
-          audioUrl: item.sentence?.audioUrl ?? "No audio found",
-          no: item.sentence?.no,
-        }));
+        const res = await axios.get(`/api/sentence/${currentSentenceNumber}`);
+        console.log("sentenceData: ", res.data);
+        return res.data;
       } catch (error) {
-        console.error("❌ API 호출 오류:", error);
-        return [];
+        console.error("❌ 문장 데이터 로드 오류:", error);
+        return null;
       }
     },
-    enabled: !!session?.user?.id,
+    enabled: !!currentSentenceNumber,
   });
 
-  // ✅ 램덤 문장 선택 함수: 각 문장이 한 번씩 램덤 선택
-  const selectRandomSentence = () => {
-    if (!completedSentences || completedSentences.length === 0) return;
-
-    // 선택된 문장 정보 설정
-    setCurrentSentence(currentData[selectedSentenceIndex]);
-
-    // 상태 초기화
-    setUserSpoken("");
-    setFeedback(null);
-    setShowHint(false);
-    setDifferences({ missing: [], incorrect: [] });
-    setIsVisible(false);
-  };
-
-  // 컴포넌트 언마운트 시 음성 인식 중지
+  // 문장 데이터가 로드되면 currentSentence 상태 업데이트
   useEffect(() => {
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      // 오디오가 재생 중이면 정지
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
+    if (sentenceData) {
+      setCurrentSentence({
+        en: sentenceData.en,
+        ko: sentenceData.ko,
+        audioUrl: sentenceData.audioUrl,
+        no: sentenceData.no,
+      });
+    }
+  }, [sentenceData]);
 
   // ✅ 즐겨찾기 상태 확인 useQuery
   const { data: favoriteStatus } = useQuery({
@@ -314,7 +292,7 @@ export default function SpeakingPage({ params }: Props) {
   //   setIsVisible(!isVisible);
   // };
 
-  if (isLoadingCompleted) {
+  if (isLoadingSentence) {
     return <LoadingPageSkeleton />;
   }
 
@@ -323,7 +301,7 @@ export default function SpeakingPage({ params }: Props) {
       <h1 className="text-3xl font-bold md:text-4xl">Speaking quiz</h1>
       <p className="mt-4 text-lg font-semibold text-gray-600">한글 문장을 보고 영어로 말해보세요.</p>
 
-      {completedSentences?.length === 0 ? (
+      {sentenceData?.length === 0 ? (
         <div className="my-8 rounded-lg bg-gray-100 p-4 text-yellow-800">
           <p>학습 완료된 문장이 없습니다. 먼저 학습을 진행해주세요.</p>
           <Link href="/dashboard" className={clsx("mt-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600", {})}>
@@ -332,7 +310,7 @@ export default function SpeakingPage({ params }: Props) {
         </div>
       ) : (
         <div>
-          {completedSentences ? (
+          {sentenceData ? (
             <div className={clsx("mt-6", {})}>
               <div className={"mb-1 flex items-center justify-between gap-4"}>
                 {/* 빈칸 힌트 토글 */}
@@ -531,28 +509,12 @@ export default function SpeakingPage({ params }: Props) {
               </div>
             </div>
           ) : (
-            completedSentences?.length > 0 && <p className="mt-8 text-lg text-gray-500">문장을 불러오는 중...</p>
+            sentenceData?.length > 0 && <p className="mt-8 text-lg text-gray-500">문장을 불러오는 중...</p>
           )}
         </div>
       )}
 
-      {/* 다음 퀴즈에 도전 버튼 */}
-      <div className="mt-8 flex justify-center">
-        <button
-          onClick={() => {
-            selectRandomSentence();
-            setDifferences({ missing: [], incorrect: [] });
-          }}
-          disabled={isListening || isPlaying}
-          className={clsx("btn btn-primary flex items-center justify-center gap-2 text-lg", {
-            hidden: !feedback?.includes("정답"),
-          })}>
-          <span>다음 퀴즈에 도전</span>
-          <FaArrowRight />
-        </button>
-      </div>
-
-      <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": isLoadingCompleted })}>
+      <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": isLoadingSentence })}>
         <Link href={"/dashboard"}>Back to My Dashboard</Link>
       </div>
     </div>
