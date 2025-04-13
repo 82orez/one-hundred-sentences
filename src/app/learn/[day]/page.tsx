@@ -71,6 +71,18 @@ const LearnPage = ({ params }: Props) => {
     setShowQuizModal(true);
   };
 
+  const handleFavoriteToggle = (sentenceNo: number, isNowFavorite: boolean) => {
+    setIsFavorite((prev) => ({
+      ...prev,
+      [sentenceNo]: isNowFavorite,
+    }));
+
+    // 필요하다면 관련 캐시 무효화
+    queryClient.invalidateQueries({
+      queryKey: ["sentences", day],
+    });
+  };
+
   // 문장별 즐겨찾기 상태를 추적하기 위한 상태 변수
   const [isFavorite, setIsFavorite] = useState<{ [key: number]: boolean }>({});
 
@@ -84,6 +96,21 @@ const LearnPage = ({ params }: Props) => {
 
   const router = useRouter();
   const { data: session, status } = useSession();
+
+  // 모달 닫을 때 즐겨찾기 상태 다시 로드
+  useEffect(() => {
+    if (!showQuizModal && quizSentenceNo) {
+      // 모달이 닫히고 이전에 퀴즈를 표시했던 문장 번호가 있는 경우
+      queryClient.invalidateQueries({
+        queryKey: ["favoriteStatus", session?.user?.id, quizSentenceNo],
+      });
+
+      // 필요하다면 문장 목록 전체 리로드
+      queryClient.invalidateQueries({
+        queryKey: ["sentences", day],
+      });
+    }
+  }, [showQuizModal, quizSentenceNo, session?.user?.id, day]);
 
   // ✅ 유닛 제목과 유튜브 URL 불러오기 쿼리 추가
   const { data: unitSubjectAndUtubeUrl, isLoading: isUnitSubjectAndUtubeUrlLoading } = useQuery({
@@ -736,6 +763,7 @@ const LearnPage = ({ params }: Props) => {
               // onComplete={handleQuizComplete}
               nativeAudioAttemptMutation={recordNativeAudioAttemptMutation}
               showNavigation={false}
+              onFavoriteToggle={handleFavoriteToggle}
             />
 
             <div className="mt-6 flex justify-center">

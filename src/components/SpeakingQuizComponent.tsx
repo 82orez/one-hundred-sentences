@@ -22,6 +22,7 @@ type SpeakingQuizProps = {
   onComplete?: (sentenceNo: number, isCorrect: boolean) => void;
   showNavigation?: boolean;
   nativeAudioAttemptMutation?: any; // 이름 변경
+  onFavoriteToggle?: (sentenceNo: number, isFavorite: boolean) => void; // 추가
 };
 
 export default function SpeakingQuizComponent({
@@ -29,6 +30,7 @@ export default function SpeakingQuizComponent({
   onComplete,
   showNavigation = true,
   nativeAudioAttemptMutation,
+  onFavoriteToggle,
 }: SpeakingQuizProps) {
   const { data: session } = useSession();
   const [currentSentence, setCurrentSentence] = useState<{ en: string; ko: string; audioUrl: string; no: number } | null>(null);
@@ -117,12 +119,14 @@ export default function SpeakingQuizComponent({
     },
     onSuccess: (data) => {
       setIsFavorite(data.isFavorite);
-      // 쿼리 캐시 무효화
-      queryClient.invalidateQueries({ queryKey: ["favoriteSentences", session?.user?.id] });
-      queryClient.invalidateQueries({ queryKey: ["favoriteStatus", session?.user?.id, currentSentence?.no] });
-    },
-    onError: (error) => {
-      console.error("즐겨찾기 토글 중 오류:", error);
+      // 부모 컴포넌트에 상태 변경 알림
+      if (onFavoriteToggle) {
+        onFavoriteToggle(currentSentence!.no, data.isFavorite);
+      }
+      // 캐시 무효화
+      queryClient.invalidateQueries({
+        queryKey: ["favoriteStatus", session?.user?.id, currentSentence?.no],
+      });
     },
   });
 
