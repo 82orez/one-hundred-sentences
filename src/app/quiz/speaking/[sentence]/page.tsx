@@ -7,9 +7,9 @@ import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa6";
-import { FaArrowRight, FaCheck, FaPlay, FaRegStopCircle } from "react-icons/fa";
+import { FaCheck, FaPlay, FaRegStopCircle } from "react-icons/fa";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
-import { LuMousePointerClick, LuRefreshCw } from "react-icons/lu";
+import { LuMousePointerClick } from "react-icons/lu";
 import { getMaskedSentence } from "@/utils/getMaskedSentence";
 import { checkAnswer } from "@/utils/checkSpeakingAnswer";
 import { GrFavorite } from "react-icons/gr";
@@ -70,7 +70,7 @@ export default function SpeakingPage({ params }: Props) {
     enabled: !!currentSentenceNumber,
   });
 
-  // 문장 데이터가 로드되면 currentSentence 상태 업데이트
+  // ✅ 문장 데이터가 로드되면 currentSentence 상태 업데이트
   useEffect(() => {
     if (sentenceData) {
       setCurrentSentence({
@@ -173,11 +173,6 @@ export default function SpeakingPage({ params }: Props) {
     }, 1500); // 1500ms = 1.5초
   };
 
-  // ✅ 힌트 보기 기능을 위한 함수 추가
-  // const toggleHint = () => {
-  //   setShowHint1(!showHint1);
-  // };
-
   // ✅ 음성 인식 시작
   const startListening = async () => {
     // 오디오 재생 중이면 음성 인식 시작하지 않음
@@ -192,17 +187,6 @@ export default function SpeakingPage({ params }: Props) {
     setDifferences({ missing: [], incorrect: [] });
     // setFeedback(null);
     setUserSpoken("");
-
-    // 현재 문장이 있을 때만 시도 횟수 증가 API 호출
-    // if (currentSentence && session?.user) {
-    //   try {
-    //     await axios.post("/api/attempts/speaking", {
-    //       sentenceNo: currentSentence.no,
-    //     });
-    //   } catch (error) {
-    //     console.error("시도 횟수 기록 실패:", error);
-    //   }
-    // }
 
     // 이미 실행 중인 recognition 객체가 있다면 중지
     if (recognitionRef.current) {
@@ -286,11 +270,6 @@ export default function SpeakingPage({ params }: Props) {
       }
     }
   };
-
-  // ✅ 답안 확인하기 - 토글 형태로 변경된 함수:
-  // const toggleAnswer = () => {
-  //   setIsVisible(!isVisible);
-  // };
 
   if (isLoadingSentence) {
     return <LoadingPageSkeleton />;
@@ -412,22 +391,7 @@ export default function SpeakingPage({ params }: Props) {
                     </>
                   )}
                 </button>
-
-                {/*  정답 보기 버튼 */}
-                {/*<button*/}
-                {/*  onClick={toggleAnswer}*/}
-                {/*  disabled={isListening || isPlaying}*/}
-                {/*  className={clsx("min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600", { hidden: feedback?.includes("정답") })}>*/}
-                {/*  {isVisible ? "💡 정답 가리기" : "💡 정답 보기"}*/}
-                {/*</button>*/}
               </div>
-
-              {/* 힌트 버튼 */}
-              {/*<button*/}
-              {/*  onClick={handleShowHint}*/}
-              {/*  className="mt-4 rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:outline-none">*/}
-              {/*  힌트 보기*/}
-              {/*</button>*/}
 
               {/* 사용자가 말한 내용 */}
               {userSpoken && !isListening && (!feedback?.includes("정답") || feedback?.includes("문맥")) && (
@@ -497,8 +461,6 @@ export default function SpeakingPage({ params }: Props) {
               </div>
 
               <div className="mt-6 flex flex-col md:mt-6">
-                {/* 정답 부분(영어 문장) */}
-                {/*<h3 className="mb-2 text-lg font-medium">정답</h3>*/}
                 <div
                   className={clsx("flex min-h-24 items-center justify-center rounded-lg border bg-green-50 p-4 text-xl font-semibold text-gray-800", {
                     invisible: !isVisible,
