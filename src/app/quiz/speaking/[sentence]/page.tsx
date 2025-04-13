@@ -368,7 +368,7 @@ export default function SpeakingPage({ params }: Props) {
               {/* 몸통 부분 */}
               <div
                 className={clsx("mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4", {
-                  hidden: feedback?.includes("정답") && !feedback?.includes("문맥"),
+                  // hidden: feedback?.includes("정답") && !feedback?.includes("문맥"),
                 })}>
                 {/* 말하기 버튼 */}
                 <button
