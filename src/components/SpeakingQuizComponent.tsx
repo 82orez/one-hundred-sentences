@@ -66,7 +66,7 @@ export default function SpeakingQuizComponent({
     queryKey: ["sentence", currentSentenceNumber],
     queryFn: async () => {
       try {
-        const res = await axios.get(`/api/sentence/${currentSentenceNumber}`);
+        const res = await axios.get(`/api/sentence?currentSentenceNumber=${currentSentenceNumber}`);
         return res.data;
       } catch (error) {
         console.error("❌ 문장 데이터 로드 오류:", error);
