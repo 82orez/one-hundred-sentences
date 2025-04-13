@@ -291,7 +291,7 @@ export default function SpeakingQuizComponent({
   }
 
   return (
-    <div className="mx-auto max-w-lg p-6 text-center">
+    <div className="mx-auto max-w-lg p-4 text-center">
       {!showNavigation ? null : (
         <>
           <h1 className="text-3xl font-bold md:text-4xl">Speaking quiz</h1>
