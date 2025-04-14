@@ -492,7 +492,7 @@ export default function SpeakingPage() {
                     </button>
                   )}
 
-                  {/* 힌트 버튼 */}
+                  {/* 정답 보기 버튼 */}
                   <button
                     onClick={handleShowHint}
                     disabled={isListening || isPlaying}
@@ -510,9 +510,9 @@ export default function SpeakingPage() {
                   {/*</button>*/}
                 </div>
 
-                {/* 힌트 표시 영역 */}
+                {/* 힌트 표시 영역 opacity-0 -> hidden */}
                 {currentSentence && !feedback?.includes("정답") && (
-                  <div className={`mt-4 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "opacity-0"}`}>
+                  <div className={`mt-4 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "hidden"}`}>
                     {currentSentence.en}
                   </div>
                 )}
@@ -629,11 +629,11 @@ export default function SpeakingPage() {
               </div>
 
               <div className="mt-6 flex flex-col md:mt-6">
-                {/* 정답 부분(영어 문장) */}
+                {/* 정답 부분(영어 문장) invisible -> hidden */}
                 {/*<h3 className="mb-2 text-lg font-medium">정답</h3>*/}
                 <div
                   className={clsx("flex min-h-24 items-center justify-center rounded-lg border bg-green-50 p-4 text-xl font-semibold text-gray-800", {
-                    invisible: !isVisible,
+                    hidden: !isVisible,
                     visible: isVisible,
                   })}>
                   <p>{currentSentence?.en}</p>
