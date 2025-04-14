@@ -760,7 +760,7 @@ const LearnPage = ({ params }: Props) => {
       {showQuizModal && quizSentenceNo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
           <div className="fixed inset-0 bg-black/50" onClick={() => setShowQuizModal(false)} />
-          <div className="relative z-10 max-h-[80vh] w-full max-w-md overflow-y-auto rounded-lg bg-white px-3 py-2 shadow-xl md:py-8">
+          <div className="modal-container relative z-10 max-h-[80vh] w-full max-w-md overflow-y-auto rounded-lg bg-white px-3 py-2 shadow-xl md:py-8">
             <button className="absolute top-7 right-3 float-right text-gray-500 hover:text-gray-700" onClick={() => setShowQuizModal(false)}>
               <IoMdCloseCircle size={28} className={"hover:text-gray-700"} />
             </button>

@@ -176,6 +176,23 @@ export default function SpeakingQuizComponent({
     });
   };
 
+  // ✅ 피드백이 변경될 때 부모 모달을 (최하단으로) 스크롤
+  useEffect(() => {
+    if (feedback) {
+      // ✅ 부모 모달 요소 찾기 .modal-container
+      const modalContainer = document.querySelector(".modal-container") as HTMLElement;
+
+      if (modalContainer) {
+        setTimeout(() => {
+          modalContainer.scrollTo({
+            top: modalContainer.scrollHeight,
+            behavior: "smooth",
+          });
+        }, 100);
+      }
+    }
+  }, [feedback]);
+
   // 힌트 보기 함수
   const handleShowHint = () => {
     setShowHint(true);
