@@ -52,37 +52,6 @@ const LearnPage = ({ params }: Props) => {
   const [showQuizModal, setShowQuizModal] = useState(false);
   const [quizSentenceNo, setQuizSentenceNo] = useState<number | null>(null);
 
-  // useNativeAudioAttempt 훅 사용
-  // const nativeAudioAttemptMutation = useNativeAudioAttempt();
-
-  // 퀴즈 완료 핸들러
-  // const handleQuizComplete = (sentenceNo: number, isCorrect: boolean) => {
-  //   if (isCorrect) {
-  //     // 퀴즈를 성공적으로 완료한 경우 문장 완료 표시
-  //     // markSentenceComplete(sentenceNo);
-  //   }
-  //   // 모달 닫기 (또는 다음 문장으로 이동 등의 로직 추가 가능)
-  //   setShowQuizModal(false);
-  // };
-
-  // 퀴즈 모달 열기 함수
-  const openQuizModal = (sentenceNo: number) => {
-    setQuizSentenceNo(sentenceNo);
-    setShowQuizModal(true);
-  };
-
-  const handleFavoriteToggle = (sentenceNo: number, isNowFavorite: boolean) => {
-    setIsFavorite((prev) => ({
-      ...prev,
-      [sentenceNo]: isNowFavorite,
-    }));
-
-    // 필요하다면 관련 캐시 무효화
-    queryClient.invalidateQueries({
-      queryKey: ["sentences", day],
-    });
-  };
-
   // 문장별 즐겨찾기 상태를 추적하기 위한 상태 변수
   const [isFavorite, setIsFavorite] = useState<{ [key: number]: boolean }>({});
 
@@ -97,7 +66,7 @@ const LearnPage = ({ params }: Props) => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  // 모달 닫을 때 즐겨찾기 상태 다시 로드
+  // ✅ 퀴즈 모달 닫을 때 즐겨찾기 상태 다시 로드
   useEffect(() => {
     if (!showQuizModal && quizSentenceNo) {
       // 모달이 닫히고 이전에 퀴즈를 표시했던 문장 번호가 있는 경우
@@ -111,6 +80,38 @@ const LearnPage = ({ params }: Props) => {
       });
     }
   }, [showQuizModal, quizSentenceNo, session?.user?.id, day]);
+
+  // useNativeAudioAttempt 훅 사용
+  // const nativeAudioAttemptMutation = useNativeAudioAttempt();
+
+  // 퀴즈 완료 핸들러
+  // const handleQuizComplete = (sentenceNo: number, isCorrect: boolean) => {
+  //   if (isCorrect) {
+  //     // 퀴즈를 성공적으로 완료한 경우 문장 완료 표시
+  //     // markSentenceComplete(sentenceNo);
+  //   }
+  //   // 모달 닫기 (또는 다음 문장으로 이동 등의 로직 추가 가능)
+  //   setShowQuizModal(false);
+  // };
+
+  // ✅ 퀴즈 모달 열기 함수
+  const openQuizModal = (sentenceNo: number) => {
+    setQuizSentenceNo(sentenceNo);
+    setShowQuizModal(true);
+  };
+
+  // ✅ 즐겨찾기 토글 핸들러
+  const handleFavoriteToggle = (sentenceNo: number, isNowFavorite: boolean) => {
+    setIsFavorite((prev) => ({
+      ...prev,
+      [sentenceNo]: isNowFavorite,
+    }));
+
+    // 필요하다면 관련 캐시 무효화
+    queryClient.invalidateQueries({
+      queryKey: ["sentences", day],
+    });
+  };
 
   // ✅ 유닛 제목과 유튜브 URL 불러오기 쿼리 추가
   const { data: unitSubjectAndUtubeUrl, isLoading: isUnitSubjectAndUtubeUrlLoading } = useQuery({
@@ -471,7 +472,7 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
-  // 페이지 로드 시 즐겨찾기 상태를 가져오는 쿼리 추가
+  // ✅ 페이지 로드 시 즐겨찾기 상태를 가져오는 쿼리 추가
   const { data: favoritesData } = useQuery({
     queryKey: ["favorites", session?.user?.id, day],
     queryFn: async () => {
@@ -487,14 +488,14 @@ const LearnPage = ({ params }: Props) => {
     enabled: !!todaySentences && status === "authenticated",
   });
 
-  // 즐겨찾기 데이터가 로드되면 상태 업데이트
+  // ✅ 즐겨찾기 데이터가 로드되면 상태 업데이트
   useEffect(() => {
     if (favoritesData) {
       setIsFavorite(favoritesData);
     }
   }, [favoritesData]);
 
-  // 즐겨찾기 토글 뮤테이션
+  // ✅ 즐겨찾기 토글 뮤테이션
   const toggleFavoriteMutation = useMutation({
     mutationFn: async (sentenceNo: number) => {
       const res = await axios.post("/api/favorites", { sentenceNo });
@@ -511,7 +512,7 @@ const LearnPage = ({ params }: Props) => {
     },
   });
 
-  // 버튼 클릭 핸들러
+  // ✅ 즐겨찾기 버튼 클릭 핸들러
   const handleToggleFavorite = (sentenceNo: number) => {
     toggleFavoriteMutation.mutate(sentenceNo);
   };
@@ -591,12 +592,15 @@ const LearnPage = ({ params }: Props) => {
             {/*  className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">*/}
             {/*  Speaking*/}
             {/*</button>*/}
+
+            {/* 문장별 스피킹 퀴즈 버튼 */}
             <button
               onClick={() => openQuizModal(sentence.no)}
               className="rounded-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">
               <RiSpeakLine size={40} className={"cursor-pointer rounded-md p-1 hover:bg-gray-200"} />
             </button>
 
+            {/* 즐겨찾기 버튼 */}
             <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentence.no)}>
               <div>
                 <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite[sentence.no] }, { hidden: isFavorite[sentence.no] })} />
