@@ -294,8 +294,8 @@ export default function SpeakingQuizComponent({
     <div className="mx-auto max-w-lg p-4 text-center">
       {!showNavigation ? null : (
         <>
-          <h1 className="text-3xl font-bold md:text-4xl">Speaking quiz</h1>
-          <p className="mt-4 text-lg font-semibold text-gray-600">한글 문장을 보고 영어로 말해보세요.</p>
+          <h1 className="text-2xl font-bold md:text-3xl">Speaking 연습하기</h1>
+          <p className="mt-1 text-lg font-semibold text-gray-600 md:mt-4">한글 문장을 보고 영어로 말해보세요.</p>
         </>
       )}
 
@@ -309,7 +309,7 @@ export default function SpeakingQuizComponent({
       ) : (
         <div>
           {sentenceData ? (
-            <div className={clsx("mt-6", {})}>
+            <div className={clsx("mt-2", {})}>
               <div className={"mb-1 flex items-center justify-between gap-4"}>
                 {/* 빈칸 힌트 토글 */}
                 <div className={clsx("flex items-center justify-center gap-2", { hidden: feedback?.includes("정답") })}>
@@ -341,7 +341,7 @@ export default function SpeakingQuizComponent({
                 {showHint1 && (
                   <div
                     className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
-                      hidden: feedback?.includes("정답"),
+                      // hidden: feedback?.includes("정답"),
                     })}>
                     {getMaskedSentence(currentSentence)}
                   </div>
@@ -376,9 +376,9 @@ export default function SpeakingQuizComponent({
                   {/*</button>*/}
                 </div>
 
-                {/* 힌트 표시 영역 */}
+                {/* 힌트 표시 영역 invisible -> hidden */}
                 {currentSentence && !feedback?.includes("정답") && (
-                  <div className={`mt-4 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "opacity-0"}`}>
+                  <div className={`mt-4 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "hidden"}`}>
                     {currentSentence.en}
                   </div>
                 )}
@@ -480,10 +480,11 @@ export default function SpeakingQuizComponent({
               </div>
 
               <div className="mt-6 flex flex-col md:mt-6">
+                {/* invisible -> hidden */}
                 <div
                   className={clsx("flex min-h-24 items-center justify-center rounded-lg border bg-green-50 p-4 text-xl font-semibold text-gray-800", {
-                    invisible: !isVisible,
-                    visible: isVisible,
+                    hidden: !isVisible,
+                    // visible: isVisible,
                   })}>
                   <p>{currentSentence?.en}</p>
                 </div>
