@@ -52,6 +52,8 @@ export default function SpeakingPage() {
   // 오디오 객체 참조 추가
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
   // ✅ 완료된 문장 목록 가져오기
   const { data: completedSentences, isLoading: isLoadingCompleted } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
@@ -134,7 +136,7 @@ export default function SpeakingPage() {
     }
   }, [mode, favoriteSentences, currentSentence]);
 
-  // 컴포넌트 언마운트 시 음성 인식 중지
+  // ✅ 컴포넌트 언마운트 시 음성 인식 중지
   useEffect(() => {
     return () => {
       if (recognitionRef.current) {
@@ -147,6 +149,18 @@ export default function SpeakingPage() {
       }
     };
   }, []);
+
+  // ✅ 피드백이 있을 시에는 화면 최하단으로 스크롤 (모바일에서 유용)
+  useEffect(() => {
+    if (feedback && bottomRef.current) {
+      // 렌더링이 완료된 다음 프레임에서 실행
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 50); // DOM 이 완전히 렌더링되기 위한 약간의 지연
+      });
+    }
+  }, [feedback, differences]); // ✅ differences 까지 의존성에 추가
 
   // ✅ 램덤 문장 선택 함수: 각 문장이 한 번씩 램덤 선택
   const selectRandomSentence = () => {
@@ -267,11 +281,6 @@ export default function SpeakingPage() {
     }, 1500); // 1500ms = 1.5초
   };
 
-  // ✅ 힌트 보기 기능을 위한 함수 추가
-  // const toggleHint = () => {
-  //   setShowHint1(!showHint1);
-  // };
-
   // ✅ 음성 인식 시작
   const startListening = async () => {
     // 오디오 재생 중이면 음성 인식 시작하지 않음
@@ -286,17 +295,6 @@ export default function SpeakingPage() {
     setDifferences({ missing: [], incorrect: [] });
     // setFeedback(null);
     setUserSpoken("");
-
-    // 현재 문장이 있을 때만 시도 횟수 증가 API 호출
-    // if (currentSentence && session?.user) {
-    //   try {
-    //     await axios.post("/api/attempts/speaking", {
-    //       sentenceNo: currentSentence.no,
-    //     });
-    //   } catch (error) {
-    //     console.error("시도 횟수 기록 실패:", error);
-    //   }
-    // }
 
     // 이미 실행 중인 recognition 객체가 있다면 중지
     if (recognitionRef.current) {
@@ -380,11 +378,6 @@ export default function SpeakingPage() {
       }
     }
   };
-
-  // ✅ 답안 확인하기 - 토글 형태로 변경된 함수:
-  // const toggleAnswer = () => {
-  //   setIsVisible(!isVisible);
-  // };
 
   if (isLoading) {
     return <LoadingPageSkeleton />;
@@ -504,10 +497,6 @@ export default function SpeakingPage() {
                     <LuMousePointerClick size={24} />
                     정답 보기
                   </button>
-
-                  {/*<button onClick={toggleHint} className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">*/}
-                  {/*  {showHint1 ? "힌트 숨기기" : "힌트 보기"}*/}
-                  {/*</button>*/}
                 </div>
 
                 {/* 힌트 표시 영역 opacity-0 -> hidden */}
@@ -544,22 +533,7 @@ export default function SpeakingPage() {
                     </>
                   )}
                 </button>
-
-                {/*  정답 보기 버튼 */}
-                {/*<button*/}
-                {/*  onClick={toggleAnswer}*/}
-                {/*  disabled={isListening || isPlaying}*/}
-                {/*  className={clsx("min-w-36 rounded-lg bg-gray-500 px-3 py-3 text-white hover:bg-gray-600", { hidden: feedback?.includes("정답") })}>*/}
-                {/*  {isVisible ? "💡 정답 가리기" : "💡 정답 보기"}*/}
-                {/*</button>*/}
               </div>
-
-              {/* 힌트 버튼 */}
-              {/*<button*/}
-              {/*  onClick={handleShowHint}*/}
-              {/*  className="mt-4 rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:outline-none">*/}
-              {/*  힌트 보기*/}
-              {/*</button>*/}
 
               {/* 사용자가 말한 내용 */}
               {userSpoken && !isListening && (!feedback?.includes("정답") || feedback?.includes("문맥")) && (
@@ -647,16 +621,17 @@ export default function SpeakingPage() {
       )}
 
       {/* 다음 퀴즈에 도전 버튼 */}
-      <div className="mt-8 flex justify-center">
+      <div
+        className={clsx("mt-8 flex justify-center", {
+          hidden: !feedback?.includes("정답"),
+        })}>
         <button
           onClick={() => {
             selectRandomSentence();
             setDifferences({ missing: [], incorrect: [] });
           }}
           disabled={isListening || isPlaying}
-          className={clsx("btn btn-primary flex items-center justify-center gap-2 text-lg", {
-            hidden: !feedback?.includes("정답"),
-          })}>
+          className={clsx("btn btn-primary flex items-center justify-center gap-2 text-lg", {})}>
           <span>다음 퀴즈에 도전</span>
           <FaArrowRight />
         </button>
@@ -665,6 +640,9 @@ export default function SpeakingPage() {
       <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": isLoading })}>
         <Link href={"/dashboard"}>Back to My Dashboard</Link>
       </div>
+
+      {/* 👇 페이지 최하단 ref */}
+      <div ref={bottomRef} className="h-1" />
     </div>
   );
 }
