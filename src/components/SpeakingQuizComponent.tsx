@@ -260,24 +260,28 @@ export default function SpeakingQuizComponent({
 
   // 음성 인식 중지
   const stopListening = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      recognitionRef.current = null;
+    const isConfirmed = window.confirm("정말로 취소하시겠습니까?");
 
-      // isListening 상태를 false 로 변경
-      setIsListening(false);
+    if (isConfirmed) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
 
-      // 상태값들 초기화
-      setUserSpoken("");
-      setDifferences({ missing: [], incorrect: [] });
+        // isListening 상태를 false 로 변경
+        setIsListening(false);
 
-      // 버튼 비활성화
-      setIsButtonDisabled(true);
+        // 상태값들 초기화
+        setUserSpoken("");
+        setDifferences({ missing: [], incorrect: [] });
 
-      // 1초 후 버튼 다시 활성화
-      setTimeout(() => {
-        setIsButtonDisabled(false);
-      }, 1200);
+        // 버튼 비활성화
+        setIsButtonDisabled(true);
+
+        // 1초 후 버튼 다시 활성화
+        setTimeout(() => {
+          setIsButtonDisabled(false);
+        }, 1200);
+      }
     }
   };
 
