@@ -474,7 +474,7 @@ export default function Dashboard() {
               {/* 닫기 버튼 */}
               <button
                 ref={closeButtonRef}
-                className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full text-2xl font-bold text-gray-600 hover:text-gray-800"
+                className="absolute top-4 right-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg text-2xl font-bold text-gray-600 hover:bg-gray-200 hover:text-gray-800"
                 onClick={() => setSelectedDay(null)}>
                 ×
               </button>
