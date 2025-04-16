@@ -552,26 +552,26 @@ const LearnPage = ({ params }: Props) => {
         </button>
       </div>
 
-      {/* ✅ 완료 표시 + 훈련 모드 */}
+      {/* ✅ 완료 표시 + 유닛별 유튜브 + 훈련 모드 */}
       <div className="mt-4 flex items-center justify-between">
         {/* ✅ 훈련 모드 - 전체 영문 가리기/보이기 체크박스 */}
-        <div className="flex items-center justify-end gap-2">
-          <input type="checkbox" id="toggleAllEnglish" checked={allEnglishHidden} onChange={toggleAllEnglish} className="toggle cursor-pointer" />
-          <label htmlFor="toggleAllEnglish" className="text-md font-semibold md:text-lg">
-            훈련 모드
-          </label>
-        </div>
+        {/*<div className="flex items-center justify-end gap-2">*/}
+        {/*  <input type="checkbox" id="toggleAllEnglish" checked={allEnglishHidden} onChange={toggleAllEnglish} className="toggle cursor-pointer" />*/}
+        {/*  <label htmlFor="toggleAllEnglish" className="text-md font-semibold md:text-lg">*/}
+        {/*    훈련 모드*/}
+        {/*  </label>*/}
+        {/*</div>*/}
 
         {/* ✅ 유튜브 버튼 */}
-        {unitSubjectAndUtubeUrl?.unitUtubeUrl && (
-          <button
-            className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 text-red-600 hover:bg-red-100 md:p-2"
-            aria-label="유튜브 재생"
-            onClick={() => handleYoutubeClick(unitSubjectAndUtubeUrl.unitUtubeUrl, currentPageNumber)}>
-            <TfiYoutube size={30} className={"md:hidden"} />
-            <ImYoutube2 size={50} className={"hidden md:block"} />
-          </button>
-        )}
+        {/*{unitSubjectAndUtubeUrl?.unitUtubeUrl && (*/}
+        {/*  <button*/}
+        {/*    className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 text-red-600 hover:bg-red-100 md:p-2"*/}
+        {/*    aria-label="유튜브 재생"*/}
+        {/*    onClick={() => handleYoutubeClick(unitSubjectAndUtubeUrl.unitUtubeUrl, currentPageNumber)}>*/}
+        {/*    <TfiYoutube size={30} className={"md:hidden"} />*/}
+        {/*    <ImYoutube2 size={50} className={"hidden md:block"} />*/}
+        {/*  </button>*/}
+        {/*)}*/}
 
         {/* ✅ 완료 표시 */}
         <div className="flex items-center">
@@ -587,18 +587,12 @@ const LearnPage = ({ params }: Props) => {
               {sentence.no}번 <span className={"hidden md:inline"}>문장</span>
             </div>
 
+            {/* 문장별 스피킹 퀴즈 버튼 */}
             {/*<button*/}
             {/*  onClick={() => openQuizModal(sentence.no)}*/}
-            {/*  className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">*/}
-            {/*  Speaking*/}
+            {/*  className="rounded-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">*/}
+            {/*  <RiSpeakLine size={40} className={"cursor-pointer rounded-md p-1 hover:bg-gray-200"} />*/}
             {/*</button>*/}
-
-            {/* 문장별 스피킹 퀴즈 버튼 */}
-            <button
-              onClick={() => openQuizModal(sentence.no)}
-              className="rounded-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">
-              <RiSpeakLine size={40} className={"cursor-pointer rounded-md p-1 hover:bg-gray-200"} />
-            </button>
 
             {/* 즐겨찾기 버튼 */}
             <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentence.no)}>
@@ -646,14 +640,21 @@ const LearnPage = ({ params }: Props) => {
               </button>
             )}
 
-            {/* ✅ 개별 영문 가리기 버튼 */}
+            {/* ✅ 문장별 스피킹 퀴즈 버튼 */}
             <button
-              className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {
-                "border opacity-50": visibleEnglish[sentence.no],
-              })}
-              onClick={() => toggleEnglish(sentence.no)}>
-              <FaA size={18} />
+              onClick={() => openQuizModal(sentence.no)}
+              className="rounded-md border border-gray-400 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">
+              <RiSpeakLine size={35} className={"cursor-pointer rounded-md p-0.5 hover:bg-gray-200"} />
             </button>
+
+            {/* ✅ 개별 영문 가리기 버튼 */}
+            {/*<button*/}
+            {/*  className={clsx("flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md text-black hover:bg-gray-300", {*/}
+            {/*    "border opacity-50": visibleEnglish[sentence.no],*/}
+            {/*  })}*/}
+            {/*  onClick={() => toggleEnglish(sentence.no)}>*/}
+            {/*  <FaA size={18} />*/}
+            {/*</button>*/}
 
             {/* ✅ 번역 보이기/가리기 버튼 */}
             {/*<button*/}
