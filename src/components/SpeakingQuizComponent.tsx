@@ -282,6 +282,7 @@ export default function SpeakingQuizComponent({
 
         // 상태값들 초기화
         setUserSpoken("");
+        setFeedback("");
         setDifferences({ missing: [], incorrect: [] });
 
         // 버튼 비활성화
