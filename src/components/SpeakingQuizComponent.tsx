@@ -62,6 +62,8 @@ export default function SpeakingQuizComponent({
   const recognitionRef = useRef<any>(null);
   // 오디오 객체 참조
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  // 취소 플래그를 관리하는 ref
+  const cancelledRef = useRef<boolean>(false);
 
   // 현재 문장 불러오기
   const { data: sentenceData, isLoading: isLoadingSentence } = useQuery({
@@ -202,7 +204,7 @@ export default function SpeakingQuizComponent({
     }, 1500);
   };
 
-  // 음성 인식 시작
+  // ✅ 음성 인식 시작
   const startListening = async () => {
     // 오디오 재생 중이면 음성 인식 시작하지 않음
     if (isPlaying) return;
@@ -215,6 +217,8 @@ export default function SpeakingQuizComponent({
     setIsVisible(false);
     setDifferences({ missing: [], incorrect: [] });
     setUserSpoken("");
+    // 취소 플래그 초기화
+    cancelledRef.current = false;
 
     // 이미 실행 중인 recognition 객체가 있다면 중지
     if (recognitionRef.current) {
@@ -241,7 +245,10 @@ export default function SpeakingQuizComponent({
 
       setUserSpoken(transcript);
 
-      checkAnswer(transcript, currentSentence, handleSpeechResult, setFeedback, setDifferences, setIsVisible);
+      // 취소되지 않았을 때만 checkAnswer 함수 실행
+      if (!cancelledRef.current) {
+        checkAnswer(transcript, currentSentence, handleSpeechResult, setFeedback, setDifferences, setIsVisible);
+      }
     };
 
     recognition.onerror = (event: any) => {
@@ -258,11 +265,14 @@ export default function SpeakingQuizComponent({
     recognition.start();
   };
 
-  // 음성 인식 중지
+  // ✅ 음성 인식 중지
   const stopListening = () => {
     const isConfirmed = window.confirm("정말로 취소하시겠습니까?");
 
     if (isConfirmed) {
+      // 취소 플래그 설정
+      cancelledRef.current = true;
+
       if (recognitionRef.current) {
         recognitionRef.current.stop();
         recognitionRef.current = null;
@@ -439,7 +449,7 @@ export default function SpeakingQuizComponent({
               </div>
 
               {/* 사용자가 말한 내용 */}
-              {userSpoken && !isListening && (!feedback?.includes("정답") || feedback?.includes("문맥")) && (
+              {userSpoken && !isListening && feedback && (!feedback?.includes("정답") || feedback?.includes("문맥")) && (
                 <div className="mb-4">
                   <h3 className="mb-2 text-lg font-medium">내가 말한 내용</h3>
                   <p className="rounded-lg bg-gray-100 p-3 text-gray-800">{userSpoken}</p>

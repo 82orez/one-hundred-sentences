@@ -7,13 +7,13 @@ import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa6";
-import { FaArrowRight, FaCheck, FaPlay, FaRegStopCircle } from "react-icons/fa";
+import { FaArrowRight, FaAssistiveListeningSystems, FaCheck, FaPlay, FaRegStopCircle } from "react-icons/fa";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { LuMousePointerClick, LuRefreshCw } from "react-icons/lu";
 import { getMaskedSentence } from "@/utils/getMaskedSentence";
 import { checkAnswer } from "@/utils/checkSpeakingAnswer";
 import { GrFavorite } from "react-icons/gr";
-import { MdOutlineFavorite } from "react-icons/md";
+import { MdOutlineCancel, MdOutlineFavorite } from "react-icons/md";
 import { queryClient } from "@/app/providers";
 import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 
@@ -51,6 +51,8 @@ export default function SpeakingPage() {
   const recognitionRef = useRef<any>(null);
   // 오디오 객체 참조 추가
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  // 취소 플래그를 관리하는 ref
+  const cancelledRef = useRef<boolean>(false);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
@@ -293,8 +295,9 @@ export default function SpeakingPage() {
 
     setIsVisible(false);
     setDifferences({ missing: [], incorrect: [] });
-    // setFeedback(null);
     setUserSpoken("");
+    // 취소 플래그 초기화
+    cancelledRef.current = false;
 
     // 이미 실행 중인 recognition 객체가 있다면 중지
     if (recognitionRef.current) {
@@ -318,16 +321,16 @@ export default function SpeakingPage() {
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       const confidence = event.results[0][0].confidence;
-      console.log("🎙️ 실제 내 음성:", transcript);
-      console.log("confidence 음성:", confidence);
 
       setUserSpoken(transcript);
 
-      checkAnswer(transcript, currentSentence, handleSpeechResult, setFeedback, setDifferences, setIsVisible);
+      // 취소되지 않았을 때만 checkAnswer 함수 실행
+      if (!cancelledRef.current) {
+        checkAnswer(transcript, currentSentence, handleSpeechResult, setFeedback, setDifferences, setIsVisible);
+      }
     };
 
     recognition.onerror = (event: any) => {
-      // console.error("❌ 음성 인식 오류:", event.error);
       setIsListening(false);
       alert("음성이 입력되지 않았습니다.");
       recognitionRef.current = null;
@@ -343,25 +346,31 @@ export default function SpeakingPage() {
 
   // ✅ 음성 인식 중지
   const stopListening = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      recognitionRef.current = null;
+    const isConfirmed = window.confirm("정말로 취소하시겠습니까?");
 
-      // isListening 상태를 false 로 변경
-      setIsListening(false);
+    if (isConfirmed) {
+      // 취소 플래그 설정
+      cancelledRef.current = true;
 
-      // 기본적인 상태값들 초기화
-      setUserSpoken("");
-      // setFeedback(null);
-      setDifferences({ missing: [], incorrect: [] });
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
 
-      // 버튼 비활성화
-      setIsButtonDisabled(true);
+        // isListening 상태를 false 로 변경
+        setIsListening(false);
 
-      // 1초 후 버튼 다시 활성화
-      setTimeout(() => {
-        setIsButtonDisabled(false);
-      }, 1200);
+        // 상태값들 초기화
+        setUserSpoken("");
+        setDifferences({ missing: [], incorrect: [] });
+
+        // 버튼 비활성화
+        setIsButtonDisabled(true);
+
+        // 1초 후 버튼 다시 활성화
+        setTimeout(() => {
+          setIsButtonDisabled(false);
+        }, 1200);
+      }
     }
   };
 
@@ -509,22 +518,22 @@ export default function SpeakingPage() {
 
               {/* 몸통 부분 */}
               <div
-                className={clsx("mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4", {
+                className={clsx("mt-4 mb-4 flex flex-col justify-center gap-4 md:items-center md:justify-center md:gap-4", {
                   hidden: feedback?.includes("정답") && !feedback?.includes("문맥"),
                 })}>
                 {/* 말하기 버튼 */}
                 <button
-                  onClick={isListening ? stopListening : startListening}
-                  disabled={isPlaying || isButtonDisabled}
+                  onClick={startListening}
+                  disabled={isPlaying || isButtonDisabled || isListening}
                   className={clsx(
-                    "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-lg font-semibold text-white transition-all",
-                    isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
+                    "flex h-12 w-full min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-lg font-semibold transition-all",
+                    isListening ? "animate-pulse bg-green-200 text-gray-400" : "cursor-pointer bg-green-500 text-white hover:bg-green-600",
                     { "cursor-not-allowed opacity-50": isButtonDisabled },
                   )}>
                   {isListening ? (
                     <>
-                      <FaRegStopCircle size={24} className="" />
-                      <span>Cancel</span>
+                      <FaAssistiveListeningSystems size={24} className="" />
+                      <span>음성 인식 중...</span>
                     </>
                   ) : (
                     <>
@@ -533,10 +542,15 @@ export default function SpeakingPage() {
                     </>
                   )}
                 </button>
+
+                <button onClick={stopListening} className={clsx("mt-8 flex items-center justify-center gap-2", { hidden: !isListening })}>
+                  <MdOutlineCancel size={24} className="" />
+                  <span>말하기 취소</span>
+                </button>
               </div>
 
               {/* 사용자가 말한 내용 */}
-              {userSpoken && !isListening && (!feedback?.includes("정답") || feedback?.includes("문맥")) && (
+              {userSpoken && !isListening && feedback && (!feedback?.includes("정답") || feedback?.includes("문맥")) && (
                 <div className="mb-4">
                   <h3 className="mb-2 text-lg font-medium">내가 말한 내용</h3>
                   <p className="rounded-lg bg-gray-100 p-3 text-gray-800">{userSpoken}</p>
