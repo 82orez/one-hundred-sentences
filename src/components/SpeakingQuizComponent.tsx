@@ -7,13 +7,13 @@ import axios from "axios";
 import clsx from "clsx";
 import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa6";
-import { FaCheck, FaPlay, FaRegStopCircle } from "react-icons/fa";
+import { FaAssistiveListeningSystems, FaCheck, FaPlay, FaRegStopCircle } from "react-icons/fa";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { LuMousePointerClick } from "react-icons/lu";
 import { getMaskedSentence } from "@/utils/getMaskedSentence";
 import { checkAnswer } from "@/utils/checkSpeakingAnswer";
 import { GrFavorite } from "react-icons/gr";
-import { MdOutlineFavorite } from "react-icons/md";
+import { MdOutlineCancel, MdOutlineFavorite } from "react-icons/md";
 import { queryClient } from "@/app/providers";
 import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 
@@ -407,22 +407,22 @@ export default function SpeakingQuizComponent({
 
               {/* 몸통 부분 */}
               <div
-                className={clsx("mt-4 mb-4 flex flex-col justify-center gap-4 md:flex-row md:items-center md:justify-center md:gap-4", {
+                className={clsx("mt-4 mb-4 flex flex-col justify-center gap-4 md:items-center md:justify-center md:gap-4", {
                   // hidden: feedback?.includes("정답") && !feedback?.includes("문맥"),
                 })}>
                 {/* 말하기 버튼 */}
                 <button
-                  onClick={isListening ? stopListening : startListening}
-                  disabled={isPlaying || isButtonDisabled}
+                  onClick={startListening}
+                  disabled={isPlaying || isButtonDisabled || isListening}
                   className={clsx(
-                    "flex h-12 min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-lg font-semibold text-white transition-all",
-                    isListening ? "animate-pulse bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600",
+                    "flex h-12 w-full max-w-sm min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-lg font-semibold transition-all",
+                    isListening ? "animate-pulse bg-green-200 text-gray-400" : "cursor-pointer bg-green-500 text-white hover:bg-green-600",
                     { "cursor-not-allowed opacity-50": isButtonDisabled },
                   )}>
                   {isListening ? (
                     <>
-                      <FaRegStopCircle size={24} className="" />
-                      <span>Cancel</span>
+                      <FaAssistiveListeningSystems size={24} className="" />
+                      <span>음성 인식 중...</span>
                     </>
                   ) : (
                     <>
@@ -430,6 +430,11 @@ export default function SpeakingQuizComponent({
                       <span>말하기</span>
                     </>
                   )}
+                </button>
+
+                <button onClick={stopListening} className={clsx("mt-8 flex items-center justify-center gap-2", { hidden: !isListening })}>
+                  <MdOutlineCancel size={24} className="" />
+                  <span>말하기 취소</span>
                 </button>
               </div>
 
@@ -442,7 +447,7 @@ export default function SpeakingQuizComponent({
               )}
 
               {/* 피드백 영역 - 정답 or 오답 */}
-              <div className="mt-6 text-center">
+              <div className={clsx("mt-6 text-center", { hidden: isListening })}>
                 {feedback && (
                   <div
                     className={clsx(
