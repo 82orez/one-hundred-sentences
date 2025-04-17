@@ -234,7 +234,7 @@ export default function SpeakingQuizComponent({
     // 카운트다운 타이머 설정
     setTimeout(() => setCount(2), 1000);
     setTimeout(() => setCount(1), 2000);
-    setTimeout(() => setCount("시작하기"), 3000);
+    setTimeout(() => setCount("시작!"), 3000);
 
     // 카운트다운 후 음성 인식 시작
     setTimeout(() => {

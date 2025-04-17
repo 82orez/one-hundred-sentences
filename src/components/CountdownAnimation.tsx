@@ -18,7 +18,7 @@ export default function CountdownUI({ isActive, count }: CountdownUIProps) {
           exit={{ scale: 0.5, opacity: 0 }}
           className={clsx(
             "fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform",
-            "flex h-32 w-32 items-center justify-center rounded-full bg-green-500/90 text-4xl font-bold text-white shadow-lg",
+            "flex h-32 w-32 items-center justify-center rounded-full bg-green-500/50 text-4xl font-bold text-white shadow-lg",
           )}>
           <motion.span
             key={count}
