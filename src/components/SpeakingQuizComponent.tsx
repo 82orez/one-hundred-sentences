@@ -16,6 +16,7 @@ import { GrFavorite } from "react-icons/gr";
 import { MdOutlineCancel, MdOutlineFavorite } from "react-icons/md";
 import { queryClient } from "@/app/providers";
 import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
+import { motion, AnimatePresence } from "framer-motion";
 
 type SpeakingQuizProps = {
   currentSentenceNumber: number;
@@ -40,6 +41,10 @@ export default function SpeakingQuizComponent({
   const [isListening, setIsListening] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+
+  // 카운트다운 상태 추가
+  const [isActive, setIsActive] = useState(false);
+  const [count, setCount] = useState<string | number>("");
 
   // 호출 측에서 제공하는 경우에만 사용
   const recordNativeAudioAttemptMutation = nativeAudioAttemptMutation || null;
@@ -204,7 +209,7 @@ export default function SpeakingQuizComponent({
     }, 1500);
   };
 
-  // ✅ 음성 인식 시작
+  // ✅ 음성 인식 시작 함수를 카운트다운 실행 후 음성 인식을 시작하도록 변경
   const startListening = async () => {
     // 오디오 재생 중이면 음성 인식 시작하지 않음
     if (isPlaying) return;
@@ -217,52 +222,64 @@ export default function SpeakingQuizComponent({
     setIsVisible(false);
     setDifferences({ missing: [], incorrect: [] });
     setUserSpoken("");
+    setFeedback("");
     // 취소 플래그 초기화
     cancelledRef.current = false;
 
-    // 이미 실행 중인 recognition 객체가 있다면 중지
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      recognitionRef.current = null;
-      return;
-    }
+    // 카운트다운 시작
+    setIsActive(true);
+    setCount(3);
 
-    // 틀린 부분 초기화
-    setDifferences({ missing: [], incorrect: [] });
+    // 카운트다운 타이머 설정
+    setTimeout(() => setCount(2), 1000);
+    setTimeout(() => setCount(1), 2000);
+    setTimeout(() => setCount("시작하기"), 3000);
 
-    const recognition = new (window as any).webkitSpeechRecognition();
-    recognitionRef.current = recognition;
+    // 카운트다운 후 음성 인식 시작
+    setTimeout(() => {
+      setIsActive(false); // 카운트다운 UI 숨기기
 
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    setIsListening(true);
-
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      const confidence = event.results[0][0].confidence;
-
-      setUserSpoken(transcript);
-
-      // 취소되지 않았을 때만 checkAnswer 함수 실행
-      if (!cancelledRef.current) {
-        checkAnswer(transcript, currentSentence, handleSpeechResult, setFeedback, setDifferences, setIsVisible);
+      // 음성 인식 로직
+      // 이미 실행 중인 recognition 객체가 있다면 중지
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
       }
-    };
 
-    recognition.onerror = (event: any) => {
-      setIsListening(false);
-      alert("음성이 입력되지 않았습니다.");
-      recognitionRef.current = null;
-    };
+      const recognition = new (window as any).webkitSpeechRecognition();
+      recognitionRef.current = recognition;
 
-    recognition.onend = () => {
-      setIsListening(false);
-      recognitionRef.current = null;
-    };
+      recognition.lang = "en-US";
+      recognition.continuous = false;
+      recognition.interimResults = false;
 
-    recognition.start();
+      setIsListening(true);
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        const confidence = event.results[0][0].confidence;
+
+        setUserSpoken(transcript);
+
+        // 음성 인식이 취소되지 않았을 때만 checkAnswer 함수 실행
+        if (!cancelledRef.current) {
+          checkAnswer(transcript, currentSentence, handleSpeechResult, setFeedback, setDifferences, setIsVisible);
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        setIsListening(false);
+        alert("음성이 입력되지 않았습니다.");
+        recognitionRef.current = null;
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        recognitionRef.current = null;
+      };
+
+      recognition.start();
+    }, 4000);
   };
 
   // ✅ 음성 인식 중지
@@ -272,6 +289,9 @@ export default function SpeakingQuizComponent({
     if (isConfirmed) {
       // 취소 플래그 설정
       cancelledRef.current = true;
+
+      // 카운트다운 중이면 카운트다운도 중지
+      setIsActive(false);
 
       if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -331,6 +351,29 @@ export default function SpeakingQuizComponent({
         </>
       )}
 
+      {/* 카운트다운 UI */}
+      <AnimatePresence>
+        {isActive && (
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.5, opacity: 0 }}
+            className={clsx(
+              "fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform",
+              "flex h-32 w-32 items-center justify-center rounded-full bg-green-500/90 text-4xl font-bold text-white shadow-lg",
+            )}>
+            <motion.span
+              key={count}
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 1.5, opacity: 0 }}
+              transition={{ duration: 0.5 }}>
+              {count}
+            </motion.span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {sentenceData?.length === 0 ? (
         <div className="my-8 rounded-lg bg-gray-100 p-4 text-yellow-800">
           <p>학습 완료된 문장이 없습니다. 먼저 학습을 진행해주세요.</p>
@@ -384,7 +427,7 @@ export default function SpeakingQuizComponent({
                   {currentSentence && (
                     <button
                       onClick={playNativeAudio}
-                      disabled={isListening || isPlaying}
+                      disabled={isListening || isPlaying || isActive}
                       className="btn btn-primary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold">
                       <FaPlay /> 원어민 음성
                     </button>
@@ -393,7 +436,7 @@ export default function SpeakingQuizComponent({
                   {/* 힌트 버튼 */}
                   <button
                     onClick={handleShowHint}
-                    disabled={isListening || isPlaying}
+                    disabled={isListening || isPlaying || isActive}
                     className={clsx(
                       "btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold",
                       { hidden: feedback?.includes("정답") },
@@ -424,11 +467,11 @@ export default function SpeakingQuizComponent({
                 {/* 말하기 버튼 */}
                 <button
                   onClick={startListening}
-                  disabled={isPlaying || isButtonDisabled || isListening}
+                  disabled={isPlaying || isButtonDisabled || isListening || isActive}
                   className={clsx(
                     "flex h-12 w-full max-w-sm min-w-36 items-center justify-center gap-1 rounded-lg px-3 py-3 text-lg font-semibold transition-all",
                     isListening ? "animate-pulse bg-green-200 text-gray-400" : "cursor-pointer bg-green-500 text-white hover:bg-green-600",
-                    { "cursor-not-allowed opacity-50": isButtonDisabled },
+                    { "cursor-not-allowed opacity-50": isButtonDisabled || isActive },
                   )}>
                   {isListening ? (
                     <>
@@ -443,7 +486,7 @@ export default function SpeakingQuizComponent({
                   )}
                 </button>
 
-                <button onClick={stopListening} className={clsx("mt-8 flex items-center justify-center gap-2", { hidden: !isListening })}>
+                <button onClick={stopListening} className={clsx("mt-8 flex items-center justify-center gap-2", { hidden: !isListening || isActive })}>
                   <MdOutlineCancel size={24} className="" />
                   <span>말하기 취소</span>
                 </button>
