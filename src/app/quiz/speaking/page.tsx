@@ -16,6 +16,7 @@ import { GrFavorite } from "react-icons/gr";
 import { MdOutlineCancel, MdOutlineFavorite } from "react-icons/md";
 import { queryClient } from "@/app/providers";
 import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
+import CountdownUI from "@/components/CountdownAnimation";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -29,6 +30,10 @@ export default function SpeakingPage() {
 
   // 탭 모드 상태 추가
   const [mode, setMode] = useState<"normal" | "favorite">("normal");
+
+  // 카운트다운 상태 추가
+  const [isActive, setIsActive] = useState(false);
+  const [count, setCount] = useState<string | number>("");
 
   // 문장 번호 배열 - 문장별 한 번씩 램덤 재생
   const remainingSentenceNosRef = useRef<number[]>([]);
@@ -296,52 +301,64 @@ export default function SpeakingPage() {
     setIsVisible(false);
     setDifferences({ missing: [], incorrect: [] });
     setUserSpoken("");
+    setFeedback("");
     // 취소 플래그 초기화
     cancelledRef.current = false;
 
-    // 이미 실행 중인 recognition 객체가 있다면 중지
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      recognitionRef.current = null;
-      return;
-    }
+    // 카운트다운 시작
+    setIsActive(true);
+    setCount(3);
 
-    // 틀린 부분 초기화
-    setDifferences({ missing: [], incorrect: [] });
+    // 카운트다운 타이머 설정
+    setTimeout(() => setCount(2), 1000);
+    setTimeout(() => setCount(1), 2000);
+    setTimeout(() => setCount("시작하기"), 3000);
 
-    const recognition = new (window as any).webkitSpeechRecognition();
-    recognitionRef.current = recognition;
+    // 카운트다운 후 음성 인식 시작
+    setTimeout(() => {
+      setIsActive(false); // 카운트다운 UI 숨기기
 
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    setIsListening(true);
-
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      const confidence = event.results[0][0].confidence;
-
-      setUserSpoken(transcript);
-
-      // 취소되지 않았을 때만 checkAnswer 함수 실행
-      if (!cancelledRef.current) {
-        checkAnswer(transcript, currentSentence, handleSpeechResult, setFeedback, setDifferences, setIsVisible);
+      // 음성 인식 로직
+      // 이미 실행 중인 recognition 객체가 있다면 중지
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        recognitionRef.current = null;
       }
-    };
 
-    recognition.onerror = (event: any) => {
-      setIsListening(false);
-      alert("음성이 입력되지 않았습니다.");
-      recognitionRef.current = null;
-    };
+      const recognition = new (window as any).webkitSpeechRecognition();
+      recognitionRef.current = recognition;
 
-    recognition.onend = () => {
-      setIsListening(false);
-      recognitionRef.current = null;
-    };
+      recognition.lang = "en-US";
+      recognition.continuous = false;
+      recognition.interimResults = false;
 
-    recognition.start();
+      setIsListening(true);
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        const confidence = event.results[0][0].confidence;
+
+        setUserSpoken(transcript);
+
+        // 음성 인식이 취소되지 않았을 때만 checkAnswer 함수 실행
+        if (!cancelledRef.current) {
+          checkAnswer(transcript, currentSentence, handleSpeechResult, setFeedback, setDifferences, setIsVisible);
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        setIsListening(false);
+        alert("음성이 입력되지 않았습니다.");
+        recognitionRef.current = null;
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        recognitionRef.current = null;
+      };
+
+      recognition.start();
+    }, 4000);
   };
 
   // ✅ 음성 인식 중지
@@ -351,6 +368,9 @@ export default function SpeakingPage() {
     if (isConfirmed) {
       // 취소 플래그 설정
       cancelledRef.current = true;
+
+      // 카운트다운 중이면 카운트다운도 중지
+      setIsActive(false);
 
       if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -397,6 +417,8 @@ export default function SpeakingPage() {
     <div className="mx-auto max-w-lg p-6 text-center">
       <h1 className="text-3xl font-bold md:text-4xl">Speaking quiz</h1>
       <p className="mt-4 text-lg font-semibold text-gray-600">한글 문장을 보고 영어로 말해보세요.</p>
+
+      <CountdownUI isActive={isActive} count={count} />
 
       {/* 탭 메뉴 */}
       <div className="mx-auto mt-4 mb-4 max-w-3xl md:my-8">

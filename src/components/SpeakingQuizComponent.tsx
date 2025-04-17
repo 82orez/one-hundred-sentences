@@ -17,6 +17,7 @@ import { MdOutlineCancel, MdOutlineFavorite } from "react-icons/md";
 import { queryClient } from "@/app/providers";
 import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 import { motion, AnimatePresence } from "framer-motion";
+import CountdownUI from "@/components/CountdownAnimation";
 
 type SpeakingQuizProps = {
   currentSentenceNumber: number;
@@ -352,27 +353,7 @@ export default function SpeakingQuizComponent({
       )}
 
       {/* 카운트다운 UI */}
-      <AnimatePresence>
-        {isActive && (
-          <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
-            className={clsx(
-              "fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2 transform",
-              "flex h-32 w-32 items-center justify-center rounded-full bg-green-500/90 text-4xl font-bold text-white shadow-lg",
-            )}>
-            <motion.span
-              key={count}
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.5, opacity: 0 }}
-              transition={{ duration: 0.5 }}>
-              {count}
-            </motion.span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <CountdownUI isActive={isActive} count={count} />
 
       {sentenceData?.length === 0 ? (
         <div className="my-8 rounded-lg bg-gray-100 p-4 text-yellow-800">
