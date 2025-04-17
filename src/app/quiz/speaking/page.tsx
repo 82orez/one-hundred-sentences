@@ -559,7 +559,7 @@ export default function SpeakingPage() {
               )}
 
               {/* 피드백 영역 - 정답 or 오답 */}
-              <div className="mt-6 text-center">
+              <div className={clsx("mt-6 text-center", { hidden: isListening })}>
                 {feedback && (
                   <div
                     className={clsx(
