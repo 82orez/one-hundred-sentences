@@ -718,6 +718,7 @@ export type Database = {
           emailVerified: string | null
           id: string
           image: string | null
+          isApplyForTeacher: boolean
           name: string | null
           password: string | null
           phone: string | null
@@ -732,6 +733,7 @@ export type Database = {
           emailVerified?: string | null
           id: string
           image?: string | null
+          isApplyForTeacher?: boolean
           name?: string | null
           password?: string | null
           phone?: string | null
@@ -746,6 +748,7 @@ export type Database = {
           emailVerified?: string | null
           id?: string
           image?: string | null
+          isApplyForTeacher?: boolean
           name?: string | null
           password?: string | null
           phone?: string | null

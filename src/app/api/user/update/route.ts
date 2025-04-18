@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { realName, phone } = await req.json();
+    const { realName, phone, isApplyForTeacher } = await req.json();
 
     // 필수 정보 유효성 검사
     if (!realName || !phone) {
@@ -26,7 +26,11 @@ export async function POST(req: NextRequest) {
     // 사용자 정보 업데이트
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { realName, phone },
+      data: {
+        realName,
+        phone,
+        isApplyForTeacher: isApplyForTeacher !== undefined ? isApplyForTeacher : undefined,
+      },
     });
 
     return NextResponse.json({ message: "Profile updated successfully" });

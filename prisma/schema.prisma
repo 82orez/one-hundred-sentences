@@ -23,18 +23,19 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  password      String? // 이메일 회원가입 시 추가 부분
-  credentials   Boolean   @default(false) // 이메일로 회원가입할 때만 True
-  realName      String? // 추가 정보
-  phone         String? // 추가 정보
-  role          Role      @default(student) // 사용자 역할 추가
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id                String    @id @default(cuid())
+  name              String?
+  email             String    @unique
+  password          String? // 이메일 회원가입 시 추가 부분
+  credentials       Boolean   @default(false) // 이메일로 회원가입할 때만 True
+  realName          String? // 추가 정보
+  phone             String? // 추가 정보
+  role              Role      @default(student) // 사용자 역할 추가
+  isApplyForTeacher Boolean   @default(false)
+  emailVerified     DateTime?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
   // Optional for WebAuthn support
   // Authenticator Authenticator[]
 

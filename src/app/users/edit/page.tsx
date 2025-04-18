@@ -59,12 +59,16 @@ const EditProfilePage = () => {
   // 수정 후:
   const [realName, setRealName] = useState("");
   const [phone, setPhone] = useState("");
+  const [isApplyForTeacher, setIsApplyForTeacher] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
 
   // userInfo 가 로드된 후 상태 업데이트
   useEffect(() => {
     if (userInfo) {
       setRealName(userInfo.realName || "");
       setPhone(userInfo.phone || "");
+      setIsApplyForTeacher(userInfo.isApplyForTeacher || false);
+      setRole(userInfo.role || null);
     }
   }, [userInfo]);
 
@@ -98,7 +102,7 @@ const EditProfilePage = () => {
   // ✅ 정보 업데이트 Mutation
   const updateProfileMutation = useMutation({
     mutationFn: async () => {
-      return axios.post("/api/user/update", { realName, phone });
+      return axios.post("/api/user/update", { realName, phone, isApplyForTeacher });
     },
     onSuccess: () => {
       update({ realName, phone }); // 세션 업데이트 추가
@@ -175,6 +179,35 @@ const EditProfilePage = () => {
                   />
                 </div>
               </div>
+
+              {/* 강사 신청 여부 체크박스 - role이 student일 때만 표시 */}
+              {(role === "student" || role === "admin") && (
+                <div className="form-control mt-8">
+                  <label className="mb-2 text-lg font-semibold text-gray-700">강사 지원을 하시겠습니까?</label>
+                  <div className="mt-4 flex gap-4">
+                    <label className="label cursor-pointer">
+                      <span className="label-text mr-2 text-lg">예</span>
+                      <input
+                        type="radio"
+                        name="isApplyForTeacher"
+                        className="radio radio-primary"
+                        checked={isApplyForTeacher === true}
+                        onChange={() => setIsApplyForTeacher(true)}
+                      />
+                    </label>
+                    <label className="label cursor-pointer">
+                      <span className="label-text mr-2 text-lg">아니오</span>
+                      <input
+                        type="radio"
+                        name="isApplyForTeacher"
+                        className="radio radio-primary"
+                        checked={isApplyForTeacher === false}
+                        onChange={() => setIsApplyForTeacher(false)}
+                      />
+                    </label>
+                  </div>
+                </div>
+              )}
 
               {/* 에러 메시지 표시 */}
               {error && <p className="text-lg text-red-500">{error}</p>}
