@@ -66,7 +66,9 @@ export default function AdminPage() {
   return (
     <div className="relative flex h-screen flex-col bg-gray-100 md:flex-row">
       {/* 모바일 토글 버튼 */}
-      <button onClick={() => setSidebarOpen(!sidebarOpen)} className="absolute top-3.5 right-5 rounded-md p-2 text-gray-600 hover:bg-gray-100">
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="absolute top-3.5 right-5 rounded-md p-2 text-gray-600 hover:bg-gray-100 md:hidden">
         {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </button>
 
@@ -78,7 +80,9 @@ export default function AdminPage() {
         <div className="border-b border-gray-200 p-4 md:pt-6">
           <h2 className="text-2xl font-semibold text-gray-800">관리자 패널</h2>
           {/* 모바일 토글 버튼 */}
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="absolute top-3.5 right-5 rounded-md p-2 text-gray-600 hover:bg-gray-100">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="absolute top-3.5 right-5 rounded-md p-2 text-gray-600 hover:bg-gray-100 md:hidden">
             {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
