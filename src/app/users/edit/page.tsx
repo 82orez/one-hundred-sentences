@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { User } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
+import { queryClient } from "@/app/providers";
 
 // * DaisyUI Toast 를 위한 함수
 const showToast = (message: string, type: "success" | "error" = "success") => {
@@ -114,6 +115,23 @@ const EditProfilePage = () => {
     },
   });
 
+  // ✅ 강사 신청 취소 Mutation
+  const cancelTeacherApplicationMutation = useMutation({
+    mutationFn: async () => {
+      return axios.post("/api/user/cancel-teacher-application");
+    },
+    onSuccess: () => {
+      setIsApplyForTeacher(false); // 로컬 상태 업데이트
+      showToast("✅ 강사직 신청이 취소되었습니다.", "success");
+
+      // 사용자 정보를 다시 가져오기 위해 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["userProfile", session?.user?.id] });
+    },
+    onError: () => {
+      showToast("❌ 신청 취소 중 오류가 발생했습니다.", "error");
+    },
+  });
+
   // ✅ 저장 버튼 클릭 핸들러
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,7 +203,16 @@ const EditProfilePage = () => {
                 <div className="form-control mt-8">
                   <label className="mb-2 text-lg font-semibold text-gray-700">강사직 지원을 하시겠습니까?</label>
                   {userInfo?.isApplyForTeacher ? (
-                    <div className="mt-4 rounded-lg bg-blue-100 p-3 text-lg font-medium text-blue-800">현재 강사직 자격 심사 중입니다.</div>
+                    <div className="mt-4 flex items-center justify-between rounded-lg bg-blue-100 p-3">
+                      <span className="text-lg font-medium text-blue-800">현재 강사직 자격 심사 중입니다.</span>
+                      <button
+                        onClick={() => cancelTeacherApplicationMutation.mutate()}
+                        className="btn btn-error btn-sm"
+                        disabled={cancelTeacherApplicationMutation.isPending}
+                        type="button">
+                        {cancelTeacherApplicationMutation.isPending ? "취소 중..." : "신청 취소"}
+                      </button>
+                    </div>
                   ) : (
                     <div className="mt-4 flex gap-4">
                       <label className="label cursor-pointer">
