@@ -181,31 +181,35 @@ const EditProfilePage = () => {
               </div>
 
               {/* 강사 신청 여부 체크박스 - role이 student일 때만 표시 */}
-              {(role === "student" || role === "admin") && (
+              {role === "student" && (
                 <div className="form-control mt-8">
-                  <label className="mb-2 text-lg font-semibold text-gray-700">강사 지원을 하시겠습니까?</label>
-                  <div className="mt-4 flex gap-4">
-                    <label className="label cursor-pointer">
-                      <span className="label-text mr-2 text-lg">예</span>
-                      <input
-                        type="radio"
-                        name="isApplyForTeacher"
-                        className="radio radio-primary"
-                        checked={isApplyForTeacher === true}
-                        onChange={() => setIsApplyForTeacher(true)}
-                      />
-                    </label>
-                    <label className="label cursor-pointer">
-                      <span className="label-text mr-2 text-lg">아니오</span>
-                      <input
-                        type="radio"
-                        name="isApplyForTeacher"
-                        className="radio radio-primary"
-                        checked={isApplyForTeacher === false}
-                        onChange={() => setIsApplyForTeacher(false)}
-                      />
-                    </label>
-                  </div>
+                  <label className="mb-2 text-lg font-semibold text-gray-700">강사직 지원을 하시겠습니까?</label>
+                  {userInfo?.isApplyForTeacher ? (
+                    <div className="mt-4 rounded-lg bg-blue-100 p-3 text-lg font-medium text-blue-800">현재 강사직 자격 심사 중입니다.</div>
+                  ) : (
+                    <div className="mt-4 flex gap-4">
+                      <label className="label cursor-pointer">
+                        <span className="label-text mr-2 text-lg">예</span>
+                        <input
+                          type="radio"
+                          name="isApplyForTeacher"
+                          className="radio radio-primary"
+                          checked={isApplyForTeacher === true}
+                          onChange={() => setIsApplyForTeacher(true)}
+                        />
+                      </label>
+                      <label className="label cursor-pointer">
+                        <span className="label-text mr-2 text-lg">아니오</span>
+                        <input
+                          type="radio"
+                          name="isApplyForTeacher"
+                          className="radio radio-primary"
+                          checked={isApplyForTeacher === false}
+                          onChange={() => setIsApplyForTeacher(false)}
+                        />
+                      </label>
+                    </div>
+                  )}
                 </div>
               )}
 
