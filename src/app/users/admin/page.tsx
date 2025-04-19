@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { User, Users, BarChart3, Settings, Home, BookOpen, Menu, X, GraduationCap } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { queryClient } from "@/app/providers";
 
 // Chart 등록
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -54,7 +55,6 @@ export default function AdminPage() {
     ],
   };
 
-  // ✅ 기존 가상 데이터 대신 실제 데이터를 불러오는 부분 수정
   // ✅ 강사 신청자 목록 조회
   const {
     data: teacherApplications,
@@ -68,7 +68,7 @@ export default function AdminPage() {
     },
   });
 
-  // ✅ 등록된 강사 목록
+  // ✅ 등록된 강사 목록 조회
   const {
     data: teachers,
     isLoading: isLoadingTeachers,
@@ -97,27 +97,33 @@ export default function AdminPage() {
   };
 
   // ✅ 강사 신청 승인 함수
-  const approveTeacherApplication = async (userId) => {
-    try {
-      await axios.post("/api/admin/teacher-approve", { userId });
+  const approveTeacherApplication = useMutation({
+    mutationFn: async (userId) => {
+      return axios.post("/api/admin/teacher-approve", { userId });
+    },
+    onSuccess: () => {
       // 데이터 다시 불러오기
-      refetchApplications();
-      refetchTeachers();
-    } catch (error) {
+      queryClient.invalidateQueries({ queryKey: ["teacherApplications"] });
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
+    },
+    onError: (error) => {
       console.error("강사 승인 중 오류 발생:", error);
-    }
-  };
+    },
+  });
 
   // ✅ 강사 신청 거절 함수
-  const rejectTeacherApplication = async (userId) => {
-    try {
-      await axios.post("/api/admin/teacher-reject", { userId });
+  const rejectTeacherApplication = useMutation({
+    mutationFn: async (userId) => {
+      return axios.post("/api/admin/teacher-reject", { userId });
+    },
+    onSuccess: () => {
       // 데이터 다시 불러오기
-      refetchApplications();
-    } catch (error) {
+      queryClient.invalidateQueries({ queryKey: ["teacherApplications"] });
+    },
+    onError: (error) => {
       console.error("강사 거절 중 오류 발생:", error);
-    }
-  };
+    },
+  });
 
   // 태블릿/모바일에서 사이드바 선택 후 닫기
   const handleMobileNavigation = (tab) => {
@@ -397,12 +403,12 @@ export default function AdminPage() {
                               </td>
                               <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
                                 <button
-                                  onClick={() => approveTeacherApplication(application.id)}
+                                  onClick={() => approveTeacherApplication.mutate(application.id)}
                                   className="mr-2 rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600">
                                   승인
                                 </button>
                                 <button
-                                  onClick={() => rejectTeacherApplication(application.id)}
+                                  onClick={() => rejectTeacherApplication.mutate(application.id)}
                                   className="rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600">
                                   거절
                                 </button>
