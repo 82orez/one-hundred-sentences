@@ -469,12 +469,40 @@ export default function SpeakingQuizComponent({
                 </button>
 
                 {/* 음성 파형 부분 */}
-                <AudioWaveform isActive={isListening} />
+                {/* 음성 인식 중일 때만 모달 표시 */}
+                <AnimatePresence>
+                  {isListening && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/40">
+                      {/* 모달 컨텐츠 */}
+                      <motion.div
+                        className="flex flex-col items-center justify-center rounded-lg bg-black/50 p-8 shadow-lg"
+                        initial={{ scale: 0.9 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0.9 }}>
+                        {/* 음성 파형 부분 - 중앙 배치 */}
+                        <div className="mb-0">
+                          <AudioWaveform isActive={isListening} />
+                        </div>
+                      </motion.div>
 
-                <button onClick={stopListening} className={clsx("mt-8 flex items-center justify-center gap-2", { hidden: !isListening || isActive })}>
-                  <MdOutlineCancel size={24} className="" />
-                  <span>말하기 취소</span>
-                </button>
+                      {/* 말하기 취소 버튼 - 하단부 배치 */}
+                      <motion.button
+                        onClick={stopListening}
+                        className="fixed bottom-10 mx-auto mt-8 flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 font-medium shadow-lg"
+                        initial={{ y: 50, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 50, opacity: 0 }}
+                        transition={{ delay: 0.2 }}>
+                        <MdOutlineCancel size={24} className="text-red-500" />
+                        <span>말하기 취소</span>
+                      </motion.button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* 사용자가 말한 내용 */}
