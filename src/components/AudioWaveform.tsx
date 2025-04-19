@@ -107,7 +107,7 @@ const AudioWaveform: React.FC<AudioWaveformProps> = ({ isActive }) => {
           key={index}
           animate={{ height: `${getWeightedHeight(level, index) * 6}px` }}
           transition={{ duration: 0.1 }}
-          className="w-1 rounded-full bg-white"
+          className="w-1 rounded-full bg-black"
         />
       ))}
     </div>

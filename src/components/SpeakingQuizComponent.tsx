@@ -468,6 +468,8 @@ export default function SpeakingQuizComponent({
                   )}
                 </button>
 
+                <AudioWaveform isActive={isListening} />
+
                 <button onClick={stopListening} className={clsx("mt-8 flex items-center justify-center gap-2", { hidden: !isListening || isActive })}>
                   <MdOutlineCancel size={24} className="" />
                   <span>말하기 취소</span>
