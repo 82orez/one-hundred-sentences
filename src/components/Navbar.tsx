@@ -66,20 +66,21 @@ export default function Navbar() {
           <>
             {/* 이 부분은 navbar 메뉴 영역*/}
             {isAdmin && (
-              <div>
+              <>
                 <Link
                   href="/users/admin"
                   className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
                   onClick={() => setMenuOpen(false)}>
                   Admin
                 </Link>
+
                 <Link
                   href="/dashboard"
                   className={clsx("hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block")}
                   onClick={() => setMenuOpen(false)}>
                   대시보드
                 </Link>
-              </div>
+              </>
             )}
 
             {/* 아래는 드롭다운 버튼 영역 */}
