@@ -85,10 +85,30 @@ const AudioWaveform: React.FC<AudioWaveformProps> = ({ isActive }) => {
     }
   }, [isActive]);
 
+  // 파형을 좌우대칭으로 생성
+  const symmetricLevels = [...levels.slice().reverse(), ...levels];
+
+  // 중앙으로 갈수록 높아지는 가중치 적용
+  const getWeightedHeight = (level: number, index: number) => {
+    const centerIndex = symmetricLevels.length / 2;
+    const distanceFromCenter = Math.abs(index - centerIndex);
+    const maxDistance = centerIndex;
+
+    // 중앙에 가까울수록 가중치 증가
+    const centerWeight = 1.5 - (distanceFromCenter / maxDistance) * 0.5;
+
+    return level * centerWeight;
+  };
+
   return (
-    <div className="flex h-6 items-center justify-center gap-1">
-      {levels.map((level, index) => (
-        <motion.div key={index} animate={{ height: `${level * 3}px` }} transition={{ duration: 0.1 }} className="w-1 rounded-full bg-black" />
+    <div className="flex h-16 items-center justify-center gap-1">
+      {symmetricLevels.map((level, index) => (
+        <motion.div
+          key={index}
+          animate={{ height: `${getWeightedHeight(level, index) * 6}px` }}
+          transition={{ duration: 0.1 }}
+          className="w-1 rounded-full bg-black"
+        />
       ))}
     </div>
   );
