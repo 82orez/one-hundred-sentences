@@ -476,8 +476,8 @@ export default function AdminPage() {
                               <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.role}</td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <span
-                                  className={`inline-flex rounded-lg p-2 text-sm leading-5 font-semibold ${
-                                    teacher.status === "active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                                  className={`inline-flex rounded-lg px-3 py-2 text-sm leading-5 font-semibold ${
+                                    teacher.status === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
                                   }`}>
                                   {teacher.status === "active" ? "활성화 됨" : "비활성 상태"}
                                 </span>
@@ -485,9 +485,9 @@ export default function AdminPage() {
                               <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
                                 <button
                                   onClick={() => toggleTeacherStatus(teacher.id, teacher.status)}
-                                  className={`mr-2 rounded px-3 py-1 ${
+                                  className={`mr-2 rounded px-3 py-2 ${
                                     teacher.status === "active"
-                                      ? "bg-red-500 text-white hover:bg-red-600"
+                                      ? "bg-yellow-400 text-white hover:bg-yellow-500"
                                       : "bg-green-500 text-white hover:bg-green-600"
                                   }`}>
                                   {teacher.status === "active" ? "비활성화" : "활성화"}
@@ -498,7 +498,7 @@ export default function AdminPage() {
                                       deleteTeacher.mutate(teacher.userId);
                                     }
                                   }}
-                                  className="rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600">
+                                  className="rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600">
                                   삭제
                                 </button>
                               </td>
