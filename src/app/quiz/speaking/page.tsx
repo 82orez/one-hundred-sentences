@@ -17,6 +17,7 @@ import { MdOutlineCancel, MdOutlineFavorite } from "react-icons/md";
 import { queryClient } from "@/app/providers";
 import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 import CountdownUI from "@/components/CountdownAnimation";
+import AudioWaveform from "@/components/AudioWaveform";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -565,6 +566,9 @@ export default function SpeakingPage() {
                     </>
                   )}
                 </button>
+
+                {/* 음성 파형 부분 */}
+                <AudioWaveform isActive={isListening} />
 
                 <button onClick={stopListening} className={clsx("mt-8 flex items-center justify-center gap-2", { hidden: !isListening })}>
                   <MdOutlineCancel size={24} className="" />
