@@ -18,6 +18,7 @@ import { queryClient } from "@/app/providers";
 import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 import { motion, AnimatePresence } from "framer-motion";
 import CountdownUI from "@/components/CountdownAnimation";
+import AudioWaveform from "@/components/AudioWaveform";
 
 type SpeakingQuizProps = {
   currentSentenceNumber: number;
@@ -466,6 +467,9 @@ export default function SpeakingQuizComponent({
                     </>
                   )}
                 </button>
+
+                {/* 음성 파형 부분 */}
+                <AudioWaveform isActive={isListening} />
 
                 <button onClick={stopListening} className={clsx("mt-8 flex items-center justify-center gap-2", { hidden: !isListening || isActive })}>
                   <MdOutlineCancel size={24} className="" />
