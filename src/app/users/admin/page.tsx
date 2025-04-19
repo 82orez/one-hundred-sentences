@@ -448,13 +448,16 @@ export default function AdminPage() {
                         <thead className="bg-gray-50">
                           <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                              ID
+                              User ID
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                               이름
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                               이메일
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              전화번호
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                               전문 분야
@@ -473,6 +476,7 @@ export default function AdminPage() {
                               <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.id}</td>
                               <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{teacher.realName}</td>
                               <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.email}</td>
+                              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.phone || "-"}</td>
                               <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.role}</td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <span
@@ -485,7 +489,7 @@ export default function AdminPage() {
                               <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
                                 <button
                                   onClick={() => toggleTeacherStatus(teacher.id, teacher.status)}
-                                  className={`mr-2 rounded px-3 py-2 ${
+                                  className={`mr-4 rounded px-3 py-2 ${
                                     teacher.status === "active"
                                       ? "bg-yellow-400 text-white hover:bg-yellow-500"
                                       : "bg-green-500 text-white hover:bg-green-600"
