@@ -686,6 +686,47 @@ export type Database = {
           },
         ]
       }
+      Teachers: {
+        Row: {
+          createdAt: string
+          email: string
+          id: string
+          phone: string | null
+          realName: string
+          status: string
+          updatedAt: string
+          userId: string
+        }
+        Insert: {
+          createdAt?: string
+          email: string
+          id: string
+          phone?: string | null
+          realName: string
+          status?: string
+          updatedAt: string
+          userId: string
+        }
+        Update: {
+          createdAt?: string
+          email?: string
+          id?: string
+          phone?: string | null
+          realName?: string
+          status?: string
+          updatedAt?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Teachers_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       unitSubject: {
         Row: {
           id: string

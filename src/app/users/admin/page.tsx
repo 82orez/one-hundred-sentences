@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
-import { User, Users, BarChart3, Settings, Home, BookOpen, Menu, X } from "lucide-react";
+import { User, Users, BarChart3, Settings, Home, BookOpen, Menu, X, GraduationCap } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 // Chart 등록
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -31,6 +33,8 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const router = useRouter();
   const [users, setUsers] = useState(MOCK_USERS);
+  // const [teachers, setTeachers] = useState(MOCK_Teachers);
+  // const [teacherApplications, setTeacherApplications] = useState(MOCK_TEACHER_APPLICATIONS);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // 가상 통계 데이터
@@ -50,9 +54,69 @@ export default function AdminPage() {
     ],
   };
 
-  // 사용자 상태 변경 함수
-  const toggleUserStatus = (userId) => {
-    setUsers(users.map((user) => (user.id === userId ? { ...user, status: user.status === "활성" ? "비활성" : "활성" } : user)));
+  // ✅ 기존 가상 데이터 대신 실제 데이터를 불러오는 부분 수정
+  // ✅ 강사 신청자 목록 조회
+  const {
+    data: teacherApplications,
+    isLoading: isLoadingApplications,
+    refetch: refetchApplications,
+  } = useQuery({
+    queryKey: ["teacherApplications"],
+    queryFn: async () => {
+      const res = await axios.get("/api/admin/teacher-applications");
+      return res.data;
+    },
+  });
+
+  // ✅ 등록된 강사 목록
+  const {
+    data: teachers,
+    isLoading: isLoadingTeachers,
+    refetch: refetchTeachers,
+  } = useQuery({
+    queryKey: ["teachers"],
+    queryFn: async () => {
+      const res = await axios.get("/api/admin/get-teachers");
+      return res.data;
+    },
+  });
+
+  // ✅ 강사 상태 변경 함수
+  const toggleTeacherStatus = async (teacherId, currentStatus) => {
+    try {
+      const newStatus = currentStatus === "active" ? "inactive" : "active";
+      await axios.post("/api/admin/toggle-teacher-status", {
+        teacherId,
+        status: newStatus,
+      });
+      // 데이터 다시 불러오기
+      refetchTeachers();
+    } catch (error) {
+      console.error("강사 상태 변경 중 오류 발생:", error);
+    }
+  };
+
+  // ✅ 강사 신청 승인 함수
+  const approveTeacherApplication = async (userId) => {
+    try {
+      await axios.post("/api/admin/teacher-approve", { userId });
+      // 데이터 다시 불러오기
+      refetchApplications();
+      refetchTeachers();
+    } catch (error) {
+      console.error("강사 승인 중 오류 발생:", error);
+    }
+  };
+
+  // ✅ 강사 신청 거절 함수
+  const rejectTeacherApplication = async (userId) => {
+    try {
+      await axios.post("/api/admin/teacher-reject", { userId });
+      // 데이터 다시 불러오기
+      refetchApplications();
+    } catch (error) {
+      console.error("강사 거절 중 오류 발생:", error);
+    }
   };
 
   // 태블릿/모바일에서 사이드바 선택 후 닫기
@@ -116,6 +180,16 @@ export default function AdminPage() {
                 }`}>
                 <Users className="mr-3 h-5 w-5" />
                 <span>사용자 관리</span>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => handleMobileNavigation("teachers")}
+                className={`flex w-full items-center rounded-lg px-4 py-2 ${
+                  activeTab === "teachers" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-100"
+                }`}>
+                <GraduationCap className="mr-3 h-5 w-5" />
+                <span>강사 관리</span>
               </button>
             </li>
             <li>
@@ -196,7 +270,7 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/*강좌 관리 탭 콘텐츠 추가 */}
+          {/* 강좌 관리 탭 콘텐츠 추가 */}
           {activeTab === "courses" && (
             <div>
               <h2 className="mb-6 text-2xl font-bold">강좌 관리</h2>
@@ -210,6 +284,7 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* 사용자 관리 탭 콘텐츠 추가 */}
           {activeTab === "users" && (
             <div>
               <h2 className="mb-6 text-2xl font-bold">사용자 관리</h2>
@@ -255,7 +330,7 @@ export default function AdminPage() {
                           </td>
                           <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
                             <button
-                              onClick={() => toggleUserStatus(user.id)}
+                              // onClick={() => toggleUserStatus(user.id)}
                               className={`mr-2 rounded px-3 py-1 ${
                                 user.status === "활성" ? "bg-red-500 text-white hover:bg-red-600" : "bg-green-500 text-white hover:bg-green-600"
                               }`}>
@@ -272,6 +347,145 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* 강사 관리 탭 */}
+          {activeTab === "teachers" && (
+            <div>
+              <h2 className="mb-6 text-2xl font-bold">강사 관리</h2>
+
+              {/* 첫번째 섹션: 강사 신청 목록 */}
+              <div className="mb-8">
+                <h3 className="mb-4 text-xl font-semibold">강사 신청 목록</h3>
+                <div className="overflow-hidden rounded-lg bg-white shadow-md">
+                  <div className="overflow-x-auto">
+                    {teacherApplications.length === 0 ? (
+                      <div className="p-6 text-center text-gray-500">현재 강사 신청이 없습니다.</div>
+                    ) : (
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              ID
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              이름
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              이메일
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              연락처
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              상태
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              작업
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200 bg-white">
+                          {teacherApplications.map((application) => (
+                            <tr key={application.id}>
+                              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{application.id}</td>
+                              <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{application.realName}</td>
+                              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{application.email}</td>
+                              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{application.phone}</td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <span className="inline-flex rounded-full bg-yellow-100 px-2 text-xs leading-5 font-semibold text-yellow-800">
+                                  {application.status}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
+                                <button
+                                  onClick={() => approveTeacherApplication(application.id)}
+                                  className="mr-2 rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600">
+                                  승인
+                                </button>
+                                <button
+                                  onClick={() => rejectTeacherApplication(application.id)}
+                                  className="rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600">
+                                  거절
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* 두번째 섹션: 승인된 강사 목록 */}
+              <div>
+                <h3 className="mb-4 text-xl font-semibold">강사 목록</h3>
+                <div className="overflow-hidden rounded-lg bg-white shadow-md">
+                  <div className="overflow-x-auto">
+                    {teachers.length === 0 ? (
+                      <div className="p-6 text-center text-gray-500">승인된 강사가 없습니다.</div>
+                    ) : (
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              ID
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              이름
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              이메일
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              전문 분야
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              상태
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                              작업
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200 bg-white">
+                          {teachers.map((teacher) => (
+                            <tr key={teacher.id}>
+                              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.id}</td>
+                              <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{teacher.realName}</td>
+                              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.email}</td>
+                              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.role}</td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <span
+                                  className={`inline-flex rounded-lg p-2 text-sm leading-5 font-semibold ${
+                                    teacher.status === "active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                                  }`}>
+                                  {teacher.status === "active" ? "활성화 됨" : "비활성 상태"}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
+                                <button
+                                  onClick={() => toggleTeacherStatus(teacher.id, teacher.status)}
+                                  className={`mr-2 rounded px-3 py-1 ${
+                                    teacher.status === "active"
+                                      ? "bg-red-500 text-white hover:bg-red-600"
+                                      : "bg-green-500 text-white hover:bg-green-600"
+                                  }`}>
+                                  {teacher.status === "active" ? "비활성화" : "활성화"}
+                                </button>
+                                <button className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">수정</button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 통계 관리 탭 콘텐츠 추가 */}
           {activeTab === "statistics" && (
             <div>
               <h2 className="mb-6 text-2xl font-bold">통계</h2>

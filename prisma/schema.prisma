@@ -54,6 +54,7 @@ model User {
   YouTubeViewAttempt YouTubeViewAttempt[]
   favoriteSentence   favoriteSentence[]
   NativeAudioAttempt NativeAudioAttempt[]
+  Teachers           Teachers?
 }
 
 model Account {
@@ -339,4 +340,18 @@ model Progress {
 
   // 관계 설정
   enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+}
+
+model Teachers {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  realName  String
+  email     String   @unique
+  phone     String?
+  status    String   @default("active") // active 또는 inactive
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 관계 설정
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
