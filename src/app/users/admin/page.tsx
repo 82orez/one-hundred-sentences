@@ -125,6 +125,20 @@ export default function AdminPage() {
     },
   });
 
+  // ✅ 강사 삭제 함수
+  const deleteTeacher = useMutation({
+    mutationFn: async (userId) => {
+      return axios.delete(`/api/admin/delete-teacher?userId=${userId}`);
+    },
+    onSuccess: () => {
+      // 데이터 다시 불러오기
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
+    },
+    onError: (error) => {
+      console.error("강사 삭제 중 오류 발생:", error);
+    },
+  });
+
   // 태블릿/모바일에서 사이드바 선택 후 닫기
   const handleMobileNavigation = (tab) => {
     setActiveTab(tab);
@@ -478,7 +492,15 @@ export default function AdminPage() {
                                   }`}>
                                   {teacher.status === "active" ? "비활성화" : "활성화"}
                                 </button>
-                                <button className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">수정</button>
+                                <button
+                                  onClick={() => {
+                                    if (window.confirm("정말로 삭제하시겠습니까?")) {
+                                      deleteTeacher.mutate(teacher.userId);
+                                    }
+                                  }}
+                                  className="rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600">
+                                  삭제
+                                </button>
                               </td>
                             </tr>
                           ))}
