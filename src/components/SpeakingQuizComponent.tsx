@@ -510,11 +510,6 @@ export default function SpeakingQuizComponent({
                     </motion.div>
                   )}
                 </AnimatePresence>
-
-                <button onClick={stopListening} className={clsx("mt-8 flex items-center justify-center gap-2", { hidden: !isListening || isActive })}>
-                  <MdOutlineCancel size={24} className="" />
-                  <span>말하기 취소</span>
-                </button>
               </div>
 
               {/* 사용자가 말한 내용 */}

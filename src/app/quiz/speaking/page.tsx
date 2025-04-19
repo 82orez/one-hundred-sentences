@@ -568,24 +568,32 @@ export default function SpeakingPage() {
                   )}
                 </button>
 
-                {/* 음성 파형 부분 */}
                 <AnimatePresence>
                   {isListening && (
                     <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/40">
-                      {/* 모달 컨텐츠 */}
+                      key="listening-modal"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.3 }}
+                      className="bg-opacity-40 fixed inset-0 z-50 flex items-center justify-center bg-black/50">
                       <motion.div
-                        className="flex flex-col items-center justify-center rounded-lg bg-black/50 p-8 shadow-lg"
-                        initial={{ scale: 0.9 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0.9 }}>
-                        {/* 음성 파형 부분 - 중앙 배치 */}
-                        <div className="mb-0">
-                          <AudioWaveform isActive={isListening} />
-                        </div>
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 30 }}
+                        transition={{ duration: 0.3 }}
+                        className="flex flex-col items-center justify-center rounded-xl bg-white px-8 py-6 shadow-lg">
+                        <div className="mb-4 text-lg font-semibold text-gray-800">음성 인식 중입니다.</div>
+
+                        {/* 마이크 애니메이션 */}
+                        <motion.div
+                          animate={{ scale: [1, 1.3, 1] }}
+                          transition={{ repeat: Infinity, duration: 1.2 }}
+                          className="rounded-full bg-red-200 p-4 shadow-inner">
+                          <FaMicrophone className="text-3xl text-red-600" />
+                        </motion.div>
+
+                        <p className="text-md mt-4 text-gray-600">말씀해 주세요!</p>
                       </motion.div>
 
                       {/* 말하기 취소 버튼 - 하단부 배치 */}
