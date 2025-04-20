@@ -196,8 +196,10 @@ export default function AdminPage() {
                       <User className="text-blue-500" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">총 사용자</p>
-                      <p className="text-2xl font-semibold">{users.length}</p>
+                      <Link href={"/users/admin/teachers"}>
+                        <p className="text-sm text-gray-500">강사 신청 대기 중</p>
+                        <p className="text-2xl font-semibold">{teacherApplications?.length || 0}</p>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -253,21 +255,21 @@ export default function AdminPage() {
               <h2 className="mb-6 text-2xl font-bold">강사 관리</h2>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <div className="rounded-lg bg-white p-6 shadow-md">
-                  <h3 className="mb-4 text-lg font-semibold">강사 신청</h3>
+                  <h3 className="mb-4 text-lg font-semibold">강사 신청 대기 중</h3>
                   <p className="text-3xl font-bold">{teacherApplications?.length || 0}</p>
-                  <p className="text-gray-500">대기 중인 강사 신청</p>
+                  <p className="mt-4 text-gray-500">대기 중인 강사 신청</p>
                 </div>
 
                 <div className="rounded-lg bg-white p-6 shadow-md">
                   <h3 className="mb-4 text-lg font-semibold">현재 강사</h3>
                   <p className="text-3xl font-bold">{teachers?.filter((t) => t.isActive).length || 0}</p>
-                  <p className="text-gray-500">활성화된 강사</p>
+                  <p className="mt-4 text-gray-500">활성화된 강사</p>
                 </div>
 
                 <div className="rounded-lg bg-white p-6 shadow-md">
                   <h3 className="mb-4 text-lg font-semibold">비활성 강사</h3>
                   <p className="text-3xl font-bold">{teachers?.filter((t) => !t.isActive).length || 0}</p>
-                  <p className="text-gray-500">비활성화된 강사</p>
+                  <p className="mt-4 text-gray-500">비활성화된 강사</p>
                 </div>
               </div>
 
