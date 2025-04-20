@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
     // 해당 사용자 정보 조회
     const user = await prisma.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
     });
 
     if (!user) {
@@ -38,18 +38,18 @@ export async function POST(req: Request) {
         where: { id: userId },
         data: {
           role: "teacher",
-          isApplyForTeacher: false
-        }
+          isApplyForTeacher: false,
+        },
       });
 
-      // 2. Teachers 테이블에 데이터 생성
+      // 2. Teachers 테이블에 데이터 생성 (isActive는 기본값 false)
       const newTeacher = await tx.teachers.create({
         data: {
           userId: userId,
           realName: user.realName || "",
           email: user.email,
-          phone: user.phone
-        }
+          phone: user.phone,
+        },
       });
 
       return { updatedUser, newTeacher };
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       message: "강사 승인이 완료되었습니다",
-      data: result
+      data: result,
     });
   } catch (error) {
     console.error("강사 승인 처리 중 오류 발생:", error);

@@ -691,9 +691,9 @@ export type Database = {
           createdAt: string
           email: string
           id: string
+          isActive: boolean
           phone: string | null
           realName: string
-          status: string
           updatedAt: string
           userId: string
         }
@@ -701,9 +701,9 @@ export type Database = {
           createdAt?: string
           email: string
           id: string
+          isActive?: boolean
           phone?: string | null
           realName: string
-          status?: string
           updatedAt: string
           userId: string
         }
@@ -711,9 +711,9 @@ export type Database = {
           createdAt?: string
           email?: string
           id?: string
+          isActive?: boolean
           phone?: string | null
           realName?: string
-          status?: string
           updatedAt?: string
           userId?: string
         }

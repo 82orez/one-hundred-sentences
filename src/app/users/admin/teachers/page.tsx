@@ -36,12 +36,11 @@ export default function TeachersManagementPage() {
   });
 
   // 강사 상태 변경 함수
-  const toggleTeacherStatus = async (teacherId, currentStatus) => {
+  const toggleTeacherStatus = async (teacherId, currentIsActive) => {
     try {
-      const newStatus = currentStatus === "active" ? "inactive" : "active";
       await axios.post("/api/admin/toggle-teacher-status", {
         teacherId,
-        status: newStatus,
+        isActive: !currentIsActive, // 현재 상태의 반대값으로 변경
       });
       // 데이터 다시 불러오기
       refetchTeachers();
@@ -212,20 +211,18 @@ export default function TeachersManagementPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex rounded-lg px-3 py-2 text-sm leading-5 font-semibold ${
-                            teacher.status === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                            teacher.isActive ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
                           }`}>
-                          {teacher.status === "active" ? "활성화 됨" : "비활성 상태"}
+                          {teacher.isActive ? "활성화 됨" : "비활성 상태"}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
                         <button
-                          onClick={() => toggleTeacherStatus(teacher.id, teacher.status)}
+                          onClick={() => toggleTeacherStatus(teacher.id, teacher.isActive)}
                           className={`mr-4 rounded px-3 py-2 ${
-                            teacher.status === "active"
-                              ? "bg-yellow-400 text-white hover:bg-yellow-500"
-                              : "bg-green-500 text-white hover:bg-green-600"
+                            teacher.isActive ? "bg-yellow-400 text-white hover:bg-yellow-500" : "bg-green-500 text-white hover:bg-green-600"
                           }`}>
-                          {teacher.status === "active" ? "비활성화" : "활성화"}
+                          {teacher.isActive ? "비활성화" : "활성화"}
                         </button>
                         <button
                           onClick={() => {

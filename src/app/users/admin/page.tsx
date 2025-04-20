@@ -247,6 +247,38 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* 강사 관리 탭 */}
+          {activeTab === "teachers" && (
+            <div>
+              <h2 className="mb-6 text-2xl font-bold">강사 관리</h2>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                <div className="rounded-lg bg-white p-6 shadow-md">
+                  <h3 className="mb-4 text-lg font-semibold">강사 신청</h3>
+                  <p className="text-3xl font-bold">{teacherApplications?.length || 0}</p>
+                  <p className="text-gray-500">대기 중인 강사 신청</p>
+                </div>
+
+                <div className="rounded-lg bg-white p-6 shadow-md">
+                  <h3 className="mb-4 text-lg font-semibold">현재 강사</h3>
+                  <p className="text-3xl font-bold">{teachers?.filter((t) => t.isActive).length || 0}</p>
+                  <p className="text-gray-500">활성화된 강사</p>
+                </div>
+
+                <div className="rounded-lg bg-white p-6 shadow-md">
+                  <h3 className="mb-4 text-lg font-semibold">비활성 강사</h3>
+                  <p className="text-3xl font-bold">{teachers?.filter((t) => !t.isActive).length || 0}</p>
+                  <p className="text-gray-500">비활성화된 강사</p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-center">
+                <Link href="/users/admin/teachers" className="rounded-md bg-blue-500 px-6 py-3 text-white hover:bg-blue-600">
+                  강사 관리 페이지로 이동
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* 사용자 관리 탭 콘텐츠 추가 */}
           {activeTab === "users" && (
             <div>
@@ -306,38 +338,6 @@ export default function AdminPage() {
                     </tbody>
                   </table>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* 강사 관리 탭 */}
-          {activeTab === "teachers" && (
-            <div>
-              <h2 className="mb-6 text-2xl font-bold">강사 관리</h2>
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                <div className="rounded-lg bg-white p-6 shadow-md">
-                  <h3 className="mb-4 text-lg font-semibold">강사 신청</h3>
-                  <p className="text-3xl font-bold">{teacherApplications?.length || 0}</p>
-                  <p className="text-gray-500">대기 중인 강사 신청</p>
-                </div>
-
-                <div className="rounded-lg bg-white p-6 shadow-md">
-                  <h3 className="mb-4 text-lg font-semibold">현재 강사</h3>
-                  <p className="text-3xl font-bold">{teachers?.filter((t) => t.status === "active").length || 0}</p>
-                  <p className="text-gray-500">활성화된 강사</p>
-                </div>
-
-                <div className="rounded-lg bg-white p-6 shadow-md">
-                  <h3 className="mb-4 text-lg font-semibold">비활성 강사</h3>
-                  <p className="text-3xl font-bold">{teachers?.filter((t) => t.status !== "active").length || 0}</p>
-                  <p className="text-gray-500">비활성화된 강사</p>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-center">
-                <Link href="/users/admin/teachers" className="rounded-md bg-blue-500 px-6 py-3 text-white hover:bg-blue-600">
-                  강사 관리 페이지로 이동
-                </Link>
               </div>
             </div>
           )}

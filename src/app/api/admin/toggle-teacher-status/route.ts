@@ -13,22 +13,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "관리자 권한이 필요합니다" }, { status: 403 });
     }
 
-    const { teacherId, status } = await req.json();
-    if (!teacherId || (status !== "active" && status !== "inactive")) {
-      return NextResponse.json({ error: "강사 ID와 유효한 상태가 필요합니다" }, { status: 400 });
+    const { teacherId, isActive } = await req.json();
+    if (!teacherId || typeof isActive !== "boolean") {
+      return NextResponse.json({ error: "강사 ID와 유효한 상태값이 필요합니다" }, { status: 400 });
     }
 
     // 강사 상태 변경
     const updatedTeacher = await prisma.teachers.update({
       where: { id: teacherId },
       data: {
-        status: status
-      }
+        isActive: isActive,
+      },
     });
 
     return NextResponse.json({
-      message: `강사 상태가 ${status === "active" ? "활성화" : "비활성화"}되었습니다`,
-      data: updatedTeacher
+      message: `강사 상태가 ${isActive ? "활성화" : "비활성화"}되었습니다`,
+      data: updatedTeacher,
     });
   } catch (error) {
     console.error("강사 상태 변경 중 오류 발생:", error);

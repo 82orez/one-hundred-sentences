@@ -348,7 +348,7 @@ model Teachers {
   realName  String
   email     String   @unique
   phone     String?
-  status    String   @default("active") // active 또는 inactive
+  isActive  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
