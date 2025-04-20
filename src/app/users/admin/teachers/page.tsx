@@ -190,7 +190,10 @@ export default function TeachersManagementPage() {
                       전화번호
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                      전문 분야
+                      국적
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                      과목
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                       상태
@@ -207,7 +210,8 @@ export default function TeachersManagementPage() {
                       <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{teacher.realName}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.email}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.phone || "-"}</td>
-                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.role}</td>
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.nation || "-"}</td>
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.subject}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex rounded-lg px-3 py-2 text-sm leading-5 font-semibold ${

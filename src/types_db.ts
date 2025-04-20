@@ -692,8 +692,10 @@ export type Database = {
           email: string
           id: string
           isActive: boolean
-          phone: string | null
+          nation: Database["public"]["Enums"]["Nation"]
+          phone: string
           realName: string
+          subject: Database["public"]["Enums"]["Subject"]
           updatedAt: string
           userId: string
         }
@@ -702,8 +704,10 @@ export type Database = {
           email: string
           id: string
           isActive?: boolean
-          phone?: string | null
+          nation?: Database["public"]["Enums"]["Nation"]
+          phone: string
           realName: string
+          subject?: Database["public"]["Enums"]["Subject"]
           updatedAt: string
           userId: string
         }
@@ -712,8 +716,10 @@ export type Database = {
           email?: string
           id?: string
           isActive?: boolean
-          phone?: string | null
+          nation?: Database["public"]["Enums"]["Nation"]
+          phone?: string
           realName?: string
+          subject?: Database["public"]["Enums"]["Subject"]
           updatedAt?: string
           userId?: string
         }
@@ -894,7 +900,9 @@ export type Database = {
     }
     Enums: {
       EnrollmentStatus: "pending" | "active" | "completed" | "dropped"
+      Nation: "KR" | "PH"
       Role: "admin" | "semiAdmin" | "teacher" | "student"
+      Subject: "en" | "ja" | "ko" | "zh"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1011,7 +1019,9 @@ export const Constants = {
   public: {
     Enums: {
       EnrollmentStatus: ["pending", "active", "completed", "dropped"],
+      Nation: ["KR", "PH"],
       Role: ["admin", "semiAdmin", "teacher", "student"],
+      Subject: ["en", "ja", "ko", "zh"],
     },
   },
 } as const

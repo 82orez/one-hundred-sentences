@@ -342,13 +342,28 @@ model Progress {
   enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
 }
 
+enum Nation {
+  KR
+  PH
+}
+
+enum Subject {
+  en
+  ja
+  ko
+  zh // 중국어
+}
+
 model Teachers {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  realName  String
-  email     String   @unique
-  phone     String?
-  isActive  Boolean  @default(false)
+  id       String  @id @default(cuid())
+  userId   String  @unique
+  realName String
+  email    String  @unique
+  phone    String
+  nation   Nation  @default(KR)
+  subject  Subject @default(en)
+  isActive Boolean @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
