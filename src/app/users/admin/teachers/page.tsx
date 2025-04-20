@@ -178,7 +178,7 @@ export default function TeachersManagementPage() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                      User ID
+                      등록일자
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                       이름
@@ -206,7 +206,16 @@ export default function TeachersManagementPage() {
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {teachers?.map((teacher) => (
                     <tr key={teacher.id}>
-                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.id}</td>
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
+                        {new Date(teacher.createdAt).toLocaleString("ko-KR", {
+                          timeZone: "Asia/Seoul",
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </td>
                       <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{teacher.realName}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.email}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.phone || "-"}</td>
