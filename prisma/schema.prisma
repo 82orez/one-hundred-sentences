@@ -364,6 +364,9 @@ model Teachers {
   subject  Subject @default(en)
   isActive Boolean @default(false)
 
+  zoomInviteLinkUrl String?
+  teacherImgUrl     String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

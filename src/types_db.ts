@@ -696,8 +696,10 @@ export type Database = {
           phone: string
           realName: string
           subject: Database["public"]["Enums"]["Subject"]
+          teacherImgUrl: string | null
           updatedAt: string
           userId: string
+          zoomInviteLinkUrl: string | null
         }
         Insert: {
           createdAt?: string
@@ -708,8 +710,10 @@ export type Database = {
           phone: string
           realName: string
           subject?: Database["public"]["Enums"]["Subject"]
+          teacherImgUrl?: string | null
           updatedAt: string
           userId: string
+          zoomInviteLinkUrl?: string | null
         }
         Update: {
           createdAt?: string
@@ -720,8 +724,10 @@ export type Database = {
           phone?: string
           realName?: string
           subject?: Database["public"]["Enums"]["Subject"]
+          teacherImgUrl?: string | null
           updatedAt?: string
           userId?: string
+          zoomInviteLinkUrl?: string | null
         }
         Relationships: [
           {
