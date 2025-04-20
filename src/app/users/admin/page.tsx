@@ -120,6 +120,7 @@ export default function AdminPage() {
                 <span>대시보드</span>
               </button>
             </li>
+
             <li>
               <button
                 onClick={() => handleMobileNavigation("courses")}
@@ -130,16 +131,7 @@ export default function AdminPage() {
                 <span>강좌 관리</span>
               </button>
             </li>
-            <li>
-              <button
-                onClick={() => handleMobileNavigation("users")}
-                className={`flex w-full items-center rounded-lg px-4 py-2 ${
-                  activeTab === "users" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-100"
-                }`}>
-                <Users className="mr-3 h-5 w-5" />
-                <span>사용자 관리</span>
-              </button>
-            </li>
+
             <li>
               <button
                 onClick={() => handleMobileNavigation("teachers")}
@@ -150,6 +142,18 @@ export default function AdminPage() {
                 <span>강사 관리</span>
               </button>
             </li>
+
+            <li>
+              <button
+                onClick={() => handleMobileNavigation("users")}
+                className={`flex w-full items-center rounded-lg px-4 py-2 ${
+                  activeTab === "users" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-100"
+                }`}>
+                <Users className="mr-3 h-5 w-5" />
+                <span>사용자 관리</span>
+              </button>
+            </li>
+
             <li>
               <button
                 onClick={() => handleMobileNavigation("statistics")}
@@ -160,6 +164,7 @@ export default function AdminPage() {
                 <span>통계</span>
               </button>
             </li>
+
             <li>
               <button
                 onClick={() => handleMobileNavigation("settings")}
