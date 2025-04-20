@@ -332,8 +332,12 @@ export default function TeachersManagementPage() {
                           </button>
                           <button
                             onClick={() => {
-                              if (window.confirm("정말로 삭제하시겠습니까?")) {
-                                deleteTeacher.mutate(teacher.userId);
+                              if (teacher.isActive) {
+                                window.alert("활성화 됨 상태일 때는 삭제할 수 없습니다.");
+                              } else {
+                                if (window.confirm("정말로 삭제하시겠습니까?")) {
+                                  deleteTeacher.mutate(teacher.userId);
+                                }
                               }
                             }}
                             className="rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600">
