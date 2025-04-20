@@ -19,6 +19,7 @@ import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 import { motion, AnimatePresence } from "framer-motion";
 import CountdownUI from "@/components/CountdownAnimation";
 import AudioWaveform from "@/components/AudioWaveform";
+import ListeningModal from "@/components/ListeningModal";
 
 type SpeakingQuizProps = {
   currentSentenceNumber: number;
@@ -469,46 +470,7 @@ export default function SpeakingQuizComponent({
                 </button>
 
                 <AnimatePresence>
-                  {isListening && (
-                    <motion.div
-                      key="listening-modal"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.3 }}
-                      className="bg-opacity-40 fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                      <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 30 }}
-                        transition={{ duration: 0.3 }}
-                        className="flex flex-col items-center justify-center rounded-xl bg-white px-8 py-6 shadow-lg">
-                        <div className="mb-4 text-lg font-semibold text-gray-800">음성 인식 중입니다.</div>
-
-                        {/* 마이크 애니메이션 */}
-                        <motion.div
-                          animate={{ scale: [1, 1.3, 1] }}
-                          transition={{ repeat: Infinity, duration: 1.2 }}
-                          className="rounded-full bg-red-200 p-4 shadow-inner">
-                          <FaMicrophone className="text-3xl text-red-600" />
-                        </motion.div>
-
-                        <p className="text-md mt-4 text-gray-600">말씀해 주세요!</p>
-                      </motion.div>
-
-                      {/* 말하기 취소 버튼 - 하단부 배치 */}
-                      <motion.button
-                        onClick={stopListening}
-                        className="fixed bottom-10 mx-auto mt-8 flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 font-medium shadow-lg"
-                        initial={{ y: 50, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: 50, opacity: 0 }}
-                        transition={{ delay: 0.2 }}>
-                        <MdOutlineCancel size={24} className="text-red-500" />
-                        <span>말하기 취소</span>
-                      </motion.button>
-                    </motion.div>
-                  )}
+                  <ListeningModal isOpen={isListening} onCancel={stopListening} />
                 </AnimatePresence>
               </div>
 
