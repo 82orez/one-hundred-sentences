@@ -30,16 +30,45 @@ export async function POST(request) {
       return NextResponse.json({ error: "모든 필수 정보를 입력해주세요." }, { status: 400 });
     }
 
-    // 강사 정보 업데이트
-    const updatedTeacher = await prisma.teachers.update({
+    // 먼저 강사 정보 가져오기 (userId를 얻기 위해)
+    const teacher = await prisma.teachers.findUnique({
       where: {
         id: teacherId,
       },
-      data: {
-        nation,
-        subject,
-        phone,
+      select: {
+        userId: true,
       },
+    });
+
+    if (!teacher) {
+      return NextResponse.json({ error: "해당 강사를 찾을 수 없습니다." }, { status: 404 });
+    }
+
+    // 트랜잭션으로 두 모델 동시에 업데이트
+    const updatedTeacher = await prisma.$transaction(async (tx) => {
+      // 1. Teachers 모델 업데이트
+      const teacherUpdate = await tx.teachers.update({
+        where: {
+          id: teacherId,
+        },
+        data: {
+          nation,
+          subject,
+          phone,
+        },
+      });
+
+      // 2. User 모델의 phone 필드도 함께 업데이트
+      await tx.user.update({
+        where: {
+          id: teacher.userId,
+        },
+        data: {
+          phone,
+        },
+      });
+
+      return teacherUpdate;
     });
 
     return NextResponse.json(updatedTeacher);
