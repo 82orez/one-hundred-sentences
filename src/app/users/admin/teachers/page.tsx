@@ -8,6 +8,34 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
 
+// 타입 정의
+interface Teacher {
+  id: string;
+  userId: string;
+  realName: string;
+  email: string;
+  phone: string;
+  nation: "KR" | "PH";
+  subject: "en" | "ja" | "ko" | "zh";
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface TeacherApplication {
+  id: string;
+  realName: string;
+  email: string;
+  phone: string;
+  status: string;
+}
+
+interface TeacherUpdateData {
+  teacherId: string;
+  nation: string;
+  subject: string;
+}
+
 export default function TeachersManagementPage() {
   // 강사 신청자 목록 조회
   const {
@@ -18,7 +46,7 @@ export default function TeachersManagementPage() {
     queryKey: ["teacherApplications"],
     queryFn: async () => {
       const res = await axios.get("/api/admin/teacher-applications");
-      return res.data;
+      return res.data as TeacherApplication[];
     },
   });
 
@@ -31,12 +59,73 @@ export default function TeachersManagementPage() {
     queryKey: ["teachers"],
     queryFn: async () => {
       const res = await axios.get("/api/admin/get-teachers");
-      return res.data;
+      return res.data as Teacher[];
     },
   });
 
+  // 수정 모달 상태
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
+  const [formData, setFormData] = useState({
+    nation: "",
+    subject: "",
+  });
+
+  // 수정 모달 열기
+  const openEditModal = (teacher: Teacher) => {
+    setSelectedTeacher(teacher);
+    setFormData({
+      nation: teacher.nation,
+      subject: teacher.subject,
+    });
+    setIsEditModalOpen(true);
+  };
+
+  // 수정 모달 닫기
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedTeacher(null);
+  };
+
+  // 입력 필드 변경 처리
+  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // 강사 정보 업데이트 함수
+  const updateTeacher = useMutation({
+    mutationFn: (data: TeacherUpdateData) => {
+      return axios.post("/api/admin/update-teacher", data);
+    },
+    onSuccess: () => {
+      // 데이터 다시 불러오기
+      queryClient.invalidateQueries({ queryKey: ["teachers"] });
+      // 모달 닫기
+      closeEditModal();
+    },
+    onError: (error) => {
+      console.error("강사 정보 업데이트 중 오류 발생:", error);
+      alert("강사 정보 업데이트 중 오류가 발생했습니다.");
+    },
+  });
+
+  // 폼 제출 처리
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedTeacher) {
+      updateTeacher.mutate({
+        teacherId: selectedTeacher.id,
+        ...formData,
+      });
+    }
+  };
+
   // 강사 상태 변경 함수
-  const toggleTeacherStatus = async (teacherId, currentIsActive) => {
+  const toggleTeacherStatus = async (teacherId: string, currentIsActive: boolean) => {
     try {
       await axios.post("/api/admin/toggle-teacher-status", {
         teacherId,
@@ -51,7 +140,7 @@ export default function TeachersManagementPage() {
 
   // 강사 신청 승인 함수
   const approveTeacherApplication = useMutation({
-    mutationFn: async (userId) => {
+    mutationFn: (userId: string) => {
       return axios.post("/api/admin/teacher-approve", { userId });
     },
     onSuccess: () => {
@@ -66,7 +155,7 @@ export default function TeachersManagementPage() {
 
   // 강사 신청 거절 함수
   const rejectTeacherApplication = useMutation({
-    mutationFn: async (userId) => {
+    mutationFn: (userId: string) => {
       return axios.post("/api/admin/teacher-reject", { userId });
     },
     onSuccess: () => {
@@ -80,7 +169,7 @@ export default function TeachersManagementPage() {
 
   // 강사 삭제 함수
   const deleteTeacher = useMutation({
-    mutationFn: async (userId) => {
+    mutationFn: (userId: string) => {
       return axios.delete(`/api/admin/delete-teacher?userId=${userId}`);
     },
     onSuccess: () => {
@@ -230,22 +319,27 @@ export default function TeachersManagementPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
-                        <button
-                          onClick={() => toggleTeacherStatus(teacher.id, teacher.isActive)}
-                          className={`mr-4 rounded px-3 py-2 ${
-                            teacher.isActive ? "bg-yellow-400 text-white hover:bg-yellow-500" : "bg-green-500 text-white hover:bg-green-600"
-                          }`}>
-                          {teacher.isActive ? "비활성화" : "활성화"}
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (window.confirm("정말로 삭제하시겠습니까?")) {
-                              deleteTeacher.mutate(teacher.userId);
-                            }
-                          }}
-                          className="rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600">
-                          삭제
-                        </button>
+                        <div className="flex items-center">
+                          <button
+                            onClick={() => toggleTeacherStatus(teacher.id, teacher.isActive)}
+                            className={`mr-2 rounded px-3 py-2 ${
+                              teacher.isActive ? "bg-yellow-400 text-white hover:bg-yellow-500" : "bg-green-500 text-white hover:bg-green-600"
+                            }`}>
+                            {teacher.isActive ? "비활성화" : "활성화"}
+                          </button>
+                          <button onClick={() => openEditModal(teacher)} className="mr-2 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600">
+                            수정하기
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (window.confirm("정말로 삭제하시겠습니까?")) {
+                                deleteTeacher.mutate(teacher.userId);
+                              }
+                            }}
+                            className="rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600">
+                            삭제
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -255,6 +349,49 @@ export default function TeachersManagementPage() {
           </div>
         </div>
       </div>
+
+      {/* 수정 모달 */}
+      {isEditModalOpen && selectedTeacher && (
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+          <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl">
+            <h2 className="mb-4 text-xl font-bold">강사 정보 수정</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-bold text-gray-700">이름</label>
+                <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2" value={selectedTeacher.realName} disabled />
+              </div>
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-bold text-gray-700">이메일</label>
+                <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2" value={selectedTeacher.email} disabled />
+              </div>
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-bold text-gray-700">국적</label>
+                <select name="nation" value={formData.nation} onChange={handleInputChange} className="w-full rounded-lg border border-gray-300 p-2">
+                  <option value="KR">한국 (KR)</option>
+                  <option value="PH">필리핀 (PH)</option>
+                </select>
+              </div>
+              <div className="mb-6">
+                <label className="mb-2 block text-sm font-bold text-gray-700">과목</label>
+                <select name="subject" value={formData.subject} onChange={handleInputChange} className="w-full rounded-lg border border-gray-300 p-2">
+                  <option value="en">영어 (en)</option>
+                  <option value="ja">일본어 (ja)</option>
+                  <option value="ko">한국어 (ko)</option>
+                  <option value="zh">중국어 (zh)</option>
+                </select>
+              </div>
+              <div className="flex justify-end space-x-4">
+                <button type="button" onClick={closeEditModal} className="rounded bg-gray-300 px-4 py-2 hover:bg-gray-400">
+                  취소
+                </button>
+                <button type="submit" className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+                  저장
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className={"mt-16 flex justify-center"}>
         <Link href="/users/admin" className="flex items-center text-blue-500 hover:underline">
