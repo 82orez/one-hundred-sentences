@@ -69,6 +69,7 @@ export default function TeachersManagementPage() {
   const [formData, setFormData] = useState({
     nation: "",
     subject: "",
+    phone: "", // 전화번호 필드 추가
   });
 
   // 수정 모달 열기
@@ -77,6 +78,7 @@ export default function TeachersManagementPage() {
     setFormData({
       nation: teacher.nation,
       subject: teacher.subject,
+      phone: teacher.phone || "", // 전화번호 추가
     });
     setIsEditModalOpen(true);
   };
@@ -88,7 +90,7 @@ export default function TeachersManagementPage() {
   };
 
   // 입력 필드 변경 처리
-  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -367,6 +369,17 @@ export default function TeachersManagementPage() {
               <div className="mb-4">
                 <label className="mb-2 block text-sm font-bold text-gray-700">이메일</label>
                 <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2" value={selectedTeacher.email} disabled />
+              </div>
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-bold text-gray-700">전화번호</label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="w-full rounded-lg border border-gray-300 p-2"
+                  placeholder="전화번호를 입력하세요"
+                />
               </div>
               <div className="mb-4">
                 <label className="mb-2 block text-sm font-bold text-gray-700">국적</label>

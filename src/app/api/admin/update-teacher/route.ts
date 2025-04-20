@@ -23,7 +23,7 @@ export async function POST(request) {
     }
 
     // 요청 데이터 파싱
-    const { teacherId, nation, subject } = await request.json();
+    const { teacherId, nation, subject, phone } = await request.json();
 
     // 필수 필드 확인
     if (!teacherId || !nation || !subject) {
@@ -38,6 +38,7 @@ export async function POST(request) {
       data: {
         nation,
         subject,
+        phone,
       },
     });
 
