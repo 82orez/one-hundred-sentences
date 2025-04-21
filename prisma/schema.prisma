@@ -252,17 +252,28 @@ model Purchase {
 }
 
 model Course {
-  id          String       @id @default(cuid())
-  title       String
-  description String?
-  generatorId String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id                String       @id @default(cuid())
+  title             String
+  description       String?
+  generatorId       String
+  scheduleMonday    Boolean      @default(false)
+  scheduleTuesday   Boolean      @default(false)
+  scheduleWednesday Boolean      @default(false)
+  scheduleThursday  Boolean      @default(false)
+  scheduleFriday    Boolean      @default(false)
+  scheduleSaturday  Boolean      @default(false)
+  scheduleSunday    Boolean      @default(false)
+  startDate         DateTime?
+  endDate           DateTime?
+  teacherId         String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
   // 관계 설정
-  generator   User         @relation(fields: [generatorId], references: [id])
-  lessons     Lesson[]
-  enrollments Enrollment[]
-  assignments Assignment[]
+  generator         User         @relation(fields: [generatorId], references: [id])
+  teacher           Teachers?    @relation(fields: [teacherId], references: [id])
+  lessons           Lesson[]
+  enrollments       Enrollment[]
+  assignments       Assignment[]
 }
 
 model Lesson {
@@ -371,5 +382,6 @@ model Teachers {
   updatedAt DateTime @updatedAt
 
   // 관계 설정
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Course Course[]
 }

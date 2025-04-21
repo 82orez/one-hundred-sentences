@@ -182,24 +182,54 @@ export type Database = {
         Row: {
           createdAt: string
           description: string | null
+          endDate: string | null
           generatorId: string
           id: string
+          scheduleFriday: boolean
+          scheduleMonday: boolean
+          scheduleSaturday: boolean
+          scheduleSunday: boolean
+          scheduleThursday: boolean
+          scheduleTuesday: boolean
+          scheduleWednesday: boolean
+          startDate: string | null
+          teacherId: string | null
           title: string
           updatedAt: string
         }
         Insert: {
           createdAt?: string
           description?: string | null
+          endDate?: string | null
           generatorId: string
           id: string
+          scheduleFriday?: boolean
+          scheduleMonday?: boolean
+          scheduleSaturday?: boolean
+          scheduleSunday?: boolean
+          scheduleThursday?: boolean
+          scheduleTuesday?: boolean
+          scheduleWednesday?: boolean
+          startDate?: string | null
+          teacherId?: string | null
           title: string
           updatedAt: string
         }
         Update: {
           createdAt?: string
           description?: string | null
+          endDate?: string | null
           generatorId?: string
           id?: string
+          scheduleFriday?: boolean
+          scheduleMonday?: boolean
+          scheduleSaturday?: boolean
+          scheduleSunday?: boolean
+          scheduleThursday?: boolean
+          scheduleTuesday?: boolean
+          scheduleWednesday?: boolean
+          startDate?: string | null
+          teacherId?: string | null
           title?: string
           updatedAt?: string
         }
@@ -209,6 +239,13 @@ export type Database = {
             columns: ["generatorId"]
             isOneToOne: false
             referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Course_teacherId_fkey"
+            columns: ["teacherId"]
+            isOneToOne: false
+            referencedRelation: "Teachers"
             referencedColumns: ["id"]
           },
         ]
