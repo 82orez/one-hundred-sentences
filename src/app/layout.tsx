@@ -3,6 +3,7 @@ import "./globals.css";
 import { NextLayout } from "@/app/providers";
 import { Noto_Sans_KR } from "next/font/google";
 import AuthProvider from "@/app/auth-provider";
+import { Toaster } from "react-hot-toast";
 
 const inter = Noto_Sans_KR({
   weight: ["400", "600", "900"],
@@ -27,6 +28,7 @@ export default function RootLayout({
         <AuthProvider>
           <NextLayout>{children}</NextLayout>
         </AuthProvider>
+        <Toaster position="top-right" />
       </body>
     </html>
   );
