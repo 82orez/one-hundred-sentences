@@ -469,9 +469,9 @@ export default function SpeakingQuizComponent({
                   )}
                 </button>
 
-                <AnimatePresence>
-                  <ListeningModal isOpen={isListening} onCancel={stopListening} />
-                </AnimatePresence>
+                {/*<AnimatePresence>*/}
+                {/*  <ListeningModal isOpen={isListening} onCancel={stopListening} />*/}
+                {/*</AnimatePresence>*/}
               </div>
 
               {/* 사용자가 말한 내용 */}
