@@ -71,14 +71,21 @@ export default function Navbar() {
                   href="/users/admin"
                   className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
                   onClick={() => setMenuOpen(false)}>
-                  Admin
+                  Admin-Dashboard
                 </Link>
 
                 <Link
-                  href="/dashboard"
-                  className={clsx("hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block")}
+                  href="/users/admin/courses"
+                  className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
                   onClick={() => setMenuOpen(false)}>
-                  대시보드
+                  강좌 관리
+                </Link>
+
+                <Link
+                  href="/users/admin/teachers"
+                  className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
+                  onClick={() => setMenuOpen(false)}>
+                  강사 관리
                 </Link>
               </>
             )}
@@ -99,9 +106,21 @@ export default function Navbar() {
               {menuOpen && (
                 <div className="ring-opacity-5 absolute right-0 mt-2 w-56 rounded-md bg-white py-2 shadow-lg ring-1 ring-black">
                   {isAdmin && (
-                    <Link href="/users/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
-                      Admin
-                    </Link>
+                    <>
+                      <Link
+                        href="/users/admin"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setMenuOpen(false)}>
+                        Admin-Dashboard
+                      </Link>
+
+                      <Link
+                        href="/users/admin/teachers"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setMenuOpen(false)}>
+                        강사 관리
+                      </Link>
+                    </>
                   )}
 
                   {!isStudent && (
