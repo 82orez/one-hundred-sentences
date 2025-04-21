@@ -92,7 +92,7 @@ export default function CoursePage() {
   // 강좌 수정 mutation
   const updateCourseMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: typeof formData }) => {
-      return axios.put(`/api/admin/courses/${id}`, data);
+      return axios.put(`/api/admin/courses?id=${id}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
@@ -110,7 +110,7 @@ export default function CoursePage() {
   // 강좌 삭제 mutation
   const deleteCourseMutation = useMutation({
     mutationFn: async (id: string) => {
-      return axios.delete(`/api/admin/courses/${id}`);
+      return axios.delete(`/api/admin/courses?id=${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
@@ -121,7 +121,6 @@ export default function CoursePage() {
       console.error("강좌 삭제 에러:", error);
     },
   });
-
   // 폼 데이터 초기화
   const resetForm = () => {
     setFormData({
