@@ -28,56 +28,30 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
   const timerRef = useRef<NodeJS.Timeout | null>(null); // 타이머 참조 추가
   const [hasNewRecording, setHasNewRecording] = useState(false);
   const [recordMessage, setRecordMessage] = useState<string | null>(null);
-  const [recordingError, setRecordingError] = useState<string | null>(null);
-  const autoStartTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // ✅ 컴포넌트가 마운트될 때 자동으로 녹음 시작 (약간의 지연 추가)
+  // ✅ 컴포넌트가 마운트될 때 자동으로 녹음 시작
   useEffect(() => {
-    // 약간의 지연을 두고 녹음 시작 (모바일 환경에서 더 안정적)
-    autoStartTimeoutRef.current = setTimeout(async () => {
-      try {
-        await startRecording();
-      } catch (error) {
-        console.error("자동 녹음 시작 실패:", error);
-        setRecordingError("녹음을 시작할 수 없습니다. 마이크 권한을 확인해주세요.");
-      }
-    }, 500);
+    const startRecordingAuto = async () => {
+      await startRecording();
+    };
 
-    // ✅ 컴포넌트 언마운트 시 녹음 중지 및 타이머 정리
+    startRecordingAuto();
+
+    // ✅ 컴포넌트 언마운트 시 녹음 중지
     return () => {
-      if (autoStartTimeoutRef.current) {
-        clearTimeout(autoStartTimeoutRef.current);
-      }
-
       if (isRecording) {
-        stopRecording().catch((err) => console.error("녹음 중지 오류:", err));
-      }
-
-      // URL.revokeObjectURL로 메모리 누수 방지
-      if (audioURL) {
-        URL.revokeObjectURL(audioURL);
+        stopRecording();
       }
     };
   }, []); // ✅ 의존성 배열이 비어있어 컴포넌트 마운트 시 한 번만 실행됨
 
   // ❌ 녹음 취소 및 창 닫기 함수
   const handleCancelRecording = async () => {
-    try {
-      if (isRecording) {
-        await stopRecording(); // ✅ 녹음 즉시 중단
-      }
-
-      // URL.revokeObjectURL로 메모리 누수 방지
-      if (audioURL) {
-        URL.revokeObjectURL(audioURL);
-        setAudioURL(null);
-      }
-
-      onClose(); // ✅ 모달창 닫기
-    } catch (error) {
-      console.error("녹음 취소 처리 중 오류:", error);
-      onClose(); // 오류가 발생해도 모달은 닫음
+    if (isRecording) {
+      await stopRecording(); // ✅ 녹음 즉시 중단
     }
+    setAudioURL(null); // ✅ 녹음된 파일 삭제
+    onClose(); // ✅ 모달창 닫기
   };
 
   // ✅ 녹음 시작 시 타이머 설정 및 녹음 종료 시 타이머 제거
@@ -104,26 +78,12 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
   }, [isRecording]);
 
   const handleStopRecording = async () => {
-    setRecordingError(null);
-    try {
-      const audioBlob = await stopRecording();
-      if (audioBlob && audioBlob.size > 0) {
-        // 이전 URL이 있으면 해제
-        if (audioURL) {
-          URL.revokeObjectURL(audioURL);
-        }
-
-        const newAudioURL = URL.createObjectURL(audioBlob);
-        setAudioURL(newAudioURL);
-        setHasNewRecording(true);
-        console.log("Audio URL:", newAudioURL, "Blob 크기:", audioBlob.size);
-      } else {
-        console.warn("유효한 오디오 데이터가 없습니다.");
-        setRecordingError("녹음된 오디오가 없습니다. 다시 시도해주세요.");
-      }
-    } catch (error) {
-      console.error("녹음 중지 중 오류:", error);
-      setRecordingError("녹음 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+    const audioBlob = await stopRecording();
+    if (audioBlob) {
+      const audioURL = URL.createObjectURL(audioBlob);
+      setAudioURL(audioURL);
+      setHasNewRecording(true); // 새 녹음이 완료됨을 표시
+      console.log("Audio URL:", audioURL);
     }
   };
 
@@ -142,11 +102,6 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
 
       const response = await fetch(audioURL);
       const audioBlob = await response.blob();
-
-      if (audioBlob.size === 0) {
-        throw new Error("녹음된 오디오 데이터가 없습니다.");
-      }
-
       const formData = new FormData();
       formData.append("audio", new File([audioBlob], `recording-${sentenceNo}.mp3`));
       formData.append("sentenceNo", sentenceNo.toString());
@@ -155,10 +110,6 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
         method: "POST",
         body: formData,
       });
-
-      if (!uploadResponse.ok) {
-        throw new Error("서버 응답이 올바르지 않습니다: " + uploadResponse.status);
-      }
 
       const result = await uploadResponse.json();
       if (result.url) {
@@ -170,14 +121,13 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
         // 제출 후 새 녹음 상태 초기화
         setHasNewRecording(false);
 
-        // 핵심! 상위 컴포넌트에 완료 알림
         handleComplete(sentenceNo);
       } else {
-        alert(result.error || "업로드 중 오류가 발생했습니다.");
+        alert(result.error);
       }
     } catch (error) {
       console.error("Error uploading file:", error);
-      alert("녹음 파일 저장 중 오류가 발생했습니다: " + (error instanceof Error ? error.message : "알 수 없는 오류"));
+      alert("An error occurred while saving the recording.");
     } finally {
       setIsUpLoading(false);
     }
@@ -194,8 +144,6 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
 
       {/* 영어 문장 추가 */}
       <p className="text-md mt-1 text-center text-gray-700">{sentenceEn}</p>
-
-      {recordingError && <div className="mt-2 text-center text-red-500">{recordingError}</div>}
 
       <p className={"mt-8 mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
 
@@ -234,10 +182,6 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             onEnded={() => setIsPlaying(false)}
-            onError={(e) => {
-              console.error("오디오 재생 오류:", e);
-              setRecordingError("오디오 재생 중 오류가 발생했습니다. 다시 녹음해주세요.");
-            }}
           />
         </div>
       )}
@@ -265,7 +209,13 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
       )}
 
       {/* ✅ 업로드 완료 시 메시지 표시 */}
-      {uploadedURL && <div className="mt-2 text-center text-lg">{recordCount !== null && <p>Speaking 연습 횟수: {recordCount} 회</p>}</div>}
+      {uploadedURL && (
+        <div className="mt-2 text-center text-lg">
+          {/*<p className="text-green-600">{recordMessage}</p>*/}
+          {recordCount !== null && <p>Speaking 연습 횟수: {recordCount} 회</p>}
+          {/*<audio controls src={uploadedURL} className="mx-auto" />*/}
+        </div>
+      )}
     </div>
   );
 };
