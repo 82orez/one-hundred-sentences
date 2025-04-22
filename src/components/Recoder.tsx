@@ -70,10 +70,12 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
   // ❌ 녹음 취소 및 창 닫기 함수
   const handleCancelRecording = async () => {
     if (isRecording) {
-      await stopRecording(); // ✅ 녹음 즉시 중단
+      await stopRecording(); // 녹음 즉시 중단
     }
-    setAudioURL(null); // ✅ 녹음된 파일 삭제
+    setAudioURL(null); // 녹음된 파일 삭제
     onClose(); // ✅ 모달창 닫기
+    // ✅ 닫기 버튼 클릭 시에 강제로 새로고침 강제하기 -> mobile 환경에서 녹음 버튼 클릭 후에 speaking 연습/퀴즈 오류 방지 위해
+    window.location.reload();
   };
 
   // ✅ 녹음 시작 시 타이머 설정 및 녹음 종료 시 타이머 제거
