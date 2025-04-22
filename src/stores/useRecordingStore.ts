@@ -40,7 +40,13 @@ export const useRecordingStore = create<RecordingState>((set) => {
         if (mediaRecorder) {
           mediaRecorder.onstop = () => {
             const audioBlob = new Blob(audioChunks, { type: "audio/mp3" });
-            mediaRecorder = null; // ✅ 녹음기 초기화
+
+            // ✅ 모든 트랙 명시적으로 중지
+            if (mediaRecorder.stream) {
+              mediaRecorder.stream.getTracks().forEach((track) => track.stop());
+            }
+
+            mediaRecorder = null; // 녹음기 초기화
             set({ isRecording: false });
             resolve(audioBlob);
           };

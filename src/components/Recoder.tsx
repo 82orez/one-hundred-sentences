@@ -37,13 +37,25 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
 
     startRecordingAuto();
 
-    // ✅ 컴포넌트 언마운트 시 녹음 중지
+    // 컴포넌트 언마운트 시 녹음 중지 및 모든 오디오 트랙 해제
     return () => {
       if (isRecording) {
         stopRecording();
       }
+
+      // ✅ 모든 오디오 트랙 강제 종료 추가
+      try {
+        navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then((stream) => {
+            stream.getTracks().forEach((track) => track.stop());
+          })
+          .catch((err) => console.error("마이크 해제 오류:", err));
+      } catch (err) {
+        console.error("마이크 해제 중 오류:", err);
+      }
     };
-  }, []); // ✅ 의존성 배열이 비어있어 컴포넌트 마운트 시 한 번만 실행됨
+  }, []);
 
   // ❌ 녹음 취소 및 창 닫기 함수
   const handleCancelRecording = async () => {
