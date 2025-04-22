@@ -28,7 +28,7 @@ export default function RootLayout({
         <AuthProvider>
           <NextLayout>{children}</NextLayout>
         </AuthProvider>
-        <Toaster position="top-right" />
+        <Toaster position="bottom-center" />
       </body>
     </html>
   );

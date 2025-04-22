@@ -237,7 +237,7 @@ export default function CoursePage() {
           <p className="py-8 text-center text-gray-500">등록된 강좌가 없습니다.</p>
         ) : (
           <table className="table-zebra table w-full">
-            <thead>
+            <thead className={""}>
               <tr>
                 <th>강좌명</th>
                 <th>강사</th>
@@ -249,7 +249,7 @@ export default function CoursePage() {
                 <th>관리</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className={""}>
               {courses.map((course: Course) => (
                 <tr key={course.id}>
                   <td className="font-medium">{course.title}</td>
@@ -276,7 +276,7 @@ export default function CoursePage() {
 
       {/* 강좌 생성/수정 모달 */}
       {isModalOpen && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
           <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-xl font-bold">{editingCourse ? "강좌 정보 수정" : "새 강좌 추가"}</h3>
@@ -316,7 +316,7 @@ export default function CoursePage() {
                 </div>
 
                 {/* 강사 선택 */}
-                <div className="form-control">
+                <div className="form-control md:col-span-2">
                   <label className="label">
                     <span className="label-text font-medium">강사 *</span>
                   </label>
@@ -346,9 +346,6 @@ export default function CoursePage() {
                       className="input input-bordered w-full"
                       required
                     />
-                    <span className="btn btn-square btn-ghost">
-                      <Calendar size={16} />
-                    </span>
                   </div>
                 </div>
 
@@ -366,9 +363,6 @@ export default function CoursePage() {
                       className="input input-bordered w-full"
                       required
                     />
-                    <span className="btn btn-square btn-ghost">
-                      <Calendar size={16} />
-                    </span>
                   </div>
                 </div>
 
