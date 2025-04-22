@@ -11,14 +11,25 @@ import { useAudioResources } from "@/hooks/useAudioResources";
 interface Props {
   sentenceNo: number;
   sentenceEn: string;
+  sentenceNativeAudioUrl: string;
   sentenceKo: string;
   isCompleted: boolean;
 
+  playNativeAudio: (audioURL: string, sentenceNo: number) => void;
   handleComplete: (sentenceNo: number) => void;
   onClose: () => void;
 }
 
-const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onClose, isCompleted }: Props) => {
+const AudioRecorder = ({
+  sentenceKo,
+  sentenceEn,
+  sentenceNo,
+  handleComplete,
+  onClose,
+  isCompleted,
+  playNativeAudio,
+  sentenceNativeAudioUrl,
+}: Props) => {
   const { isRecording, isLoading, startRecording, stopRecording } = useRecordingStore();
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [uploadedURL, setUploadedURL] = useState<string | null>(null);
@@ -168,6 +179,8 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
 
       {/* 영어 문장 추가 */}
       <p className="text-md mt-1 text-center text-gray-700">{sentenceEn}</p>
+
+      <button onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}>원어민 음성</button>
 
       <p className={"mt-8 mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
 

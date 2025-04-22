@@ -713,7 +713,9 @@ const LearnPage = ({ params }: Props) => {
                 <AudioRecorder
                   sentenceKo={todaySentences.find((s) => s.no === selectedSentenceNo)?.ko || ""}
                   sentenceEn={todaySentences.find((s) => s.no === selectedSentenceNo)?.en || ""}
+                  sentenceNativeAudioUrl={todaySentences.find((s) => s.no === selectedSentenceNo)?.audioUrl || ""}
                   sentenceNo={selectedSentenceNo}
+                  playNativeAudio={playAudio}
                   handleComplete={handleComplete}
                   onClose={() => setSelectedSentenceNo(null)}
                   isCompleted={completedSentences?.includes(selectedSentenceNo)}
