@@ -182,6 +182,28 @@ export default function CoursePage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 종료일이 시작일보다 빠른 경우
+    if (new Date(formData.endDate) < new Date(formData.startDate)) {
+      toast.error("종료일은 시작일보다 빠를 수 없습니다.");
+      return;
+    }
+
+    // 수업 요일이 하나도 선택되지 않은 경우
+    const isNoScheduleSelected = !(
+      formData.scheduleMonday ||
+      formData.scheduleTuesday ||
+      formData.scheduleWednesday ||
+      formData.scheduleThursday ||
+      formData.scheduleFriday ||
+      formData.scheduleSaturday ||
+      formData.scheduleSunday
+    );
+
+    if (isNoScheduleSelected) {
+      toast.error("수업 요일을 최소 한 개 이상 선택해야 합니다.");
+      return;
+    }
+
     if (editingCourse) {
       updateCourseMutation.mutate({ id: editingCourse.id, data: formData });
     } else {
@@ -335,7 +357,7 @@ export default function CoursePage() {
                 {/* 시작일 */}
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text font-medium">시작일 *</span>
+                    <span className="label-text font-medium">수업 시작일 *</span>
                   </label>
                   <div className="input-group">
                     <input
@@ -352,7 +374,7 @@ export default function CoursePage() {
                 {/* 종료일 */}
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text font-medium">종료일 *</span>
+                    <span className="label-text font-medium">수업 종료일 *</span>
                   </label>
                   <div className="input-group">
                     <input
@@ -369,7 +391,7 @@ export default function CoursePage() {
                 {/* 수업 요일 선택 */}
                 <div className="form-control mt-4 rounded-md border border-gray-300 p-3 md:col-span-2">
                   <label className="label">
-                    <span className="label-text font-medium">수업 요일을 선택하세요.</span>
+                    <span className="label-text font-medium">수업 요일을 선택하세요. *</span>
                   </label>
                   <div className={""}>
                     <div className="mt-4 flex flex-wrap gap-8">
