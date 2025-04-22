@@ -39,13 +39,13 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
     };
   }, []);
 
-  // ✅ 컴포넌트가 마운트될 때 자동으로 녹음 시작
   useEffect(() => {
-    const startRecordingAuto = async () => {
-      await startRecording();
-    };
-
-    startRecordingAuto();
+    // ✅ 컴포넌트가 마운트될 때 자동으로 녹음 시작
+    // const startRecordingAuto = async () => {
+    //   await startRecording();
+    // };
+    //
+    // startRecordingAuto();
 
     // 컴포넌트 언마운트 시 녹음 중지 및 모든 오디오 트랙 해제
     return () => {
@@ -75,7 +75,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
     setAudioURL(null); // 녹음된 파일 삭제
     onClose(); // ✅ 모달창 닫기
     // ✅ 닫기 버튼 클릭 시에 강제로 새로고침 강제하기 -> mobile 환경에서 녹음 버튼 클릭 후에 speaking 연습/퀴즈 오류 방지 위해
-    window.location.reload();
+    // window.location.reload();
   };
 
   // ✅ 녹음 시작 시 타이머 설정 및 녹음 종료 시 타이머 제거
@@ -179,7 +179,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
         {isRecording ? (
           <div className={"flex flex-col items-center justify-center"}>
             <FaRegStopCircle size={45} className={"mb-2"} />
-            <p className={"text-xl font-semibold text-red-400"}>녹음 완료하기</p>
+            <p className={"text-xl font-semibold text-red-400"}>녹음 후 Click 하여 저장!</p>
           </div>
         ) : isLoading ? (
           <div className={"flex flex-col items-center justify-center"}>
@@ -189,7 +189,7 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
         ) : (
           <div className={"flex flex-col items-center justify-center"}>
             <FaMicrophone size={50} className={"mb-2"} />
-            <p className={"animate-pulse text-xl font-semibold text-red-400"}>Click</p>
+            <p className={"text-xl font-semibold text-blue-400"}>Click 하면 녹음 시작!</p>
           </div>
         )}
       </button>
