@@ -20,6 +20,7 @@ import CountdownUI from "@/components/CountdownAnimation";
 import AudioWaveform from "@/components/AudioWaveform";
 import { AnimatePresence, motion } from "framer-motion";
 import ListeningModal from "@/components/ListeningModal";
+import { useAudioResources } from "@/hooks/useAudioResources";
 
 export default function SpeakingPage() {
   const { data: session } = useSession();
@@ -54,6 +55,8 @@ export default function SpeakingPage() {
   // 오디오 재생 상태를 관리할 새로운 상태 변수
   const [isPlaying, setIsPlaying] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const { releaseAllResources, isAudioBusy } = useAudioResources({ autoReleaseOnUnmount: false });
 
   // 음성 인식 객체 참조
   const recognitionRef = useRef<any>(null);
@@ -295,6 +298,9 @@ export default function SpeakingPage() {
   const startListening = async () => {
     // 오디오 재생 중이면 음성 인식 시작하지 않음
     if (isPlaying) return;
+
+    // 현재 사용 중인 모든 오디오 리소스 해제 후 시작
+    await releaseAllResources();
 
     if (!("webkitSpeechRecognition" in window)) {
       alert("이 브라우저는 음성 인식을 지원하지 않습니다.");
