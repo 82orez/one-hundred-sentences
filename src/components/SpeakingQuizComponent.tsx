@@ -20,6 +20,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CountdownUI from "@/components/CountdownAnimation";
 import AudioWaveform from "@/components/AudioWaveform";
 import ListeningModal from "@/components/ListeningModal";
+import { useAudioResources } from "@/hooks/useAudioResources";
 
 type SpeakingQuizProps = {
   currentSentenceNumber: number;
@@ -72,6 +73,8 @@ export default function SpeakingQuizComponent({
   const audioRef = useRef<HTMLAudioElement | null>(null);
   // 취소 플래그를 관리하는 ref
   const cancelledRef = useRef<boolean>(false);
+
+  const { releaseAllResources, isAudioBusy } = useAudioResources({ autoReleaseOnUnmount: false });
 
   // 현재 문장 불러오기
   const { data: sentenceData, isLoading: isLoadingSentence } = useQuery({
@@ -216,6 +219,9 @@ export default function SpeakingQuizComponent({
   const startListening = async () => {
     // 오디오 재생 중이면 음성 인식 시작하지 않음
     if (isPlaying) return;
+
+    // 현재 사용 중인 모든 오디오 리소스 해제 후 시작
+    await releaseAllResources();
 
     if (!("webkitSpeechRecognition" in window)) {
       alert("이 브라우저는 음성 인식을 지원하지 않습니다.");

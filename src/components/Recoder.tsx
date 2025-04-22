@@ -6,6 +6,7 @@ import { FaMicrophone } from "react-icons/fa6";
 import { FaCheck, FaRegStopCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { IoMdCloseCircleOutline } from "react-icons/io";
+import { useAudioResources } from "@/hooks/useAudioResources";
 
 interface Props {
   sentenceNo: number;
@@ -28,6 +29,15 @@ const AudioRecorder = ({ sentenceKo, sentenceEn, sentenceNo, handleComplete, onC
   const timerRef = useRef<NodeJS.Timeout | null>(null); // 타이머 참조 추가
   const [hasNewRecording, setHasNewRecording] = useState(false);
   const [recordMessage, setRecordMessage] = useState<string | null>(null);
+
+  const { requestMediaStream, createAudioContext, releaseAllResources } = useAudioResources();
+
+  // 컴포넌트 언마운트 시 리소스 정리
+  useEffect(() => {
+    return () => {
+      releaseAllResources();
+    };
+  }, []);
 
   // ✅ 컴포넌트가 마운트될 때 자동으로 녹음 시작
   useEffect(() => {
