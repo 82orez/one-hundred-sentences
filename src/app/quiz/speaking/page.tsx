@@ -301,6 +301,12 @@ export default function SpeakingPage() {
       return;
     }
 
+    // 기존 마이크 스트림 정리 (이 부분 추가)
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
+    }
+
     setIsVisible(false);
     setDifferences({ missing: [], incorrect: [] });
     setUserSpoken("");
@@ -350,6 +356,7 @@ export default function SpeakingPage() {
       };
 
       recognition.onerror = (event: any) => {
+        console.error("음성 인식 오류:", event);
         setIsListening(false);
         alert("음성이 입력되지 않았습니다.");
         recognitionRef.current = null;
