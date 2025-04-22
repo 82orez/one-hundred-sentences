@@ -358,7 +358,7 @@ export default function TeachersManagementPage() {
 
       {/* 수정 모달 */}
       {isEditModalOpen && selectedTeacher && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
           <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl">
             <h2 className="mb-4 text-xl font-bold">강사 정보 수정</h2>
             <form onSubmit={handleSubmit}>
