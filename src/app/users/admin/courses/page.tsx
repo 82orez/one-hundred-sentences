@@ -367,81 +367,83 @@ export default function CoursePage() {
                 </div>
 
                 {/* 수업 요일 선택 */}
-                <div className="form-control md:col-span-2">
+                <div className="form-control mt-4 rounded-md border border-gray-300 p-3 md:col-span-2">
                   <label className="label">
-                    <span className="label-text font-medium">수업 요일</span>
+                    <span className="label-text font-medium">수업 요일을 선택하세요.</span>
                   </label>
-                  <div className="flex flex-wrap gap-2">
-                    <label className="label cursor-pointer gap-2">
-                      <input
-                        type="checkbox"
-                        name="scheduleMonday"
-                        checked={formData.scheduleMonday}
-                        onChange={handleInputChange}
-                        className="checkbox checkbox-primary"
-                      />
-                      <span className="label-text">월</span>
-                    </label>
-                    <label className="label cursor-pointer gap-2">
-                      <input
-                        type="checkbox"
-                        name="scheduleTuesday"
-                        checked={formData.scheduleTuesday}
-                        onChange={handleInputChange}
-                        className="checkbox checkbox-primary"
-                      />
-                      <span className="label-text">화</span>
-                    </label>
-                    <label className="label cursor-pointer gap-2">
-                      <input
-                        type="checkbox"
-                        name="scheduleWednesday"
-                        checked={formData.scheduleWednesday}
-                        onChange={handleInputChange}
-                        className="checkbox checkbox-primary"
-                      />
-                      <span className="label-text">수</span>
-                    </label>
-                    <label className="label cursor-pointer gap-2">
-                      <input
-                        type="checkbox"
-                        name="scheduleThursday"
-                        checked={formData.scheduleThursday}
-                        onChange={handleInputChange}
-                        className="checkbox checkbox-primary"
-                      />
-                      <span className="label-text">목</span>
-                    </label>
-                    <label className="label cursor-pointer gap-2">
-                      <input
-                        type="checkbox"
-                        name="scheduleFriday"
-                        checked={formData.scheduleFriday}
-                        onChange={handleInputChange}
-                        className="checkbox checkbox-primary"
-                      />
-                      <span className="label-text">금</span>
-                    </label>
-                    <label className="label cursor-pointer gap-2">
-                      <input
-                        type="checkbox"
-                        name="scheduleSaturday"
-                        checked={formData.scheduleSaturday}
-                        onChange={handleInputChange}
-                        className="checkbox checkbox-primary"
-                      />
-                      <span className="label-text">토</span>
-                    </label>
-                    <label className="label cursor-pointer gap-2">
-                      <input
-                        type="checkbox"
-                        name="scheduleSunday"
-                        checked={formData.scheduleSunday}
-                        onChange={handleInputChange}
-                        className="checkbox checkbox-primary"
-                      />
-                      <span className="label-text">일</span>
-                    </label>
+                  <div className={""}>
+                    <div className="mt-4 flex flex-wrap gap-8">
+                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
+                        <span className="label-text">월요일</span>
+                        <input
+                          type="checkbox"
+                          name="scheduleMonday"
+                          checked={formData.scheduleMonday}
+                          onChange={handleInputChange}
+                          className="checkbox checkbox-primary"
+                        />
+                      </label>
+                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
+                        <span className="label-text">화요일</span>
+                        <input
+                          type="checkbox"
+                          name="scheduleTuesday"
+                          checked={formData.scheduleTuesday}
+                          onChange={handleInputChange}
+                          className="checkbox checkbox-primary"
+                        />
+                      </label>
+                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
+                        <span className="label-text">수요일</span>
+                        <input
+                          type="checkbox"
+                          name="scheduleWednesday"
+                          checked={formData.scheduleWednesday}
+                          onChange={handleInputChange}
+                          className="checkbox checkbox-primary"
+                        />
+                      </label>
+                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
+                        <span className="label-text">목요일</span>
+                        <input
+                          type="checkbox"
+                          name="scheduleThursday"
+                          checked={formData.scheduleThursday}
+                          onChange={handleInputChange}
+                          className="checkbox checkbox-primary"
+                        />
+                      </label>
+                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
+                        <span className="label-text">금요일</span>
+                        <input
+                          type="checkbox"
+                          name="scheduleFriday"
+                          checked={formData.scheduleFriday}
+                          onChange={handleInputChange}
+                          className="checkbox checkbox-primary"
+                        />
+                      </label>
+                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
+                        <span className="label-text">토요일</span>
+                        <input
+                          type="checkbox"
+                          name="scheduleSaturday"
+                          checked={formData.scheduleSaturday}
+                          onChange={handleInputChange}
+                          className="checkbox checkbox-primary"
+                        />
+                      </label>
+                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
+                        <span className="label-text">일요일</span>
+                        <input
+                          type="checkbox"
+                          name="scheduleSunday"
+                          checked={formData.scheduleSunday}
+                          onChange={handleInputChange}
+                          className="checkbox checkbox-primary"
+                        />
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
