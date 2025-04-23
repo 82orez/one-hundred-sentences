@@ -194,7 +194,9 @@ const AudioRecorder = ({
             <IoMdCloseCircleOutline size={30} />
           </button>
 
-          <div className={"mb-4 flex w-full items-center justify-around"}>
+          <p className="mt-1 text-center text-lg font-semibold text-gray-600 md:mt-4">문장을 녹음하고 원어민 발음과 비교해 보세요.</p>
+
+          <div className={"mt-4 mb-4 flex w-full items-center justify-around"}>
             <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">{sentenceNo}번 문장</div>
             <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentenceNo)}>
               <div>
@@ -266,7 +268,7 @@ const AudioRecorder = ({
           {/* ✅ 오디오 재생 UI */}
           {audioURL && !isRecording && (
             <div className="mt-8 w-full">
-              <p className={"mb-3 text-center text-lg font-semibold"}>Step 2. 녹음 파일 들어 보기</p>
+              <p className={"mb-3 text-center text-lg font-semibold"}>Step 2. 내 발음 들어 보기</p>
               <audio
                 ref={audioRef}
                 controls
