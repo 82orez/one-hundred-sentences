@@ -202,35 +202,37 @@ const AudioRecorder = ({
         </button>
       </div>
 
-      <p className={"mt-1 text-center text-xl font-semibold"}>{sentenceKo}</p>
+      <div className={"w-full rounded-lg border px-2 py-4"}>
+        <p className={"mt-1 text-center text-xl font-semibold"}>{sentenceKo}</p>
 
-      {/* 영어 문장 추가 */}
-      {showAnswer ? (
-        <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">{sentenceEn}</p>
-      ) : (
-        <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">
-          {getMaskedSentence({ en: sentenceEn, ko: "", audioUrl: "", no: 0 })}
-        </p>
-      )}
+        {/* 영어 문장 추가 */}
+        {showAnswer ? (
+          <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">{sentenceEn}</p>
+        ) : (
+          <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">
+            {getMaskedSentence({ en: sentenceEn, ko: "", audioUrl: "", no: 0 })}
+          </p>
+        )}
 
-      <div className="mt-4 flex w-full items-center justify-around">
-        <button
-          className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
-            "opacity-50": isPlayingSentenceNo === sentenceNo || isRecording || isPlaying,
-          })}
-          onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}
-          disabled={isPlayingSentenceNo !== null || isRecording || isPlaying} // 다른 문장이 재생 중이면 비활성화
-        >
-          {isPlayingSentenceNo === sentenceNo ? (
-            <div className="flex items-center justify-center">
-              <AiOutlineLoading3Quarters className={"animate-spin"} />
-            </div>
-          ) : (
-            <FaPlay size={18} className={"mx-auto"} />
-          )}
-        </button>
+        <div className="mt-4 flex w-full items-center justify-around">
+          <button
+            className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
+              "opacity-50": isPlayingSentenceNo === sentenceNo || isRecording || isPlaying,
+            })}
+            onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}
+            disabled={isPlayingSentenceNo !== null || isRecording || isPlaying} // 다른 문장이 재생 중이면 비활성화
+          >
+            {isPlayingSentenceNo === sentenceNo ? (
+              <div className="flex items-center justify-center">
+                <AiOutlineLoading3Quarters className={"animate-spin"} />
+              </div>
+            ) : (
+              <FaPlay size={18} className={"mx-auto"} />
+            )}
+          </button>
 
-        <button onClick={handleShowAnswer}>정답 보기</button>
+          <button onClick={handleShowAnswer}>정답 보기</button>
+        </div>
       </div>
 
       <p className={"mt-8 mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
