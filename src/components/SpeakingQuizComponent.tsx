@@ -56,6 +56,7 @@ export default function SpeakingQuizComponent({
   // Hint 관련 상태 변수
   const [showHint, setShowHint] = useState(false);
   const [showHint1, setShowHint1] = useState(true);
+  const [showAnswer, setShowAnswer] = useState(false);
 
   // 정답과 다른 부분을 저장할 상태 변수
   const [differences, setDifferences] = useState<{
@@ -354,6 +355,11 @@ export default function SpeakingQuizComponent({
     }
   };
 
+  const handleShowAnswer = () => {
+    setShowAnswer(true);
+    setTimeout(() => setShowAnswer(false), 2000); // 2초 후에 숨기기
+  };
+
   if (isLoadingSentence) {
     return <LoadingPageSkeleton />;
   }
@@ -414,7 +420,7 @@ export default function SpeakingQuizComponent({
                     className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
                       // hidden: feedback?.includes("정답"),
                     })}>
-                    {getMaskedSentence(currentSentence)}
+                    {showAnswer ? currentSentence.en : getMaskedSentence(currentSentence)}
                   </div>
                 )}
 
@@ -431,7 +437,7 @@ export default function SpeakingQuizComponent({
 
                   {/* 힌트 버튼 */}
                   <button
-                    onClick={handleShowHint}
+                    onClick={handleShowAnswer}
                     disabled={isListening || isPlaying || isActive}
                     className={clsx(
                       "btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold",
