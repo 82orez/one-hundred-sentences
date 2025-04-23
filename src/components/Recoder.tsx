@@ -50,6 +50,7 @@ const AudioRecorder = ({
   const timerRef = useRef<NodeJS.Timeout | null>(null); // 타이머 참조 추가
   const [hasNewRecording, setHasNewRecording] = useState(false);
   const [recordMessage, setRecordMessage] = useState<string | null>(null);
+  const [showAnswer, setShowAnswer] = useState(false);
 
   const { requestMediaStream, createAudioContext, releaseAllResources } = useAudioResources();
 
@@ -178,6 +179,11 @@ const AudioRecorder = ({
     }
   };
 
+  const handleShowAnswer = () => {
+    setShowAnswer(true);
+    setTimeout(() => setShowAnswer(false), 2000); // 2초 후에 숨기기
+  };
+
   return (
     <div className="relative mt-5 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
       {/* ❌ 버튼 (닫기 & 녹음 취소) */}
@@ -199,25 +205,33 @@ const AudioRecorder = ({
       <p className={"mt-1 text-center text-xl font-semibold"}>{sentenceKo}</p>
 
       {/* 영어 문장 추가 */}
-      <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">
-        {getMaskedSentence({ en: sentenceEn, ko: "", audioUrl: "", no: 0 })}
-      </p>
+      {showAnswer ? (
+        <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">{sentenceEn}</p>
+      ) : (
+        <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">
+          {getMaskedSentence({ en: sentenceEn, ko: "", audioUrl: "", no: 0 })}
+        </p>
+      )}
 
-      <button
-        className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
-          "opacity-50": isPlayingSentenceNo === sentenceNo,
-        })}
-        onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}
-        disabled={isPlayingSentenceNo !== null} // 다른 문장이 재생 중이면 비활성화
-      >
-        {isPlayingSentenceNo === sentenceNo ? (
-          <div className="flex items-center justify-center">
-            <AiOutlineLoading3Quarters className={"animate-spin"} />
-          </div>
-        ) : (
-          <FaPlay size={18} className={"mx-auto"} />
-        )}
-      </button>
+      <div className="mt-4 flex w-full items-center justify-around">
+        <button
+          className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
+            "opacity-50": isPlayingSentenceNo === sentenceNo,
+          })}
+          onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}
+          disabled={isPlayingSentenceNo !== null} // 다른 문장이 재생 중이면 비활성화
+        >
+          {isPlayingSentenceNo === sentenceNo ? (
+            <div className="flex items-center justify-center">
+              <AiOutlineLoading3Quarters className={"animate-spin"} />
+            </div>
+          ) : (
+            <FaPlay size={18} className={"mx-auto"} />
+          )}
+        </button>
+
+        <button onClick={handleShowAnswer}>정답 보기</button>
+      </div>
 
       <p className={"mt-8 mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
 
