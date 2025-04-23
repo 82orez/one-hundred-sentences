@@ -196,18 +196,20 @@ const AudioRecorder = ({
 
           <p className="mt-1 text-center text-lg font-semibold text-gray-600 md:mt-4">문장을 녹음하고 원어민 발음과 비교해 보세요.</p>
 
-          <div className={"mt-4 mb-4 flex w-full items-center justify-around"}>
-            <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">{sentenceNo}번 문장</div>
-            <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentenceNo)}>
-              <div>
-                <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite[sentenceNo] }, { hidden: isFavorite[sentenceNo] })} />
-                <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite[sentenceNo] }, { hidden: !isFavorite[sentenceNo] })} />
+          <div className={"mt-2 w-full rounded-lg border px-2 py-4"}>
+            <div className={"mt-1 mb-4 flex w-full items-center justify-around"}>
+              <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
+                {sentenceNo}번 문장
               </div>
-              <span className={"hidden md:inline"}>즐겨찾기</span>
-            </button>
-          </div>
+              <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentenceNo)}>
+                <div>
+                  <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite[sentenceNo] }, { hidden: isFavorite[sentenceNo] })} />
+                  <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite[sentenceNo] }, { hidden: !isFavorite[sentenceNo] })} />
+                </div>
+                <span className={""}>즐겨찾기</span>
+              </button>
+            </div>
 
-          <div className={"w-full rounded-lg border px-2 py-4"}>
             <p className={"mt-1 text-center text-xl font-semibold"}>{sentenceKo}</p>
 
             {/* 영어 문장 추가 */}
