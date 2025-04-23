@@ -9,6 +9,8 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 import { useAudioResources } from "@/hooks/useAudioResources";
 import clsx from "clsx";
 import { getMaskedSentence } from "@/utils/getMaskedSentence";
+import { GrFavorite } from "react-icons/gr";
+import { MdOutlineFavorite } from "react-icons/md";
 
 interface Props {
   sentenceNo: number;
@@ -21,6 +23,8 @@ interface Props {
   playNativeAudio: (audioURL: string, sentenceNo: number) => void;
   handleComplete: (sentenceNo: number) => void;
   onClose: () => void;
+  handleToggleFavorite: (sentenceNo: number) => void;
+  isFavorite: { [key: number]: boolean };
 }
 
 const AudioRecorder = ({
@@ -33,6 +37,8 @@ const AudioRecorder = ({
   isPlayingSentenceNo,
   playNativeAudio,
   sentenceNativeAudioUrl,
+  handleToggleFavorite,
+  isFavorite,
 }: Props) => {
   const { isRecording, isLoading, startRecording, stopRecording } = useRecordingStore();
   const [audioURL, setAudioURL] = useState<string | null>(null);
@@ -178,6 +184,17 @@ const AudioRecorder = ({
       <button className="absolute -top-9 -right-5 text-red-500 hover:text-red-700" onClick={handleCancelRecording}>
         <IoMdCloseCircleOutline size={30} />
       </button>
+
+      <div className={"mb-4 flex w-full items-center justify-around"}>
+        <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">{sentenceNo}번 문장</div>
+        <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentenceNo)}>
+          <div>
+            <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite[sentenceNo] }, { hidden: isFavorite[sentenceNo] })} />
+            <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite[sentenceNo] }, { hidden: !isFavorite[sentenceNo] })} />
+          </div>
+          <span className={"hidden md:inline"}>즐겨찾기</span>
+        </button>
+      </div>
 
       <p className={"mt-1 text-center text-xl font-semibold"}>{sentenceKo}</p>
 

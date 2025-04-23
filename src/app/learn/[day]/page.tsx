@@ -720,6 +720,8 @@ const LearnPage = ({ params }: Props) => {
                   handleComplete={handleComplete}
                   onClose={() => setSelectedSentenceNo(null)}
                   isCompleted={completedSentences?.includes(selectedSentenceNo)}
+                  handleToggleFavorite={handleToggleFavorite}
+                  isFavorite={isFavorite}
                 />
               </div>
             </div>
