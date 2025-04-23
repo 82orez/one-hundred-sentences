@@ -238,7 +238,7 @@ const AudioRecorder = ({
       {/* ✅ 녹음 버튼 (오디오 재생 중이면 비활성화) */}
       <button
         onClick={isRecording ? handleStopRecording : startRecording}
-        disabled={isPlaying}
+        disabled={isPlaying || isPlayingSentenceNo !== null}
         className={`min-h-24 cursor-pointer rounded px-4 py-2 ${isRecording ? "animate-pulse text-red-500" : "text-gray-900"} ${isPlaying ? "cursor-not-allowed opacity-50" : ""}`}>
         {isRecording ? (
           <div className={"flex flex-col items-center justify-center"}>
@@ -281,7 +281,7 @@ const AudioRecorder = ({
           <button
             onClick={handleSaveRecording}
             className="mt-2 flex min-h-12 w-1/4 min-w-52 cursor-pointer items-center justify-center rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
-            disabled={isRecording || isLoading || isUpLoading || isPlaying}>
+            disabled={isRecording || isLoading || isUpLoading || isPlaying || isPlayingSentenceNo !== null}>
             {isUpLoading ? (
               <AiOutlineLoading3Quarters className="animate-spin text-xl" />
             ) : isCompleted ? (
