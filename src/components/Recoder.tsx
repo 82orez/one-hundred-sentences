@@ -8,6 +8,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { useAudioResources } from "@/hooks/useAudioResources";
 import clsx from "clsx";
+import { getMaskedSentence } from "@/utils/getMaskedSentence";
 
 interface Props {
   sentenceNo: number;
@@ -181,7 +182,7 @@ const AudioRecorder = ({
       <p className={"mt-1 text-center text-lg"}>{sentenceKo}</p>
 
       {/* 영어 문장 추가 */}
-      <p className="text-md mt-1 text-center text-gray-700">{sentenceEn}</p>
+      <p className="text-md mt-1 text-center text-gray-700">{getMaskedSentence({ en: sentenceEn, ko: "", audioUrl: "", no: 0 })}</p>
 
       <button
         className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
