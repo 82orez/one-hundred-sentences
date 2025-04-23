@@ -216,10 +216,10 @@ const AudioRecorder = ({
       <div className="mt-4 flex w-full items-center justify-around">
         <button
           className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
-            "opacity-50": isPlayingSentenceNo === sentenceNo,
+            "opacity-50": isPlayingSentenceNo === sentenceNo || isRecording,
           })}
           onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}
-          disabled={isPlayingSentenceNo !== null} // 다른 문장이 재생 중이면 비활성화
+          disabled={isPlayingSentenceNo !== null || isRecording} // 다른 문장이 재생 중이면 비활성화
         >
           {isPlayingSentenceNo === sentenceNo ? (
             <div className="flex items-center justify-center">
