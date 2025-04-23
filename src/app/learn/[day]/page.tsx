@@ -715,6 +715,7 @@ const LearnPage = ({ params }: Props) => {
                   sentenceEn={todaySentences.find((s) => s.no === selectedSentenceNo)?.en || ""}
                   sentenceNativeAudioUrl={todaySentences.find((s) => s.no === selectedSentenceNo)?.audioUrl || ""}
                   sentenceNo={selectedSentenceNo}
+                  isPlayingSentenceNo={isPlayingSentenceNo}
                   playNativeAudio={playAudio}
                   handleComplete={handleComplete}
                   onClose={() => setSelectedSentenceNo(null)}

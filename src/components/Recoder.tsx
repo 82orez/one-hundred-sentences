@@ -3,10 +3,11 @@
 import { useRecordingStore } from "@/stores/useRecordingStore";
 import { useState, useRef, useEffect } from "react";
 import { FaMicrophone } from "react-icons/fa6";
-import { FaCheck, FaRegStopCircle } from "react-icons/fa";
+import { FaCheck, FaPlay, FaRegStopCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import { useAudioResources } from "@/hooks/useAudioResources";
+import clsx from "clsx";
 
 interface Props {
   sentenceNo: number;
@@ -14,6 +15,7 @@ interface Props {
   sentenceNativeAudioUrl: string;
   sentenceKo: string;
   isCompleted: boolean;
+  isPlayingSentenceNo: number | null;
 
   playNativeAudio: (audioURL: string, sentenceNo: number) => void;
   handleComplete: (sentenceNo: number) => void;
@@ -27,6 +29,7 @@ const AudioRecorder = ({
   handleComplete,
   onClose,
   isCompleted,
+  isPlayingSentenceNo,
   playNativeAudio,
   sentenceNativeAudioUrl,
 }: Props) => {
@@ -180,7 +183,21 @@ const AudioRecorder = ({
       {/* 영어 문장 추가 */}
       <p className="text-md mt-1 text-center text-gray-700">{sentenceEn}</p>
 
-      <button onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}>원어민 음성</button>
+      <button
+        className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
+          "opacity-50": isPlayingSentenceNo === sentenceNo,
+        })}
+        onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}
+        disabled={isPlayingSentenceNo !== null} // 다른 문장이 재생 중이면 비활성화
+      >
+        {isPlayingSentenceNo === sentenceNo ? (
+          <div className="flex items-center justify-center">
+            <AiOutlineLoading3Quarters className={"animate-spin"} />
+          </div>
+        ) : (
+          <FaPlay size={18} className={"mx-auto"} />
+        )}
+      </button>
 
       <p className={"mt-8 mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
 
