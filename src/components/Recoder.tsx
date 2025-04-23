@@ -185,127 +185,132 @@ const AudioRecorder = ({
   };
 
   return (
-    <div className="relative mt-5 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
-      {/* ❌ 버튼 (닫기 & 녹음 취소) */}
-      <button className="absolute -top-9 -right-5 text-red-500 hover:text-red-700" onClick={handleCancelRecording}>
-        <IoMdCloseCircleOutline size={30} />
-      </button>
+    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+      {/* 모달창을 fixed 포지셔닝으로 변경하고 스크롤 추가 */}
+      <div className="relative max-h-[80vh] w-full max-w-sm overflow-y-auto rounded-lg border bg-white px-4 py-8 shadow-lg">
+        <div className="relative mt-5 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
+          {/* ❌ 버튼 (닫기 & 녹음 취소) */}
+          <button className="absolute -top-10 -right-2 text-red-500 hover:text-red-700" onClick={handleCancelRecording}>
+            <IoMdCloseCircleOutline size={30} />
+          </button>
 
-      <div className={"mb-4 flex w-full items-center justify-around"}>
-        <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">{sentenceNo}번 문장</div>
-        <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentenceNo)}>
-          <div>
-            <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite[sentenceNo] }, { hidden: isFavorite[sentenceNo] })} />
-            <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite[sentenceNo] }, { hidden: !isFavorite[sentenceNo] })} />
+          <div className={"mb-4 flex w-full items-center justify-around"}>
+            <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">{sentenceNo}번 문장</div>
+            <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentenceNo)}>
+              <div>
+                <GrFavorite size={25} className={clsx({ "text-gray-400": !isFavorite[sentenceNo] }, { hidden: isFavorite[sentenceNo] })} />
+                <MdOutlineFavorite size={25} className={clsx({ "text-yellow-400": isFavorite[sentenceNo] }, { hidden: !isFavorite[sentenceNo] })} />
+              </div>
+              <span className={"hidden md:inline"}>즐겨찾기</span>
+            </button>
           </div>
-          <span className={"hidden md:inline"}>즐겨찾기</span>
-        </button>
-      </div>
 
-      <div className={"w-full rounded-lg border px-2 py-4"}>
-        <p className={"mt-1 text-center text-xl font-semibold"}>{sentenceKo}</p>
+          <div className={"w-full rounded-lg border px-2 py-4"}>
+            <p className={"mt-1 text-center text-xl font-semibold"}>{sentenceKo}</p>
 
-        {/* 영어 문장 추가 */}
-        {showAnswer ? (
-          <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">{sentenceEn}</p>
-        ) : (
-          <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">
-            {getMaskedSentence({ en: sentenceEn, ko: "", audioUrl: "", no: 0 })}
-          </p>
-        )}
+            {/* 영어 문장 추가 */}
+            {showAnswer ? (
+              <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">{sentenceEn}</p>
+            ) : (
+              <p className="text-md mt-1 text-center text-lg font-semibold text-gray-700">
+                {getMaskedSentence({ en: sentenceEn, ko: "", audioUrl: "", no: 0 })}
+              </p>
+            )}
 
-        <div className="mt-4 flex w-full items-center justify-around">
+            <div className="mt-4 flex w-full items-center justify-around">
+              <button
+                className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
+                  "opacity-50": isPlayingSentenceNo === sentenceNo || isRecording || isPlaying,
+                })}
+                onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}
+                disabled={isPlayingSentenceNo !== null || isRecording || isPlaying} // 다른 문장이 재생 중이면 비활성화
+              >
+                {isPlayingSentenceNo === sentenceNo ? (
+                  <div className="flex items-center justify-center">
+                    <AiOutlineLoading3Quarters className={"animate-spin"} />
+                  </div>
+                ) : (
+                  <FaPlay size={18} className={"mx-auto"} />
+                )}
+              </button>
+
+              <button onClick={handleShowAnswer}>정답 보기</button>
+            </div>
+          </div>
+
+          <p className={"mt-8 mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
+
+          {/* ✅ 녹음 버튼 (오디오 재생 중이면 비활성화) */}
           <button
-            className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
-              "opacity-50": isPlayingSentenceNo === sentenceNo || isRecording || isPlaying,
-            })}
-            onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}
-            disabled={isPlayingSentenceNo !== null || isRecording || isPlaying} // 다른 문장이 재생 중이면 비활성화
-          >
-            {isPlayingSentenceNo === sentenceNo ? (
-              <div className="flex items-center justify-center">
-                <AiOutlineLoading3Quarters className={"animate-spin"} />
+            onClick={isRecording ? handleStopRecording : startRecording}
+            disabled={isPlaying || isPlayingSentenceNo !== null}
+            className={`min-h-24 cursor-pointer rounded px-4 py-2 ${isRecording ? "animate-pulse text-red-500" : "text-gray-900"} ${isPlaying ? "cursor-not-allowed opacity-50" : ""}`}>
+            {isRecording ? (
+              <div className={"flex flex-col items-center justify-center"}>
+                <FaRegStopCircle size={45} className={"mb-2"} />
+                <p className={"text-xl font-semibold text-red-400"}>녹음 후 Click 하여 저장!</p>
+              </div>
+            ) : isLoading ? (
+              <div className={"flex flex-col items-center justify-center"}>
+                <AiOutlineLoading3Quarters className={"animate-spin text-gray-900"} />
+                <p className={"mt-4 animate-pulse"}>준비 중</p>
               </div>
             ) : (
-              <FaPlay size={18} className={"mx-auto"} />
+              <div className={"flex flex-col items-center justify-center"}>
+                <FaMicrophone size={50} className={"mb-2"} />
+                <p className={"text-xl font-semibold text-blue-400"}>Click 하면 녹음 시작!</p>
+              </div>
             )}
           </button>
 
-          <button onClick={handleShowAnswer}>정답 보기</button>
+          {/* ✅ 오디오 재생 UI */}
+          {audioURL && !isRecording && (
+            <div className="mt-8 w-full">
+              <p className={"mb-3 text-center text-lg font-semibold"}>Step 2. 녹음 파일 들어 보기</p>
+              <audio
+                ref={audioRef}
+                controls
+                src={audioURL}
+                className="mx-auto w-full"
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onEnded={() => setIsPlaying(false)}
+              />
+            </div>
+          )}
+
+          {/* ✅ 녹음 파일 제출 */}
+          {audioURL && !isRecording && (
+            <div className="mt-8 mb-2 flex flex-col items-center">
+              <p className={"text-center text-lg font-semibold"}>Step 3. 녹음 파일 제출하기</p>
+              <button
+                onClick={handleSaveRecording}
+                className="mt-2 flex min-h-12 w-1/4 min-w-52 cursor-pointer items-center justify-center rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
+                disabled={isRecording || isLoading || isUpLoading || isPlaying || isPlayingSentenceNo !== null}>
+                {isUpLoading ? (
+                  <AiOutlineLoading3Quarters className="animate-spin text-xl" />
+                ) : isCompleted ? (
+                  <div className={"flex items-center justify-center gap-2"}>
+                    <FaCheck size={20} />
+                    다시 제출
+                  </div>
+                ) : (
+                  "녹음 파일 제출"
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* ✅ 업로드 완료 시 메시지 표시 */}
+          {uploadedURL && (
+            <div className="mt-2 text-center text-lg">
+              {/*<p className="text-green-600">{recordMessage}</p>*/}
+              {recordCount !== null && <p>Speaking 연습 횟수: {recordCount} 회</p>}
+              {/*<audio controls src={uploadedURL} className="mx-auto" />*/}
+            </div>
+          )}
         </div>
       </div>
-
-      <p className={"mt-8 mb-4 text-lg font-semibold"}>Step 1. 문장 녹음하기</p>
-
-      {/* ✅ 녹음 버튼 (오디오 재생 중이면 비활성화) */}
-      <button
-        onClick={isRecording ? handleStopRecording : startRecording}
-        disabled={isPlaying || isPlayingSentenceNo !== null}
-        className={`min-h-24 cursor-pointer rounded px-4 py-2 ${isRecording ? "animate-pulse text-red-500" : "text-gray-900"} ${isPlaying ? "cursor-not-allowed opacity-50" : ""}`}>
-        {isRecording ? (
-          <div className={"flex flex-col items-center justify-center"}>
-            <FaRegStopCircle size={45} className={"mb-2"} />
-            <p className={"text-xl font-semibold text-red-400"}>녹음 후 Click 하여 저장!</p>
-          </div>
-        ) : isLoading ? (
-          <div className={"flex flex-col items-center justify-center"}>
-            <AiOutlineLoading3Quarters className={"animate-spin text-gray-900"} />
-            <p className={"mt-4 animate-pulse"}>준비 중</p>
-          </div>
-        ) : (
-          <div className={"flex flex-col items-center justify-center"}>
-            <FaMicrophone size={50} className={"mb-2"} />
-            <p className={"text-xl font-semibold text-blue-400"}>Click 하면 녹음 시작!</p>
-          </div>
-        )}
-      </button>
-
-      {/* ✅ 오디오 재생 UI */}
-      {audioURL && !isRecording && (
-        <div className="mt-8 w-full">
-          <p className={"mb-3 text-center text-lg font-semibold"}>Step 2. 녹음 파일 들어 보기</p>
-          <audio
-            ref={audioRef}
-            controls
-            src={audioURL}
-            className="mx-auto w-full"
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-            onEnded={() => setIsPlaying(false)}
-          />
-        </div>
-      )}
-
-      {/* ✅ 녹음 파일 제출 */}
-      {audioURL && !isRecording && (
-        <div className="mt-8 mb-2 flex flex-col items-center">
-          <p className={"text-center text-lg font-semibold"}>Step 3. 녹음 파일 제출하기</p>
-          <button
-            onClick={handleSaveRecording}
-            className="mt-2 flex min-h-12 w-1/4 min-w-52 cursor-pointer items-center justify-center rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:opacity-50"
-            disabled={isRecording || isLoading || isUpLoading || isPlaying || isPlayingSentenceNo !== null}>
-            {isUpLoading ? (
-              <AiOutlineLoading3Quarters className="animate-spin text-xl" />
-            ) : isCompleted ? (
-              <div className={"flex items-center justify-center gap-2"}>
-                <FaCheck size={20} />
-                다시 제출
-              </div>
-            ) : (
-              "녹음 파일 제출"
-            )}
-          </button>
-        </div>
-      )}
-
-      {/* ✅ 업로드 완료 시 메시지 표시 */}
-      {uploadedURL && (
-        <div className="mt-2 text-center text-lg">
-          {/*<p className="text-green-600">{recordMessage}</p>*/}
-          {recordCount !== null && <p>Speaking 연습 횟수: {recordCount} 회</p>}
-          {/*<audio controls src={uploadedURL} className="mx-auto" />*/}
-        </div>
-      )}
     </div>
   );
 };
