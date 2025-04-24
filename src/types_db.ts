@@ -182,7 +182,9 @@ export type Database = {
         Row: {
           createdAt: string
           description: string | null
+          duration: string | null
           endDate: string | null
+          endTime: string | null
           generatorId: string
           id: string
           scheduleFriday: boolean
@@ -201,7 +203,9 @@ export type Database = {
         Insert: {
           createdAt?: string
           description?: string | null
+          duration?: string | null
           endDate?: string | null
+          endTime?: string | null
           generatorId: string
           id: string
           scheduleFriday?: boolean
@@ -220,7 +224,9 @@ export type Database = {
         Update: {
           createdAt?: string
           description?: string | null
+          duration?: string | null
           endDate?: string | null
+          endTime?: string | null
           generatorId?: string
           id?: string
           scheduleFriday?: boolean

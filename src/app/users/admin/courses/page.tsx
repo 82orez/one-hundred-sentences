@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { format } from "date-fns";
-import { Calendar, CheckSquare, Edit, Trash2, Plus, X } from "lucide-react";
+import { Calendar, CheckSquare, Edit, Trash2, Plus, X, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 
@@ -32,7 +32,9 @@ interface Course {
   scheduleSunday: boolean;
   startDate: string;
   endDate: string;
-  startTime: string; // 새로운 필드 추가
+  startTime: string;
+  duration: string; // 추가: 수업 진행 시간
+  endTime: string; // 추가: 수업 종료 시간
   createdAt: string;
   updatedAt: string;
 }
@@ -54,8 +56,38 @@ export default function CoursePage() {
     scheduleSunday: false,
     startDate: "",
     endDate: "",
-    startTime: "", // 새로운 필드 추가
+    startTime: "",
+    durationHours: "0", // 추가: 시간 부분
+    durationMinutes: "25", // 추가: 분 부분
   });
+
+  // 수업 종료 시간 계산
+  const [endTime, setEndTime] = useState<string>("");
+
+  // 수업 시간이 변경될 때마다 종료 시간 재계산
+  useEffect(() => {
+    if (formData.startTime) {
+      const [hours, minutes] = formData.startTime.split(":").map(Number);
+      const durationHours = parseInt(formData.durationHours) || 0;
+      const durationMinutes = parseInt(formData.durationMinutes) || 0;
+
+      // 종료 시간 계산
+      let endHour = hours + durationHours;
+      let endMinute = minutes + durationMinutes;
+
+      // 분이 60을 넘으면 시간 조정
+      if (endMinute >= 60) {
+        endHour += Math.floor(endMinute / 60);
+        endMinute %= 60;
+      }
+
+      // 24시간 형식으로 변환
+      endHour %= 24;
+
+      const calculatedEndTime = `${endHour.toString().padStart(2, "0")}:${endMinute.toString().padStart(2, "0")}`;
+      setEndTime(calculatedEndTime);
+    }
+  }, [formData.startTime, formData.durationHours, formData.durationMinutes]);
 
   // 활성 강사 목록 불러오기
   const { data: teachers = [] } = useQuery({
@@ -77,8 +109,19 @@ export default function CoursePage() {
 
   // 강좌 생성 mutation
   const createCourseMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
-      return axios.post("/api/admin/courses", data);
+    mutationFn: async (data: any) => {
+      // 수업 진행 시간과 종료 시간 형식 설정
+      const formattedData = {
+        ...data,
+        duration: `${data.durationHours}시간 ${data.durationMinutes}분`,
+        endTime: endTime,
+      };
+
+      // durationHours와 durationMinutes는 제출하지 않음
+      delete formattedData.durationHours;
+      delete formattedData.durationMinutes;
+
+      return axios.post("/api/admin/courses", formattedData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
@@ -94,8 +137,19 @@ export default function CoursePage() {
 
   // 강좌 수정 mutation
   const updateCourseMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: typeof formData }) => {
-      return axios.put(`/api/admin/courses?id=${id}`, data);
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      // 수업 진행 시간과 종료 시간 형식 설정
+      const formattedData = {
+        ...data,
+        duration: `${data.durationHours}시간 ${data.durationMinutes}분`,
+        endTime: endTime,
+      };
+
+      // durationHours와 durationMinutes는 제출하지 않음
+      delete formattedData.durationHours;
+      delete formattedData.durationMinutes;
+
+      return axios.put(`/api/admin/courses?id=${id}`, formattedData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
@@ -124,6 +178,7 @@ export default function CoursePage() {
       console.error("강좌 삭제 에러:", error);
     },
   });
+
   // 폼 데이터 초기화
   const resetForm = () => {
     setFormData({
@@ -139,13 +194,28 @@ export default function CoursePage() {
       scheduleSunday: false,
       startDate: "",
       endDate: "",
-      startTime: "", // 초기화 추가
+      startTime: "",
+      durationHours: "0",
+      durationMinutes: "25",
     });
   };
 
   // 강좌 편집 모드 시작
   const handleEditCourse = (course: Course) => {
     setEditingCourse(course);
+
+    // duration에서 시간과 분 추출
+    let durationHours = "0";
+    let durationMinutes = "25";
+
+    if (course.duration) {
+      const durationMatch = course.duration.match(/(\d+)시간\s+(\d+)분/);
+      if (durationMatch) {
+        durationHours = durationMatch[1];
+        durationMinutes = durationMatch[2];
+      }
+    }
+
     setFormData({
       title: course.title,
       description: course.description || "",
@@ -159,7 +229,9 @@ export default function CoursePage() {
       scheduleSunday: course.scheduleSunday,
       startDate: course.startDate ? course.startDate.split("T")[0] : "",
       endDate: course.endDate ? course.endDate.split("T")[0] : "",
-      startTime: course.startTime || "", // 시작 시간 설정
+      startTime: course.startTime || "",
+      durationHours,
+      durationMinutes,
     });
     setIsModalOpen(true);
   };
@@ -178,6 +250,12 @@ export default function CoursePage() {
     if (type === "checkbox") {
       const { checked } = e.target as HTMLInputElement;
       setFormData((prev) => ({ ...prev, [name]: checked }));
+    } else if (name === "durationMinutes") {
+      // 분 값이 0-59 범위 내에 있는지 확인
+      const minutesValue = parseInt(value);
+      if (isNaN(minutesValue) || (minutesValue >= 0 && minutesValue <= 59)) {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      }
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -206,6 +284,13 @@ export default function CoursePage() {
 
     if (isNoScheduleSelected) {
       toast.error("수업 요일을 최소 한 개 이상 선택해야 합니다.");
+      return;
+    }
+
+    // 분 값 검증
+    const minutesValue = parseInt(formData.durationMinutes);
+    if (minutesValue < 0 || minutesValue > 59) {
+      toast.error("분은 0에서 59 사이의 값으로 설정해야 합니다.");
       return;
     }
 
@@ -266,7 +351,7 @@ export default function CoursePage() {
           <p className="py-8 text-center text-gray-500">등록된 강좌가 없습니다.</p>
         ) : (
           <table className="table-zebra table w-full">
-            <thead className="">
+            <thead>
               <tr>
                 <th>강좌명</th>
                 <th>강사</th>
@@ -275,12 +360,13 @@ export default function CoursePage() {
                 <th>수업 일정</th>
                 <th>시작일</th>
                 <th>시작 시간</th>
-                {/* 새로 추가한 열 */}
+                <th>수업 진행 시간</th>
+                <th>수업 종료 시간</th>
                 <th>종료일</th>
                 <th>관리</th>
               </tr>
             </thead>
-            <tbody className="">
+            <tbody>
               {courses.map((course: Course) => (
                 <tr key={course.id}>
                   <td className="font-medium">{course.title}</td>
@@ -290,7 +376,8 @@ export default function CoursePage() {
                   <td>{formatSchedule(course)}</td>
                   <td>{formatDate(course.startDate)}</td>
                   <td>{course.startTime || "-"}</td>
-                  {/* 시작 시간 표시 */}
+                  <td>{course.duration || "25분"}</td>
+                  <td>{course.endTime || "-"}</td>
                   <td>{formatDate(course.endDate)}</td>
                   <td className="flex gap-2">
                     <button onClick={() => handleEditCourse(course)} className="btn btn-sm btn-ghost" aria-label="수정">
@@ -480,7 +567,7 @@ export default function CoursePage() {
                   </div>
                 </div>
 
-                {/* 시작 시간 - 새로 추가 */}
+                {/* 시작 시간 */}
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text font-medium">수업 시작 시간 *</span>
@@ -499,6 +586,57 @@ export default function CoursePage() {
                     })}
                   </select>
                 </div>
+
+                {/* 수업 진행 시간 */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text font-medium">수업 진행 시간 *</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <input
+                        type="number"
+                        name="durationHours"
+                        value={formData.durationHours}
+                        onChange={handleInputChange}
+                        className="input input-bordered w-full"
+                        min="0"
+                        required
+                      />
+                      <label className="label">
+                        <span className="label-text">시간</span>
+                      </label>
+                    </div>
+                    <div className="flex-1">
+                      <input
+                        type="number"
+                        name="durationMinutes"
+                        value={formData.durationMinutes}
+                        onChange={handleInputChange}
+                        className="input input-bordered w-full"
+                        min="0"
+                        max="59"
+                        required
+                      />
+                      <label className="label">
+                        <span className="label-text">분 (0-59)</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 수업 종료 시간 (계산됨) */}
+                {formData.startTime && (
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text font-medium">계산된 수업 종료 시간</span>
+                    </label>
+                    <div className="flex h-12 items-center rounded-lg border border-gray-300 bg-gray-100 px-4">
+                      <Clock size={18} className="mr-2 text-gray-500" />
+                      <span>{endTime}</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="mt-6 flex justify-end gap-2">
