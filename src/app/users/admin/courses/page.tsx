@@ -6,6 +6,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import { Calendar, CheckSquare, Edit, Trash2, Plus, X } from "lucide-react";
 import toast from "react-hot-toast";
+import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 
 // 타입 정의
 interface Teacher {
@@ -31,6 +32,7 @@ interface Course {
   scheduleSunday: boolean;
   startDate: string;
   endDate: string;
+  startTime: string; // 새로운 필드 추가
   createdAt: string;
   updatedAt: string;
 }
@@ -52,6 +54,7 @@ export default function CoursePage() {
     scheduleSunday: false,
     startDate: "",
     endDate: "",
+    startTime: "", // 새로운 필드 추가
   });
 
   // 활성 강사 목록 불러오기
@@ -136,6 +139,7 @@ export default function CoursePage() {
       scheduleSunday: false,
       startDate: "",
       endDate: "",
+      startTime: "", // 초기화 추가
     });
   };
 
@@ -155,6 +159,7 @@ export default function CoursePage() {
       scheduleSunday: course.scheduleSunday,
       startDate: course.startDate ? course.startDate.split("T")[0] : "",
       endDate: course.endDate ? course.endDate.split("T")[0] : "",
+      startTime: course.startTime || "", // 시작 시간 설정
     });
     setIsModalOpen(true);
   };
@@ -238,6 +243,8 @@ export default function CoursePage() {
     return format(new Date(dateString), "yyyy-MM-dd");
   };
 
+  if (isLoading) return <LoadingPageSkeleton />;
+
   return (
     <div className="container mx-auto p-6">
       <h2 className="mb-6 text-2xl font-bold">강좌 관리</h2>
@@ -259,7 +266,7 @@ export default function CoursePage() {
           <p className="py-8 text-center text-gray-500">등록된 강좌가 없습니다.</p>
         ) : (
           <table className="table-zebra table w-full">
-            <thead className={""}>
+            <thead className="">
               <tr>
                 <th>강좌명</th>
                 <th>강사</th>
@@ -267,11 +274,13 @@ export default function CoursePage() {
                 <th>이메일</th>
                 <th>수업 일정</th>
                 <th>시작일</th>
+                <th>시작 시간</th>
+                {/* 새로 추가한 열 */}
                 <th>종료일</th>
                 <th>관리</th>
               </tr>
             </thead>
-            <tbody className={""}>
+            <tbody className="">
               {courses.map((course: Course) => (
                 <tr key={course.id}>
                   <td className="font-medium">{course.title}</td>
@@ -280,6 +289,8 @@ export default function CoursePage() {
                   <td>{course.teacher?.email || "-"}</td>
                   <td>{formatSchedule(course)}</td>
                   <td>{formatDate(course.startDate)}</td>
+                  <td>{course.startTime || "-"}</td>
+                  {/* 시작 시간 표시 */}
                   <td>{formatDate(course.endDate)}</td>
                   <td className="flex gap-2">
                     <button onClick={() => handleEditCourse(course)} className="btn btn-sm btn-ghost" aria-label="수정">
@@ -467,6 +478,26 @@ export default function CoursePage() {
                       </label>
                     </div>
                   </div>
+                </div>
+
+                {/* 시작 시간 - 새로 추가 */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text font-medium">수업 시작 시간 *</span>
+                  </label>
+                  <select name="startTime" value={formData.startTime} onChange={handleInputChange} className="select select-bordered w-full" required>
+                    <option value="">시작 시간을 선택하세요</option>
+                    {Array.from({ length: 48 }).map((_, i) => {
+                      const hour = Math.floor(i / 2);
+                      const minute = i % 2 === 0 ? "00" : "30";
+                      const time = `${hour.toString().padStart(2, "0")}:${minute}`;
+                      return (
+                        <option key={time} value={time}>
+                          {time}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
               </div>
 

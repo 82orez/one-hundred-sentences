@@ -74,7 +74,7 @@ export async function POST(request: Request) {
       data: {
         title: data.title,
         description: data.description,
-        generatorId: session.user.id, // 필수 필드 추가
+        generatorId: session.user.id,
         teacherId: data.teacherId,
         scheduleMonday: data.scheduleMonday,
         scheduleTuesday: data.scheduleTuesday,
@@ -85,6 +85,7 @@ export async function POST(request: Request) {
         scheduleSunday: data.scheduleSunday,
         startDate: data.startDate ? new Date(data.startDate) : null,
         endDate: data.endDate ? new Date(data.endDate) : null,
+        startTime: data.startTime || null, // 시작 시간 추가
       },
     });
 
@@ -103,7 +104,6 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
     }
 
-    // URL 파라미터에서 id 가져오기
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
@@ -113,7 +113,6 @@ export async function PUT(request: Request) {
 
     const data = await request.json();
 
-    // 강좌 존재 여부 확인
     const existingCourse = await prisma.course.findUnique({
       where: { id },
     });
@@ -137,6 +136,7 @@ export async function PUT(request: Request) {
         scheduleSunday: data.scheduleSunday,
         startDate: data.startDate ? new Date(data.startDate) : null,
         endDate: data.endDate ? new Date(data.endDate) : null,
+        startTime: data.startTime || null, // 시작 시간 추가
       },
     });
 
