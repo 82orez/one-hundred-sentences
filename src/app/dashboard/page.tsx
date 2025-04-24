@@ -408,7 +408,7 @@ export default function Dashboard() {
             <button
               className="cursor-pointer rounded-lg bg-yellow-500 px-4 py-2 text-white shadow transition hover:bg-yellow-600"
               onClick={() => setQuizModalOpen(true)}>
-              퀴즈 풀기
+              랜덤 퀴즈 풀기
             </button>
           </div>
         </div>
