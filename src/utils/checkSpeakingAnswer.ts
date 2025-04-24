@@ -101,6 +101,7 @@ export const checkAnswer = (
         .replace(/\bwhat's\b/g, "what is")
         .replace(/\bthere's\b/g, "there is")
         .replace(/\bthere're\b/g, "there are")
+        .replace(/\bthey're\b/g, "they are")
 
         .replace(/\bself-checking\b/g, "self check in")
         .replace(/\bself checking\b/g, "self check in")
@@ -141,8 +142,9 @@ export const checkAnswer = (
   const spokenWordCount = normalizedSpoken.split(" ").length;
   const answerWordCount = normalizedAnswer.split(" ").length;
 
-  console.log("📝 Normalized 말한 내용:", normalizedSpoken);
-  console.log("✅ 정답:", normalizedAnswer);
+  console.log("⭐ 인식된 음성: ", transcript);
+  console.log("📝 Normalized text: ", normalizedSpoken);
+  console.log("✅ 정답: ", normalizedAnswer);
 
   // 두 문장이 완전히 같으면 바로 정답 처리
   // 개선된 비교 로직 적용
