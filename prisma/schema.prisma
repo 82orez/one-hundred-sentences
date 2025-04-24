@@ -252,28 +252,30 @@ model Purchase {
 }
 
 model Course {
-  id                String       @id @default(cuid())
+  id                String    @id @default(cuid())
   title             String
   description       String?
   generatorId       String
-  scheduleMonday    Boolean      @default(false)
-  scheduleTuesday   Boolean      @default(false)
-  scheduleWednesday Boolean      @default(false)
-  scheduleThursday  Boolean      @default(false)
-  scheduleFriday    Boolean      @default(false)
-  scheduleSaturday  Boolean      @default(false)
-  scheduleSunday    Boolean      @default(false)
+  teacherId         String
+  scheduleMonday    Boolean   @default(false)
+  scheduleTuesday   Boolean   @default(false)
+  scheduleWednesday Boolean   @default(false)
+  scheduleThursday  Boolean   @default(false)
+  scheduleFriday    Boolean   @default(false)
+  scheduleSaturday  Boolean   @default(false)
+  scheduleSunday    Boolean   @default(false)
   startDate         DateTime?
   endDate           DateTime?
-  teacherId         String?
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+  startTime         String? // 새로 추가한 필드 - 시작 시간을 "HH:MM" 형식의 문자열로 저장
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
   // 관계 설정
-  generator         User         @relation(fields: [generatorId], references: [id])
-  teacher           Teachers?    @relation(fields: [teacherId], references: [id])
-  lessons           Lesson[]
-  enrollments       Enrollment[]
-  assignments       Assignment[]
+  generator   User         @relation(fields: [generatorId], references: [id])
+  teacher     Teachers?    @relation(fields: [teacherId], references: [id])
+  lessons     Lesson[]
+  enrollments Enrollment[]
+  assignments Assignment[]
 }
 
 model Lesson {
