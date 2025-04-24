@@ -43,8 +43,7 @@ export default function SpeakingPage() {
   const remainingSentenceNosRef = useRef<number[]>([]);
 
   // Hint 관련 상태 변수 추가 (기존 state 목록 아래에 추가)
-  const [showHint, setShowHint] = useState(false); // 정답 보기
-  const [showHint1, setShowHint1] = useState(true); // Hint
+  const [showHint, setShowHint] = useState(true); // Hint
   const [showAnswer, setShowAnswer] = useState(false);
 
   // 정답과 다른 부분을 저장할 상태 변수 추가
@@ -199,7 +198,6 @@ export default function SpeakingPage() {
     // 상태 초기화
     setUserSpoken("");
     setFeedback(null);
-    setShowHint(false);
     setDifferences({ missing: [], incorrect: [] });
     setIsVisible(false);
   };
@@ -284,15 +282,6 @@ export default function SpeakingPage() {
       setIsPlaying(false);
       audioRef.current = null;
     });
-  };
-
-  // ✅ 힌트 보기 함수
-  const handleShowHint = () => {
-    setShowHint(true);
-    // 시간 조절 가능 - 1.5초 후에 힌트를 서서히 사라지게 함
-    setTimeout(() => {
-      setShowHint(false);
-    }, 1500); // 1500ms = 1.5초
   };
 
   // ✅ 음성 인식 시작
@@ -481,7 +470,7 @@ export default function SpeakingPage() {
                 {/* 빈칸 힌트 토글 */}
                 <div className={clsx("flex items-center justify-center gap-2", { hidden: feedback?.includes("정답") })}>
                   {/* 이 input 이 체크되면 showHint1이 false 로 변경됩니다 */}
-                  <input type="checkbox" checked={showHint1} onChange={() => setShowHint1(!showHint1)} className="toggle toggle-primary" />
+                  <input type="checkbox" checked={showHint} onChange={() => setShowHint(!showHint)} className="toggle toggle-primary" />
                   <span className="">Hint!</span>
                 </div>
 
@@ -519,12 +508,14 @@ export default function SpeakingPage() {
                 <p>{currentSentence?.ko}</p>
 
                 {/* 빈칸 힌트 부분 */}
-                <div
-                  className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
-                    // hidden: feedback?.includes("정답"),
-                  })}>
-                  {showAnswer ? currentSentence.en : getMaskedSentence(currentSentence)}
-                </div>
+                {showHint && (
+                  <div
+                    className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
+                      // hidden: feedback?.includes("정답"),
+                    })}>
+                    {showAnswer ? currentSentence.en : getMaskedSentence(currentSentence)}
+                  </div>
+                )}
 
                 <div className="mt-8 flex items-center justify-center gap-4">
                   {/* 원어민 음성 재생 부분 */}
@@ -540,7 +531,7 @@ export default function SpeakingPage() {
                   {/* 정답 보기 버튼 */}
                   <button
                     onClick={handleShowAnswer}
-                    disabled={isListening || isPlaying}
+                    disabled={isListening || isPlaying || !showHint}
                     className={clsx(
                       "btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold",
                       { hidden: feedback?.includes("정답") },
@@ -550,13 +541,6 @@ export default function SpeakingPage() {
                     정답 보기
                   </button>
                 </div>
-
-                {/* 힌트 표시 영역 opacity-0 -> hidden */}
-                {currentSentence && !feedback?.includes("정답") && (
-                  <div className={`mt-4 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "hidden"}`}>
-                    {currentSentence.en}
-                  </div>
-                )}
               </div>
 
               {/* 몸통 부분 */}
