@@ -415,14 +415,12 @@ export default function SpeakingQuizComponent({
                 <p>{currentSentence?.ko}</p>
 
                 {/* 빈칸 힌트 부분 */}
-                {showHint1 && (
-                  <div
-                    className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
-                      // hidden: feedback?.includes("정답"),
-                    })}>
-                    {showAnswer ? currentSentence.en : getMaskedSentence(currentSentence)}
-                  </div>
-                )}
+                <div
+                  className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
+                    // hidden: feedback?.includes("정답"),
+                  })}>
+                  {showAnswer ? currentSentence.en : getMaskedSentence(currentSentence)}
+                </div>
 
                 <div className="mt-8 flex items-center justify-center gap-4">
                   {/* 원어민 음성 재생 부분 */}

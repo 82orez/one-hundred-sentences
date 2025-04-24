@@ -45,6 +45,7 @@ export default function SpeakingPage() {
   // Hint 관련 상태 변수 추가 (기존 state 목록 아래에 추가)
   const [showHint, setShowHint] = useState(false); // 정답 보기
   const [showHint1, setShowHint1] = useState(true); // Hint
+  const [showAnswer, setShowAnswer] = useState(false);
 
   // 정답과 다른 부분을 저장할 상태 변수 추가
   const [differences, setDifferences] = useState<{
@@ -425,6 +426,11 @@ export default function SpeakingPage() {
     }
   };
 
+  const handleShowAnswer = () => {
+    setShowAnswer(true);
+    setTimeout(() => setShowAnswer(false), 2000); // 2초 후에 숨기기
+  };
+
   if (isLoading) {
     return <LoadingPageSkeleton />;
   }
@@ -513,14 +519,12 @@ export default function SpeakingPage() {
                 <p>{currentSentence?.ko}</p>
 
                 {/* 빈칸 힌트 부분 */}
-                {showHint1 && (
-                  <div
-                    className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
-                      hidden: feedback?.includes("정답"),
-                    })}>
-                    {getMaskedSentence(currentSentence)}
-                  </div>
-                )}
+                <div
+                  className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
+                    // hidden: feedback?.includes("정답"),
+                  })}>
+                  {showAnswer ? currentSentence.en : getMaskedSentence(currentSentence)}
+                </div>
 
                 <div className="mt-8 flex items-center justify-center gap-4">
                   {/* 원어민 음성 재생 부분 */}
@@ -535,7 +539,7 @@ export default function SpeakingPage() {
 
                   {/* 정답 보기 버튼 */}
                   <button
-                    onClick={handleShowHint}
+                    onClick={handleShowAnswer}
                     disabled={isListening || isPlaying}
                     className={clsx(
                       "btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold",
