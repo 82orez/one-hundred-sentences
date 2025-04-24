@@ -11,6 +11,7 @@ import clsx from "clsx";
 import { getMaskedSentence } from "@/utils/getMaskedSentence";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
+import { LuMousePointerClick } from "react-icons/lu";
 
 interface Props {
   sentenceNo: number;
@@ -181,7 +182,7 @@ const AudioRecorder = ({
 
   const handleShowAnswer = () => {
     setShowAnswer(true);
-    setTimeout(() => setShowAnswer(false), 2000); // 2초 후에 숨기기
+    setTimeout(() => setShowAnswer(false), 3000); // 지정한 시간 후에 숨기기 (1000 -> 1초)
   };
 
   return (
@@ -221,24 +222,31 @@ const AudioRecorder = ({
               </p>
             )}
 
-            <div className="mt-4 flex w-full items-center justify-around">
-              <button
-                className={clsx("h-9 min-w-9 cursor-pointer rounded bg-blue-500 p-1 text-white", {
-                  "opacity-50": isPlayingSentenceNo === sentenceNo || isRecording || isPlaying,
-                })}
-                onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}
-                disabled={isPlayingSentenceNo !== null || isRecording || isPlaying} // 다른 문장이 재생 중이면 비활성화
-              >
-                {isPlayingSentenceNo === sentenceNo ? (
-                  <div className="flex items-center justify-center">
-                    <AiOutlineLoading3Quarters className={"animate-spin"} />
-                  </div>
-                ) : (
-                  <FaPlay size={18} className={"mx-auto"} />
-                )}
-              </button>
+            <div className={"flex w-full items-center justify-around"}>
+              <div className="mt-4 flex w-full items-center justify-around">
+                <button
+                  className={clsx("h-9 min-w-9 cursor-pointer rounded", {
+                    "opacity-50": isPlayingSentenceNo === sentenceNo || isRecording || isPlaying,
+                  })}
+                  onClick={() => playNativeAudio(sentenceNativeAudioUrl, sentenceNo)}
+                  disabled={isPlayingSentenceNo !== null || isRecording || isPlaying} // 다른 문장이 재생 중이면 비활성화
+                >
+                  {isPlayingSentenceNo === sentenceNo ? (
+                    <div className="btn btn-primary btn-soft flex items-center justify-center">
+                      <AiOutlineLoading3Quarters className={"animate-spin"} /> 원어민 음성
+                    </div>
+                  ) : (
+                    <div className={"btn btn-primary btn-soft flex items-center justify-center"}>
+                      <FaPlay size={16} className={"mx-auto"} /> 원어민 음성
+                    </div>
+                  )}
+                </button>
 
-              <button onClick={handleShowAnswer}>정답 보기</button>
+                <button onClick={handleShowAnswer} className={"btn btn-secondary btn-soft flex items-center justify-center"}>
+                  <LuMousePointerClick size={24} />
+                  정답 보기
+                </button>
+              </div>
             </div>
           </div>
 
@@ -252,7 +260,7 @@ const AudioRecorder = ({
             {isRecording ? (
               <div className={"flex flex-col items-center justify-center"}>
                 <FaRegStopCircle size={45} className={"mb-2"} />
-                <p className={"text-xl font-semibold text-red-400"}>녹음 후 Click 하여 저장!</p>
+                <p className={"text-xl font-semibold text-red-400"}>녹음 중, Click 하면 종료!</p>
               </div>
             ) : isLoading ? (
               <div className={"flex flex-col items-center justify-center"}>
@@ -313,6 +321,10 @@ const AudioRecorder = ({
               {/*<audio controls src={uploadedURL} className="mx-auto" />*/}
             </div>
           )}
+
+          <button className="btn mt-4" onClick={handleCancelRecording}>
+            닫 기
+          </button>
         </div>
       </div>
     </div>
