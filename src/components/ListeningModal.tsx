@@ -18,7 +18,7 @@ export default function ListeningModal({
   isOpen,
   onCancel,
   title = "음성 인식 중입니다.",
-  message = "말씀해 주세요!",
+  message = "천천히 또박또박 말씀해 주세요!",
   cancelButtonText = "말하기 취소",
   icon = <FaMicrophone className="text-3xl text-red-600" />,
   customIconAnimation = { scale: [1, 1.3, 1] },

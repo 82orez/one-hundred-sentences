@@ -186,7 +186,7 @@ const AudioRecorder = ({
   };
 
   return (
-    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center">
       {/* 모달창을 fixed 포지셔닝으로 변경하고 스크롤 추가 */}
       <div className="relative max-h-[80vh] w-full max-w-sm overflow-y-auto rounded-lg border bg-white px-4 py-8 shadow-lg">
         <div className="relative mt-5 flex w-full max-w-sm flex-col items-center rounded-lg border p-4">
@@ -322,8 +322,10 @@ const AudioRecorder = ({
             </div>
           )}
 
-          <button className="btn mt-4" onClick={handleCancelRecording}>
-            닫 기
+          <button
+            className="mt-8 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+            onClick={handleCancelRecording}>
+            닫기
           </button>
         </div>
       </div>

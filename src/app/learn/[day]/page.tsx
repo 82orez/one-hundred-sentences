@@ -708,22 +708,20 @@ const LearnPage = ({ params }: Props) => {
 
           {/* ✅ 녹음 모달 - Tailwind CSS 사용 */}
           {selectedSentenceNo && todaySentences?.find((s) => s.no === selectedSentenceNo) && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/25">
-              <div className="relative flex w-[90%] max-w-md items-center justify-center rounded-lg bg-white p-6 shadow-lg">
-                <AudioRecorder
-                  sentenceKo={todaySentences.find((s) => s.no === selectedSentenceNo)?.ko || ""}
-                  sentenceEn={todaySentences.find((s) => s.no === selectedSentenceNo)?.en || ""}
-                  sentenceNativeAudioUrl={todaySentences.find((s) => s.no === selectedSentenceNo)?.audioUrl || ""}
-                  sentenceNo={selectedSentenceNo}
-                  isPlayingSentenceNo={isPlayingSentenceNo}
-                  playNativeAudio={playAudio}
-                  handleComplete={handleComplete}
-                  onClose={() => setSelectedSentenceNo(null)}
-                  isCompleted={completedSentences?.includes(selectedSentenceNo)}
-                  handleToggleFavorite={handleToggleFavorite}
-                  isFavorite={isFavorite}
-                />
-              </div>
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/15">
+              <AudioRecorder
+                sentenceKo={todaySentences.find((s) => s.no === selectedSentenceNo)?.ko || ""}
+                sentenceEn={todaySentences.find((s) => s.no === selectedSentenceNo)?.en || ""}
+                sentenceNativeAudioUrl={todaySentences.find((s) => s.no === selectedSentenceNo)?.audioUrl || ""}
+                sentenceNo={selectedSentenceNo}
+                isPlayingSentenceNo={isPlayingSentenceNo}
+                playNativeAudio={playAudio}
+                handleComplete={handleComplete}
+                onClose={() => setSelectedSentenceNo(null)}
+                isCompleted={completedSentences?.includes(selectedSentenceNo)}
+                handleToggleFavorite={handleToggleFavorite}
+                isFavorite={isFavorite}
+              />
             </div>
           )}
         </div>
