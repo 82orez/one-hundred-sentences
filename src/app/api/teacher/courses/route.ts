@@ -49,40 +49,34 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
-      return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
     }
 
-    // 현재 사용자가 강사인지 확인
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { role: true },
-    });
+    const data = await request.json();
 
-    if (!(user?.role === "teacher" || user?.role === "admin")) {
-      return NextResponse.json({ error: "강사 권한이 없습니다." }, { status: 403 });
-    }
-
-    // 요청 본문에서 데이터 추출
-    const { title, description } = await request.json();
-
-    // 필수 필드 유효성 검사
-    if (!title) {
-      return NextResponse.json({ error: "강좌명은 필수 항목입니다." }, { status: 400 });
-    }
-
-    // 새 강좌 생성
-    const newCourse = await prisma.course.create({
+    const course = await prisma.course.create({
       data: {
-        title,
-        description,
+        title: data.title,
+        description: data.description,
         generatorId: session.user.id,
+        teacherId: data.teacherId,
+        scheduleMonday: data.scheduleMonday,
+        scheduleTuesday: data.scheduleTuesday,
+        scheduleWednesday: data.scheduleWednesday,
+        scheduleThursday: data.scheduleThursday,
+        scheduleFriday: data.scheduleFriday,
+        scheduleSaturday: data.scheduleSaturday,
+        scheduleSunday: data.scheduleSunday,
+        startDate: data.startDate ? new Date(data.startDate) : null,
+        endDate: data.endDate ? new Date(data.endDate) : null,
+        startTime: data.startTime || null, // 시작 시간 추가
       },
     });
 
-    return NextResponse.json(newCourse, { status: 201 });
+    return NextResponse.json({ course });
   } catch (error) {
     console.error("강좌 생성 오류:", error);
-    return NextResponse.json({ error: "강좌를 생성하는 중 오류가 발생했습니다." }, { status: 500 });
+    return NextResponse.json({ error: "강좌 생성에 실패했습니다." }, { status: 500 });
   }
 }
