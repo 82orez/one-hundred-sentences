@@ -54,8 +54,7 @@ export default function SpeakingQuizComponent({
   const recordNativeAudioAttemptMutation = nativeAudioAttemptMutation || null;
 
   // Hint 관련 상태 변수
-  const [showHint, setShowHint] = useState(false);
-  const [showHint1, setShowHint1] = useState(true);
+  const [showHint, setShowHint] = useState(true);
   const [showAnswer, setShowAnswer] = useState(false);
 
   // 정답과 다른 부분을 저장할 상태 변수
@@ -206,15 +205,6 @@ export default function SpeakingQuizComponent({
       }
     }
   }, [feedback]);
-
-  // 힌트 보기 함수
-  const handleShowHint = () => {
-    setShowHint(true);
-    // 1.5초 후에 힌트를 서서히 사라지게 함
-    setTimeout(() => {
-      setShowHint(false);
-    }, 1500);
-  };
 
   // ✅ 음성 인식 시작 함수를 카운트다운 실행 후 음성 인식을 시작하도록 변경
   const startListening = async () => {
@@ -391,7 +381,7 @@ export default function SpeakingQuizComponent({
                 {/* 빈칸 힌트 토글 */}
                 <div className={clsx("flex items-center justify-center gap-2", { hidden: feedback?.includes("정답") })}>
                   {/* 이 input 이 체크되면 showHint1이 false 로 변경됩니다 */}
-                  <input type="checkbox" checked={showHint1} onChange={() => setShowHint1(!showHint1)} className="toggle toggle-primary" />
+                  <input type="checkbox" checked={showHint} onChange={() => setShowHint(!showHint)} className="toggle toggle-primary" />
                   <span className="">Hint!</span>
                 </div>
               </div>
@@ -415,12 +405,14 @@ export default function SpeakingQuizComponent({
                 <p>{currentSentence?.ko}</p>
 
                 {/* 빈칸 힌트 부분 */}
-                <div
-                  className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
-                    // hidden: feedback?.includes("정답"),
-                  })}>
-                  {showAnswer ? currentSentence.en : getMaskedSentence(currentSentence)}
-                </div>
+                {showHint && (
+                  <div
+                    className={clsx("mt-4 rounded-lg border border-gray-200 bg-white p-4 text-center text-xl shadow-sm", {
+                      // hidden: feedback?.includes("정답"),
+                    })}>
+                    {showAnswer ? currentSentence.en : getMaskedSentence(currentSentence)}
+                  </div>
+                )}
 
                 <div className="mt-8 flex items-center justify-center gap-4">
                   {/* 원어민 음성 재생 부분 */}
@@ -436,7 +428,7 @@ export default function SpeakingQuizComponent({
                   {/* 힌트 버튼 */}
                   <button
                     onClick={handleShowAnswer}
-                    disabled={isListening || isPlaying || isActive}
+                    disabled={isListening || isPlaying || isActive || !showHint}
                     className={clsx(
                       "btn btn-secondary btn-soft flex min-w-32 items-center justify-center gap-2 rounded-lg p-2 text-[1rem] font-semibold",
                       { hidden: feedback?.includes("정답") },
@@ -445,18 +437,7 @@ export default function SpeakingQuizComponent({
                     <LuMousePointerClick size={24} />
                     정답 보기
                   </button>
-
-                  {/*<button onClick={toggleHint} className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">*/}
-                  {/*  {showHint1 ? "힌트 숨기기" : "힌트 보기"}*/}
-                  {/*</button>*/}
                 </div>
-
-                {/* 힌트 표시 영역 invisible -> hidden */}
-                {currentSentence && !feedback?.includes("정답") && (
-                  <div className={`mt-4 font-medium text-blue-600 transition-opacity duration-1000 ${showHint ? "opacity-100" : "hidden"}`}>
-                    {currentSentence.en}
-                  </div>
-                )}
               </div>
 
               {/* 몸통 부분 */}
