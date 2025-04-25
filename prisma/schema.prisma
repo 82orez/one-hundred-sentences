@@ -267,7 +267,7 @@ model Course {
   startDate         DateTime?
   endDate           DateTime?
   startTime         String? // 새로 추가한 필드 - 시작 시간을 "HH:MM" 형식의 문자열로 저장
-  duration          String?   @default("0시간 25분") // 수업 진행 시간 (예: "1시간 30분")
+  duration          String?   @default("25분") // 수업 진행 시간 (예: "1시간 30분")
   endTime           String? // 수업 종료 시간 (자동 계산)
 
   createdAt DateTime @default(now())

@@ -85,7 +85,9 @@ export async function POST(request: Request) {
         scheduleSunday: data.scheduleSunday,
         startDate: data.startDate ? new Date(data.startDate) : null,
         endDate: data.endDate ? new Date(data.endDate) : null,
-        startTime: data.startTime || null, // 시작 시간 추가
+        startTime: data.startTime || null,
+        duration: data.duration || "25분", // 수업 진행 시간 추가
+        endTime: data.endTime || null, // 수업 종료 시간 추가
       },
     });
 
@@ -136,7 +138,9 @@ export async function PUT(request: Request) {
         scheduleSunday: data.scheduleSunday,
         startDate: data.startDate ? new Date(data.startDate) : null,
         endDate: data.endDate ? new Date(data.endDate) : null,
-        startTime: data.startTime || null, // 시작 시간 추가
+        startTime: data.startTime || null,
+        duration: data.duration || existingCourse.duration, // 기존 값 유지 또는 새 값 적용
+        endTime: data.endTime || existingCourse.endTime, // 기존 값 유지 또는 새 값 적용
       },
     });
 

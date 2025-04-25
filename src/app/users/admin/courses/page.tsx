@@ -113,7 +113,7 @@ export default function CoursePage() {
       // 수업 진행 시간과 종료 시간 형식 설정
       const formattedData = {
         ...data,
-        duration: `${data.durationHours}시간 ${data.durationMinutes}분`,
+        duration: parseInt(data.durationHours) > 0 ? `${data.durationHours}시간 ${data.durationMinutes}분` : `${data.durationMinutes}분`,
         endTime: endTime,
       };
 
@@ -141,7 +141,7 @@ export default function CoursePage() {
       // 수업 진행 시간과 종료 시간 형식 설정
       const formattedData = {
         ...data,
-        duration: `${data.durationHours}시간 ${data.durationMinutes}분`,
+        duration: parseInt(data.durationHours) > 0 ? `${data.durationHours}시간 ${data.durationMinutes}분` : `${data.durationMinutes}분`,
         endTime: endTime,
       };
 
