@@ -7,6 +7,7 @@ import { queryClient } from "@/app/providers";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
+import TeacherSchedule from "@/components/TeacherSchedule";
 
 // 타입 정의
 interface Teacher {
@@ -37,6 +38,8 @@ interface TeacherUpdateData {
 }
 
 export default function TeachersManagementPage() {
+  const [selectedTeacherForSchedule, setSelectedTeacherForSchedule] = useState<Teacher | null>(null);
+
   // 강사 신청자 목록 조회
   const {
     data: teacherApplications,
@@ -183,6 +186,11 @@ export default function TeachersManagementPage() {
     },
   });
 
+  // 스케줄 모달 닫기 함수
+  const closeScheduleModal = () => {
+    setSelectedTeacherForSchedule(null);
+  };
+
   return (
     <div className="container mx-auto p-6">
       <div className="mb-6 flex items-center">
@@ -290,6 +298,10 @@ export default function TeachersManagementPage() {
                       상태
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                      스케줄
+                    </th>
+
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                       작업
                     </th>
                   </tr>
@@ -320,6 +332,14 @@ export default function TeachersManagementPage() {
                           {teacher.isActive ? "활성화 됨" : "비활성 상태"}
                         </span>
                       </td>
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
+                        <button
+                          onClick={() => setSelectedTeacherForSchedule(teacher)}
+                          className="rounded bg-indigo-500 px-3 py-2 text-white hover:bg-indigo-600">
+                          스케줄 보기
+                        </button>
+                      </td>
+
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
                         <div className="flex items-center">
                           <button
@@ -406,6 +426,30 @@ export default function TeachersManagementPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 스케줄 모달 추가 */}
+      {selectedTeacherForSchedule && (
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/30">
+          <div className="my-8 w-full max-w-5xl rounded-lg bg-white p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold">{selectedTeacherForSchedule.realName} 강사의 수업 일정</h2>
+              <button onClick={closeScheduleModal} className="rounded-full p-1 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <TeacherSchedule teacherId={selectedTeacherForSchedule.id} />
+
+            <div className="mt-6 flex justify-end">
+              <button onClick={closeScheduleModal} className="rounded bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400">
+                닫기
+              </button>
+            </div>
           </div>
         </div>
       )}
