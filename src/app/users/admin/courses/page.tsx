@@ -204,15 +204,24 @@ export default function CoursePage() {
   const handleEditCourse = (course: Course) => {
     setEditingCourse(course);
 
-    // duration에서 시간과 분 추출
+    // duration 에서 시간과 분 추출
     let durationHours = "0";
     let durationMinutes = "25";
 
     if (course.duration) {
-      const durationMatch = course.duration.match(/(\d+)시간\s+(\d+)분/);
-      if (durationMatch) {
-        durationHours = durationMatch[1];
-        durationMinutes = durationMatch[2];
+      console.log("course.duration: ", course.duration);
+
+      // "X시간 Y분" 형식 매칭
+      const fullMatch = course.duration.match(/(\d+)시간\s*(\d+)분/);
+      // "Y분"만 있는 형식 매칭
+      const onlyMinutesMatch = course.duration.match(/^(\d+)분$/);
+
+      if (fullMatch) {
+        durationHours = fullMatch[1];
+        durationMinutes = fullMatch[2];
+      } else if (onlyMinutesMatch) {
+        durationHours = "0";
+        durationMinutes = onlyMinutesMatch[1];
       }
     }
 
