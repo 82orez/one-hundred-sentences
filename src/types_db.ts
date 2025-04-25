@@ -180,6 +180,8 @@ export type Database = {
       }
       Course: {
         Row: {
+          classCount: number | null
+          classDates: string | null
           createdAt: string
           description: string | null
           duration: string | null
@@ -201,6 +203,8 @@ export type Database = {
           updatedAt: string
         }
         Insert: {
+          classCount?: number | null
+          classDates?: string | null
           createdAt?: string
           description?: string | null
           duration?: string | null
@@ -222,6 +226,8 @@ export type Database = {
           updatedAt: string
         }
         Update: {
+          classCount?: number | null
+          classDates?: string | null
           createdAt?: string
           description?: string | null
           duration?: string | null

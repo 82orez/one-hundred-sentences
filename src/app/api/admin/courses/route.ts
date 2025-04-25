@@ -86,8 +86,10 @@ export async function POST(request: Request) {
         startDate: data.startDate ? new Date(data.startDate) : null,
         endDate: data.endDate ? new Date(data.endDate) : null,
         startTime: data.startTime || null,
-        duration: data.duration || "25분", // 수업 진행 시간 추가
-        endTime: data.endTime || null, // 수업 종료 시간 추가
+        duration: data.duration || "25분",
+        endTime: data.endTime || null,
+        classCount: data.classCount || 1, // 수업 횟수 추가
+        classDates: data.classDates || null, // 수업 날짜들 추가
       },
     });
 
@@ -139,8 +141,10 @@ export async function PUT(request: Request) {
         startDate: data.startDate ? new Date(data.startDate) : null,
         endDate: data.endDate ? new Date(data.endDate) : null,
         startTime: data.startTime || null,
-        duration: data.duration || existingCourse.duration, // 기존 값 유지 또는 새 값 적용
-        endTime: data.endTime || existingCourse.endTime, // 기존 값 유지 또는 새 값 적용
+        duration: data.duration || existingCourse.duration,
+        endTime: data.endTime || existingCourse.endTime,
+        classCount: data.classCount || existingCourse.classCount, // 수업 횟수 추가
+        classDates: data.classDates || existingCourse.classDates, // 수업 날짜들 추가
       },
     });
 

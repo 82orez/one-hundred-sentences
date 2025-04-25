@@ -3,18 +3,18 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { format } from "date-fns";
+import { format, addDays, getDay, isValid } from "date-fns";
 import { Calendar, CheckSquare, Edit, Trash2, Plus, X, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 
-// 타입 정의
+// 타입 정의 확장
 interface Teacher {
   id: string;
   realName: string;
   email: string;
   phone: string;
-  isActive: boolean; // isActive 속성 추가
+  isActive: boolean;
 }
 
 interface Course {
@@ -33,10 +33,18 @@ interface Course {
   startDate: string;
   endDate: string;
   startTime: string;
-  duration: string; // 추가: 수업 진행 시간
-  endTime: string; // 추가: 수업 종료 시간
+  duration: string;
+  endTime: string;
+  classCount: number; // 수업 횟수 추가
+  classDates: string; // 수업 날짜들 추가
   createdAt: string;
   updatedAt: string;
+}
+
+// 날짜와 요일 정보를 담는 인터페이스
+interface ClassDate {
+  date: string;
+  dayOfWeek: string;
 }
 
 export default function CoursePage() {
@@ -57,12 +65,103 @@ export default function CoursePage() {
     startDate: "",
     endDate: "",
     startTime: "",
-    durationHours: "0", // 추가: 시간 부분
-    durationMinutes: "25", // 추가: 분 부분
+    durationHours: "0",
+    durationMinutes: "25",
+    classCount: 1, // 수업 횟수 추가
   });
 
   // 수업 종료 시간 계산
   const [endTime, setEndTime] = useState<string>("");
+
+  // 수업 날짜 목록 상태 추가
+  const [classDates, setClassDates] = useState<ClassDate[]>([]);
+
+  // 선택된 수업 요일 배열 생성 함수
+  const getSelectedDaysArray = () => {
+    const days = [];
+    if (formData.scheduleMonday) days.push(1); // 월요일: 1
+    if (formData.scheduleTuesday) days.push(2); // 화요일: 2
+    if (formData.scheduleWednesday) days.push(3); // 수요일: 3
+    if (formData.scheduleThursday) days.push(4); // 목요일: 4
+    if (formData.scheduleFriday) days.push(5); // 금요일: 5
+    if (formData.scheduleSaturday) days.push(6); // 토요일: 6
+    if (formData.scheduleSunday) days.push(0); // 일요일: 0
+    return days;
+  };
+
+  // 요일 이름 가져오기 함수
+  const getDayOfWeekName = (dayNumber: number): string => {
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+    return days[dayNumber];
+  };
+
+  // 수업 날짜 및 종료일 계산
+  useEffect(() => {
+    if (formData.startDate && formData.classCount > 0) {
+      const startDate = new Date(formData.startDate);
+
+      // 유효한 날짜인지 확인
+      if (!isValid(startDate)) {
+        setClassDates([]);
+        return;
+      }
+
+      const selectedDays = getSelectedDaysArray();
+
+      // 수업 요일이 선택되지 않았으면 계산하지 않음
+      if (selectedDays.length === 0) {
+        setClassDates([]);
+        return;
+      }
+
+      // 시작일의 요일이 선택된 요일 중 하나인지 확인
+      const startDayOfWeek = getDay(startDate);
+      if (!selectedDays.includes(startDayOfWeek)) {
+        toast.error("시작일은 선택한 수업 요일 중 하나여야 합니다.");
+        return;
+      }
+
+      // 수업 날짜 계산
+      const tempDates: ClassDate[] = [];
+      let currentDate = new Date(startDate);
+      let classesScheduled = 0;
+
+      while (classesScheduled < formData.classCount) {
+        const currentDayOfWeek = getDay(currentDate);
+
+        if (selectedDays.includes(currentDayOfWeek)) {
+          tempDates.push({
+            date: format(currentDate, "yyyy-MM-dd"),
+            dayOfWeek: getDayOfWeekName(currentDayOfWeek),
+          });
+          classesScheduled++;
+        }
+
+        // 다음 날짜로 이동
+        currentDate = addDays(currentDate, 1);
+      }
+
+      // 종료일 계산 (마지막 수업 날짜)
+      if (tempDates.length > 0) {
+        const lastClassDate = tempDates[tempDates.length - 1].date;
+        setFormData((prev) => ({ ...prev, endDate: lastClassDate }));
+      }
+
+      setClassDates(tempDates);
+    } else {
+      setClassDates([]);
+    }
+  }, [
+    formData.startDate,
+    formData.classCount,
+    formData.scheduleMonday,
+    formData.scheduleTuesday,
+    formData.scheduleWednesday,
+    formData.scheduleThursday,
+    formData.scheduleFriday,
+    formData.scheduleSaturday,
+    formData.scheduleSunday,
+  ]);
 
   // 수업 시간이 변경될 때마다 종료 시간 재계산
   useEffect(() => {
@@ -115,6 +214,8 @@ export default function CoursePage() {
         ...data,
         duration: parseInt(data.durationHours) > 0 ? `${data.durationHours}시간 ${data.durationMinutes}분` : `${data.durationMinutes}분`,
         endTime: endTime,
+        // 수업 날짜 목록 JSON 형식으로 변환
+        classDates: JSON.stringify(classDates),
       };
 
       // durationHours와 durationMinutes는 제출하지 않음
@@ -135,7 +236,7 @@ export default function CoursePage() {
     },
   });
 
-  // 강좌 수정 mutation
+  // 강좌 수정 mutation 수정
   const updateCourseMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: any }) => {
       // 수업 진행 시간과 종료 시간 형식 설정
@@ -143,6 +244,8 @@ export default function CoursePage() {
         ...data,
         duration: parseInt(data.durationHours) > 0 ? `${data.durationHours}시간 ${data.durationMinutes}분` : `${data.durationMinutes}분`,
         endTime: endTime,
+        // 수업 날짜 목록 JSON 형식으로 변환
+        classDates: JSON.stringify(classDates),
       };
 
       // durationHours와 durationMinutes는 제출하지 않음
@@ -197,10 +300,12 @@ export default function CoursePage() {
       startTime: "",
       durationHours: "0",
       durationMinutes: "25",
+      classCount: 1,
     });
+    setClassDates([]);
   };
 
-  // 강좌 편집 모드 시작
+  // 강좌 편집 모드 시작 함수 수정
   const handleEditCourse = (course: Course) => {
     setEditingCourse(course);
 
@@ -209,8 +314,6 @@ export default function CoursePage() {
     let durationMinutes = "25";
 
     if (course.duration) {
-      console.log("course.duration: ", course.duration);
-
       // "X시간 Y분" 형식 매칭
       const fullMatch = course.duration.match(/(\d+)시간\s*(\d+)분/);
       // "Y분"만 있는 형식 매칭
@@ -223,6 +326,19 @@ export default function CoursePage() {
         durationHours = "0";
         durationMinutes = onlyMinutesMatch[1];
       }
+    }
+
+    // 수업 날짜 설정
+    if (course.classDates) {
+      try {
+        const parsedDates = JSON.parse(course.classDates);
+        setClassDates(parsedDates);
+      } catch (error) {
+        console.error("수업 날짜 파싱 오류:", error);
+        setClassDates([]);
+      }
+    } else {
+      setClassDates([]);
     }
 
     setFormData({
@@ -241,6 +357,7 @@ export default function CoursePage() {
       startTime: course.startTime || "",
       durationHours,
       durationMinutes,
+      classCount: course.classCount || 1,
     });
     setIsModalOpen(true);
   };
@@ -265,12 +382,18 @@ export default function CoursePage() {
       if (isNaN(minutesValue) || (minutesValue >= 0 && minutesValue <= 59)) {
         setFormData((prev) => ({ ...prev, [name]: value }));
       }
+    } else if (name === "classCount") {
+      // 수업 횟수는 최소 1회 이상이어야 함
+      const countValue = parseInt(value);
+      if (!isNaN(countValue) && countValue > 0) {
+        setFormData((prev) => ({ ...prev, [name]: countValue }));
+      }
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  // 폼 제출 핸들러
+  // 폼 제출 핸들러 수정
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -296,10 +419,31 @@ export default function CoursePage() {
       return;
     }
 
+    // 수업 시작일 검증
+    if (!formData.startDate) {
+      toast.error("수업 시작일을 설정해야 합니다.");
+      return;
+    }
+
+    // 시작일이 선택한 요일과 일치하는지 확인
+    const startDayOfWeek = getDay(new Date(formData.startDate));
+    const selectedDays = getSelectedDaysArray();
+
+    if (!selectedDays.includes(startDayOfWeek)) {
+      toast.error("시작일은 선택한 수업 요일 중 하나여야 합니다.");
+      return;
+    }
+
     // 분 값 검증
     const minutesValue = parseInt(formData.durationMinutes);
     if (minutesValue < 0 || minutesValue > 59) {
       toast.error("분은 0에서 59 사이의 값으로 설정해야 합니다.");
+      return;
+    }
+
+    // 수업 날짜 리스트가 비어있으면 알림
+    if (classDates.length === 0) {
+      toast.error("수업 날짜가 계산되지 않았습니다.");
       return;
     }
 
@@ -414,241 +558,206 @@ export default function CoursePage() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                {/* 강좌명 */}
-                <div className="form-control md:col-span-2">
-                  <label className="label">
-                    <span className="label-text font-medium">강좌명 *</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    className="input input-bordered w-full"
-                    required
-                  />
-                </div>
-
-                {/* 강좌 설명 */}
-                <div className="form-control md:col-span-2">
-                  <label className="label">
-                    <span className="label-text font-medium">강좌 설명</span>
-                  </label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className="textarea textarea-bordered h-24 w-full"
-                  />
-                </div>
-
-                {/* 강사 선택 */}
-                <div className="form-control md:col-span-2">
-                  <label className="label">
-                    <span className="label-text font-medium">강사 *</span>
-                  </label>
-                  <select name="teacherId" value={formData.teacherId} onChange={handleInputChange} className="select select-bordered w-full" required>
-                    <option value="">강사를 선택하세요</option>
-                    {teachers
-                      .filter((teacher: Teacher) => teacher.isActive)
-                      .map((teacher: Teacher) => (
-                        <option key={teacher.id} value={teacher.id}>
-                          {teacher.realName}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-
-                {/* 시작일 */}
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-medium">수업 시작일 *</span>
-                  </label>
-                  <div className="input-group">
-                    <input
-                      type="date"
-                      name="startDate"
-                      value={formData.startDate}
-                      onChange={handleInputChange}
-                      className="input input-bordered w-full"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* 종료일 */}
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-medium">수업 종료일 *</span>
-                  </label>
-                  <div className="input-group">
-                    <input
-                      type="date"
-                      name="endDate"
-                      value={formData.endDate}
-                      onChange={handleInputChange}
-                      className="input input-bordered w-full"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* 수업 요일 선택 */}
-                <div className="form-control mt-4 rounded-md border border-gray-300 p-3 md:col-span-2">
-                  <label className="label">
-                    <span className="label-text font-medium">수업 요일을 선택하세요. *</span>
-                  </label>
-                  <div className={""}>
-                    <div className="mt-4 flex flex-wrap gap-8">
-                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
-                        <span className="label-text">월요일</span>
-                        <input
-                          type="checkbox"
-                          name="scheduleMonday"
-                          checked={formData.scheduleMonday}
-                          onChange={handleInputChange}
-                          className="checkbox checkbox-primary"
-                        />
-                      </label>
-                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
-                        <span className="label-text">화요일</span>
-                        <input
-                          type="checkbox"
-                          name="scheduleTuesday"
-                          checked={formData.scheduleTuesday}
-                          onChange={handleInputChange}
-                          className="checkbox checkbox-primary"
-                        />
-                      </label>
-                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
-                        <span className="label-text">수요일</span>
-                        <input
-                          type="checkbox"
-                          name="scheduleWednesday"
-                          checked={formData.scheduleWednesday}
-                          onChange={handleInputChange}
-                          className="checkbox checkbox-primary"
-                        />
-                      </label>
-                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
-                        <span className="label-text">목요일</span>
-                        <input
-                          type="checkbox"
-                          name="scheduleThursday"
-                          checked={formData.scheduleThursday}
-                          onChange={handleInputChange}
-                          className="checkbox checkbox-primary"
-                        />
-                      </label>
-                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
-                        <span className="label-text">금요일</span>
-                        <input
-                          type="checkbox"
-                          name="scheduleFriday"
-                          checked={formData.scheduleFriday}
-                          onChange={handleInputChange}
-                          className="checkbox checkbox-primary"
-                        />
-                      </label>
-                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
-                        <span className="label-text">토요일</span>
-                        <input
-                          type="checkbox"
-                          name="scheduleSaturday"
-                          checked={formData.scheduleSaturday}
-                          onChange={handleInputChange}
-                          className="checkbox checkbox-primary"
-                        />
-                      </label>
-                      <label className="label flex cursor-pointer flex-col items-center justify-center gap-2">
-                        <span className="label-text">일요일</span>
-                        <input
-                          type="checkbox"
-                          name="scheduleSunday"
-                          checked={formData.scheduleSunday}
-                          onChange={handleInputChange}
-                          className="checkbox checkbox-primary"
-                        />
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 시작 시간 */}
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-medium">수업 시작 시간 *</span>
-                  </label>
-                  <select name="startTime" value={formData.startTime} onChange={handleInputChange} className="select select-bordered w-full" required>
-                    <option value="">시작 시간을 선택하세요</option>
-                    {Array.from({ length: 48 }).map((_, i) => {
-                      const hour = Math.floor(i / 2);
-                      const minute = i % 2 === 0 ? "00" : "30";
-                      const time = `${hour.toString().padStart(2, "0")}:${minute}`;
-                      return (
-                        <option key={time} value={time}>
-                          {time}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-
-                {/* 수업 진행 시간 */}
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-medium">수업 진행 시간 *</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <div className="flex-1">
-                      <input
-                        type="number"
-                        name="durationHours"
-                        value={formData.durationHours}
-                        onChange={handleInputChange}
-                        onDoubleClick={(e) => e.currentTarget.select()}
-                        className="input input-bordered w-full"
-                        min="0"
-                        required
-                      />
-                      <label className="label">
-                        <span className="label-text">시간</span>
-                      </label>
-                    </div>
-                    <div className="flex-1">
-                      <input
-                        type="number"
-                        name="durationMinutes"
-                        value={formData.durationMinutes}
-                        onChange={handleInputChange}
-                        onDoubleClick={(e) => e.currentTarget.select()}
-                        className="input input-bordered w-full"
-                        min="0"
-                        max="59"
-                        required
-                      />
-                      <label className="label">
-                        <span className="label-text">분 (0-59)</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 수업 종료 시간 (계산됨) */}
-                {formData.startTime && (
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text font-medium">계산된 수업 종료 시간</span>
-                    </label>
-                    <div className="flex h-12 items-center rounded-lg border border-gray-300 bg-gray-100 px-4">
-                      <Clock size={18} className="mr-2 text-gray-500" />
-                      <span>{endTime}</span>
-                    </div>
-                  </div>
-                )}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* 강좌명 */}
+              <div className="form-control md:col-span-2">
+                <label className="label">
+                  <span className="label-text font-medium">강좌명 *</span>
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  className="input input-bordered w-full"
+                  required
+                />
               </div>
+
+              {/* 강좌 설명 */}
+              <div className="form-control md:col-span-2">
+                <label className="label">
+                  <span className="label-text font-medium">강좌 설명</span>
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="textarea textarea-bordered h-24 w-full"
+                />
+              </div>
+
+              {/* 강사 선택 */}
+              <div className="form-control md:col-span-2">
+                <label className="label">
+                  <span className="label-text font-medium">강사 *</span>
+                </label>
+                <select name="teacherId" value={formData.teacherId} onChange={handleInputChange} className="select select-bordered w-full" required>
+                  <option value="">강사를 선택하세요</option>
+                  {teachers
+                    .filter((teacher: Teacher) => teacher.isActive)
+                    .map((teacher: Teacher) => (
+                      <option key={teacher.id} value={teacher.id}>
+                        {teacher.realName}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              {/* 요일 선택 필드 */}
+              <div className="space-y-2">
+                <p className="font-medium text-gray-700">수업 요일 선택</p>
+                <div className="flex flex-wrap gap-4">
+                  {[
+                    { name: "scheduleMonday", label: "월" },
+                    { name: "scheduleTuesday", label: "화" },
+                    { name: "scheduleWednesday", label: "수" },
+                    { name: "scheduleThursday", label: "목" },
+                    { name: "scheduleFriday", label: "금" },
+                    { name: "scheduleSaturday", label: "토" },
+                    { name: "scheduleSunday", label: "일" },
+                  ].map((day) => (
+                    <label key={day.name} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        name={day.name}
+                        checked={(formData as any)[day.name]}
+                        onChange={handleInputChange}
+                        className="h-5 w-5 rounded border-gray-300 text-indigo-600"
+                      />
+                      <span>{day.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* 수업 횟수 필드 (신규 추가) */}
+              <div className="space-y-2">
+                <label htmlFor="classCount" className="block font-medium text-gray-700">
+                  수업 횟수
+                </label>
+                <input
+                  type="number"
+                  id="classCount"
+                  name="classCount"
+                  value={formData.classCount}
+                  onChange={handleInputChange}
+                  min="1"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+
+              {/* 시작일 필드 */}
+              <div className="space-y-2">
+                <label htmlFor="startDate" className="block font-medium text-gray-700">
+                  수업 시작일 (선택한 요일에 맞는 날짜로 선택)
+                </label>
+                <input
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleInputChange}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+
+              {/* 종료일 필드 (자동 계산됨, 읽기 전용) */}
+              <div className="space-y-2">
+                <label htmlFor="endDate" className="block font-medium text-gray-700">
+                  수업 종료일 (자동 계산됨)
+                </label>
+                <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  value={formData.endDate}
+                  readOnly
+                  className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 shadow-sm"
+                />
+              </div>
+
+              {/* 수업 날짜 목록 표시 (신규 추가) */}
+              {classDates.length > 0 && (
+                <div className="space-y-2">
+                  <p className="font-medium text-gray-700">수업 날짜 목록</p>
+                  <div className="max-h-60 overflow-y-auto rounded-md border border-gray-300 p-3">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="py-1 text-left">날짜</th>
+                          <th className="py-1 text-left">요일</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {classDates.map((date, index) => (
+                          <tr key={index} className="border-b border-gray-100">
+                            <td className="py-1">{date.date}</td>
+                            <td className="py-1">{date.dayOfWeek}요일</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* 시작 시간 필드 */}
+              <div className="space-y-2">
+                <label htmlFor="startTime" className="block font-medium text-gray-700">
+                  수업 시작 시간
+                </label>
+                <input
+                  type="time"
+                  id="startTime"
+                  name="startTime"
+                  value={formData.startTime}
+                  onChange={handleInputChange}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+
+              {/* 수업 진행 시간 필드 */}
+              <div className="space-y-2">
+                <label className="block font-medium text-gray-700">수업 진행 시간</label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    id="durationHours"
+                    name="durationHours"
+                    value={formData.durationHours}
+                    onChange={handleInputChange}
+                    min="0"
+                    max="10"
+                    className="w-20 rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  />
+                  <span>시간</span>
+                  <input
+                    type="number"
+                    id="durationMinutes"
+                    name="durationMinutes"
+                    value={formData.durationMinutes}
+                    onChange={handleInputChange}
+                    min="0"
+                    max="59"
+                    className="w-20 rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  />
+                  <span>분</span>
+                </div>
+              </div>
+
+              {/* 수업 종료 시간 (자동 계산됨) */}
+              {endTime && (
+                <div className="space-y-2">
+                  <label className="block font-medium text-gray-700">수업 종료 시간 (자동 계산됨)</label>
+                  <input type="time" value={endTime} readOnly className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 shadow-sm" />
+                </div>
+              )}
+
+              {/* 강사 선택 필드 */}
 
               <div className="mt-6 flex justify-end gap-2">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="btn btn-outline">
