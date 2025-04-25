@@ -132,35 +132,98 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
         return a.startTime.localeCompare(b.startTime);
       });
 
+    // 24시간 시간대 생성
+    const hours = Array.from({ length: 24 }, (_, i) => i);
+
+    // 시작/종료 시간을 분 단위로 변환하는 함수
+    const timeToMinutes = (timeString: string | null): number => {
+      if (!timeString) return 0;
+      const [hours, minutes] = timeString.split(":").map(Number);
+      return hours * 60 + minutes;
+    };
+
+    // 강의의 위치 및 높이 계산
+    const calculateCoursePosition = (course: Course) => {
+      const startMinutes = timeToMinutes(course.startTime);
+      const endMinutes = timeToMinutes(course.endTime);
+      const duration = endMinutes - startMinutes;
+
+      // 시작 시간의 상대적 위치 (하루 = 1440분)
+      const top = (startMinutes / 1440) * 100;
+      // 강의 길이의 상대적 높이
+      const height = (duration / 1440) * 100;
+
+      return {
+        top: `${top}%`,
+        height: `${height}%`,
+      };
+    };
+
     return (
       <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm">
         <h3 className="mb-4 text-xl font-medium">{format(currentDate, "yyyy년 MM월 dd일 (EEEE)", { locale: ko })}</h3>
 
         {isLoading ? (
           <div className="p-6 text-center">불러오는 중...</div>
-        ) : filteredCourses?.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">이 날짜에 예정된 수업이 없습니다.</div>
         ) : (
-          <ul className="space-y-3">
-            {filteredCourses?.map((course) => {
-              const courseColor = getCourseColor(course.id);
+          <div className="relative flex h-[800px]">
+            {/* 시간 눈금 */}
+            <div className="w-16 flex-shrink-0 pr-2 text-right">
+              {hours.map((hour) => (
+                <div key={hour} className="relative h-[33.33px]">
+                  <span className="absolute -top-2 right-0 text-xs text-gray-500">
+                    {hour === 0 ? "오전 12시" : hour < 12 ? `오전 ${hour}시` : hour === 12 ? "오후 12시" : `오후 ${hour - 12}시`}
+                  </span>
+                </div>
+              ))}
+            </div>
 
-              return (
-                <li key={course.id} className={`rounded-md border ${courseColor.border} ${courseColor.bg} p-4`}>
-                  <h4 className={`font-medium ${courseColor.text}`}>{course.title}</h4>
-                  <p className="mt-1 text-sm text-gray-600">{course.description}</p>
-                  <div className="mt-2 flex items-center text-sm text-gray-500">
-                    <span className={`mr-2 rounded-full bg-white px-2 py-1 text-xs font-medium ${courseColor.text}`}>
-                      {course.startTime} - {course.endTime}
-                    </span>
-                    <span>
-                      {format(new Date(course.startDate || ""), "yyyy.MM.dd")} ~{format(new Date(course.endDate || ""), "yyyy.MM.dd")}
-                    </span>
+            {/* 시간표 그리드 및 강의 */}
+            <div className="relative flex-grow border-l border-gray-200">
+              {/* 시간대 배경 */}
+              {hours.map((hour) => (
+                <div key={hour} className={`h-[33.33px] border-b border-gray-100 ${hour % 2 === 0 ? "bg-gray-50" : ""}`} />
+              ))}
+
+              {/* 현재 시간 표시선 */}
+              <div
+                className="absolute left-0 z-10 w-full border-t border-red-400"
+                style={{
+                  top: `${((new Date().getHours() * 60 + new Date().getMinutes()) / 1440) * 100}%`,
+                }}>
+                <div className="relative">
+                  <span className="absolute -top-2 -left-18 rounded bg-red-400 px-1 text-xs text-white">현재</span>
+                </div>
+              </div>
+
+              {/* 강의 블록 */}
+              {filteredCourses?.map((course) => {
+                const courseColor = getCourseColor(course.id);
+                const position = calculateCoursePosition(course);
+
+                return (
+                  <div
+                    key={course.id}
+                    className={`absolute left-0 z-0 w-full rounded-md border ${courseColor.border} ${courseColor.bg} px-3 py-1 shadow-sm transition-all hover:z-10 hover:shadow-md`}
+                    style={{
+                      top: position.top,
+                      height: position.height,
+                      minHeight: "20px",
+                    }}>
+                    <h4 className={`font-medium ${courseColor.text} truncate`}>{course.title}</h4>
+                    {parseFloat(position.height) > 3 && (
+                      <>
+                        <p className="truncate text-xs text-gray-600">{course.description}</p>
+                        <div className="mt-1 text-xs text-gray-500">
+                          {course.startTime} - {course.endTime}
+                        </div>
+                      </>
+                    )}
                   </div>
-                </li>
-              );
-            })}
-          </ul>
+                );
+              })}
+            </div>
+          </div>
         )}
       </div>
     );
