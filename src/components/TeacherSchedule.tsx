@@ -108,21 +108,29 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
     const currentDayOfWeek = currentDate.getDay();
     const currentDayProperty = dayMapping[currentDayOfWeek];
 
-    const filteredCourses = courses?.filter((course) => {
-      // 날짜 범위 내에 있는지 확인
-      const startDate = course.startDate ? new Date(course.startDate) : null;
-      const endDate = course.endDate ? new Date(course.endDate) : null;
+    const filteredCourses = courses
+      ?.filter((course) => {
+        // 날짜 범위 내에 있는지 확인
+        const startDate = course.startDate ? new Date(course.startDate) : null;
+        const endDate = course.endDate ? new Date(course.endDate) : null;
 
-      // 시작일과 종료일이 모두 있을 경우 날짜 범위 체크
-      if (startDate && endDate) {
-        if (currentDate < startDate || currentDate > endDate) {
-          return false;
+        // 시작일과 종료일이 모두 있을 경우 날짜 범위 체크
+        if (startDate && endDate) {
+          if (currentDate < startDate || currentDate > endDate) {
+            return false;
+          }
         }
-      }
 
-      // 현재 요일이 수업 요일인지 확인
-      return course[currentDayProperty as keyof Course];
-    });
+        // 현재 요일이 수업 요일인지 확인
+        return course[currentDayProperty as keyof Course];
+      }) // 시작 시간 기준으로 정렬
+      .sort((a, b) => {
+        // 시작 시간이 없는 경우 처리
+        if (!a.startTime) return 1;
+        if (!b.startTime) return -1;
+
+        return a.startTime.localeCompare(b.startTime);
+      });
 
     return (
       <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm">
@@ -182,21 +190,29 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
               const dayOfWeek = day.getDay();
               const dayProperty = dayMapping[dayOfWeek];
 
-              const dayCourses = courses?.filter((course) => {
-                // 날짜 범위 내에 있는지 확인
-                const startDate = course.startDate ? new Date(course.startDate) : null;
-                const endDate = course.endDate ? new Date(course.endDate) : null;
+              const dayCourses = courses
+                ?.filter((course) => {
+                  // 날짜 범위 내에 있는지 확인
+                  const startDate = course.startDate ? new Date(course.startDate) : null;
+                  const endDate = course.endDate ? new Date(course.endDate) : null;
 
-                // 시작일과 종료일이 모두 있을 경우 날짜 범위 체크
-                if (startDate && endDate) {
-                  if (day < startDate || day > endDate) {
-                    return false;
+                  // 시작일과 종료일이 모두 있을 경우 날짜 범위 체크
+                  if (startDate && endDate) {
+                    if (day < startDate || day > endDate) {
+                      return false;
+                    }
                   }
-                }
 
-                // 현재 요일이 수업 요일인지 확인
-                return course[dayProperty as keyof Course];
-              });
+                  // 현재 요일이 수업 요일인지 확인
+                  return course[dayProperty as keyof Course];
+                }) // 시작 시간 기준으로 정렬
+                .sort((a, b) => {
+                  // 시작 시간이 없는 경우 처리
+                  if (!a.startTime) return 1;
+                  if (!b.startTime) return -1;
+
+                  return a.startTime.localeCompare(b.startTime);
+                });
 
               return (
                 <div key={index} className="h-full min-h-[120px]">
@@ -287,21 +303,29 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
                       const dayProperty = dayMapping[dayOfWeek];
 
                       // 이 날짜에 해당하는 강의 찾기
-                      const dayCourses = courses?.filter((course) => {
-                        // 날짜 범위 내에 있는지 확인
-                        const courseStart = course.startDate ? new Date(course.startDate) : null;
-                        const courseEnd = course.endDate ? new Date(course.endDate) : null;
+                      const dayCourses = courses
+                        ?.filter((course) => {
+                          // 날짜 범위 내에 있는지 확인
+                          const courseStart = course.startDate ? new Date(course.startDate) : null;
+                          const courseEnd = course.endDate ? new Date(course.endDate) : null;
 
-                        // 시작일과 종료일이 모두 있을 경우 날짜 범위 체크
-                        if (courseStart && courseEnd) {
-                          if (!isWithinInterval(day, { start: courseStart, end: courseEnd })) {
-                            return false;
+                          // 시작일과 종료일이 모두 있을 경우 날짜 범위 체크
+                          if (courseStart && courseEnd) {
+                            if (!isWithinInterval(day, { start: courseStart, end: courseEnd })) {
+                              return false;
+                            }
                           }
-                        }
 
-                        // 현재 요일이 수업 요일인지 확인
-                        return course[dayProperty as keyof Course];
-                      });
+                          // 현재 요일이 수업 요일인지 확인
+                          return course[dayProperty as keyof Course];
+                        }) // 시작 시간 기준으로 정렬
+                        .sort((a, b) => {
+                          // 시작 시간이 없는 경우 처리
+                          if (!a.startTime) return 1;
+                          if (!b.startTime) return -1;
+
+                          return a.startTime.localeCompare(b.startTime);
+                        });
 
                       return (
                         <td
