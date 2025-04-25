@@ -599,6 +599,7 @@ export default function CoursePage() {
                         name="durationHours"
                         value={formData.durationHours}
                         onChange={handleInputChange}
+                        onDoubleClick={(e) => e.currentTarget.select()}
                         className="input input-bordered w-full"
                         min="0"
                         required
@@ -613,6 +614,7 @@ export default function CoursePage() {
                         name="durationMinutes"
                         value={formData.durationMinutes}
                         onChange={handleInputChange}
+                        onDoubleClick={(e) => e.currentTarget.select()}
                         className="input input-bordered w-full"
                         min="0"
                         max="59"
