@@ -1,7 +1,7 @@
 // components/TeacherSchedule.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { format, startOfWeek, endOfWeek, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isWithinInterval, isSameDay } from "date-fns";
@@ -43,6 +43,20 @@ const dayMapping: { [key: number]: string } = {
   6: "scheduleSaturday",
 };
 
+// 강좌 색상 팔레트 정의
+const courseColorPalette = [
+  { bg: "bg-blue-100", text: "text-blue-800", border: "border-blue-200" },
+  { bg: "bg-green-100", text: "text-green-800", border: "border-green-200" },
+  { bg: "bg-purple-100", text: "text-purple-800", border: "border-purple-200" },
+  { bg: "bg-orange-100", text: "text-orange-800", border: "border-orange-200" },
+  { bg: "bg-pink-100", text: "text-pink-800", border: "border-pink-200" },
+  { bg: "bg-teal-100", text: "text-teal-800", border: "border-teal-200" },
+  { bg: "bg-indigo-100", text: "text-indigo-800", border: "border-indigo-200" },
+  { bg: "bg-red-100", text: "text-red-800", border: "border-red-200" },
+  { bg: "bg-yellow-100", text: "text-yellow-800", border: "border-yellow-200" },
+  { bg: "bg-cyan-100", text: "text-cyan-800", border: "border-cyan-200" },
+];
+
 export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
   const [viewMode, setViewMode] = useState<"day" | "week" | "month">("month");
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -56,6 +70,23 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
     },
     enabled: !!teacherId,
   });
+
+  // 강좌 ID를 기반으로 색상 맵 생성
+  const courseColorMap = useMemo(() => {
+    const colorMap = new Map<string, (typeof courseColorPalette)[0]>();
+
+    courses?.forEach((course, index) => {
+      const colorIndex = index % courseColorPalette.length;
+      colorMap.set(course.id, courseColorPalette[colorIndex]);
+    });
+
+    return colorMap;
+  }, [courses]);
+
+  // 강좌에 색상 할당
+  const getCourseColor = (courseId: string) => {
+    return courseColorMap.get(courseId) || courseColorPalette[0];
+  };
 
   // 날짜 이동 함수
   const moveDate = (direction: "prev" | "next") => {
@@ -103,20 +134,24 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
           <div className="p-6 text-center text-gray-500">이 날짜에 예정된 수업이 없습니다.</div>
         ) : (
           <ul className="space-y-3">
-            {filteredCourses?.map((course) => (
-              <li key={course.id} className="rounded-md border border-gray-200 bg-gray-50 p-4">
-                <h4 className="font-medium text-blue-600">{course.title}</h4>
-                <p className="mt-1 text-sm text-gray-600">{course.description}</p>
-                <div className="mt-2 flex items-center text-sm text-gray-500">
-                  <span className="mr-2 rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
-                    {course.startTime} - {course.endTime}
-                  </span>
-                  <span>
-                    {format(new Date(course.startDate || ""), "yyyy.MM.dd")} ~{format(new Date(course.endDate || ""), "yyyy.MM.dd")}
-                  </span>
-                </div>
-              </li>
-            ))}
+            {filteredCourses?.map((course) => {
+              const courseColor = getCourseColor(course.id);
+
+              return (
+                <li key={course.id} className={`rounded-md border ${courseColor.border} ${courseColor.bg} p-4`}>
+                  <h4 className={`font-medium ${courseColor.text}`}>{course.title}</h4>
+                  <p className="mt-1 text-sm text-gray-600">{course.description}</p>
+                  <div className="mt-2 flex items-center text-sm text-gray-500">
+                    <span className={`mr-2 rounded-full bg-white px-2 py-1 text-xs font-medium ${courseColor.text}`}>
+                      {course.startTime} - {course.endTime}
+                    </span>
+                    <span>
+                      {format(new Date(course.startDate || ""), "yyyy.MM.dd")} ~{format(new Date(course.endDate || ""), "yyyy.MM.dd")}
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>
@@ -177,14 +212,18 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
                   <div className="overflow-y-auto rounded-b-md border border-gray-200 p-1">
                     {dayCourses?.length ? (
                       <ul className="space-y-1">
-                        {dayCourses.map((course) => (
-                          <li key={course.id} className="rounded bg-blue-50 p-1 text-xs">
-                            <div className="font-medium">{course.title}</div>
-                            <div className="text-gray-600">
-                              {course.startTime} - {course.endTime}
-                            </div>
-                          </li>
-                        ))}
+                        {dayCourses.map((course) => {
+                          const courseColor = getCourseColor(course.id);
+
+                          return (
+                            <li key={course.id} className={`rounded ${courseColor.bg} p-1 text-xs`}>
+                              <div className={`font-medium ${courseColor.text}`}>{course.title}</div>
+                              <div className="text-gray-600">
+                                {course.startTime} - {course.endTime}
+                              </div>
+                            </li>
+                          );
+                        })}
                       </ul>
                     ) : (
                       <div className="text-center text-xs text-gray-400">수업 없음</div>
@@ -282,11 +321,15 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
                           </div>
 
                           <div className="mt-1 max-h-16 overflow-y-auto p-1">
-                            {dayCourses?.map((course) => (
-                              <div key={course.id} className="mb-1 rounded bg-blue-100 px-1 py-0.5 text-xs font-medium text-blue-800">
-                                {course.title}
-                              </div>
-                            ))}
+                            {dayCourses?.map((course) => {
+                              const courseColor = getCourseColor(course.id);
+
+                              return (
+                                <div key={course.id} className={`mb-1 rounded ${courseColor.bg} px-1 py-0.5 text-xs font-medium ${courseColor.text}`}>
+                                  {course.title}
+                                </div>
+                              );
+                            })}
                           </div>
                         </td>
                       );
