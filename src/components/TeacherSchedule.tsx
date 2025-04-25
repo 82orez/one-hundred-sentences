@@ -44,7 +44,7 @@ const dayMapping: { [key: number]: string } = {
 };
 
 export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
-  const [viewMode, setViewMode] = useState<"day" | "week" | "month">("day");
+  const [viewMode, setViewMode] = useState<"day" | "week" | "month">("month");
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
   // 강사 스케줄 조회
