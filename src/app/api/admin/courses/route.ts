@@ -28,6 +28,11 @@ export async function GET(request: Request) {
               phone: true,
             },
           },
+          classDates: {
+            orderBy: {
+              date: "asc",
+            },
+          },
         },
       });
 
@@ -46,6 +51,11 @@ export async function GET(request: Request) {
               realName: true,
               email: true,
               phone: true,
+            },
+          },
+          classDates: {
+            orderBy: {
+              date: "asc",
             },
           },
         },
@@ -70,6 +80,10 @@ export async function POST(request: Request) {
 
     const data = await request.json();
 
+    // classDates를 JSON 문자열에서 객체로 파싱
+    const classDatesData = data.classDates ? JSON.parse(data.classDates) : [];
+
+    // Course 생성
     const course = await prisma.course.create({
       data: {
         title: data.title,
@@ -88,12 +102,34 @@ export async function POST(request: Request) {
         startTime: data.startTime || null,
         duration: data.duration || "25분",
         endTime: data.endTime || null,
-        classCount: data.classCount || 1, // 수업 횟수 추가
-        classDates: data.classDates || null, // 수업 날짜들 추가
+        classCount: data.classCount || 1,
       },
     });
 
-    return NextResponse.json({ course });
+    // ClassDate 레코드 생성
+    if (classDatesData.length > 0) {
+      await Promise.all(
+        classDatesData.map((dateItem: any) =>
+          prisma.classDate.create({
+            data: {
+              courseId: course.id,
+              date: new Date(dateItem.date),
+              dayOfWeek: dateItem.dayOfWeek,
+            },
+          }),
+        ),
+      );
+    }
+
+    // 생성된 Course와 ClassDates 함께 조회
+    const courseWithDates = await prisma.course.findUnique({
+      where: { id: course.id },
+      include: {
+        classDates: true,
+      },
+    });
+
+    return NextResponse.json({ course: courseWithDates });
   } catch (error) {
     console.error("강좌 생성 오류:", error);
     return NextResponse.json({ error: "강좌 생성에 실패했습니다." }, { status: 500 });
@@ -119,36 +155,77 @@ export async function PUT(request: Request) {
 
     const existingCourse = await prisma.course.findUnique({
       where: { id },
+      include: { classDates: true },
     });
 
     if (!existingCourse) {
       return NextResponse.json({ error: "강좌를 찾을 수 없습니다." }, { status: 404 });
     }
 
-    const updatedCourse = await prisma.course.update({
+    // classDates 파싱
+    const classDatesData = data.classDates ? JSON.parse(data.classDates) : [];
+
+    // 트랜잭션으로 업데이트 처리
+    const result = await prisma.$transaction(async (prisma) => {
+      // 기존 수업 날짜 모두 삭제
+      await prisma.classDate.deleteMany({
+        where: { courseId: id },
+      });
+
+      // 강좌 정보 업데이트
+      const updatedCourse = await prisma.course.update({
+        where: { id },
+        data: {
+          title: data.title,
+          description: data.description,
+          teacherId: data.teacherId,
+          scheduleMonday: data.scheduleMonday,
+          scheduleTuesday: data.scheduleTuesday,
+          scheduleWednesday: data.scheduleWednesday,
+          scheduleThursday: data.scheduleThursday,
+          scheduleFriday: data.scheduleFriday,
+          scheduleSaturday: data.scheduleSaturday,
+          scheduleSunday: data.scheduleSunday,
+          startDate: data.startDate ? new Date(data.startDate) : null,
+          endDate: data.endDate ? new Date(data.endDate) : null,
+          startTime: data.startTime || null,
+          duration: data.duration || existingCourse.duration,
+          endTime: data.endTime || existingCourse.endTime,
+          classCount: data.classCount || existingCourse.classCount,
+        },
+      });
+
+      // 새 수업 날짜 추가
+      if (classDatesData.length > 0) {
+        await Promise.all(
+          classDatesData.map((dateItem: any) =>
+            prisma.classDate.create({
+              data: {
+                courseId: id,
+                date: new Date(dateItem.date),
+                dayOfWeek: dateItem.dayOfWeek,
+              },
+            }),
+          ),
+        );
+      }
+
+      return updatedCourse;
+    });
+
+    // 업데이트된 Course와 ClassDates 함께 조회
+    const courseWithDates = await prisma.course.findUnique({
       where: { id },
-      data: {
-        title: data.title,
-        description: data.description,
-        teacherId: data.teacherId,
-        scheduleMonday: data.scheduleMonday,
-        scheduleTuesday: data.scheduleTuesday,
-        scheduleWednesday: data.scheduleWednesday,
-        scheduleThursday: data.scheduleThursday,
-        scheduleFriday: data.scheduleFriday,
-        scheduleSaturday: data.scheduleSaturday,
-        scheduleSunday: data.scheduleSunday,
-        startDate: data.startDate ? new Date(data.startDate) : null,
-        endDate: data.endDate ? new Date(data.endDate) : null,
-        startTime: data.startTime || null,
-        duration: data.duration || existingCourse.duration,
-        endTime: data.endTime || existingCourse.endTime,
-        classCount: data.classCount || existingCourse.classCount, // 수업 횟수 추가
-        classDates: data.classDates || existingCourse.classDates, // 수업 날짜들 추가
+      include: {
+        classDates: {
+          orderBy: {
+            date: "asc",
+          },
+        },
       },
     });
 
-    return NextResponse.json({ course: updatedCourse });
+    return NextResponse.json({ course: courseWithDates });
   } catch (error) {
     console.error("강좌 수정 오류:", error);
     return NextResponse.json({ error: "강좌 수정에 실패했습니다." }, { status: 500 });
@@ -180,7 +257,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "강좌를 찾을 수 없습니다." }, { status: 404 });
     }
 
-    // 강좌 삭제 (관련 등록 정보, 수업 등은 cascade 설정에 따라 자동 삭제됨)
+    // 강좌 삭제 (ClassDate 모델은 cascade 설정으로 자동 삭제)
     await prisma.course.delete({
       where: { id },
     });

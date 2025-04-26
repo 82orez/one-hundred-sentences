@@ -251,6 +251,7 @@ model Purchase {
   @@index([userId])
 }
 
+// Course 모델 수정 (classDates 필드 제거)
 model Course {
   id                String    @id @default(cuid())
   title             String
@@ -269,8 +270,7 @@ model Course {
   startTime         String? // 시작 시간을 "HH:MM" 형식의 문자열로 저장
   duration          String? // 수업 진행 시간 (예: "1시간 30분")
   endTime           String? // 수업 종료 시간 (자동 계산)
-  classCount        Int?      @default(1) // 수업 횟수 (신규 추가)
-  classDates        String? // 수업 날짜들 (JSON 형식으로 저장, 신규 추가)
+  classCount        Int?      @default(1) // 수업 횟수
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -281,6 +281,22 @@ model Course {
   lessons     Lesson[]
   enrollments Enrollment[]
   assignments Assignment[]
+  classDates  ClassDate[] // 관계 추가
+}
+
+// 수업 일자 모델 추가
+model ClassDate {
+  id        String   @id @default(cuid())
+  courseId  String
+  date      DateTime
+  dayOfWeek String // 요일 (예: "월", "화", ...)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 관계 설정
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
 }
 
 model Lesson {

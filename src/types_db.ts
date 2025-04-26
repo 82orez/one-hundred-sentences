@@ -139,6 +139,41 @@ export type Database = {
           },
         ]
       }
+      ClassDate: {
+        Row: {
+          courseId: string
+          createdAt: string
+          date: string
+          dayOfWeek: string
+          id: string
+          updatedAt: string
+        }
+        Insert: {
+          courseId: string
+          createdAt?: string
+          date: string
+          dayOfWeek: string
+          id: string
+          updatedAt: string
+        }
+        Update: {
+          courseId?: string
+          createdAt?: string
+          date?: string
+          dayOfWeek?: string
+          id?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ClassDate_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       CompletedSentence: {
         Row: {
           completedAt: string
@@ -181,7 +216,6 @@ export type Database = {
       Course: {
         Row: {
           classCount: number | null
-          classDates: string | null
           createdAt: string
           description: string | null
           duration: string | null
@@ -204,7 +238,6 @@ export type Database = {
         }
         Insert: {
           classCount?: number | null
-          classDates?: string | null
           createdAt?: string
           description?: string | null
           duration?: string | null
@@ -227,7 +260,6 @@ export type Database = {
         }
         Update: {
           classCount?: number | null
-          classDates?: string | null
           createdAt?: string
           description?: string | null
           duration?: string | null

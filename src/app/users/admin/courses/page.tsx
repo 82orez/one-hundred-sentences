@@ -35,16 +35,20 @@ interface Course {
   startTime: string;
   duration: string;
   endTime: string;
-  classCount: number; // 수업 횟수 추가
-  classDates: string; // 수업 날짜들 추가
+  classCount: number;
+  classDates: ClassDate[]; // 문자열 대신 객체 배열로 변경
   createdAt: string;
   updatedAt: string;
 }
 
-// 날짜와 요일 정보를 담는 인터페이스
+// ClassDate 인터페이스 추가
 interface ClassDate {
+  id: string;
+  courseId: string;
   date: string;
   dayOfWeek: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function CoursePage() {
@@ -130,6 +134,7 @@ export default function CoursePage() {
         const currentDayOfWeek = getDay(currentDate);
 
         if (selectedDays.includes(currentDayOfWeek)) {
+          // @ts-ignore
           tempDates.push({
             date: format(currentDate, "yyyy-MM-dd"),
             dayOfWeek: getDayOfWeekName(currentDayOfWeek),
@@ -328,15 +333,15 @@ export default function CoursePage() {
       }
     }
 
-    // 수업 날짜 설정
-    if (course.classDates) {
-      try {
-        const parsedDates = JSON.parse(course.classDates);
-        setClassDates(parsedDates);
-      } catch (error) {
-        console.error("수업 날짜 파싱 오류:", error);
-        setClassDates([]);
-      }
+    // 수업 날짜 설정 (이제 배열 형태로 받아옴)
+    if (course.classDates && course.classDates.length > 0) {
+      setClassDates(
+        // @ts-ignore
+        course.classDates.map((date) => ({
+          date: new Date(date.date).toISOString().split("T")[0], // 'YYYY-MM-DD' 형식으로 변환
+          dayOfWeek: date.dayOfWeek,
+        })),
+      );
     } else {
       setClassDates([]);
     }
