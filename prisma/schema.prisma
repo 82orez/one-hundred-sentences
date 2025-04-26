@@ -284,19 +284,31 @@ model Course {
   classDates  ClassDate[] // 관계 추가
 }
 
-// 수업 일자 모델 추가
+// 수업 일자 모델 수정
 model ClassDate {
-  id        String   @id @default(cuid())
-  courseId  String
-  date      DateTime
-  dayOfWeek String // 요일 (예: "월", "화", ...)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String          @id @default(cuid())
+  courseId       String
+  date           DateTime
+  dayOfWeek      String // 요일 (예: "월", "화", ...)
+  status         ClassDateStatus @default(scheduled) // 상태 필드 추가
+  isMakeup       Boolean         @default(false) // 보충 수업 여부
+  note           String? // 메모 (예: 휴일 사유, 보충 사유 등)
+  originalDateId String? // 보충 수업일 경우 원래 수업 날짜 ID
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   // 관계 설정
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@index([courseId])
+}
+
+// 수업 상태 enum 추가
+enum ClassDateStatus {
+  scheduled // 예정된 수업
+  completed // 완료된 수업
+  canceled // 취소된 수업
+  holiday // 휴일
 }
 
 model Lesson {
