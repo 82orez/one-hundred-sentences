@@ -464,7 +464,7 @@ export default function Dashboard() {
             onClick={() => setSelectedDay(null)} // 모달 외부 클릭 시 닫기
           >
             <motion.div
-              className="relative w-full max-w-lg rounded-lg bg-white px-4 py-6 shadow-lg md:px-6"
+              className="relative h-svh w-full max-w-lg overflow-auto rounded-lg bg-white px-4 py-6 shadow-lg md:px-6"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
