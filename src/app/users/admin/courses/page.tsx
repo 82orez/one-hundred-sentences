@@ -80,6 +80,79 @@ export default function CoursePage() {
   // 수업 날짜 목록 상태 추가
   const [classDates, setClassDates] = useState<ClassDate[]>([]);
 
+  // 수업 추가 관련 상태 변수
+  const [showAddClassDateForm, setShowAddClassDateForm] = useState(false);
+  const [newClassDate, setNewClassDate] = useState("");
+
+  // 특정 수업 일자 삭제 함수
+  const handleDeleteClassDate = (index: number) => {
+    setClassDates((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // 수업 일자 추가 함수
+  const handleAddClassDate = () => {
+    if (!newClassDate) {
+      toast.error("추가할 수업 날짜를 선택해주세요.");
+      return;
+    }
+
+    // 날짜 유효성 검사
+    const dateToAdd = new Date(newClassDate);
+    if (!isValid(dateToAdd)) {
+      toast.error("유효한 날짜를 선택해주세요.");
+      return;
+    }
+
+    // 이미 있는 날짜인지 확인
+    const dateString = format(dateToAdd, "yyyy-MM-dd");
+    const isDuplicate = classDates.some((d) => d.date === dateString);
+    if (isDuplicate) {
+      toast.error("이미 등록된 수업 날짜입니다.");
+      return;
+    }
+
+    // 새 수업 일자 추가
+    // @ts-ignore
+    setClassDates((prev) => [
+      ...prev,
+      {
+        date: dateString,
+        dayOfWeek: getDayOfWeekName(getDay(dateToAdd)),
+      },
+    ]);
+
+    // 입력 필드 초기화
+    setNewClassDate("");
+    setShowAddClassDateForm(false);
+    toast.success("수업이 추가되었습니다.");
+  };
+
+  // 원래 수업 일정 불러오기 함수
+  const loadOriginalClassDates = async () => {
+    if (!editingCourse) return;
+
+    try {
+      const response = await axios.get(`/api/admin/courses?id=${editingCourse.id}`);
+      const course = response.data.course;
+
+      if (course.classDates && course.classDates.length > 0) {
+        // @ts-ignore
+        setClassDates(
+          course.classDates.map((date) => ({
+            date: new Date(date.date).toISOString().split("T")[0],
+            dayOfWeek: date.dayOfWeek,
+          })),
+        );
+        toast.success("원래 수업 일정을 불러왔습니다.");
+      } else {
+        toast.error("불러올 수업 일정이 없습니다.");
+      }
+    } catch (error) {
+      console.error("수업 일정 불러오기 오류:", error);
+      toast.error("수업 일정을 불러오는데 실패했습니다.");
+    }
+  };
+
   // 선택된 수업 요일 배열 생성 함수
   const getSelectedDaysArray = () => {
     const days = [];
@@ -101,6 +174,9 @@ export default function CoursePage() {
 
   // 수업 날짜 및 종료일 계산
   useEffect(() => {
+    // 수정 모드일 때는 수업 날짜를 자동 생성하지 않음
+    if (editingCourse) return;
+
     if (formData.startDate && formData.classCount > 0) {
       const startDate = new Date(formData.startDate);
 
@@ -154,7 +230,10 @@ export default function CoursePage() {
 
       setClassDates(tempDates);
     } else {
-      setClassDates([]);
+      if (!editingCourse) {
+        // 편집 모드가 아닐 때만 classDates 초기화
+        setClassDates([]);
+      }
     }
   }, [
     formData.startDate,
@@ -166,6 +245,7 @@ export default function CoursePage() {
     formData.scheduleFriday,
     formData.scheduleSaturday,
     formData.scheduleSunday,
+    editingCourse,
   ]);
 
   // 수업 시간이 변경될 때마다 종료 시간 재계산
@@ -333,7 +413,7 @@ export default function CoursePage() {
       }
     }
 
-    // 수업 날짜 설정 (이제 배열 형태로 받아옴)
+    // 수업 날짜 설정 (서버에서 가져온 실제 데이터 사용)
     if (course.classDates && course.classDates.length > 0) {
       setClassDates(
         // @ts-ignore
@@ -357,13 +437,15 @@ export default function CoursePage() {
       scheduleFriday: course.scheduleFriday,
       scheduleSaturday: course.scheduleSaturday,
       scheduleSunday: course.scheduleSunday,
-      startDate: course.startDate ? course.startDate.split("T")[0] : "",
-      endDate: course.endDate ? course.endDate.split("T")[0] : "",
+      startDate: course.startDate ? new Date(course.startDate).toISOString().split("T")[0] : "",
+      endDate: course.endDate ? new Date(course.endDate).toISOString().split("T")[0] : "",
       startTime: course.startTime || "",
       durationHours,
       durationMinutes,
       classCount: course.classCount || 1,
     });
+
+    setEndTime(course.endTime || "");
     setIsModalOpen(true);
   };
 
@@ -684,7 +766,7 @@ export default function CoursePage() {
                 />
               </div>
 
-              {/* 수업 날짜 목록 표시 (신규 추가) */}
+              {/* 수업 날짜 목록 표시 (수정본) */}
               {classDates.length > 0 && (
                 <div className="space-y-2">
                   <p className="font-medium text-gray-700">수업 날짜 목록</p>
@@ -694,6 +776,7 @@ export default function CoursePage() {
                         <tr className="border-b">
                           <th className="py-1 text-left">날짜</th>
                           <th className="py-1 text-left">요일</th>
+                          <th className="py-1 text-right">관리</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -701,11 +784,64 @@ export default function CoursePage() {
                           <tr key={index} className="border-b border-gray-100">
                             <td className="py-1">{date.date}</td>
                             <td className="py-1">{date.dayOfWeek}요일</td>
+                            <td className="py-1 text-right">
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteClassDate(index)}
+                                className="ml-1 rounded p-1 text-red-500 hover:bg-red-50"
+                                title="수업 삭제">
+                                <Trash2 size={16} />
+                              </button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddClassDateForm(!showAddClassDateForm)}
+                      className="flex items-center gap-1 rounded bg-green-50 px-2 py-1 text-sm text-green-600 hover:bg-green-100">
+                      {showAddClassDateForm ? <X size={16} /> : <Plus size={16} />}
+                      {showAddClassDateForm ? "취소" : "수업 추가"}
+                    </button>
+                    {editingCourse && (
+                      <button
+                        type="button"
+                        onClick={loadOriginalClassDates}
+                        className="flex items-center gap-1 rounded bg-blue-50 px-2 py-1 text-sm text-blue-600 hover:bg-blue-100">
+                        <Calendar size={16} />
+                        원래 수업 일정 불러오기
+                      </button>
+                    )}
+                  </div>
+
+                  {/* 수업 추가 폼 */}
+                  {showAddClassDateForm && (
+                    <div className="rounded-md border border-gray-200 p-3">
+                      <div className="space-y-2">
+                        <div>
+                          <label htmlFor="newClassDate" className="block text-sm font-medium text-gray-700">
+                            추가할 수업 날짜
+                          </label>
+                          <input
+                            type="date"
+                            id="newClassDate"
+                            value={newClassDate}
+                            onChange={(e) => setNewClassDate(e.target.value)}
+                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleAddClassDate}
+                          className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none">
+                          수업 추가하기
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
