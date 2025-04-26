@@ -7,6 +7,7 @@ import { format, addDays, getDay, isValid } from "date-fns";
 import { Calendar, CheckSquare, Edit, Trash2, Plus, X, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
+import { RiArrowGoBackFill } from "react-icons/ri";
 
 // 타입 정의 확장
 interface Teacher {
@@ -718,7 +719,7 @@ export default function CoursePage() {
                 </div>
               </div>
 
-              {/* 수업 횟수 필드 (신규 추가) */}
+              {/* 수업 횟수 필드 */}
               <div className="space-y-2">
                 <label htmlFor="classCount" className="block font-medium text-gray-700">
                   수업 횟수
@@ -729,6 +730,7 @@ export default function CoursePage() {
                   name="classCount"
                   value={formData.classCount}
                   onChange={handleInputChange}
+                  onDoubleClick={(e) => e.currentTarget.select()}
                   min="1"
                   className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   required
@@ -746,9 +748,11 @@ export default function CoursePage() {
                   name="startDate"
                   value={formData.startDate}
                   onChange={handleInputChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50"
                   required
+                  disabled={!!editingCourse}
                 />
+                {editingCourse && <p className={"animate-pulse"}>⚠️ 수업 시작일은 수정할 수 없습니다. 강좌 삭제 후 새로 생성바랍니다.</p>}
               </div>
 
               {/* 종료일 필드 (자동 계산됨, 읽기 전용) */}
@@ -811,8 +815,8 @@ export default function CoursePage() {
                         type="button"
                         onClick={loadOriginalClassDates}
                         className="flex items-center gap-1 rounded bg-blue-50 px-2 py-1 text-sm text-blue-600 hover:bg-blue-100">
-                        <Calendar size={16} />
-                        원래 수업 일정 불러오기
+                        <RiArrowGoBackFill size={16} />
+                        되돌리기
                       </button>
                     )}
                   </div>
