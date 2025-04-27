@@ -804,14 +804,14 @@ export default function CoursePage() {
                       type="button"
                       className="flex items-center rounded bg-blue-500 px-3 py-1 text-sm text-white"
                       onClick={() => setShowAddClassDateForm(!showAddClassDateForm)}>
-                      <Plus className="mr-1 h-4 w-4" /> 수업 날짜 추가
+                      <Plus className="mr-1 h-4 w-4" /> 수업 추가
                     </button>
                     {editingCourse && (
                       <button
                         type="button"
                         className="flex items-center rounded bg-gray-200 px-3 py-1 text-sm text-gray-800"
                         onClick={loadOriginalClassDates}>
-                        <RiArrowGoBackFill className="mr-1 h-4 w-4" /> 원래 일정
+                        <RiArrowGoBackFill className="mr-1 h-4 w-4" /> 되돌리기
                       </button>
                     )}
                   </div>
@@ -860,7 +860,7 @@ export default function CoursePage() {
                 {/* 수업 일자 목록 표시 부분 */}
                 <div className="max-h-48 overflow-y-auto">
                   {classDates.length > 0 ? (
-                    <ul className="divide-y">
+                    <ul className="">
                       {classDates.map((classDate, index) => (
                         <li key={index} className="flex items-center justify-between py-2">
                           <span>
