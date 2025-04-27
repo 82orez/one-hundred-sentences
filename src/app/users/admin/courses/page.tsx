@@ -8,6 +8,7 @@ import { Calendar, CheckSquare, Edit, Trash2, Plus, X, Clock } from "lucide-reac
 import toast from "react-hot-toast";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { RiArrowGoBackFill } from "react-icons/ri";
+import DatePickerCalendar from "@/components/DatePickerCalendar";
 
 // 타입 정의 확장
 interface Teacher {
@@ -77,6 +78,21 @@ export default function CoursePage() {
 
   // 수업 종료 시간 계산
   const [endTime, setEndTime] = useState<string>("");
+
+  // 달력 표시 상태 관리
+  const [showStartDateCalendar, setShowStartDateCalendar] = useState(false);
+  const [showClassDateCalendar, setShowClassDateCalendar] = useState(false);
+
+  // 날짜 선택 핸들러
+  const handleStartDateSelect = (date: Date) => {
+    setFormData((prev) => ({ ...prev, startDate: format(date, "yyyy-MM-dd") }));
+    setShowStartDateCalendar(false);
+  };
+
+  const handleClassDateSelect = (date: Date) => {
+    setNewClassDate(format(date, "yyyy-MM-dd"));
+    setShowClassDateCalendar(false);
+  };
 
   // 수업 날짜 목록 상태 추가
   const [classDates, setClassDates] = useState<ClassDate[]>([]);
@@ -742,16 +758,25 @@ export default function CoursePage() {
                 <label htmlFor="startDate" className="block font-medium text-gray-700">
                   수업 시작일 (선택한 요일에 맞는 날짜로 선택)
                 </label>
-                <input
-                  type="date"
-                  id="startDate"
-                  name="startDate"
-                  value={formData.startDate}
-                  onChange={handleInputChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50"
-                  required
-                  disabled={!!editingCourse}
-                />
+                <div className="relative">
+                  <div
+                    className="flex cursor-pointer items-center rounded border p-2"
+                    onClick={() => setShowStartDateCalendar(!showStartDateCalendar)}>
+                    <Calendar className="mr-2 h-5 w-5" />
+                    {formData.startDate || "시작일을 선택하세요"}
+                  </div>
+
+                  {showStartDateCalendar && (
+                    <div className="absolute z-10 mt-1">
+                      <DatePickerCalendar
+                        selectedDate={formData.startDate ? new Date(formData.startDate) : undefined}
+                        onDateSelect={handleStartDateSelect}
+                        minDate={new Date()} // 오늘 이후 날짜만 선택 가능
+                      />
+                    </div>
+                  )}
+                </div>
+
                 {editingCourse && <p className={"animate-pulse"}>⚠️ 수업 시작일은 수정할 수 없습니다. 강좌 삭제 후 새로 생성바랍니다.</p>}
               </div>
 
@@ -771,83 +796,87 @@ export default function CoursePage() {
               </div>
 
               {/* 수업 날짜 목록 표시 (수정본) */}
-              {classDates.length > 0 && (
-                <div className="space-y-2">
-                  <p className="font-medium text-gray-700">수업 날짜 목록</p>
-                  <div className="max-h-60 overflow-y-auto rounded-md border border-gray-300 p-3">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="py-1 text-left">날짜</th>
-                          <th className="py-1 text-left">요일</th>
-                          <th className="py-1 text-right">관리</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {classDates.map((date, index) => (
-                          <tr key={index} className="border-b border-gray-100">
-                            <td className="py-1">{date.date}</td>
-                            <td className="py-1">{date.dayOfWeek}요일</td>
-                            <td className="py-1 text-right">
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteClassDate(index)}
-                                className="ml-1 rounded p-1 text-red-500 hover:bg-red-50"
-                                title="수업 삭제">
-                                <Trash2 size={16} />
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="flex items-center gap-2">
+              <div className="mb-4 rounded border p-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">수업 일자 목록</h3>
+                  <div className="flex space-x-2">
                     <button
                       type="button"
-                      onClick={() => setShowAddClassDateForm(!showAddClassDateForm)}
-                      className="flex items-center gap-1 rounded bg-green-50 px-2 py-1 text-sm text-green-600 hover:bg-green-100">
-                      {showAddClassDateForm ? <X size={16} /> : <Plus size={16} />}
-                      {showAddClassDateForm ? "취소" : "수업 추가"}
+                      className="flex items-center rounded bg-blue-500 px-3 py-1 text-sm text-white"
+                      onClick={() => setShowAddClassDateForm(!showAddClassDateForm)}>
+                      <Plus className="mr-1 h-4 w-4" /> 수업 날짜 추가
                     </button>
                     {editingCourse && (
                       <button
                         type="button"
-                        onClick={loadOriginalClassDates}
-                        className="flex items-center gap-1 rounded bg-blue-50 px-2 py-1 text-sm text-blue-600 hover:bg-blue-100">
-                        <RiArrowGoBackFill size={16} />
-                        되돌리기
+                        className="flex items-center rounded bg-gray-200 px-3 py-1 text-sm text-gray-800"
+                        onClick={loadOriginalClassDates}>
+                        <RiArrowGoBackFill className="mr-1 h-4 w-4" /> 원래 일정
                       </button>
                     )}
                   </div>
+                </div>
 
-                  {/* 수업 추가 폼 */}
-                  {showAddClassDateForm && (
-                    <div className="rounded-md border border-gray-200 p-3">
-                      <div className="space-y-2">
-                        <div>
-                          <label htmlFor="newClassDate" className="block text-sm font-medium text-gray-700">
-                            추가할 수업 날짜
-                          </label>
-                          <input
-                            type="date"
-                            id="newClassDate"
-                            value={newClassDate}
-                            onChange={(e) => setNewClassDate(e.target.value)}
-                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm"
-                          />
+                {showAddClassDateForm && (
+                  <div className="mb-4 rounded bg-gray-50 p-3">
+                    <div className="flex flex-col">
+                      <div className="relative">
+                        <div
+                          className="mb-2 flex cursor-pointer items-center rounded border p-2"
+                          onClick={() => setShowClassDateCalendar(!showClassDateCalendar)}>
+                          <Calendar className="mr-2 h-5 w-5" />
+                          {newClassDate || "추가할 날짜를 선택하세요"}
                         </div>
+
+                        {showClassDateCalendar && (
+                          <div className="absolute z-10">
+                            <DatePickerCalendar
+                              selectedDate={newClassDate ? new Date(newClassDate) : undefined}
+                              onDateSelect={handleClassDateSelect}
+                              minDate={new Date()} // 오늘 이후 날짜만 선택 가능
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex space-x-2">
+                        <button type="button" className="rounded bg-green-500 px-3 py-1 text-white" onClick={handleAddClassDate}>
+                          추가하기
+                        </button>
                         <button
                           type="button"
-                          onClick={handleAddClassDate}
-                          className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none">
-                          수업 추가하기
+                          className="rounded bg-gray-300 px-3 py-1 text-gray-800"
+                          onClick={() => {
+                            setShowAddClassDateForm(false);
+                            setNewClassDate("");
+                          }}>
+                          취소
                         </button>
                       </div>
                     </div>
+                  </div>
+                )}
+
+                {/* 수업 일자 목록 표시 부분 */}
+                <div className="max-h-48 overflow-y-auto">
+                  {classDates.length > 0 ? (
+                    <ul className="divide-y">
+                      {classDates.map((classDate, index) => (
+                        <li key={index} className="flex items-center justify-between py-2">
+                          <span>
+                            {classDate.date} ({classDate.dayOfWeek}요일)
+                          </span>
+                          <button type="button" onClick={() => handleDeleteClassDate(index)} className="text-red-500 hover:text-red-700">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="py-2 text-center text-gray-500">등록된 수업 일자가 없습니다.</p>
                   )}
                 </div>
-              )}
+              </div>
 
               {/* 시작 시간 필드 */}
               <div className="space-y-2">
