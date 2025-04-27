@@ -940,7 +940,15 @@ export default function CoursePage() {
               {/* 강사 선택 필드 */}
 
               <div className="mt-6 flex justify-end gap-2">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="btn btn-outline">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setShowStartDateCalendar(false);
+                    setShowClassDateCalendar(false);
+                    setShowAddClassDateForm(false);
+                  }}
+                  className="btn btn-outline">
                   취소
                 </button>
                 <button type="submit" className="btn btn-primary" disabled={createCourseMutation.isPending || updateCourseMutation.isPending}>
