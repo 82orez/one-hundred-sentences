@@ -1,5 +1,5 @@
 import React from "react";
-import { DayPicker, DayClickEventHandler } from "react-day-picker";
+import { DayPicker, DayClickEventHandler, CaptionProps, Formatters } from "react-day-picker";
 import { ko } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
 import { format } from "date-fns";
@@ -50,6 +50,13 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({ selectedDate, o
     onDateSelect(day);
   };
 
+  // 헤더 형식을 커스터마이징
+  const formatters: Partial<Formatters> = {
+    formatCaption: (date, options) => {
+      return format(date, "yyyy년 MM월", { locale: ko });
+    },
+  };
+
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-md">
       <style jsx global>{`
@@ -78,6 +85,7 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({ selectedDate, o
         onDayClick={handleDayClick}
         locale={ko}
         fromDate={minDate}
+        formatters={formatters}
         modifiersClassNames={{
           selected: "rdp-day_selected",
           today: "rdp-day_today",
