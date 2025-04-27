@@ -1,5 +1,5 @@
-import React from "react";
-import { DayPicker, DayClickEventHandler, CaptionProps, Formatters } from "react-day-picker";
+import React, { useState } from "react";
+import { DayPicker, DayClickEventHandler, Formatters } from "react-day-picker";
 import { ko } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
 import { format } from "date-fns";
@@ -27,9 +27,18 @@ interface DatePickerCalendarProps {
   selectedDate?: Date;
   onDateSelect: (date: Date) => void;
   minDate?: Date;
+  onCancel?: () => void; // 취소 버튼 클릭 시 호출할 함수
 }
 
-const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({ selectedDate, onDateSelect, minDate }) => {
+const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
+  selectedDate,
+  onDateSelect,
+  minDate,
+  onCancel = () => {}, // 기본값으로 빈 함수 설정
+}) => {
+  // 임시 선택 날짜 상태 추가
+  const [tempSelectedDate, setTempSelectedDate] = useState<Date | undefined>(selectedDate);
+
   // 공휴일 배열로 변환
   const holidayDates = koreanHolidays.map((date) => new Date(date));
 
@@ -46,8 +55,21 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({ selectedDate, o
     return holidayDates.some((holiday) => format(holiday, "yyyy-MM-dd") === format(date, "yyyy-MM-dd"));
   };
 
+  // 날짜 클릭 핸들러 수정
   const handleDayClick: DayClickEventHandler = (day) => {
-    onDateSelect(day);
+    setTempSelectedDate(day);
+  };
+
+  // 선택 버튼 클릭 핸들러
+  const handleSelectClick = () => {
+    if (tempSelectedDate) {
+      onDateSelect(tempSelectedDate);
+    }
+  };
+
+  // 취소 버튼 클릭 핸들러
+  const handleCancelClick = () => {
+    onCancel();
   };
 
   // 헤더 형식을 커스터마이징
@@ -81,7 +103,7 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({ selectedDate, o
       `}</style>
       <DayPicker
         mode="single"
-        selected={selectedDate}
+        selected={tempSelectedDate}
         onDayClick={handleDayClick}
         locale={ko}
         fromDate={minDate}
@@ -101,6 +123,23 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({ selectedDate, o
           holiday: { color: "#dc2626", fontWeight: "bold" }, // 빨간색 볼드체
         }}
       />
+
+      {/* 하단 버튼 영역 추가 */}
+      <div className="mt-4 flex justify-between gap-2">
+        <button
+          onClick={handleSelectClick}
+          disabled={!tempSelectedDate}
+          className={`w-1/2 rounded-md px-4 py-2 text-sm font-medium text-white ${
+            tempSelectedDate ? "bg-blue-600 hover:bg-blue-700" : "cursor-not-allowed bg-blue-300"
+          }`}>
+          선택
+        </button>
+        <button
+          onClick={handleCancelClick}
+          className="w-1/2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+          닫기
+        </button>
+      </div>
     </div>
   );
 };

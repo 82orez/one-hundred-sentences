@@ -772,6 +772,7 @@ export default function CoursePage() {
                         selectedDate={formData.startDate ? new Date(formData.startDate) : undefined}
                         onDateSelect={handleStartDateSelect}
                         minDate={new Date()} // 오늘 이후 날짜만 선택 가능
+                        onCancel={() => setShowStartDateCalendar(false)}
                       />
                     </div>
                   )}
@@ -834,6 +835,7 @@ export default function CoursePage() {
                               selectedDate={newClassDate ? new Date(newClassDate) : undefined}
                               onDateSelect={handleClassDateSelect}
                               minDate={new Date()} // 오늘 이후 날짜만 선택 가능
+                              onCancel={() => setShowClassDateCalendar(false)}
                             />
                           </div>
                         )}
@@ -849,6 +851,8 @@ export default function CoursePage() {
                           onClick={() => {
                             setShowAddClassDateForm(false);
                             setNewClassDate("");
+                            setShowStartDateCalendar(false);
+                            setShowClassDateCalendar(false);
                           }}>
                           취소
                         </button>
