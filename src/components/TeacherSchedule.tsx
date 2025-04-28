@@ -96,6 +96,12 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
     return hours * 60 + minutes;
   };
 
+  // 날짜 셀을 더블 클릭했을 때 해당 날짜로 이동하고 일간 보기로 전환하는 함수 추가
+  const handleDateDoubleClick = (day: Date) => {
+    setCurrentDate(day);
+    setViewMode("day");
+  };
+
   // 일간 보기 렌더링
   const renderDayView = () => {
     const filteredClassDates = classDates
@@ -249,7 +255,10 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
                     {dayCourses?.map((classDate) => {
                       const courseColor = getCourseColor(classDate.course.id);
                       return (
-                        <div key={classDate.id} className={`mb-1 rounded px-1 py-0.5 text-xs ${courseColor.bg} ${courseColor.text}`}>
+                        <div
+                          key={classDate.id}
+                          className={`mb-1 cursor-pointer rounded px-1 py-0.5 text-xs ${courseColor.bg} ${courseColor.text}`}
+                          onClick={() => handleDateDoubleClick(day)}>
                           <div className="truncate font-medium">{classDate.course.title}</div>
                           <div className="text-gray-500">
                             {classDate.startTime} - {classDate.endTime}
@@ -319,7 +328,12 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
               return (
                 <div
                   key={idx}
-                  className={clsx("min-h-[100px] border p-1", !isCurrentMonth && "bg-gray-50 text-gray-400", isToday && "bg-blue-50 font-bold")}>
+                  className={clsx(
+                    "min-h-[100px] cursor-pointer border p-1",
+                    !isCurrentMonth && "bg-gray-50 text-gray-400",
+                    isToday && "bg-blue-50 font-bold",
+                  )}
+                  onClick={() => handleDateDoubleClick(day)}>
                   <div className={clsx("mb-1 text-right", isToday && "text-blue-600")}>{format(day, "d")}</div>
                   <div className="space-y-1">
                     {visibleEvents.map((classDate) => {
