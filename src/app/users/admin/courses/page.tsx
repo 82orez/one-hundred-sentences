@@ -50,6 +50,9 @@ interface ClassDate {
   courseId: string;
   date: string;
   dayOfWeek: string;
+  startTime: string | null; // 시작 시간 추가
+  endTime: string | null; // 종료 시간 추가
+
   createdAt: string;
   updatedAt: string;
 }

@@ -106,7 +106,7 @@ export async function POST(request: Request) {
       },
     });
 
-    // ClassDate 레코드 생성
+    // ClassDate 레코드 생성 (startTime과 endTime 추가)
     if (classDatesData.length > 0) {
       await Promise.all(
         classDatesData.map((dateItem: any) =>
@@ -115,6 +115,8 @@ export async function POST(request: Request) {
               courseId: course.id,
               date: new Date(dateItem.date),
               dayOfWeek: dateItem.dayOfWeek,
+              startTime: data.startTime || null, // 강좌의 시작 시간 사용
+              endTime: data.endTime || null, // 강좌의 종료 시간 사용
             },
           }),
         ),
@@ -195,7 +197,7 @@ export async function PUT(request: Request) {
         },
       });
 
-      // 새 수업 날짜 추가
+      // 새 수업 날짜 추가 (startTime과 endTime 추가)
       if (classDatesData.length > 0) {
         await Promise.all(
           classDatesData.map((dateItem: any) =>
@@ -204,6 +206,8 @@ export async function PUT(request: Request) {
                 courseId: id,
                 date: new Date(dateItem.date),
                 dayOfWeek: dateItem.dayOfWeek,
+                startTime: data.startTime || null, // 강좌의 시작 시간 사용
+                endTime: data.endTime || null, // 강좌의 종료 시간 사용
               },
             }),
           ),

@@ -145,7 +145,9 @@ export type Database = {
           createdAt: string
           date: string
           dayOfWeek: string
+          endTime: string | null
           id: string
+          startTime: string | null
           updatedAt: string
         }
         Insert: {
@@ -153,7 +155,9 @@ export type Database = {
           createdAt?: string
           date: string
           dayOfWeek: string
+          endTime?: string | null
           id: string
+          startTime?: string | null
           updatedAt: string
         }
         Update: {
@@ -161,7 +165,9 @@ export type Database = {
           createdAt?: string
           date?: string
           dayOfWeek?: string
+          endTime?: string | null
           id?: string
+          startTime?: string | null
           updatedAt?: string
         }
         Relationships: [
