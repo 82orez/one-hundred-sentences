@@ -39,6 +39,9 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
   // 임시 선택 날짜 상태 추가
   const [tempSelectedDate, setTempSelectedDate] = useState<Date | undefined>(selectedDate);
 
+  // 현재 표시되는 월 상태 추가
+  const [month, setMonth] = useState<Date>(tempSelectedDate || new Date());
+
   // 공휴일 배열로 변환
   const holidayDates = koreanHolidays.map((date) => new Date(date));
 
@@ -58,6 +61,16 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
   // 날짜 클릭 핸들러 수정
   const handleDayClick: DayClickEventHandler = (day) => {
     setTempSelectedDate(day);
+  };
+
+  // 오늘 버튼 클릭 핸들러
+  const handleTodayClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // 이벤트 버블링 중지
+    e.preventDefault();
+    e.stopPropagation();
+
+    const today = new Date();
+    setMonth(today);
   };
 
   // 선택 버튼 클릭 핸들러
@@ -101,6 +114,12 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
           font-weight: bold;
         }
       `}</style>
+      {/* 여기서 today 버튼 추가 */}
+      <div className="mb-2 flex justify-center">
+        <button onClick={handleTodayClick} className="rounded-md bg-gray-200 px-3 py-1 text-sm text-gray-700 hover:bg-gray-300">
+          오늘
+        </button>
+      </div>
       <DayPicker
         mode="single"
         selected={tempSelectedDate}
@@ -108,6 +127,8 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
         locale={ko}
         fromDate={minDate}
         formatters={formatters}
+        month={month}
+        onMonthChange={setMonth}
         modifiersClassNames={{
           selected: "rdp-day_selected",
           today: "rdp-day_today",
