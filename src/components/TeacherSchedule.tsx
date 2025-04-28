@@ -10,38 +10,22 @@ import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // 타입 정의
-interface Course {
+interface ClassDate {
   id: string;
-  title: string;
-  description?: string;
-  startDate: string | null;
-  endDate: string | null;
+  date: string;
+  dayOfWeek: string;
   startTime: string | null;
   endTime: string | null;
-  duration: string | null;
-  scheduleMonday: boolean;
-  scheduleTuesday: boolean;
-  scheduleWednesday: boolean;
-  scheduleThursday: boolean;
-  scheduleFriday: boolean;
-  scheduleSaturday: boolean;
-  scheduleSunday: boolean;
+  course: {
+    id: string;
+    title: string;
+    description?: string;
+  };
 }
 
 interface TeacherScheduleProps {
   teacherId: string;
 }
-
-// 요일 매핑
-const dayMapping: { [key: number]: string } = {
-  0: "scheduleSunday",
-  1: "scheduleMonday",
-  2: "scheduleTuesday",
-  3: "scheduleWednesday",
-  4: "scheduleThursday",
-  5: "scheduleFriday",
-  6: "scheduleSaturday",
-};
 
 // 강좌 색상 팔레트 정의
 const courseColorPalette = [
@@ -61,12 +45,12 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
   const [viewMode, setViewMode] = useState<"day" | "week" | "month">("month");
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
-  // 강사 스케줄 조회
-  const { data: courses, isLoading } = useQuery({
+  // 강사 스케줄 조회 (ClassDate 모델 사용)
+  const { data: classDates, isLoading } = useQuery({
     queryKey: ["teacherSchedule", teacherId],
     queryFn: async () => {
       const res = await axios.get(`/api/admin/teacher-schedule?teacherId=${teacherId}`);
-      return res.data as Course[];
+      return res.data as ClassDate[];
     },
     enabled: !!teacherId,
   });
@@ -75,13 +59,15 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
   const courseColorMap = useMemo(() => {
     const colorMap = new Map<string, (typeof courseColorPalette)[0]>();
 
-    courses?.forEach((course, index) => {
-      const colorIndex = index % courseColorPalette.length;
-      colorMap.set(course.id, courseColorPalette[colorIndex]);
+    classDates?.forEach((classDate) => {
+      if (!colorMap.has(classDate.course.id)) {
+        const colorIndex = colorMap.size % courseColorPalette.length;
+        colorMap.set(classDate.course.id, courseColorPalette[colorIndex]);
+      }
     });
 
     return colorMap;
-  }, [courses]);
+  }, [classDates]);
 
   // 강좌에 색상 할당
   const getCourseColor = (courseId: string) => {
@@ -103,27 +89,21 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
     setCurrentDate(newDate);
   };
 
+  // 시작/종료 시간을 분 단위로 변환하는 함수
+  const timeToMinutes = (timeString: string | null): number => {
+    if (!timeString) return 0;
+    const [hours, minutes] = timeString.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
   // 일간 보기 렌더링
   const renderDayView = () => {
-    const currentDayOfWeek = currentDate.getDay();
-    const currentDayProperty = dayMapping[currentDayOfWeek];
-
-    const filteredCourses = courses
-      ?.filter((course) => {
-        // 날짜 범위 내에 있는지 확인
-        const startDate = course.startDate ? new Date(course.startDate) : null;
-        const endDate = course.endDate ? new Date(course.endDate) : null;
-
-        // 시작일과 종료일이 모두 있을 경우 날짜 범위 체크
-        if (startDate && endDate) {
-          if (currentDate < startDate || currentDate > endDate) {
-            return false;
-          }
-        }
-
-        // 현재 요일이 수업 요일인지 확인
-        return course[currentDayProperty as keyof Course];
-      }) // 시작 시간 기준으로 정렬
+    const filteredClassDates = classDates
+      ?.filter((classDate) => {
+        // 날짜가 같은지 확인
+        const classDateObj = new Date(classDate.date);
+        return isSameDay(classDateObj, currentDate);
+      })
       .sort((a, b) => {
         // 시작 시간이 없는 경우 처리
         if (!a.startTime) return 1;
@@ -135,17 +115,10 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
     // 24시간 시간대 생성
     const hours = Array.from({ length: 24 }, (_, i) => i);
 
-    // 시작/종료 시간을 분 단위로 변환하는 함수
-    const timeToMinutes = (timeString: string | null): number => {
-      if (!timeString) return 0;
-      const [hours, minutes] = timeString.split(":").map(Number);
-      return hours * 60 + minutes;
-    };
-
     // 강의의 위치 및 높이 계산
-    const calculateCoursePosition = (course: Course) => {
-      const startMinutes = timeToMinutes(course.startTime);
-      const endMinutes = timeToMinutes(course.endTime);
+    const calculateCoursePosition = (classDate: ClassDate) => {
+      const startMinutes = timeToMinutes(classDate.startTime);
+      const endMinutes = timeToMinutes(classDate.endTime);
       const duration = endMinutes - startMinutes;
 
       // 시작 시간의 상대적 위치 (하루 = 1440분)
@@ -197,25 +170,25 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
               </div>
 
               {/* 강의 블록 */}
-              {filteredCourses?.map((course) => {
-                const courseColor = getCourseColor(course.id);
-                const position = calculateCoursePosition(course);
+              {filteredClassDates?.map((classDate) => {
+                const courseColor = getCourseColor(classDate.course.id);
+                const position = calculateCoursePosition(classDate);
 
                 return (
                   <div
-                    key={course.id}
+                    key={classDate.id}
                     className={`absolute left-0 z-0 w-full rounded-md border ${courseColor.border} ${courseColor.bg} px-3 py-1 shadow-sm transition-all hover:z-10 hover:shadow-md`}
                     style={{
                       top: position.top,
                       height: position.height,
                       minHeight: "20px",
                     }}>
-                    <h4 className={`font-medium ${courseColor.text} truncate`}>{course.title}</h4>
+                    <h4 className={`font-medium ${courseColor.text} truncate`}>{classDate.course.title}</h4>
                     {parseFloat(position.height) > 3 && (
                       <>
-                        <p className="truncate text-xs text-gray-600">{course.description}</p>
+                        <p className="truncate text-xs text-gray-600">{classDate.course.description}</p>
                         <div className="mt-1 text-xs text-gray-500">
-                          {course.startTime} - {course.endTime}
+                          {classDate.startTime} - {classDate.endTime}
                         </div>
                       </>
                     )}
@@ -250,25 +223,12 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
         ) : (
           <div className="grid grid-cols-7 gap-2">
             {days.map((day, index) => {
-              const dayOfWeek = day.getDay();
-              const dayProperty = dayMapping[dayOfWeek];
-
-              const dayCourses = courses
-                ?.filter((course) => {
-                  // 날짜 범위 내에 있는지 확인
-                  const startDate = course.startDate ? new Date(course.startDate) : null;
-                  const endDate = course.endDate ? new Date(course.endDate) : null;
-
-                  // 시작일과 종료일이 모두 있을 경우 날짜 범위 체크
-                  if (startDate && endDate) {
-                    if (day < startDate || day > endDate) {
-                      return false;
-                    }
-                  }
-
-                  // 현재 요일이 수업 요일인지 확인
-                  return course[dayProperty as keyof Course];
-                }) // 시작 시간 기준으로 정렬
+              const dayCourses = classDates
+                ?.filter((classDate) => {
+                  // 날짜가 같은지 확인
+                  const classDateObj = new Date(classDate.date);
+                  return isSameDay(classDateObj, day);
+                })
                 .sort((a, b) => {
                   // 시작 시간이 없는 경우 처리
                   if (!a.startTime) return 1;
@@ -280,33 +240,23 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
               return (
                 <div key={index} className="h-full min-h-[120px]">
                   <div
-                    className={clsx(
-                      "mb-2 rounded-t-md p-1 text-center font-medium",
-                      dayOfWeek === 0 ? "bg-red-100 text-red-800" : dayOfWeek === 6 ? "bg-blue-100 text-blue-800" : "bg-gray-100",
-                    )}>
-                    {format(day, "EEE", { locale: ko })}
-                    <div className="text-sm">{format(day, "d")}</div>
+                    className={clsx("mb-1 rounded-t p-1 text-center text-sm", isSameDay(day, new Date()) ? "bg-blue-100 font-bold" : "bg-gray-100")}>
+                    <div>{format(day, "E", { locale: ko })}</div>
+                    <div className={isSameDay(day, new Date()) ? "text-blue-600" : ""}>{format(day, "d")}</div>
                   </div>
 
-                  <div className="overflow-y-auto rounded-b-md border border-gray-200 p-1">
-                    {dayCourses?.length ? (
-                      <ul className="space-y-1">
-                        {dayCourses.map((course) => {
-                          const courseColor = getCourseColor(course.id);
-
-                          return (
-                            <li key={course.id} className={`rounded ${courseColor.bg} p-1 text-xs`}>
-                              <div className={`font-medium ${courseColor.text}`}>{course.title}</div>
-                              <div className="text-gray-600">
-                                {course.startTime} - {course.endTime}
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    ) : (
-                      <div className="text-center text-xs text-gray-400">수업 없음</div>
-                    )}
+                  <div className="p-1">
+                    {dayCourses?.map((classDate) => {
+                      const courseColor = getCourseColor(classDate.course.id);
+                      return (
+                        <div key={classDate.id} className={`mb-1 rounded px-1 py-0.5 text-xs ${courseColor.bg} ${courseColor.text}`}>
+                          <div className="truncate font-medium">{classDate.course.title}</div>
+                          <div className="text-gray-500">
+                            {classDate.startTime} - {classDate.endTime}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -326,105 +276,67 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
 
     const days = eachDayOfInterval({ start: startDate, end: endDate });
 
-    // 주별로 날짜 배열 나누기
-    const weeks = [];
-    let week = [];
+    // 날짜별 수업 그룹화
+    const classDatesByDay = new Map<string, ClassDate[]>();
 
-    for (let i = 0; i < days.length; i++) {
-      week.push(days[i]);
+    classDates?.forEach((classDate) => {
+      const dateObj = new Date(classDate.date);
+      const dateKey = format(dateObj, "yyyy-MM-dd");
 
-      if (week.length === 7) {
-        weeks.push(week);
-        week = [];
+      if (!classDatesByDay.has(dateKey)) {
+        classDatesByDay.set(dateKey, []);
       }
-    }
+
+      classDatesByDay.get(dateKey)?.push(classDate);
+    });
 
     return (
       <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm">
-        <h3 className="mb-4 text-xl font-medium">{format(monthStart, "yyyy년 MM월", { locale: ko })}</h3>
+        <h3 className="mb-4 text-xl font-medium">{format(currentDate, "yyyy년 MM월", { locale: ko })}</h3>
 
         {isLoading ? (
           <div className="p-6 text-center">불러오는 중...</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full table-fixed border-collapse">
-              <thead>
-                <tr>
-                  {["일", "월", "화", "수", "목", "금", "토"].map((day, idx) => (
-                    <th key={idx} className={clsx("border p-1 text-center text-sm", idx === 0 ? "text-red-600" : idx === 6 ? "text-blue-600" : "")}>
-                      {day}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {weeks.map((week, weekIdx) => (
-                  <tr key={weekIdx} className="h-24">
-                    {week.map((day, dayIdx) => {
-                      const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-                      const dayOfWeek = day.getDay();
-                      const dayProperty = dayMapping[dayOfWeek];
+          <div className="grid grid-cols-7 gap-2">
+            {/* 요일 헤더 */}
+            {["일", "월", "화", "수", "목", "금", "토"].map((day, index) => (
+              <div key={index} className="p-2 text-center font-medium">
+                {day}
+              </div>
+            ))}
 
-                      // 이 날짜에 해당하는 강의 찾기
-                      const dayCourses = courses
-                        ?.filter((course) => {
-                          // 날짜 범위 내에 있는지 확인
-                          const courseStart = course.startDate ? new Date(course.startDate) : null;
-                          const courseEnd = course.endDate ? new Date(course.endDate) : null;
+            {/* 날짜 */}
+            {days.map((day, idx) => {
+              const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+              const isToday = isSameDay(day, new Date());
+              const dateKey = format(day, "yyyy-MM-dd");
+              const dayClassDates = classDatesByDay.get(dateKey) || [];
 
-                          // 시작일과 종료일이 모두 있을 경우 날짜 범위 체크
-                          if (courseStart && courseEnd) {
-                            if (!isWithinInterval(day, { start: courseStart, end: courseEnd })) {
-                              return false;
-                            }
-                          }
+              // 최대 3개까지만 표시하고 나머지는 +N 형태로 보여줌
+              const visibleEvents = dayClassDates.slice(0, 3);
+              const remainingCount = dayClassDates.length - visibleEvents.length;
 
-                          // 현재 요일이 수업 요일인지 확인
-                          return course[dayProperty as keyof Course];
-                        }) // 시작 시간 기준으로 정렬
-                        .sort((a, b) => {
-                          // 시작 시간이 없는 경우 처리
-                          if (!a.startTime) return 1;
-                          if (!b.startTime) return -1;
-
-                          return a.startTime.localeCompare(b.startTime);
-                        });
-
+              return (
+                <div
+                  key={idx}
+                  className={clsx("min-h-[100px] border p-1", !isCurrentMonth && "bg-gray-50 text-gray-400", isToday && "bg-blue-50 font-bold")}>
+                  <div className={clsx("mb-1 text-right", isToday && "text-blue-600")}>{format(day, "d")}</div>
+                  <div className="space-y-1">
+                    {visibleEvents.map((classDate) => {
+                      const courseColor = getCourseColor(classDate.course.id);
                       return (
-                        <td
-                          key={dayIdx}
-                          className={clsx(
-                            "relative border align-top",
-                            isCurrentMonth ? "" : "bg-gray-100",
-                            (dayOfWeek === 0 || dayOfWeek === 6) && isCurrentMonth ? "bg-gray-50" : "",
-                          )}>
-                          <div
-                            className={clsx(
-                              "p-1 text-right text-sm font-medium",
-                              dayOfWeek === 0 ? "text-red-600" : dayOfWeek === 6 ? "text-blue-600" : "",
-                              !isCurrentMonth && "text-gray-400",
-                            )}>
-                            {format(day, "d")}
-                          </div>
-
-                          <div className="mt-1 max-h-16 overflow-y-auto p-1">
-                            {dayCourses?.map((course) => {
-                              const courseColor = getCourseColor(course.id);
-
-                              return (
-                                <div key={course.id} className={`mb-1 rounded ${courseColor.bg} px-1 py-0.5 text-xs font-medium ${courseColor.text}`}>
-                                  {course.title}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </td>
+                        <div key={classDate.id} className={`rounded-sm px-1 py-0.5 text-xs ${courseColor.bg} ${courseColor.text} truncate`}>
+                          {classDate.startTime} {classDate.course.title}
+                        </div>
                       );
                     })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    {remainingCount > 0 && (
+                      <div className="rounded-sm bg-gray-100 px-1 py-0.5 text-center text-xs text-gray-800">+{remainingCount}개 더</div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -432,54 +344,46 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
   };
 
   return (
-    <div className="w-full">
+    <div className="rounded-lg bg-gray-50 p-4">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">강의 스케줄</h2>
-
-        <div className="flex items-center space-x-2">
+        <div className="flex space-x-2">
           <button
-            onClick={() => setViewMode("day")}
+            onClick={() => setViewMode("month")}
             className={clsx(
-              "rounded-md px-3 py-1 text-sm font-medium",
-              viewMode === "day" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300",
+              "rounded-md px-3 py-1 text-sm",
+              viewMode === "month" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-100",
             )}>
-            일간
+            월
           </button>
           <button
             onClick={() => setViewMode("week")}
             className={clsx(
-              "rounded-md px-3 py-1 text-sm font-medium",
-              viewMode === "week" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300",
+              "rounded-md px-3 py-1 text-sm",
+              viewMode === "week" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-100",
             )}>
-            주간
+            주
           </button>
           <button
-            onClick={() => setViewMode("month")}
+            onClick={() => setViewMode("day")}
             className={clsx(
-              "rounded-md px-3 py-1 text-sm font-medium",
-              viewMode === "month" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300",
+              "rounded-md px-3 py-1 text-sm",
+              viewMode === "day" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-100",
             )}>
-            월간
+            일
           </button>
         </div>
-      </div>
 
-      <div className="mb-4 flex items-center justify-between">
-        <button onClick={() => moveDate("prev")} className="flex items-center rounded-md bg-gray-100 px-3 py-1 text-gray-700 hover:bg-gray-200">
-          <ChevronLeft size={16} />
-          {viewMode === "day" ? "이전 날" : viewMode === "week" ? "이전 주" : "이전 달"}
-        </button>
-
-        <button
-          onClick={() => setCurrentDate(new Date())}
-          className="rounded-md bg-gray-200 px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-300">
-          오늘
-        </button>
-
-        <button onClick={() => moveDate("next")} className="flex items-center rounded-md bg-gray-100 px-3 py-1 text-gray-700 hover:bg-gray-200">
-          {viewMode === "day" ? "다음 날" : viewMode === "week" ? "다음 주" : "다음 달"}
-          <ChevronRight size={16} />
-        </button>
+        <div className="flex items-center space-x-2">
+          <button onClick={() => moveDate("prev")} className="rounded p-1 hover:bg-gray-200">
+            <ChevronLeft size={20} />
+          </button>
+          <button onClick={() => setCurrentDate(new Date())} className="rounded-md bg-white px-3 py-1 text-sm hover:bg-gray-100">
+            오늘
+          </button>
+          <button onClick={() => moveDate("next")} className="rounded p-1 hover:bg-gray-200">
+            <ChevronRight size={20} />
+          </button>
+        </div>
       </div>
 
       {viewMode === "day" && renderDayView()}

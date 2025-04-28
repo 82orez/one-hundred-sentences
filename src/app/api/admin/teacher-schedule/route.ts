@@ -10,34 +10,33 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "강사 ID가 필요합니다." }, { status: 400 });
     }
 
-    // 강사의 수업 일정 조회
-    const courses = await prisma.course.findMany({
+    // 강사의 수업 일정 조회 (ClassDate 모델 사용)
+    const classDates = await prisma.classDate.findMany({
       where: {
-        teacherId: teacherId,
+        course: {
+          teacherId: teacherId,
+        },
       },
       select: {
         id: true,
-        title: true,
-        description: true,
-        startDate: true,
-        endDate: true,
+        date: true,
+        dayOfWeek: true,
         startTime: true,
         endTime: true,
-        duration: true,
-        scheduleMonday: true,
-        scheduleTuesday: true,
-        scheduleWednesday: true,
-        scheduleThursday: true,
-        scheduleFriday: true,
-        scheduleSaturday: true,
-        scheduleSunday: true,
+        course: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+          },
+        },
       },
       orderBy: {
-        startDate: "asc",
+        date: "asc",
       },
     });
 
-    return NextResponse.json(courses);
+    return NextResponse.json(classDates);
   } catch (error) {
     console.error("강사 스케줄 조회 중 오류 발생:", error);
     return NextResponse.json({ error: "강사 스케줄을 불러오는 중 오류가 발생했습니다." }, { status: 500 });
