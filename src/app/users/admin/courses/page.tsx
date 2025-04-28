@@ -84,6 +84,29 @@ export default function CoursePage() {
   const [showStartDateCalendar, setShowStartDateCalendar] = useState(false);
   const [showClassDateCalendar, setShowClassDateCalendar] = useState(false);
 
+  // 수업 날짜 목록 상태 추가
+  const [classDates, setClassDates] = useState<ClassDate[]>([]);
+
+  // 수업 추가 관련 상태 변수
+  const [showAddClassDateForm, setShowAddClassDateForm] = useState(false);
+  const [newClassDate, setNewClassDate] = useState("");
+
+  // 수업 날짜 목록이 변경될 때마다 종료일 업데이트
+  useEffect(() => {
+    // 수업 일자가 하나 이상 있는 경우에만 처리
+    if (classDates.length > 0) {
+      // 날짜 문자열을 Date 객체로 변환하여 가장 마지막 날짜 찾기
+      const dates = classDates.map((classDate) => new Date(classDate.date));
+      const latestDate = new Date(Math.max(...dates.map((date) => date.getTime())));
+
+      // 종료일 업데이트
+      setFormData((prev) => ({
+        ...prev,
+        endDate: format(latestDate, "yyyy-MM-dd"),
+      }));
+    }
+  }, [classDates]);
+
   // 날짜 선택 핸들러
   const handleStartDateSelect = (date: Date) => {
     setFormData((prev) => ({ ...prev, startDate: format(date, "yyyy-MM-dd") }));
@@ -94,13 +117,6 @@ export default function CoursePage() {
     setNewClassDate(format(date, "yyyy-MM-dd"));
     setShowClassDateCalendar(false);
   };
-
-  // 수업 날짜 목록 상태 추가
-  const [classDates, setClassDates] = useState<ClassDate[]>([]);
-
-  // 수업 추가 관련 상태 변수
-  const [showAddClassDateForm, setShowAddClassDateForm] = useState(false);
-  const [newClassDate, setNewClassDate] = useState("");
 
   // 특정 수업 일자 삭제 함수
   const handleDeleteClassDate = (index: number) => {
