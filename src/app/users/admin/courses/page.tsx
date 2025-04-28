@@ -701,7 +701,7 @@ export default function CoursePage() {
               {/* 강좌 설명 */}
               <div className="form-control md:col-span-2">
                 <label className="label">
-                  <span className="label-text font-medium">강좌 설명</span>
+                  <span className="label-text font-medium">강좌 설명 및 참고 사항</span>
                 </label>
                 <textarea
                   name="description"
@@ -711,25 +711,11 @@ export default function CoursePage() {
                 />
               </div>
 
-              {/* 강사 선택 */}
-              <div className="form-control md:col-span-2">
-                <label className="label">
-                  <span className="label-text font-medium">강사 *</span>
-                </label>
-                <select name="teacherId" value={formData.teacherId} onChange={handleInputChange} className="select select-bordered w-full" required>
-                  <option value="">강사를 선택하세요</option>
-                  {teachers
-                    .filter((teacher: Teacher) => teacher.isActive)
-                    .map((teacher: Teacher) => (
-                      <option key={teacher.id} value={teacher.id}>
-                        {teacher.realName}
-                      </option>
-                    ))}
-                </select>
-              </div>
-
               {/* 요일 선택 필드 */}
-              <div className={clsx("space-y-2", { "pointer-events-none opacity-50": !!editingCourse })}>
+              <div
+                className={clsx("space-y-2 rounded-md border border-gray-300 px-3 py-2 shadow-sm", {
+                  "pointer-events-none opacity-50": !!editingCourse,
+                })}>
                 <p className="font-medium text-gray-700">수업 요일 선택</p>
                 <div className="flex flex-wrap gap-4">
                   {[
@@ -780,7 +766,7 @@ export default function CoursePage() {
                 </label>
                 <div className="relative">
                   <div
-                    className="flex cursor-pointer items-center rounded border p-2"
+                    className="flex cursor-pointer items-center rounded border border-gray-300 p-2 shadow-sm"
                     onClick={() => setShowStartDateCalendar(!showStartDateCalendar)}>
                     <Calendar className="mr-2 h-5 w-5" />
                     {formData.startDate || "시작일을 선택하세요"}
@@ -957,6 +943,21 @@ export default function CoursePage() {
               )}
 
               {/* 강사 선택 필드 */}
+              <div className="form-control md:col-span-2">
+                <label className="label">
+                  <span className="label-text font-medium">강사 *</span>
+                </label>
+                <select name="teacherId" value={formData.teacherId} onChange={handleInputChange} className="select select-bordered w-full" required>
+                  <option value="">강사를 선택하세요</option>
+                  {teachers
+                    .filter((teacher: Teacher) => teacher.isActive)
+                    .map((teacher: Teacher) => (
+                      <option key={teacher.id} value={teacher.id}>
+                        {teacher.realName}
+                      </option>
+                    ))}
+                </select>
+              </div>
 
               <div className="mt-6 flex justify-end gap-2">
                 <button
