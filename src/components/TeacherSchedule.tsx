@@ -139,11 +139,11 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
         {isLoading ? (
           <div className="p-6 text-center">불러오는 중...</div>
         ) : (
-          <div className="relative flex h-[800px]">
+          <div className="relative flex h-[1200px]">
             {/* 시간 눈금 */}
             <div className="w-16 flex-shrink-0 pr-2 text-right">
               {hours.map((hour) => (
-                <div key={hour} className="relative h-[33.33px]">
+                <div key={hour} className="relative h-[50px]">
                   <span className="absolute -top-2 right-0 text-xs text-gray-500">
                     {hour === 0 ? "오전 12시" : hour < 12 ? `오전 ${hour}시` : hour === 12 ? "오후 12시" : `오후 ${hour - 12}시`}
                   </span>
@@ -155,7 +155,7 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
             <div className="relative flex-grow border-l border-gray-200">
               {/* 시간대 배경 */}
               {hours.map((hour) => (
-                <div key={hour} className={`h-[33.33px] border-b border-gray-100 ${hour % 2 === 0 ? "bg-gray-50" : ""}`} />
+                <div key={hour} className={`h-[50px] border-b border-gray-100 ${hour % 2 === 0 ? "bg-gray-100" : ""}`} />
               ))}
 
               {/* 현재 시간 표시선 */}
