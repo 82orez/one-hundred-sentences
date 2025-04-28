@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { RiArrowGoBackFill } from "react-icons/ri";
 import DatePickerCalendar from "@/components/DatePickerCalendar";
+import clsx from "clsx";
 
 // 타입 정의 확장
 interface Teacher {
@@ -709,7 +710,7 @@ export default function CoursePage() {
               </div>
 
               {/* 요일 선택 필드 */}
-              <div className="space-y-2">
+              <div className={clsx("space-y-2", { "pointer-events-none opacity-50": !!editingCourse })}>
                 <p className="font-medium text-gray-700">수업 요일 선택</p>
                 <div className="flex flex-wrap gap-4">
                   {[
@@ -736,7 +737,7 @@ export default function CoursePage() {
               </div>
 
               {/* 수업 횟수 필드 */}
-              <div className="space-y-2">
+              <div className={clsx("space-y-2", { "pointer-events-none opacity-50": !!editingCourse })}>
                 <label htmlFor="classCount" className="block font-medium text-gray-700">
                   수업 횟수
                 </label>
@@ -754,7 +755,7 @@ export default function CoursePage() {
               </div>
 
               {/* 시작일 필드 */}
-              <div className="space-y-2">
+              <div className={clsx("space-y-2", { "pointer-events-none opacity-50": !!editingCourse })}>
                 <label htmlFor="startDate" className="block font-medium text-gray-700">
                   수업 시작일 (선택한 요일에 맞는 날짜로 선택)
                 </label>
@@ -777,9 +778,8 @@ export default function CoursePage() {
                     </div>
                   )}
                 </div>
-
-                {editingCourse && <p className={"animate-pulse"}>⚠️ 수업 시작일은 수정할 수 없습니다. 강좌 삭제 후 새로 생성바랍니다.</p>}
               </div>
+              {editingCourse && <p className={"text-red-400"}>⚠️ 수업 요일, 횟수, 시작일은 수정할 수 없습니다. 강좌 삭제 후 새로 생성바랍니다.</p>}
 
               {/* 종료일 필드 (자동 계산됨, 읽기 전용) */}
               <div className="space-y-2">
