@@ -742,9 +742,9 @@ export default function CoursePage() {
               </div>
 
               {/* 수업 횟수 필드 */}
-              <div className={clsx("space-y-2", { "pointer-events-none opacity-50": !!editingCourse })}>
+              <div className={clsx("flex items-center gap-4", { "pointer-events-none opacity-50": !!editingCourse })}>
                 <label htmlFor="classCount" className="block font-medium text-gray-700">
-                  수업 횟수
+                  전체 수업 횟수 선택 :
                 </label>
                 <input
                   type="number"
@@ -754,9 +754,10 @@ export default function CoursePage() {
                   onChange={handleInputChange}
                   onDoubleClick={(e) => e.currentTarget.select()}
                   min="1"
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="max-w-[80px] rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   required
                 />
+                <div>회</div>
               </div>
 
               {/* 시작일 필드 */}
