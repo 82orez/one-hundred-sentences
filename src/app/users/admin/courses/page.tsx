@@ -760,6 +760,68 @@ export default function CoursePage() {
                 <div>회</div>
               </div>
 
+              {/* 시작 시간 필드 */}
+              <div className="space-y-2">
+                <label htmlFor="startTime" className="block font-medium text-gray-700">
+                  수업 시작 시간
+                </label>
+                <input
+                  type="time"
+                  id="startTime"
+                  name="startTime"
+                  value={formData.startTime}
+                  onChange={handleInputChange}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  required
+                />
+              </div>
+
+              <div className={"flex items-center gap-32"}>
+                {/* 수업 진행 시간 필드 */}
+                <div className="space-y-2">
+                  <label className="block font-medium text-gray-700">수업 진행 시간</label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="number"
+                      id="durationHours"
+                      name="durationHours"
+                      value={formData.durationHours}
+                      onChange={handleInputChange}
+                      onDoubleClick={(e) => e.currentTarget.select()}
+                      min="0"
+                      max="10"
+                      className="w-20 rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                    <span>시간</span>
+                    <input
+                      type="number"
+                      id="durationMinutes"
+                      name="durationMinutes"
+                      value={formData.durationMinutes}
+                      onChange={handleInputChange}
+                      onDoubleClick={(e) => e.currentTarget.select()}
+                      min="0"
+                      max="59"
+                      className="w-20 rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    />
+                    <span>분</span>
+                  </div>
+                </div>
+
+                {/* 수업 종료 시간 (자동 계산됨) */}
+                {endTime && (
+                  <div className="space-y-2">
+                    <label className="block font-medium text-gray-700">수업 종료 시간 (자동 계산됨)</label>
+                    <input
+                      type="time"
+                      value={endTime}
+                      readOnly
+                      className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 shadow-sm"
+                    />
+                  </div>
+                )}
+              </div>
+
               {/* 시작일 필드 */}
               <div className={clsx("space-y-2", { "pointer-events-none opacity-50": !!editingCourse })}>
                 <label htmlFor="startDate" className="block font-medium text-gray-700">
@@ -887,61 +949,6 @@ export default function CoursePage() {
                   )}
                 </div>
               </div>
-
-              {/* 시작 시간 필드 */}
-              <div className="space-y-2">
-                <label htmlFor="startTime" className="block font-medium text-gray-700">
-                  수업 시작 시간
-                </label>
-                <input
-                  type="time"
-                  id="startTime"
-                  name="startTime"
-                  value={formData.startTime}
-                  onChange={handleInputChange}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  required
-                />
-              </div>
-
-              {/* 수업 진행 시간 필드 */}
-              <div className="space-y-2">
-                <label className="block font-medium text-gray-700">수업 진행 시간</label>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    id="durationHours"
-                    name="durationHours"
-                    value={formData.durationHours}
-                    onChange={handleInputChange}
-                    onDoubleClick={(e) => e.currentTarget.select()}
-                    min="0"
-                    max="10"
-                    className="w-20 rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
-                  <span>시간</span>
-                  <input
-                    type="number"
-                    id="durationMinutes"
-                    name="durationMinutes"
-                    value={formData.durationMinutes}
-                    onChange={handleInputChange}
-                    onDoubleClick={(e) => e.currentTarget.select()}
-                    min="0"
-                    max="59"
-                    className="w-20 rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
-                  <span>분</span>
-                </div>
-              </div>
-
-              {/* 수업 종료 시간 (자동 계산됨) */}
-              {endTime && (
-                <div className="space-y-2">
-                  <label className="block font-medium text-gray-700">수업 종료 시간 (자동 계산됨)</label>
-                  <input type="time" value={endTime} readOnly className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 shadow-sm" />
-                </div>
-              )}
 
               {/* 강사 선택 필드 */}
               <div className="form-control md:col-span-2">
