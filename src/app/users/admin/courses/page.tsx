@@ -873,13 +873,31 @@ export default function CoursePage() {
               <div className="mb-4 rounded border p-4">
                 <div className="mb-2 flex items-center justify-between">
                   <h3 className="text-lg font-semibold">수업 일자 목록</h3>
+
                   <div className="flex space-x-2">
+                    {/* 리스트/달력 보기 토글 버튼 */}
                     <button
                       type="button"
-                      className="flex items-center rounded bg-blue-500 px-3 py-1 text-sm text-white"
+                      onClick={() => setShowCalendarView(!showCalendarView)}
+                      className="flex items-center rounded-md border bg-blue-50 px-3 py-1 text-sm text-blue-600 hover:bg-blue-100">
+                      {showCalendarView ? (
+                        <>
+                          <FaList className="mr-1 h-4 w-4" /> 목록으로 보기
+                        </>
+                      ) : (
+                        <>
+                          <Calendar className="mr-1 h-4 w-4" /> 달력으로 보기
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      className={clsx("flex items-center rounded bg-blue-500 px-3 py-1 text-sm text-white", { hidden: showCalendarView })}
                       onClick={() => setShowAddClassDateForm(!showAddClassDateForm)}>
                       <Plus className="mr-1 h-4 w-4" /> 수업 추가
                     </button>
+
                     {editingCourse && (
                       <button
                         type="button"
@@ -891,6 +909,7 @@ export default function CoursePage() {
                   </div>
                 </div>
 
+                {/* 목록 보기 모드에서 수업일 추가 폼 */}
                 {showAddClassDateForm && (
                   <div className="mb-4 rounded bg-gray-50 p-3">
                     <div className="flex flex-col">
@@ -934,27 +953,9 @@ export default function CoursePage() {
                   </div>
                 )}
 
-                {/* 수업 일자 목록 표시 부분 */}
+                {/* 달력 보기 모드 */}
                 <div>
-                  {/* 리스트/달력 보기 토글 버튼 */}
-                  <div className="mb-2 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => setShowCalendarView(!showCalendarView)}
-                      className="flex items-center rounded-md bg-blue-50 px-3 py-1 text-sm text-blue-600 hover:bg-blue-100">
-                      {showCalendarView ? (
-                        <>
-                          <FaList className="mr-1 h-4 w-4" /> 목록으로 보기
-                        </>
-                      ) : (
-                        <>
-                          <Calendar className="mr-1 h-4 w-4" /> 달력으로 보기
-                        </>
-                      )}
-                    </button>
-                  </div>
                   {showCalendarView ? (
-                    // 달력 보기 모드
                     <div className="rounded-md border border-gray-200 p-2">
                       <DatePickerCalendarAddOrRemove
                         selectedDates={classDates.map((cd) => new Date(cd.date))}
