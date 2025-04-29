@@ -869,17 +869,22 @@ export default function CoursePage() {
                 />
               </div>
 
-              {/* 수업 날짜 목록 표시 (수정본) */}
+              {/* 수업 날짜 목록 표시 */}
               <div className="mb-4 rounded border p-4">
                 <div className="mb-2 flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">수업 일자 목록</h3>
-
-                  <div className="flex space-x-2">
+                  <div className="flex items-center space-x-8">
+                    <h3 className="text-lg font-semibold">수업 일자 목록</h3>
                     {/* 리스트/달력 보기 토글 버튼 */}
                     <button
                       type="button"
                       onClick={() => setShowCalendarView(!showCalendarView)}
-                      className="flex items-center rounded-md border bg-blue-50 px-3 py-1 text-sm text-blue-600 hover:bg-blue-100">
+                      className={clsx(
+                        "flex items-center rounded-md border px-3 py-1 text-sm",
+                        {
+                          "bg-blue-50 text-blue-600 hover:bg-blue-100": showCalendarView,
+                        },
+                        { "bg-amber-50 text-amber-600 hover:bg-amber-100": !showCalendarView },
+                      )}>
                       {showCalendarView ? (
                         <>
                           <FaList className="mr-1 h-4 w-4" /> 목록으로 보기
@@ -890,7 +895,9 @@ export default function CoursePage() {
                         </>
                       )}
                     </button>
+                  </div>
 
+                  <div className="flex space-x-2">
                     <button
                       type="button"
                       className={clsx("flex items-center rounded bg-blue-500 px-3 py-1 text-sm text-white", { hidden: showCalendarView })}
