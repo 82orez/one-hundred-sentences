@@ -88,13 +88,23 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
 
   // 확인 액션 처리
   const handleConfirmAction = (confirm: boolean) => {
-    if (confirm && confirmAction.date) {
-      if (confirmAction.isAdd) {
-        onAddDate(confirmAction.date);
-        toast.success("수업이 추가되었습니다.");
+    if (confirmAction.date) {
+      if (confirm) {
+        if (confirmAction.isAdd) {
+          onAddDate(confirmAction.date);
+          toast.success("수업이 추가되었습니다.");
+        } else {
+          onRemoveDate(confirmAction.date);
+          toast.success("수업이 삭제되었습니다.");
+        }
       } else {
-        onRemoveDate(confirmAction.date);
-        toast.success("수업이 삭제되었습니다.");
+        // '아니오' 버튼을 클릭한 경우, DayPicker 컴포넌트 강제 업데이트를 위해 빈 객체 설정
+        // 이렇게 하면 선택되지 않은 상태로 렌더링됨
+        if (confirmAction.isAdd) {
+          // 선택을 취소할 때 DayPicker 업데이트를 위한 빈 렌더링 트리거
+          const forceUpdate = [...selectedDates];
+          // 아무 작업 없이 원래 선택된 날짜들을 유지
+        }
       }
     }
 
@@ -194,6 +204,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
       </div>
 
       <DayPicker
+        key={confirmAction.show ? "dialog-open" : "dialog-closed"} // 다이얼로그 상태에 따라 리렌더링 강제
         mode="multiple"
         selected={selectedDates}
         onDayClick={handleDayClick}

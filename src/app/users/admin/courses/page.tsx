@@ -1034,6 +1034,7 @@ export default function CoursePage() {
                     setShowStartDateCalendar(false);
                     setShowClassDateCalendar(false);
                     setShowAddClassDateForm(false);
+                    setShowCalendarView(false);
                   }}
                   className="btn btn-outline">
                   취소
