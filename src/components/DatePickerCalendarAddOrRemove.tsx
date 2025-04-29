@@ -1,5 +1,5 @@
 // components/DatePickerCalendarAddOrRemove.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DayPicker, DayClickEventHandler, Formatters } from "react-day-picker";
 import { ko } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
@@ -58,6 +58,14 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
     date: null,
     isAdd: true,
   });
+
+  // selectedDates 변경 감지를 위한 키 값 추가
+  const [selectedDatesKey, setSelectedDatesKey] = useState(0);
+
+  // selectedDates가 변경될 때마다 키 값 업데이트
+  useEffect(() => {
+    setSelectedDatesKey((prev) => prev + 1);
+  }, [selectedDates]);
 
   // 공휴일 배열로 변환
   const holidayDates = koreanHolidays.map((date) => new Date(date));
@@ -183,12 +191,12 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
             <div className="flex justify-center space-x-4">
               <button
                 onClick={() => handleConfirmAction(true)}
-                className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+                className="min-w-20 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
                 예
               </button>
               <button
                 onClick={() => handleConfirmAction(false)}
-                className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                className="min-w-20 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
                 아니오
               </button>
             </div>
@@ -204,7 +212,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
       </div>
 
       <DayPicker
-        key={confirmAction.show ? "dialog-open" : "dialog-closed"} // 다이얼로그 상태에 따라 리렌더링 강제
+        key={`${confirmAction.show ? "dialog-open" : "dialog-closed"}-${selectedDatesKey}`} // 선택된 날짜 변경 시에도 리렌더링 트리거
         mode="multiple"
         selected={selectedDates}
         onDayClick={handleDayClick}
