@@ -25,13 +25,15 @@ const koreanHolidays = [
 
 interface DatePickerCalendarProps {
   selectedDate?: Date;
+  selectedDates?: Date[]; // 여러 날짜 선택을 위한 prop 추가
   onDateSelect: (date: Date) => void;
   minDate?: Date;
-  onCancel?: () => void; // 취소 버튼 클릭 시 호출할 함수
+  onCancel?: () => void;
 }
 
 const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
   selectedDate,
+  selectedDates = [], // 기본값 빈 배열로 설정
   onDateSelect,
   minDate,
   onCancel = () => {}, // 기본값으로 빈 함수 설정
@@ -92,6 +94,11 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
     },
   };
 
+  // 날짜가 선택된 날짜인지 확인하는 함수 추가
+  const isSelectedDate = (date: Date) => {
+    return selectedDates.some((selectedDate) => format(selectedDate, "yyyy-MM-dd") === format(date, "yyyy-MM-dd"));
+  };
+
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-md">
       <style jsx global>{`
@@ -137,15 +144,17 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
           saturday: (date) => isSaturday(date),
           sunday: (date) => isSunday(date),
           holiday: (date) => isHoliday(date),
+          selected: (date) => isSelectedDate(date), // 여러 날짜 선택 지원 추가
         }}
         modifiersStyles={{
-          saturday: { color: "#2563eb" }, // 파란색
-          sunday: { color: "#dc2626" }, // 빨간색
-          holiday: { color: "#dc2626", fontWeight: "bold" }, // 빨간색 볼드체
+          saturday: { color: "#2563eb" },
+          sunday: { color: "#dc2626" },
+          holiday: { color: "#dc2626", fontWeight: "bold" },
         }}
       />
 
       {/* 하단 버튼 영역 추가 */}
+      {/* 읽기 전용 모드일 때 버튼 숨기기 */}
       <div className="mt-4 flex justify-between gap-2">
         <button
           onClick={handleSelectClick}

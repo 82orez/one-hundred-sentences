@@ -10,6 +10,7 @@ import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { RiArrowGoBackFill } from "react-icons/ri";
 import DatePickerCalendar from "@/components/DatePickerCalendar";
 import clsx from "clsx";
+import DatePickerCalendarAddOrRemove from "@/components/DatePickerCalendarAddOrRemove";
 
 // 타입 정의 확장
 interface Teacher {
@@ -86,6 +87,9 @@ export default function CoursePage() {
   // 달력 표시 상태 관리
   const [showStartDateCalendar, setShowStartDateCalendar] = useState(false);
   const [showClassDateCalendar, setShowClassDateCalendar] = useState(false);
+
+  // 달력 보기 상태
+  const [showCalendarView, setShowCalendarView] = useState(false);
 
   // 수업 날짜 목록 상태 추가
   const [classDates, setClassDates] = useState<ClassDate[]>([]);
@@ -930,22 +934,77 @@ export default function CoursePage() {
                 )}
 
                 {/* 수업 일자 목록 표시 부분 */}
-                <div className="max-h-48 overflow-y-auto">
-                  {classDates.length > 0 ? (
-                    <ul className="">
-                      {classDates.map((classDate, index) => (
-                        <li key={index} className="flex items-center justify-between py-2">
-                          <span>
-                            {classDate.date} ({classDate.dayOfWeek}요일)
-                          </span>
-                          <button type="button" onClick={() => handleDeleteClassDate(index)} className="text-red-500 hover:text-red-700">
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
+                <div>
+                  {/* 리스트/달력 보기 토글 버튼 */}
+                  <div className="mb-2 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setShowCalendarView(!showCalendarView)}
+                      className="flex items-center rounded-md bg-blue-50 px-3 py-1 text-sm text-blue-600 hover:bg-blue-100">
+                      {showCalendarView ? (
+                        <>
+                          <RiArrowGoBackFill className="mr-1 h-4 w-4" /> 목록으로 보기
+                        </>
+                      ) : (
+                        <>
+                          <Calendar className="mr-1 h-4 w-4" /> 달력으로 보기
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  {showCalendarView ? (
+                    // 달력 보기 모드
+                    <div className="rounded-md border border-gray-200 p-2">
+                      <DatePickerCalendarAddOrRemove
+                        selectedDates={classDates.map((cd) => new Date(cd.date))}
+                        onAddDate={(date) => {
+                          const dateString = format(date, "yyyy-MM-dd");
+                          const isDuplicate = classDates.some((d) => d.date === dateString);
+                          if (!isDuplicate) {
+                            setClassDates((prev) => [
+                              ...prev,
+                              {
+                                id: "", // 기본값
+                                courseId: "", // 기본값
+                                date: dateString,
+                                dayOfWeek: getDayOfWeekName(date.getDay()),
+                                startTime: null, // 기본값
+                                endTime: null, // 기본값
+                                createdAt: "", // 기본값
+                                updatedAt: "", // 기본값
+                              },
+                            ]);
+                          }
+                        }}
+                        onRemoveDate={(date) => {
+                          const dateString = format(date, "yyyy-MM-dd");
+                          setClassDates((prev) => prev.filter((d) => d.date !== dateString));
+                        }}
+                        minDate={formData.startDate ? new Date(formData.startDate) : undefined}
+                        onCancel={() => setShowCalendarView(false)}
+                        getDayOfWeekName={getDayOfWeekName}
+                      />
+                    </div>
                   ) : (
-                    <p className="py-2 text-center text-gray-500">등록된 수업 일자가 없습니다.</p>
+                    // 리스트 보기 모드 (기존 코드)
+                    <div className="max-h-48 overflow-y-auto">
+                      {classDates.length > 0 ? (
+                        <ul className="">
+                          {classDates.map((classDate, index) => (
+                            <li key={index} className="flex items-center justify-between py-2">
+                              <span>
+                                {classDate.date} ({classDate.dayOfWeek}요일)
+                              </span>
+                              <button type="button" onClick={() => handleDeleteClassDate(index)} className="text-red-500 hover:text-red-700">
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="py-2 text-center text-gray-500">등록된 수업 일자가 없습니다.</p>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
