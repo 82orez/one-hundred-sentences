@@ -154,7 +154,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
   };
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-md">
+    <div className="mx-auto flex w-1/2 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-md">
       <style jsx global>{`
         .rdp-day_selected {
           background-color: #0ea5e9 !important;
@@ -222,6 +222,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
         month={month}
         onMonthChange={setMonth}
         modifiersClassNames={{
+          holidayAndClassDay: "holiday-and-class-day", // 1순위
           selected: "rdp-day_selected",
           today: "rdp-day_today",
         }}

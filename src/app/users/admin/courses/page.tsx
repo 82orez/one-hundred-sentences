@@ -11,6 +11,7 @@ import { RiArrowGoBackFill } from "react-icons/ri";
 import DatePickerCalendar from "@/components/DatePickerCalendar";
 import clsx from "clsx";
 import DatePickerCalendarAddOrRemove from "@/components/DatePickerCalendarAddOrRemove";
+import { FaList } from "react-icons/fa6";
 
 // 타입 정의 확장
 interface Teacher {
@@ -943,7 +944,7 @@ export default function CoursePage() {
                       className="flex items-center rounded-md bg-blue-50 px-3 py-1 text-sm text-blue-600 hover:bg-blue-100">
                       {showCalendarView ? (
                         <>
-                          <RiArrowGoBackFill className="mr-1 h-4 w-4" /> 목록으로 보기
+                          <FaList className="mr-1 h-4 w-4" /> 목록으로 보기
                         </>
                       ) : (
                         <>
