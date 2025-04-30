@@ -1001,9 +1001,10 @@ export default function CoursePage() {
                         <ul className="">
                           {[...classDates]
                             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                            .map((classDate) => (
+                            .map((classDate, index) => (
                               <li key={classDate.date} className="flex items-center justify-between py-2">
                                 <span>
+                                  <span className="mr-2 text-gray-500">{index + 1}.</span>
                                   {classDate.date} ({classDate.dayOfWeek}요일)
                                 </span>
                                 <button

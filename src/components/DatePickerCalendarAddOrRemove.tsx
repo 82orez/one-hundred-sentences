@@ -159,13 +159,13 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
         .rdp-day_selected {
           background-color: #0ea5e9 !important;
           color: white !important;
-          border-radius: 0.5rem; /* <-- 모서리를 둥글게 */
+          border-radius: 0.75rem; /* <-- 모서리를 둥글게 */
           outline: 3px solid white; /* 흰색 테두리로 경계 시각화 */
           outline-offset: -2px;
         }
         .rdp-day_today {
           font-weight: bold;
-          border: 1px solid #0ea5e9;
+          border: 2px solid #0ea5e9;
         }
         .saturday-day {
           color: #2563eb;
