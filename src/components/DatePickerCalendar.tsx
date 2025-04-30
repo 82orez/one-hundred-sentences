@@ -105,6 +105,7 @@ const DatePickerCalendar: React.FC<DatePickerCalendarProps> = ({
         .rdp-day_selected {
           background-color: #0ea5e9 !important;
           color: white !important;
+          border-radius: 0.5rem; /* <-- 모서리를 둥글게 */
         }
         .rdp-day_today {
           font-weight: bold;
