@@ -126,9 +126,9 @@ export default function CoursePage() {
     setShowClassDateCalendar(false);
   };
 
-  // 특정 수업 일자 삭제 함수
-  const handleDeleteClassDate = (index: number) => {
-    setClassDates((prev) => prev.filter((_, i) => i !== index));
+  // 목록 보기 모드에서 특정 수업 일자 삭제 함수
+  const handleDeleteClassDateByDate = (dateToDelete: string) => {
+    setClassDates((prev) => prev.filter((d) => d.date !== dateToDelete));
   };
 
   // 수업 일자 추가 함수
@@ -999,16 +999,21 @@ export default function CoursePage() {
                     <div className="max-h-48 overflow-y-auto">
                       {classDates.length > 0 ? (
                         <ul className="">
-                          {classDates.map((classDate, index) => (
-                            <li key={index} className="flex items-center justify-between py-2">
-                              <span>
-                                {classDate.date} ({classDate.dayOfWeek}요일)
-                              </span>
-                              <button type="button" onClick={() => handleDeleteClassDate(index)} className="text-red-500 hover:text-red-700">
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </li>
-                          ))}
+                          {[...classDates]
+                            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                            .map((classDate) => (
+                              <li key={classDate.date} className="flex items-center justify-between py-2">
+                                <span>
+                                  {classDate.date} ({classDate.dayOfWeek}요일)
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteClassDateByDate(classDate.date)}
+                                  className="text-red-500 hover:text-red-700">
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </li>
+                            ))}
                         </ul>
                       ) : (
                         <p className="py-2 text-center text-gray-500">등록된 수업 일자가 없습니다.</p>
