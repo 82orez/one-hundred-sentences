@@ -101,6 +101,8 @@ export default function CoursePage() {
   const [showAddClassDateForm, setShowAddClassDateForm] = useState(false);
   const [newClassDate, setNewClassDate] = useState("");
 
+  const [statusFilter, setStatusFilter] = useState<string>("전체");
+
   // 수업 날짜 목록이 변경될 때마다 종료일 업데이트
   useEffect(() => {
     // 수업 일자가 하나 이상 있는 경우에만 처리
@@ -592,6 +594,9 @@ export default function CoursePage() {
     setIsModalOpen(true);
   };
 
+  // 상태에 따른 필터링 된 강좌 목록
+  const filteredCourses = courses.filter((course) => statusFilter === "전체" || course.status === statusFilter);
+
   // 요일 포맷팅 함수
   const formatSchedule = (course: Course) => {
     const days = [];
@@ -625,13 +630,28 @@ export default function CoursePage() {
         </button>
       </div>
 
+      {/* 상태 필터 추가 */}
+      <div className="flex items-center space-x-4">
+        <span className="font-semibold">상태 보기</span>
+        <div className="flex space-x-2">
+          {["전체", "대기 중", "진행 중", "완료"].map((status) => (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={clsx("rounded px-3 py-1 text-sm", statusFilter === status ? "bg-indigo-600 text-white" : "bg-gray-200")}>
+              {status}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* 강좌 목록 테이블 */}
       <div className="overflow-x-auto rounded-lg bg-white p-6 shadow-md">
         {isLoading ? (
           <div className="flex justify-center p-8">
             <span className="loading loading-spinner loading-lg text-primary"></span>
           </div>
-        ) : courses.length === 0 ? (
+        ) : filteredCourses.length === 0 ? (
           <p className="py-8 text-center text-gray-500">등록된 강좌가 없습니다.</p>
         ) : (
           <table className="table-zebra table w-full">
@@ -647,12 +667,12 @@ export default function CoursePage() {
                 <th>수업 진행 시간</th>
                 <th>수업 종료 시간</th>
                 <th>종료일</th>
-                <th>상태</th> {/* 상태 열 추가 */}
+                <th>상태</th>
                 <th>관리</th>
               </tr>
             </thead>
             <tbody>
-              {courses.map((course: Course) => (
+              {filteredCourses.map((course: Course) => (
                 <tr key={course.id}>
                   <td className="font-medium">{course.title}</td>
                   <td>{course.teacher?.realName || "미지정"}</td>
@@ -665,7 +685,6 @@ export default function CoursePage() {
                   <td>{course.endTime || "-"}</td>
                   <td>{formatDate(course.endDate)}</td>
                   <td>
-                    {/* 상태에 따라 다른 색상으로 표시 */}
                     <span
                       className={clsx(
                         "rounded px-2 py-1 text-sm",
