@@ -42,6 +42,8 @@ interface Course {
   endTime: string;
   classCount: number;
   classDates: ClassDate[]; // 문자열 대신 객체 배열로 변경
+  status: "대기 중" | "진행 중" | "완료"; // 상태 필드 추가
+
   createdAt: string;
   updatedAt: string;
 }
@@ -645,6 +647,7 @@ export default function CoursePage() {
                 <th>수업 진행 시간</th>
                 <th>수업 종료 시간</th>
                 <th>종료일</th>
+                <th>상태</th> {/* 상태 열 추가 */}
                 <th>관리</th>
               </tr>
             </thead>
@@ -661,6 +664,18 @@ export default function CoursePage() {
                   <td>{course.duration || "25분"}</td>
                   <td>{course.endTime || "-"}</td>
                   <td>{formatDate(course.endDate)}</td>
+                  <td>
+                    {/* 상태에 따라 다른 색상으로 표시 */}
+                    <span
+                      className={clsx(
+                        "rounded px-2 py-1 text-sm",
+                        course.status === "대기 중" && "bg-blue-100 text-blue-800",
+                        course.status === "진행 중" && "bg-green-100 text-green-800",
+                        course.status === "완료" && "bg-gray-100 text-gray-800",
+                      )}>
+                      {course.status}
+                    </span>
+                  </td>
                   <td className="flex gap-2">
                     <button onClick={() => handleEditCourse(course)} className="btn btn-sm btn-ghost" aria-label="수정">
                       <Edit size={16} />

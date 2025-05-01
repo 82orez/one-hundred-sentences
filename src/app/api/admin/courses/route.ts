@@ -3,6 +3,26 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
+// 강좌 상태 계산 함수 추가
+function calculateCourseStatus(startDate: Date | null, endDate: Date | null): "대기 중" | "진행 중" | "완료" {
+  const today = new Date();
+
+  if (!startDate || !endDate) return "대기 중"; // 날짜 정보가 없으면 기본적으로 대기 중
+
+  // 시작일과 종료일의 시간을 00:00:00으로 설정하여 날짜만 비교
+  const normalizedToday = new Date(today.setHours(0, 0, 0, 0));
+  const normalizedStartDate = new Date(startDate.setHours(0, 0, 0, 0));
+  const normalizedEndDate = new Date(endDate.setHours(0, 0, 0, 0));
+
+  if (normalizedToday < normalizedStartDate) {
+    return "대기 중"; // 오늘이 시작일 전이면 대기 중
+  } else if (normalizedToday > normalizedEndDate) {
+    return "완료"; // 오늘이 종료일 후면 완료
+  } else {
+    return "진행 중"; // 그 외의 경우는 진행 중
+  }
+}
+
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -40,9 +60,17 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: "강좌를 찾을 수 없습니다." }, { status: 404 });
       }
 
-      return NextResponse.json({ course });
+      // 강좌 상태 계산
+      const courseStatus = calculateCourseStatus(course.startDate, course.endDate);
+
+      return NextResponse.json({
+        course: {
+          ...course,
+          status: courseStatus,
+        },
+      });
     } else {
-      // 모든 강좌 조회 (기존 로직 유지)
+      // 모든 강좌 조회
       const courses = await prisma.course.findMany({
         include: {
           teacher: {
@@ -62,7 +90,13 @@ export async function GET(request: Request) {
         orderBy: { createdAt: "desc" },
       });
 
-      return NextResponse.json({ courses });
+      // 각 강좌에 상태 추가
+      const coursesWithStatus = courses.map((course) => ({
+        ...course,
+        status: calculateCourseStatus(course.startDate, course.endDate),
+      }));
+
+      return NextResponse.json({ courses: coursesWithStatus });
     }
   } catch (error) {
     console.error("강좌 조회 오류:", error);
@@ -131,7 +165,15 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ course: courseWithDates });
+    // 강좌 상태 계산
+    const courseStatus = calculateCourseStatus(courseWithDates?.startDate || null, courseWithDates?.endDate || null);
+
+    return NextResponse.json({
+      course: {
+        ...courseWithDates,
+        status: courseStatus,
+      },
+    });
   } catch (error) {
     console.error("강좌 생성 오류:", error);
     return NextResponse.json({ error: "강좌 생성에 실패했습니다." }, { status: 500 });
@@ -229,7 +271,15 @@ export async function PUT(request: Request) {
       },
     });
 
-    return NextResponse.json({ course: courseWithDates });
+    // 강좌 상태 계산
+    const courseStatus = calculateCourseStatus(courseWithDates?.startDate || null, courseWithDates?.endDate || null);
+
+    return NextResponse.json({
+      course: {
+        ...courseWithDates,
+        status: courseStatus,
+      },
+    });
   } catch (error) {
     console.error("강좌 수정 오류:", error);
     return NextResponse.json({ error: "강좌 수정에 실패했습니다." }, { status: 500 });
