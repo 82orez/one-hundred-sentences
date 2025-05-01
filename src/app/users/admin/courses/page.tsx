@@ -597,6 +597,8 @@ export default function CoursePage() {
   // 상태에 따른 필터링 된 강좌 목록
   const filteredCourses = courses.filter((course) => statusFilter === "전체 보기" || course.status === statusFilter);
 
+  const isReadyToSelectStartDateAndTeacher = getSelectedDaysArray().length > 0 && formData.classCount > 0 && formData.startTime.trim() !== "";
+
   // 요일 포맷팅 함수
   const formatSchedule = (course: Course) => {
     const days = [];
@@ -632,7 +634,7 @@ export default function CoursePage() {
 
       {/* 상태 필터 추가 */}
       <div className="flex items-center space-x-4">
-        <div className="flex space-x-2">
+        <div className="flex space-x-4">
           {["전체 보기", "대기 중", "진행 중", "완료"].map((status) => {
             const isActive = statusFilter === status;
             const baseClasses =
@@ -885,11 +887,23 @@ export default function CoursePage() {
                 </label>
                 <div className="relative">
                   <div
-                    className="flex cursor-pointer items-center rounded border border-gray-300 p-2 shadow-sm"
-                    onClick={() => setShowStartDateCalendar(!showStartDateCalendar)}>
+                    className={clsx("flex items-center rounded border border-gray-300 p-2 shadow-sm", {
+                      "pointer-events-none opacity-50": !isReadyToSelectStartDateAndTeacher,
+                      "cursor-pointer": isReadyToSelectStartDateAndTeacher,
+                      "cursor-not-allowed": !isReadyToSelectStartDateAndTeacher,
+                    })}
+                    onClick={() => {
+                      if (isReadyToSelectStartDateAndTeacher) {
+                        setShowStartDateCalendar(!showStartDateCalendar);
+                      }
+                    }}>
                     <Calendar className="mr-2 h-5 w-5" />
                     {formData.startDate || "시작일을 선택하세요"}
                   </div>
+
+                  {!isReadyToSelectStartDateAndTeacher && (
+                    <p className="mt-1 text-sm text-red-500">수업 요일, 수업 횟수, 시작 시간을 먼저 입력해야 시작일을 선택할 수 있습니다.</p>
+                  )}
 
                   {showStartDateCalendar && (
                     <div className="absolute z-10 mt-1">
@@ -1080,7 +1094,13 @@ export default function CoursePage() {
                 <label className="label">
                   <span className="label-text font-medium">강사 *</span>
                 </label>
-                <select name="teacherId" value={formData.teacherId} onChange={handleInputChange} className="select select-bordered w-full" required>
+                <select
+                  name="teacherId"
+                  value={formData.teacherId}
+                  onChange={handleInputChange}
+                  className="select select-bordered w-full"
+                  required
+                  disabled={!isReadyToSelectStartDateAndTeacher}>
                   <option value="">강사를 선택하세요</option>
                   {teachers
                     .filter((teacher: Teacher) => teacher.isActive)
@@ -1090,6 +1110,10 @@ export default function CoursePage() {
                       </option>
                     ))}
                 </select>
+
+                {!isReadyToSelectStartDateAndTeacher && (
+                  <p className="mt-1 text-sm text-red-500">수업 요일, 수업 횟수, 시작 시간을 입력해야 강사를 선택할 수 있습니다.</p>
+                )}
               </div>
 
               <div className="mt-6 flex justify-end gap-2">
