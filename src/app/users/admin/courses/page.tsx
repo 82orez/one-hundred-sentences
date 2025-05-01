@@ -184,8 +184,8 @@ export default function CoursePage() {
       if (course.classDates && course.classDates.length > 0) {
         // @ts-ignore
         setClassDates(
-          course.classDates.map((date) => ({
-            date: new Date(date.date).toISOString().split("T")[0],
+          course.classDates.map((date: any) => ({
+            date: format(new Date(date.date), "yyyy-MM-dd"), // 🔽 이 부분 수정
             dayOfWeek: date.dayOfWeek,
           })),
         );
@@ -483,8 +483,9 @@ export default function CoursePage() {
       scheduleFriday: course.scheduleFriday,
       scheduleSaturday: course.scheduleSaturday,
       scheduleSunday: course.scheduleSunday,
-      startDate: course.startDate ? new Date(course.startDate).toISOString().split("T")[0] : "",
-      endDate: course.endDate ? new Date(course.endDate).toISOString().split("T")[0] : "",
+      // 🔽 여기 수정
+      startDate: course.startDate ? format(new Date(course.startDate), "yyyy-MM-dd") : "",
+      endDate: course.endDate ? format(new Date(course.endDate), "yyyy-MM-dd") : "",
       startTime: course.startTime || "",
       durationHours,
       durationMinutes,
