@@ -1058,6 +1058,8 @@ export default function CoursePage() {
                         minDate={formData.startDate ? new Date(formData.startDate) : undefined}
                         onCancel={() => setShowCalendarView(false)}
                         getDayOfWeekName={getDayOfWeekName}
+                        startDate={formData.startDate ? new Date(formData.startDate) : undefined}
+                        endDate={formData.endDate ? new Date(formData.endDate) : undefined}
                       />
                     </div>
                   ) : (

@@ -37,6 +37,8 @@ interface DatePickerCalendarAddOrRemoveProps {
   minDate?: Date;
   onCancel?: () => void;
   getDayOfWeekName: (dayNumber: number) => string;
+  startDate?: Date;
+  endDate?: Date;
 }
 
 const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps> = ({
@@ -46,6 +48,8 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
   minDate,
   onCancel = () => {},
   getDayOfWeekName,
+  startDate,
+  endDate,
 }) => {
   // 현재 표시되는 월 상태 추가
   const [month, setMonth] = useState<Date>(new Date());
@@ -157,7 +161,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
     <div className="mx-auto flex w-1/2 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-md">
       <style jsx global>{`
         .rdp-day_selected {
-          background-color: #0ea5e9 !important;
+          background-color: #0ea5e9;
           color: white !important;
           border-radius: 0.75rem; /* <-- 모서리를 둥글게 */
           outline: 3px solid white; /* 흰색 테두리로 경계 시각화 */
@@ -180,6 +184,26 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
         .holiday-and-class-day {
           background-color: #f97316 !important;
           color: white !important;
+        }
+        @keyframes pulseRed {
+          0% {
+            background-color: #fecaca;
+          }
+          50% {
+            background-color: #f87171;
+          }
+          100% {
+            background-color: #fecaca;
+          }
+        }
+
+        .start-date-highlight,
+        .end-date-highlight {
+          color: white !important;
+          border-radius: 0.75rem;
+          animation: pulseRed 1.5s ease-in-out infinite;
+          outline: 2px solid #ef4444;
+          outline-offset: -2px;
         }
       `}</style>
 
@@ -228,6 +252,8 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
           holidayAndClassDay: "holiday-and-class-day", // 1순위
           selected: "rdp-day_selected",
           today: "rdp-day_today",
+          startDate: "start-date-highlight",
+          endDate: "end-date-highlight",
         }}
         modifiers={{
           saturday: (date) => isSaturday(date),
@@ -235,12 +261,13 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
           holiday: (date) => isHoliday(date),
           selected: (date) => isSelectedDate(date),
           holidayAndClassDay: (date) => isHolidayAndClassDay(date),
+          startDate: (date) => startDate && format(date, "yyyy-MM-dd") === format(startDate, "yyyy-MM-dd"),
+          endDate: (date) => endDate && format(date, "yyyy-MM-dd") === format(endDate, "yyyy-MM-dd"),
         }}
         modifiersStyles={{
           saturday: { color: "#2563eb" },
           sunday: { color: "#dc2626" },
           holiday: { color: "#dc2626", fontWeight: "bold" },
-          holidayAndClassDay: { backgroundColor: "#f97316", color: "white" },
         }}
       />
 
