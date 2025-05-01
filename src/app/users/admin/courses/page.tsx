@@ -649,7 +649,7 @@ export default function CoursePage() {
                 ? "bg-green-600 text-white font-semibold border-green-700 shadow focus:ring-green-500"
                 : "bg-green-100 text-green-800 border-green-200 hover:bg-green-200 focus:ring-green-300",
               완료: isActive
-                ? "bg-gray-600 text-white font-semibold border-gray-700 shadow focus:ring-gray-500"
+                ? "bg-gray-400 text-white font-semibold border-gray-700 shadow focus:ring-gray-500"
                 : "bg-gray-200 text-gray-800 border-gray-300 hover:bg-gray-300 focus:ring-gray-300",
             };
 
@@ -663,7 +663,7 @@ export default function CoursePage() {
       </div>
 
       {/* 강좌 목록 테이블 */}
-      <div className="mt-2 overflow-x-auto rounded-lg border bg-white p-4 shadow-md">
+      <div className="mt-3 overflow-x-auto rounded-lg border bg-white p-4 shadow-md">
         {isLoading ? (
           <div className="flex justify-center p-8">
             <span className="loading loading-spinner loading-lg text-primary"></span>
