@@ -101,7 +101,7 @@ export default function CoursePage() {
   const [showAddClassDateForm, setShowAddClassDateForm] = useState(false);
   const [newClassDate, setNewClassDate] = useState("");
 
-  const [statusFilter, setStatusFilter] = useState<string>("전체");
+  const [statusFilter, setStatusFilter] = useState<string>("전체 보기");
 
   // 수업 날짜 목록이 변경될 때마다 종료일 업데이트
   useEffect(() => {
@@ -595,7 +595,7 @@ export default function CoursePage() {
   };
 
   // 상태에 따른 필터링 된 강좌 목록
-  const filteredCourses = courses.filter((course) => statusFilter === "전체" || course.status === statusFilter);
+  const filteredCourses = courses.filter((course) => statusFilter === "전체 보기" || course.status === statusFilter);
 
   // 요일 포맷팅 함수
   const formatSchedule = (course: Course) => {
@@ -632,21 +632,38 @@ export default function CoursePage() {
 
       {/* 상태 필터 추가 */}
       <div className="flex items-center space-x-4">
-        <span className="font-semibold">상태 보기</span>
         <div className="flex space-x-2">
-          {["전체", "대기 중", "진행 중", "완료"].map((status) => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={clsx("rounded px-3 py-1 text-sm", statusFilter === status ? "bg-indigo-600 text-white" : "bg-gray-200")}>
-              {status}
-            </button>
-          ))}
+          {["전체 보기", "대기 중", "진행 중", "완료"].map((status) => {
+            const isActive = statusFilter === status;
+            const baseClasses =
+              "min-w-[82px] rounded px-3 py-1 text-sm border transition-colors duration-200 hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-offset-2";
+
+            const colorClasses = {
+              "전체 보기": isActive
+                ? "bg-gray-600 text-white font-semibold border-gray-700 shadow focus:ring-gray-500"
+                : "bg-gray-200 text-gray-800 border-gray-300 hover:bg-gray-300 focus:ring-gray-300",
+              "대기 중": isActive
+                ? "bg-blue-600 text-white font-semibold border-blue-700 shadow focus:ring-blue-500"
+                : "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-200 focus:ring-blue-300",
+              "진행 중": isActive
+                ? "bg-green-600 text-white font-semibold border-green-700 shadow focus:ring-green-500"
+                : "bg-green-100 text-green-800 border-green-200 hover:bg-green-200 focus:ring-green-300",
+              완료: isActive
+                ? "bg-gray-600 text-white font-semibold border-gray-700 shadow focus:ring-gray-500"
+                : "bg-gray-200 text-gray-800 border-gray-300 hover:bg-gray-300 focus:ring-gray-300",
+            };
+
+            return (
+              <button key={status} onClick={() => setStatusFilter(status)} className={clsx(baseClasses, colorClasses[status])}>
+                {status}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* 강좌 목록 테이블 */}
-      <div className="overflow-x-auto rounded-lg bg-white p-6 shadow-md">
+      <div className="mt-2 overflow-x-auto rounded-lg border bg-white p-4 shadow-md">
         {isLoading ? (
           <div className="flex justify-center p-8">
             <span className="loading loading-spinner loading-lg text-primary"></span>
