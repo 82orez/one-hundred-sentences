@@ -89,7 +89,15 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
 
   // 날짜 클릭 핸들러 수정
   const handleDayClick: DayClickEventHandler = (day) => {
-    const isDateSelected = selectedDates.some((selectedDate) => format(selectedDate, "yyyy-MM-dd") === format(day, "yyyy-MM-dd"));
+    const dayString = format(day, "yyyy-MM-dd");
+
+    // 시작일이면 삭제 불가
+    if (startDate && format(startDate, "yyyy-MM-dd") === dayString) {
+      toast.error("수업 시작일은 삭제할 수 없습니다.");
+      return;
+    }
+
+    const isDateSelected = selectedDates.some((selectedDate) => format(selectedDate, "yyyy-MM-dd") === dayString);
 
     setConfirmAction({
       show: true,

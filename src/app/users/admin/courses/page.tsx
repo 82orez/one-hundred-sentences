@@ -132,6 +132,11 @@ export default function CoursePage() {
 
   // 목록 보기 모드에서 특정 수업 일자 삭제 함수
   const handleDeleteClassDateByDate = (dateToDelete: string) => {
+    // 시작일은 삭제할 수 없음
+    if (dateToDelete === formData.startDate) {
+      toast.error("수업 시작일은 삭제할 수 없습니다.");
+      return;
+    }
     setClassDates((prev) => prev.filter((d) => d.date !== dateToDelete));
   };
 
