@@ -824,8 +824,8 @@ export default function CoursePage() {
                 <div>회</div>
               </div>
 
-              {/* 시작 시간 필드 */}
-              <div className="space-y-2">
+              {/* 수업 시작 시간 필드 */}
+              <div className={clsx("space-y-2", { "pointer-events-none opacity-50": !!editingCourse })}>
                 <label htmlFor="startTime" className="block font-medium text-gray-700">
                   수업 시작 시간
                 </label>
@@ -840,7 +840,7 @@ export default function CoursePage() {
                 />
               </div>
 
-              <div className={"flex items-center gap-32"}>
+              <div className={clsx("flex items-center gap-32", { "pointer-events-none opacity-50": !!editingCourse })}>
                 {/* 수업 진행 시간 필드 */}
                 <div className="space-y-2">
                   <label className="block font-medium text-gray-700">수업 진행 시간</label>
@@ -923,7 +923,9 @@ export default function CoursePage() {
                   )}
                 </div>
               </div>
-              {editingCourse && <p className={"text-red-400"}>⚠️ 수업 요일, 횟수, 시작일은 수정할 수 없습니다. 강좌 삭제 후 새로 생성바랍니다.</p>}
+              {editingCourse && (
+                <p className={"text-red-400"}>⚠️ 수업 요일, 횟수, 시간, 시작일 등은 수정할 수 없습니다. 강좌 삭제 후 새로 생성바랍니다.</p>
+              )}
 
               {/* 종료일 필드 (자동 계산됨, 읽기 전용) */}
               <div className="space-y-2">
