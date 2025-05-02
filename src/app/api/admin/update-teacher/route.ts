@@ -1,4 +1,3 @@
-// /app/api/admin/update-teacher/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
@@ -23,7 +22,7 @@ export async function POST(request) {
     }
 
     // 요청 데이터 파싱
-    const { teacherId, nation, subject, phone } = await request.json();
+    const { teacherId, nation, subject, phone, nickName } = await request.json();
 
     // 필수 필드 확인
     if (!teacherId || !nation || !subject) {
@@ -55,6 +54,7 @@ export async function POST(request) {
           nation,
           subject,
           phone,
+          nickName, // 별칭 필드 추가
         },
       });
 

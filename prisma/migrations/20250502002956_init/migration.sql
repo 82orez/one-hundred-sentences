@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Teachers" ALTER COLUMN "nickName" DROP NOT NULL,
+ALTER COLUMN "nickName" DROP DEFAULT;

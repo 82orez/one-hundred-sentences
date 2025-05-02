@@ -783,6 +783,7 @@ export type Database = {
           id: string
           isActive: boolean
           nation: Database["public"]["Enums"]["Nation"]
+          nickName: string | null
           phone: string
           realName: string
           subject: Database["public"]["Enums"]["Subject"]
@@ -797,6 +798,7 @@ export type Database = {
           id: string
           isActive?: boolean
           nation?: Database["public"]["Enums"]["Nation"]
+          nickName?: string | null
           phone: string
           realName: string
           subject?: Database["public"]["Enums"]["Subject"]
@@ -811,6 +813,7 @@ export type Database = {
           id?: string
           isActive?: boolean
           nation?: Database["public"]["Enums"]["Nation"]
+          nickName?: string | null
           phone?: string
           realName?: string
           subject?: Database["public"]["Enums"]["Subject"]

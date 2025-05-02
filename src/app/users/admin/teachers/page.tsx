@@ -18,6 +18,7 @@ interface Teacher {
   phone: string;
   nation: "KR" | "PH";
   subject: "en" | "ja" | "ko" | "zh";
+  nickName?: string; // 별칭 필드 추가
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -35,6 +36,7 @@ interface TeacherUpdateData {
   teacherId: string;
   nation: string;
   subject: string;
+  nickName?: string; // 별칭 필드 추가
 }
 
 export default function TeachersManagementPage() {
@@ -73,6 +75,7 @@ export default function TeachersManagementPage() {
     nation: "",
     subject: "",
     phone: "", // 전화번호 필드 추가
+    nickName: "", // 별칭 필드 추가
   });
 
   // 수정 모달 열기
@@ -82,6 +85,7 @@ export default function TeachersManagementPage() {
       nation: teacher.nation,
       subject: teacher.subject,
       phone: teacher.phone || "", // 전화번호 추가
+      nickName: teacher.nickName || "", // 별칭 필드 추가
     });
     setIsEditModalOpen(true);
   };
@@ -283,6 +287,9 @@ export default function TeachersManagementPage() {
                       이름
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                      별칭
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                       이메일
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
@@ -320,6 +327,7 @@ export default function TeachersManagementPage() {
                         })}
                       </td>
                       <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{teacher.realName}</td>
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.nickName || "-"}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.email}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.phone || "-"}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.nation || "-"}</td>
@@ -385,6 +393,19 @@ export default function TeachersManagementPage() {
               <div className="mb-4">
                 <label className="mb-2 block text-sm font-bold text-gray-700">이름</label>
                 <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2" value={selectedTeacher.realName} disabled />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="nickName" className="block text-sm font-medium text-gray-700">
+                  별칭
+                </label>
+                <input
+                  type="text"
+                  id="nickName"
+                  name="nickName"
+                  value={formData.nickName}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
               </div>
               <div className="mb-4">
                 <label className="mb-2 block text-sm font-bold text-gray-700">이메일</label>

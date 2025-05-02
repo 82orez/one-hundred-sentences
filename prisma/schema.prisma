@@ -398,6 +398,7 @@ model Teachers {
   phone    String
   nation   Nation  @default(KR)
   subject  Subject @default(en)
+  nickName String?
   isActive Boolean @default(false)
 
   zoomInviteLinkUrl String?
