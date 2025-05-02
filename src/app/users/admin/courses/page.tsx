@@ -894,8 +894,8 @@ export default function CoursePage() {
                 <div className="relative">
                   <div
                     className={clsx("flex items-center rounded border border-gray-300 p-2 shadow-sm", {
-                      "pointer-events-none opacity-50": !isReadyToSelectStartDateAndTeacher,
                       "cursor-pointer": isReadyToSelectStartDateAndTeacher,
+                      "pointer-events-none opacity-50": !isReadyToSelectStartDateAndTeacher,
                       "cursor-not-allowed": !isReadyToSelectStartDateAndTeacher,
                     })}
                     onClick={() => {
@@ -943,7 +943,11 @@ export default function CoursePage() {
               </div>
 
               {/* 수업 날짜 목록 표시 */}
-              <div className="mb-4 rounded border p-4">
+              <div
+                className={clsx("mb-4 rounded border p-4", {
+                  "pointer-events-none opacity-50": !isReadyToSelectStartDateAndTeacher,
+                  "cursor-not-allowed": !isReadyToSelectStartDateAndTeacher,
+                })}>
                 <div className="mb-2 flex items-center justify-between">
                   <div className="flex items-center space-x-8">
                     <h3 className="text-lg font-semibold">수업 일자 목록</h3>
