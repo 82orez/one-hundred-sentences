@@ -395,7 +395,7 @@ export default function TeachersManagementPage() {
                 <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2" value={selectedTeacher.realName} disabled />
               </div>
               <div className="mb-4">
-                <label htmlFor="nickName" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="nickName" className="mb-2 block text-sm font-bold text-gray-700">
                   별칭
                 </label>
                 <input
@@ -404,7 +404,7 @@ export default function TeachersManagementPage() {
                   name="nickName"
                   value={formData.nickName}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
               <div className="mb-4">
