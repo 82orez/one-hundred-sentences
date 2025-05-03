@@ -22,6 +22,9 @@ export async function GET() {
         email: true,
         phone: true,
         isActive: true,
+        nation: true, // 국적 필드 추가
+        subject: true, // 과목 필드 추가
+        nickName: true, // 닉네임도 추가
       },
     });
 
