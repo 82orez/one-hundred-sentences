@@ -39,7 +39,7 @@ interface ConflictingCourse {
 interface TeacherSelectorProps {
   classDates: ClassDate[];
   selectedTeacherId: string | null;
-  onChange: (teacherId: string) => void;
+  onChange: (teacherId: string | null) => void;
   startTime: string;
   endTime: string;
   currentCourseId?: string;
@@ -124,13 +124,18 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
       <div className="mb-4">
         <h3 className="mb-2 text-lg font-semibold">현재 선택된 강사</h3>
         {currentTeacher ? (
-          <div className="rounded-md border bg-gray-50 p-3">
-            <p className="font-medium">
-              {currentTeacher.realName} {currentTeacher.nickName && `(${currentTeacher.nickName})`}
-            </p>
-            <p className="text-sm text-gray-600">
-              {currentTeacher.email} | {currentTeacher.nation} | {currentTeacher.subject}
-            </p>
+          <div className="flex items-center justify-between rounded-md border bg-gray-50 p-3">
+            <div>
+              <p className="font-medium">
+                {currentTeacher.realName} {currentTeacher.nickName && `(${currentTeacher.nickName})`}
+              </p>
+              <p className="text-sm text-gray-600">
+                {currentTeacher.email} | {currentTeacher.nation} | {currentTeacher.subject}
+              </p>
+            </div>
+            <button onClick={() => onChange(null)} className="ml-4 rounded-md bg-gray-200 px-3 py-1 text-sm text-gray-600 hover:bg-gray-300">
+              선택 취소
+            </button>
           </div>
         ) : (
           <div className="rounded-md border bg-gray-50 p-3">
