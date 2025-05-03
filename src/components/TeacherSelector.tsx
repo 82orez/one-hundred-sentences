@@ -218,15 +218,15 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
                         <td className="px-4 py-3 text-sm">{teacher.subject}</td>
                         <td className="px-4 py-3">
                           {hasConflicts ? (
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-between">
                               <span className="flex items-center text-red-500">
                                 <AlertTriangle size={16} className="mr-1" />
-                                <span>⚠️ 이 시간에 다른 강좌 있음</span>
+                                <span>강의 충돌</span>
                               </span>
                               {conflicts.length > 0 && (
                                 <button
                                   type="button"
-                                  className="text-xs text-blue-500 underline"
+                                  className="text-sm text-blue-500 underline"
                                   onClick={() => setExpandedTeacherId(isExpanded ? null : teacher.id)}>
                                   {isExpanded ? "닫기" : "상세보기"}
                                 </button>
@@ -235,7 +235,7 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
                           ) : (
                             <span className="flex items-center text-green-500">
                               <CheckCircle size={16} className="mr-1" />
-                              <span>✅ 배정 가능</span>
+                              <span>배정 가능</span>
                             </span>
                           )}
                         </td>
