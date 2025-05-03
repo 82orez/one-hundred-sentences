@@ -75,8 +75,8 @@ export async function POST(request: Request) {
                   endTime: courseEndTime,
                 });
 
-                // 같은 강좌에 대해 중복 기록 방지
-                break;
+                // 👇 충돌되는 모든 스케줄 기록
+                continue; // break → continue
               }
             }
           }

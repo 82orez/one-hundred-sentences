@@ -265,8 +265,8 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
                           <td colSpan={6} className="bg-red-50 px-4 py-3 text-sm text-gray-800">
                             <div className="mb-2 font-semibold">🔻 충돌 강좌 목록:</div>
                             <ul className="list-disc space-y-1 pl-4">
-                              {conflicts.map((conflict: ConflictingCourse) => (
-                                <li key={conflict.id}>
+                              {conflicts.map((conflict: ConflictingCourse, index: number) => (
+                                <li key={index}>
                                   <div className="font-medium">{conflict.title}</div>
                                   <div className="text-sm text-gray-600">
                                     {conflict.date} ({conflict.startTime} ~ {conflict.endTime})
