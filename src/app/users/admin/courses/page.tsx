@@ -12,6 +12,7 @@ import DatePickerCalendar from "@/components/DatePickerCalendar";
 import clsx from "clsx";
 import DatePickerCalendarAddOrRemove from "@/components/DatePickerCalendarAddOrRemove";
 import { FaList } from "react-icons/fa6";
+import TeacherSelector from "@/components/TeacherSelector";
 
 // 타입 정의 확장
 interface Teacher {
@@ -535,6 +536,16 @@ export default function CoursePage() {
   // 폼 제출 핸들러 수정
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.title) {
+      toast.error("강좌 제목을 입력해주세요.");
+      return;
+    }
+
+    if (!formData.teacherId) {
+      toast.error("강사를 선택해주세요.");
+      return;
+    }
 
     // 종료일이 시작일보다 빠른 경우
     if (new Date(formData.endDate) < new Date(formData.startDate)) {
@@ -1104,31 +1115,19 @@ export default function CoursePage() {
               </div>
 
               {/* 강사 선택 필드 */}
-              <div className="form-control md:col-span-2">
-                <label className="label">
-                  <span className="label-text font-medium">강사 *</span>
-                </label>
-                <select
-                  name="teacherId"
-                  value={formData.teacherId}
-                  onChange={handleInputChange}
-                  className="select select-bordered w-full"
-                  required
-                  disabled={!isReadyToSelectStartDateAndTeacher}>
-                  <option value="">강사를 선택하세요</option>
-                  {teachers
-                    .filter((teacher: Teacher) => teacher.isActive)
-                    .map((teacher: Teacher) => (
-                      <option key={teacher.id} value={teacher.id}>
-                        {teacher.realName}
-                      </option>
-                    ))}
-                </select>
-
-                {!isReadyToSelectStartDateAndTeacher && (
-                  <p className="mt-1 text-sm text-red-500">수업 요일, 수업 횟수, 시작 시간을 입력해야 강사를 선택할 수 있습니다.</p>
-                )}
-              </div>
+              {classDates.length > 0 && formData.startTime && endTime && (
+                <div className="mt-4 border-t pt-4">
+                  <h3 className="mb-4 text-lg font-semibold">강사 선택</h3>
+                  <TeacherSelector
+                    classDates={classDates}
+                    selectedTeacherId={formData.teacherId}
+                    onChange={(teacherId) => setFormData((prev) => ({ ...prev, teacherId }))}
+                    startTime={formData.startTime}
+                    endTime={endTime}
+                    currentCourseId={editingCourse?.id}
+                  />
+                </div>
+              )}
 
               <div className="mt-6 flex justify-end gap-2">
                 <button
