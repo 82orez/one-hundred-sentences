@@ -12,7 +12,6 @@ import DatePickerCalendar from "@/components/DatePickerCalendar";
 import clsx from "clsx";
 import DatePickerCalendarAddOrRemove from "@/components/DatePickerCalendarAddOrRemove";
 import { FaList } from "react-icons/fa6";
-import TeacherSelector from "@/components/TeacherSelector";
 
 // 타입 정의 확장
 interface Teacher {
@@ -266,8 +265,6 @@ export default function CoursePage() {
           tempDates.push({
             date: format(currentDate, "yyyy-MM-dd"),
             dayOfWeek: getDayOfWeekName(currentDayOfWeek),
-            startTime: formData.startTime, // 시작 시간 추가
-            endTime: endTime, // 종료 시간 추가
           });
           classesScheduled++;
         }
@@ -1107,19 +1104,31 @@ export default function CoursePage() {
               </div>
 
               {/* 강사 선택 필드 */}
-              {classDates.length > 0 && (
-                <TeacherSelector
-                  classDates={classDates.map((cd) => ({
-                    ...cd,
-                    startTime: formData.startTime,
-                    endTime: endTime,
-                  }))}
-                  selectedTeacherId={formData.teacherId}
-                  onSelectTeacher={(teacherId) => {
-                    setFormData((prev) => ({ ...prev, teacherId }));
-                  }}
-                />
-              )}
+              <div className="form-control md:col-span-2">
+                <label className="label">
+                  <span className="label-text font-medium">강사 *</span>
+                </label>
+                <select
+                  name="teacherId"
+                  value={formData.teacherId}
+                  onChange={handleInputChange}
+                  className="select select-bordered w-full"
+                  required
+                  disabled={!isReadyToSelectStartDateAndTeacher}>
+                  <option value="">강사를 선택하세요</option>
+                  {teachers
+                    .filter((teacher: Teacher) => teacher.isActive)
+                    .map((teacher: Teacher) => (
+                      <option key={teacher.id} value={teacher.id}>
+                        {teacher.realName}
+                      </option>
+                    ))}
+                </select>
+
+                {!isReadyToSelectStartDateAndTeacher && (
+                  <p className="mt-1 text-sm text-red-500">수업 요일, 수업 횟수, 시작 시간을 입력해야 강사를 선택할 수 있습니다.</p>
+                )}
+              </div>
 
               <div className="mt-6 flex justify-end gap-2">
                 <button
