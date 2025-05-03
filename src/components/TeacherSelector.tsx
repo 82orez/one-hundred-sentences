@@ -206,7 +206,7 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
 
                   return (
                     <React.Fragment key={teacher.id}>
-                      <tr className="hover:bg-gray-50">
+                      <tr className={clsx("", { "bg-amber-100": teacher.id === selectedTeacherId })}>
                         <td className="px-4 py-3">
                           <div>
                             <div className="font-medium">{teacher.realName}</div>
@@ -244,7 +244,7 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
                             className={clsx(
                               "rounded-md px-3 py-1 text-sm font-medium",
                               teacher.id === selectedTeacherId
-                                ? "bg-blue-100 text-blue-700"
+                                ? "bg-amber-200 text-amber-700"
                                 : hasConflicts
                                   ? "cursor-not-allowed bg-gray-100 text-gray-400"
                                   : "bg-blue-50 text-blue-600 hover:bg-blue-100",
