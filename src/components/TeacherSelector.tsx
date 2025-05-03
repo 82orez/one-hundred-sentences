@@ -109,12 +109,12 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
     const matchesSubject = subjectFilter === "전체" || teacher.subject === subjectFilter;
 
     // 가용성 필터링
-    const isAvailable = !showOnlyAvailable || !conflictData[teacher.id];
+    const isAvailable = !conflictData[teacher.id];
 
     // 현재 선택된 강사는 제외하지 않음
     const notSelected = teacher.id !== selectedTeacherId;
 
-    return matchesSearch && matchesNation && matchesSubject && (isAvailable || teacher.id === selectedTeacherId);
+    return matchesSearch && matchesNation && matchesSubject && (showOnlyAvailable ? isAvailable : true);
   });
 
   return (
