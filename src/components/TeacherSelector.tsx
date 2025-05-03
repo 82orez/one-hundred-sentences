@@ -221,7 +221,15 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
                             </span>
                             {conflicts.length > 0 && (
                               <div className="group relative ml-2">
-                                <button className="text-xs text-blue-500 underline">상세보기</button>
+                                <button
+                                  type="button"
+                                  className="text-xs text-blue-500 underline"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                  }}>
+                                  상세보기
+                                </button>
                                 <div className="absolute top-full left-0 z-10 hidden min-w-[250px] rounded-md border bg-white p-2 shadow-lg group-hover:block">
                                   <h4 className="mb-1 text-sm font-semibold">충돌 강좌:</h4>
                                   <ul className="space-y-1 text-xs">
