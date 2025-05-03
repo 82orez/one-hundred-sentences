@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { AlertTriangle, CheckCircle, Search, Filter } from "lucide-react";
 import clsx from "clsx";
+import React from "react";
 
 // 타입 정의
 interface Teacher {
@@ -49,6 +50,7 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
   const [nationFilter, setNationFilter] = useState("전체");
   const [subjectFilter, setSubjectFilter] = useState("전체");
   const [showOnlyAvailable, setShowOnlyAvailable] = useState(false);
+  const [expandedTeacherId, setExpandedTeacherId] = useState<string | null>(null);
 
   // 강사 목록 가져오기
   const { data: teachers = [], isLoading: isLoadingTeachers } = useQuery({
@@ -200,81 +202,82 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
                 filteredTeachers.map((teacher: Teacher) => {
                   const hasConflicts = conflictData[teacher.id];
                   const conflicts = hasConflicts || [];
+                  const isExpanded = expandedTeacherId === teacher.id;
 
                   return (
-                    <tr key={teacher.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3">
-                        <div>
-                          <div className="font-medium">{teacher.realName}</div>
-                          {teacher.nickName && <div className="text-sm text-gray-500">{teacher.nickName}</div>}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-sm">{teacher.email}</td>
-                      <td className="px-4 py-3 text-sm">{teacher.nation}</td>
-                      <td className="px-4 py-3 text-sm">{teacher.subject}</td>
-                      <td className="px-4 py-3">
-                        {hasConflicts ? (
-                          <div className="flex items-center">
-                            <span className="flex items-center text-red-500">
-                              <AlertTriangle size={16} className="mr-1" />
-                              <span>⚠️ 이 시간에 다른 강좌 있음</span>
-                            </span>
-                            {conflicts.length > 0 && (
-                              <div className="group relative ml-2">
+                    <React.Fragment key={teacher.id}>
+                      <tr className="hover:bg-gray-50">
+                        <td className="px-4 py-3">
+                          <div>
+                            <div className="font-medium">{teacher.realName}</div>
+                            {teacher.nickName && <div className="text-sm text-gray-500">{teacher.nickName}</div>}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-sm">{teacher.email}</td>
+                        <td className="px-4 py-3 text-sm">{teacher.nation}</td>
+                        <td className="px-4 py-3 text-sm">{teacher.subject}</td>
+                        <td className="px-4 py-3">
+                          {hasConflicts ? (
+                            <div className="flex items-center gap-2">
+                              <span className="flex items-center text-red-500">
+                                <AlertTriangle size={16} className="mr-1" />
+                                <span>⚠️ 이 시간에 다른 강좌 있음</span>
+                              </span>
+                              {conflicts.length > 0 && (
                                 <button
                                   type="button"
                                   className="text-xs text-blue-500 underline"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                  }}>
-                                  상세보기
+                                  onClick={() => setExpandedTeacherId(isExpanded ? null : teacher.id)}>
+                                  {isExpanded ? "닫기" : "상세보기"}
                                 </button>
-                                <div className="absolute top-full left-0 z-10 hidden min-w-[250px] rounded-md border bg-white p-2 shadow-lg group-hover:block">
-                                  <h4 className="mb-1 text-sm font-semibold">충돌 강좌:</h4>
-                                  <ul className="space-y-1 text-xs">
-                                    {conflicts.map((conflict: ConflictingCourse) => (
-                                      <li key={conflict.id}>
-                                        <p className="font-medium">{conflict.title}</p>
-                                        <p className="text-gray-500">
-                                          {conflict.date} ({conflict.startTime} ~ {conflict.endTime})
-                                        </p>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="flex items-center text-green-500">
-                            <CheckCircle size={16} className="mr-1" />
-                            <span>✅ 배정 가능</span>
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <button
-                          className={clsx(
-                            "rounded-md px-3 py-1 text-sm font-medium",
-                            teacher.id === selectedTeacherId
-                              ? "bg-blue-100 text-blue-700"
-                              : hasConflicts
-                                ? "cursor-not-allowed bg-gray-100 text-gray-400"
-                                : "bg-blue-50 text-blue-600 hover:bg-blue-100",
+                              )}
+                            </div>
+                          ) : (
+                            <span className="flex items-center text-green-500">
+                              <CheckCircle size={16} className="mr-1" />
+                              <span>✅ 배정 가능</span>
+                            </span>
                           )}
-                          onClick={(e) => {
-                            // 이벤트 버블링 중지
-                            e.preventDefault();
-                            e.stopPropagation();
+                        </td>
+                        <td className="px-4 py-3">
+                          <button
+                            className={clsx(
+                              "rounded-md px-3 py-1 text-sm font-medium",
+                              teacher.id === selectedTeacherId
+                                ? "bg-blue-100 text-blue-700"
+                                : hasConflicts
+                                  ? "cursor-not-allowed bg-gray-100 text-gray-400"
+                                  : "bg-blue-50 text-blue-600 hover:bg-blue-100",
+                            )}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              !hasConflicts && onChange(teacher.id);
+                            }}
+                            disabled={hasConflicts}>
+                            {teacher.id === selectedTeacherId ? "선택됨" : "선택"}
+                          </button>
+                        </td>
+                      </tr>
 
-                            !hasConflicts && onChange(teacher.id);
-                          }}
-                          disabled={hasConflicts}>
-                          {teacher.id === selectedTeacherId ? "선택됨" : "선택"}
-                        </button>
-                      </td>
-                    </tr>
+                      {isExpanded && (
+                        <tr>
+                          <td colSpan={6} className="bg-red-50 px-4 py-3 text-sm text-gray-800">
+                            <div className="mb-2 font-semibold">🔻 충돌 강좌 목록:</div>
+                            <ul className="list-disc space-y-1 pl-4">
+                              {conflicts.map((conflict: ConflictingCourse) => (
+                                <li key={conflict.id}>
+                                  <div className="font-medium">{conflict.title}</div>
+                                  <div className="text-sm text-gray-600">
+                                    {conflict.date} ({conflict.startTime} ~ {conflict.endTime})
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
                   );
                 })
               ) : (
