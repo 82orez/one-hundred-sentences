@@ -83,6 +83,7 @@ export default function TeacherSelector({
         endTime,
         currentCourseId,
       });
+      console.log("response.data.conflicts: ", response.data.conflicts);
       return response.data.conflicts || {};
     },
     enabled: classDates.length > 0 && !!startTime && !!endTime,
@@ -107,7 +108,7 @@ export default function TeacherSelector({
 
       // 충돌이 발생한 경우 토스트 메시지 표시
       if (hasConflict) {
-        toast.error("강의 충돌이 발생했습니다.");
+        toast.error("선택된 강사에게 강의 충돌이 발생했습니다.");
       }
     }
   }, [selectedTeacherId, conflictData, onConflictChange]);
