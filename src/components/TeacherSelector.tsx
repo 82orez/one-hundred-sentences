@@ -7,7 +7,6 @@ import { AlertTriangle, CheckCircle, Search, Filter } from "lucide-react";
 import clsx from "clsx";
 import React from "react";
 import toast from "react-hot-toast";
-import { useTeacherConflictStore } from "@/stores/useTeacherConflictStore";
 
 // 타입 정의
 interface Teacher {
@@ -72,10 +71,8 @@ export default function TeacherSelector({
     },
   });
 
-  const { conflicts: conflictData, setConflicts } = useTeacherConflictStore();
-
   // 강사들의 강의 스케줄 충돌 체크
-  const { isLoading: isCheckingConflicts } = useQuery({
+  const { data: conflictData = {}, isLoading: isCheckingConflicts } = useQuery({
     queryKey: ["teacherConflicts", classDates, startTime, endTime, currentCourseId],
     queryFn: async () => {
       if (!classDates.length || !startTime || !endTime) return {};
@@ -87,10 +84,6 @@ export default function TeacherSelector({
         currentCourseId,
       });
       console.log("response.data.conflicts: ", response.data.conflicts);
-
-      // 스토어에 충돌 데이터 저장
-      setConflicts(response.data.conflicts || {});
-
       return response.data.conflicts || {};
     },
     enabled: classDates.length > 0 && !!startTime && !!endTime,
@@ -290,7 +283,7 @@ export default function TeacherSelector({
                               e.stopPropagation();
                               !hasConflicts && onChange(teacher.id);
                             }}
-                            disabled={!!hasConflicts}>
+                            disabled={hasConflicts}>
                             {teacher.id === selectedTeacherId ? "선택됨" : "선택"}
                           </button>
                         </td>

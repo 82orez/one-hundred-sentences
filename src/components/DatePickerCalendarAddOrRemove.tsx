@@ -5,7 +5,6 @@ import { ko } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
-import { useTeacherConflictStore } from "@/stores/useTeacherConflictStore";
 
 // 공휴일 목록 정의
 const koreanHolidays = [
@@ -166,33 +165,14 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
     return isHoliday(date) && isSelectedDate(date);
   };
 
-  // Zustand 스토어에서 충돌 데이터 가져오기
-  const { conflicts: conflictData } = useTeacherConflictStore();
-
-  // 스토어의 충돌 데이터를 배열로 변환 (모든 강사의 충돌 일자)
-  const allConflictDates = React.useMemo(() => {
-    const dates = new Set<string>();
-    Object.values(conflictData).forEach((teacherConflicts) => {
-      teacherConflicts.forEach((conflict) => {
-        dates.add(conflict.date);
-      });
-    });
-    return Array.from(dates);
-  }, [conflictData]);
-
-  // 날짜가 충돌 날짜인지 확인하는 함수
-  const isConflictDate = (date: Date) => {
-    return allConflictDates.includes(format(date, "yyyy-MM-dd"));
-  };
-
   return (
     <div className="mx-auto flex w-1/2 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-md">
       <style jsx global>{`
         .rdp-day_selected {
           background-color: #0ea5e9;
           color: white !important;
-          border-radius: 0.75rem;
-          outline: 3px solid white;
+          border-radius: 0.75rem; /* <-- 모서리를 둥글게 */
+          outline: 3px solid white; /* 흰색 테두리로 경계 시각화 */
           outline-offset: -2px;
         }
         .rdp-day_today {
@@ -212,11 +192,6 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
         .holiday-and-class-day {
           background-color: #f97316 !important;
           color: white !important;
-        }
-        .conflict-date {
-          background-color: #a7f3d0 !important; /* 초록색 계열 */
-          color: #064e3b !important; /* 어두운 녹색 텍스트 */
-          font-weight: bold;
         }
         @keyframes pulseRed {
           0% {
@@ -272,7 +247,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
       </div>
 
       <DayPicker
-        key={`${confirmAction.show ? "dialog-open" : "dialog-closed"}-${selectedDatesKey}`}
+        key={`${confirmAction.show ? "dialog-open" : "dialog-closed"}-${selectedDatesKey}`} // 선택된 날짜 변경 시에도 리렌더링 트리거
         mode="multiple"
         selected={selectedDates}
         onDayClick={handleDayClick}
@@ -282,8 +257,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
         month={month}
         onMonthChange={setMonth}
         modifiersClassNames={{
-          conflictDate: "conflict-date", // 충돌 날짜 스타일 추가
-          holidayAndClassDay: "holiday-and-class-day",
+          holidayAndClassDay: "holiday-and-class-day", // 1순위
           selected: "rdp-day_selected",
           today: "rdp-day_today",
           startDate: "start-date-highlight",
@@ -295,7 +269,6 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
           holiday: (date) => isHoliday(date),
           selected: (date) => isSelectedDate(date),
           holidayAndClassDay: (date) => isHolidayAndClassDay(date),
-          conflictDate: (date) => isConflictDate(date), // 충돌 날짜 구분자 추가
           startDate: (date) => startDate && format(date, "yyyy-MM-dd") === format(startDate, "yyyy-MM-dd"),
           endDate: (date) => endDate && format(date, "yyyy-MM-dd") === format(endDate, "yyyy-MM-dd"),
         }}
@@ -314,16 +287,6 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
           닫기
         </button>
       </div>
-
-      {/* 스토어에 충돌 데이터가 있는 경우 표시 */}
-      {allConflictDates.length > 0 && (
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-700">
-            <span className="mr-1 inline-block h-3 w-3 rounded-full bg-green-200"></span>
-            초록색 배경은 강사 스케줄 충돌 날짜입니다.
-          </p>
-        </div>
-      )}
     </div>
   );
 };
