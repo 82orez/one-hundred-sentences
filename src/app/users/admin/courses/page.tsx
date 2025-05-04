@@ -104,6 +104,9 @@ export default function CoursePage() {
 
   const [statusFilter, setStatusFilter] = useState<string>("전체 보기");
 
+  // 선택된 강사의 일정 충돌 상태를 관리하는 상태 변수 추가
+  const [hasTeacherConflict, setHasTeacherConflict] = useState(false);
+
   // 수업 날짜 목록이 변경될 때마다 종료일 업데이트
   useEffect(() => {
     // 수업 일자가 하나 이상 있는 경우에만 처리
@@ -1125,6 +1128,7 @@ export default function CoursePage() {
                     startTime={formData.startTime}
                     endTime={endTime}
                     currentCourseId={editingCourse?.id}
+                    onConflictChange={setHasTeacherConflict}
                   />
                 </div>
               )}
@@ -1142,10 +1146,17 @@ export default function CoursePage() {
                   className="btn btn-outline">
                   취소
                 </button>
-                <button type="submit" className="btn btn-primary" disabled={createCourseMutation.isPending || updateCourseMutation.isPending}>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={createCourseMutation.isPending || updateCourseMutation.isPending || hasTeacherConflict}>
                   {(createCourseMutation.isPending || updateCourseMutation.isPending) && <span className="loading loading-spinner loading-xs"></span>}
                   {editingCourse ? "수정하기" : "추가하기"}
                 </button>
+
+                {hasTeacherConflict && (
+                  <p className="mt-2 text-sm text-red-500">강의 충돌이 발생했습니다. 다른 강사를 선택하거나 강의 일정을 변경해주세요.</p>
+                )}
               </div>
             </form>
           </div>

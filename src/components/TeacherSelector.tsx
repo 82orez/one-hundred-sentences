@@ -6,6 +6,7 @@ import axios from "axios";
 import { AlertTriangle, CheckCircle, Search, Filter } from "lucide-react";
 import clsx from "clsx";
 import React from "react";
+import toast from "react-hot-toast";
 
 // 타입 정의
 interface Teacher {
@@ -43,9 +44,18 @@ interface TeacherSelectorProps {
   startTime: string;
   endTime: string;
   currentCourseId?: string;
+  onConflictChange?: (hasConflict: boolean) => void; // 충돌 상태를 상위 컴포넌트에 전달하는 콜백
 }
 
-export default function TeacherSelector({ classDates, selectedTeacherId, onChange, startTime, endTime, currentCourseId }: TeacherSelectorProps) {
+export default function TeacherSelector({
+  classDates,
+  selectedTeacherId,
+  onChange,
+  startTime,
+  endTime,
+  currentCourseId,
+  onConflictChange,
+}: TeacherSelectorProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [nationFilter, setNationFilter] = useState("전체");
   const [subjectFilter, setSubjectFilter] = useState("전체");
@@ -88,6 +98,19 @@ export default function TeacherSelector({ classDates, selectedTeacherId, onChang
     },
     enabled: !!selectedTeacherId,
   });
+
+  // 선택된 강사의 충돌 상태를 감시하고 상위 컴포넌트에 알림
+  useEffect(() => {
+    if (selectedTeacherId && conflictData && onConflictChange) {
+      const hasConflict = !!conflictData[selectedTeacherId];
+      onConflictChange(hasConflict);
+
+      // 충돌이 발생한 경우 토스트 메시지 표시
+      if (hasConflict) {
+        toast.error("강의 충돌이 발생했습니다.");
+      }
+    }
+  }, [selectedTeacherId, conflictData, onConflictChange]);
 
   // 사용 가능한 국적 필터 목록
   const nationOptions = ["전체", ...Array.from(new Set(teachers.map((t: Teacher) => t.nation)))];
