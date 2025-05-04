@@ -108,8 +108,6 @@ export default function CoursePage() {
   // 선택된 강사의 일정 충돌 상태를 관리하는 상태 변수 추가
   const [hasTeacherConflict, setHasTeacherConflict] = useState(false);
 
-  const { conflicts: conflictData, clearConflicts } = useTeacherConflictStore();
-
   // 수업 날짜 목록이 변경될 때마다 종료일 업데이트
   useEffect(() => {
     // 수업 일자가 하나 이상 있는 경우에만 처리
@@ -1145,7 +1143,6 @@ export default function CoursePage() {
                     setShowClassDateCalendar(false);
                     setShowAddClassDateForm(false);
                     setShowCalendarView(false);
-                    clearConflicts();
                   }}
                   className="btn btn-outline">
                   취소
