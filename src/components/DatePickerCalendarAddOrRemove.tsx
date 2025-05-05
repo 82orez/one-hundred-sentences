@@ -39,6 +39,8 @@ interface DatePickerCalendarAddOrRemoveProps {
   getDayOfWeekName: (dayNumber: number) => string;
   startDate?: Date;
   endDate?: Date;
+  teacherId?: string; // 강사 ID 추가
+  checkScheduleConflict?: (dates: Date[], newDate: Date) => Promise<boolean>; // 충돌 확인 함수 추가
 }
 
 const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps> = ({
@@ -50,6 +52,8 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
   getDayOfWeekName,
   startDate,
   endDate,
+  teacherId,
+  checkScheduleConflict,
 }) => {
   // 현재 표시되는 월 상태 추가
   const [month, setMonth] = useState<Date>(new Date());
@@ -88,7 +92,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
   };
 
   // 날짜 클릭 핸들러 수정
-  const handleDayClick: DayClickEventHandler = (day) => {
+  const handleDayClick: DayClickEventHandler = async (day) => {
     const dayString = format(day, "yyyy-MM-dd");
 
     // 시작일이면 삭제 불가
@@ -98,6 +102,26 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
     }
 
     const isDateSelected = selectedDates.some((selectedDate) => format(selectedDate, "yyyy-MM-dd") === dayString);
+
+    // 날짜를 추가하려고 할 때 충돌 검사 실행
+    if (!isDateSelected && checkScheduleConflict) {
+      try {
+        // 임시 수업 목록 생성 (기존 + 클릭한 일자)
+        const tempDates = [...selectedDates, day];
+
+        // 충돌 검사 실행
+        const hasConflict = await checkScheduleConflict(tempDates, day);
+
+        if (hasConflict) {
+          toast.error("이 날짜에 다른 강의 일정이 있습니다. 다른 날짜를 선택해주세요.");
+          return;
+        }
+      } catch (error) {
+        console.error("스케줄 충돌 검사 중 오류 발생:", error);
+        toast.error("일정 충돌 검사 중 오류가 발생했습니다.");
+        return;
+      }
+    }
 
     setConfirmAction({
       show: true,

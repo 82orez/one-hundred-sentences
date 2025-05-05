@@ -1058,7 +1058,7 @@ export default function CoursePage() {
                     <div className="rounded-md border border-gray-200 p-2">
                       <DatePickerCalendarAddOrRemove
                         selectedDates={classDates.map((cd) => new Date(cd.date))}
-                        onAddDate={(date) => {
+                        onAddDate={async (date) => {
                           const dateString = format(date, "yyyy-MM-dd");
                           const isDuplicate = classDates.some((d) => d.date === dateString);
                           if (!isDuplicate) {
@@ -1086,6 +1086,43 @@ export default function CoursePage() {
                         getDayOfWeekName={getDayOfWeekName}
                         startDate={formData.startDate ? new Date(formData.startDate) : undefined}
                         endDate={formData.endDate ? new Date(formData.endDate) : undefined}
+                        teacherId={formData.teacherId}
+                        checkScheduleConflict={async (dates, newDate) => {
+                          // 임시 수업 목록 생성
+                          const tempClassDates = [
+                            ...classDates,
+                            {
+                              id: "",
+                              courseId: "",
+                              date: format(newDate, "yyyy-MM-dd"),
+                              dayOfWeek: getDayOfWeekName(newDate.getDay()),
+                              startTime: formData.startTime || null,
+                              endTime: endTime || null,
+                              createdAt: "",
+                              updatedAt: "",
+                            },
+                          ];
+
+                          // 강사 ID가 없으면 충돌 검사를 건너뜀
+                          if (!formData.teacherId) return false;
+
+                          try {
+                            // 강사의 다른 수업 일정과 충돌 여부 확인
+                            const response = await axios.post("/api/admin/check-teacher-schedule-conflict", {
+                              teacherId: formData.teacherId,
+                              courseId: editingCourse?.id || null, // 편집 중인 경우 해당 강좌 ID
+                              date: format(newDate, "yyyy-MM-dd"),
+                              startTime: formData.startTime,
+                              endTime: endTime,
+                            });
+
+                            return response.data.hasConflict;
+                          } catch (error) {
+                            console.error("강사 일정 충돌 검사 오류:", error);
+                            toast.error("강사 일정 충돌 검사 중 오류가 발생했습니다");
+                            return true; // 오류 발생 시 충돌로 간주
+                          }
+                        }}
                       />
                     </div>
                   ) : (
