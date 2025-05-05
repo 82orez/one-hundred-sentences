@@ -94,6 +94,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
   // 날짜 클릭 핸들러 수정
   const handleDayClick: DayClickEventHandler = async (day) => {
     const dayString = format(day, "yyyy-MM-dd");
+    const isDateSelected = selectedDates.some((selectedDate) => format(selectedDate, "yyyy-MM-dd") === dayString);
 
     // 시작일이면 삭제 불가
     if (startDate && format(startDate, "yyyy-MM-dd") === dayString) {
@@ -101,7 +102,11 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
       return;
     }
 
-    const isDateSelected = selectedDates.some((selectedDate) => format(selectedDate, "yyyy-MM-dd") === dayString);
+    // 추가: 시작일 이전 날짜는 추가 불가 (이미 선택된 날짜가 아닐 경우에만)
+    if (!isDateSelected && startDate && day < startDate) {
+      toast.error("수업 시작일 이전의 날짜는 추가할 수 없습니다.");
+      return;
+    }
 
     // 날짜를 추가하려고 할 때 충돌 검사 실행
     if (!isDateSelected && checkScheduleConflict) {
