@@ -654,7 +654,7 @@ export default function CoursePage() {
 
       {/* 상태 필터 추가 */}
       <div className="flex items-center space-x-4">
-        <div className="flex space-x-4">
+        <div className="flex space-x-3">
           {["전체 보기", "대기 중", "진행 중", "완료"].map((status) => {
             const isActive = statusFilter === status;
             const baseClasses =
@@ -1168,6 +1168,7 @@ export default function CoursePage() {
                     endTime={endTime}
                     currentCourseId={editingCourse?.id}
                     onConflictChange={setHasTeacherConflict}
+                    courseStatus={editingCourse?.status}
                   />
                 </div>
               )}

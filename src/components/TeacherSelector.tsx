@@ -45,6 +45,7 @@ interface TeacherSelectorProps {
   endTime: string;
   currentCourseId?: string;
   onConflictChange?: (hasConflict: boolean) => void; // 충돌 상태를 상위 컴포넌트에 전달하는 콜백
+  courseStatus?: "대기 중" | "진행 중" | "완료"; // 강좌 상태 속성 추가
 }
 
 export default function TeacherSelector({
@@ -55,6 +56,7 @@ export default function TeacherSelector({
   endTime,
   currentCourseId,
   onConflictChange,
+  courseStatus,
 }: TeacherSelectorProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [nationFilter, setNationFilter] = useState("전체");
@@ -157,7 +159,11 @@ export default function TeacherSelector({
                 {currentTeacher.email} | {currentTeacher.nation} | {currentTeacher.subject}
               </p>
             </div>
-            <button onClick={() => onChange(null)} className="ml-4 rounded-md bg-gray-200 px-3 py-1 text-sm text-gray-600 hover:bg-gray-300">
+            <button
+              onClick={() => onChange(null)}
+              className={clsx("ml-4 rounded-md bg-gray-200 px-3 py-1 text-sm text-gray-600 hover:bg-gray-300", {
+                hidden: courseStatus !== "대기 중",
+              })}>
               선택 취소
             </button>
           </div>
@@ -168,9 +174,12 @@ export default function TeacherSelector({
         )}
       </div>
 
-      <div className="mb-4 space-y-2">
+      <div
+        className={clsx("mb-4 space-y-2", {
+          hidden: courseStatus !== "대기 중",
+        })}>
         <div className="flex items-center gap-2">
-          <Search size={16} className="text-gray-400" />
+          <Search size={25} className="text-gray-400" />
           <input
             type="text"
             placeholder="이름, 이메일, 전화번호로 검색"
@@ -182,8 +191,9 @@ export default function TeacherSelector({
 
         <div className="flex flex-wrap gap-2">
           <div className="flex items-center gap-1">
-            <Filter size={16} className="text-gray-400" />
-            <select className="rounded-md border p-2" value={nationFilter} onChange={(e) => setNationFilter(e.target.value)}>
+            <Filter size={25} className="text-gray-400" />
+            <span>국적</span>
+            <select className="rounded-md border p-1" value={nationFilter} onChange={(e) => setNationFilter(e.target.value)}>
               {nationOptions.map((option: string, index) => (
                 <option key={index} value={option}>
                   {option}
@@ -193,7 +203,8 @@ export default function TeacherSelector({
           </div>
 
           <div>
-            <select className="rounded-md border p-2" value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)}>
+            <span>과목</span>
+            <select className="rounded-md border p-1" value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)}>
               {subjectOptions.map((option: string, index) => (
                 <option key={index} value={option}>
                   {option}
@@ -203,8 +214,13 @@ export default function TeacherSelector({
           </div>
 
           <label className="flex items-center gap-1">
-            <input type="checkbox" checked={showOnlyAvailable} onChange={() => setShowOnlyAvailable(!showOnlyAvailable)} className="rounded" />
-            <span className="text-sm">배정 가능한 강사만 보기</span>
+            <input
+              type="checkbox"
+              checked={showOnlyAvailable}
+              onChange={() => setShowOnlyAvailable(!showOnlyAvailable)}
+              className="h-6 w-6 rounded"
+            />
+            <span className="">배정 가능한 강사만 보기</span>
           </label>
         </div>
       </div>
@@ -214,7 +230,10 @@ export default function TeacherSelector({
           <p>로딩 중...</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-md border">
+        <div
+          className={clsx("overflow-hidden rounded-md border", {
+            hidden: courseStatus !== "대기 중",
+          })}>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
