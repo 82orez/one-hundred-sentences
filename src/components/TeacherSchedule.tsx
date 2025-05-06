@@ -319,7 +319,11 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
               const isCurrentMonth = day.getMonth() === currentDate.getMonth();
               const isToday = isSameDay(day, new Date());
               const dateKey = format(day, "yyyy-MM-dd");
-              const dayClassDates = classDatesByDay.get(dateKey) || [];
+              const dayClassDates = (classDatesByDay.get(dateKey) || []).sort((a, b) => {
+                if (!a.startTime) return 1;
+                if (!b.startTime) return -1;
+                return a.startTime.localeCompare(b.startTime);
+              });
 
               // 최대 3개까지만 표시하고 나머지는 +N 형태로 보여줌
               const visibleEvents = dayClassDates.slice(0, 3);
