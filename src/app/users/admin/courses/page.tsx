@@ -1159,7 +1159,7 @@ export default function CoursePage() {
               {/* 강사 선택 필드 */}
               {classDates.length > 0 && formData.startTime && endTime && (
                 <div className="mt-4 border-t pt-4">
-                  <h3 className="mb-4 text-lg font-semibold">강사 선택</h3>
+                  <h3 className={clsx("mb-4 text-lg font-semibold", { hidden: editingCourse?.status !== "대기 중" })}>강사 선택</h3>
                   <TeacherSelector
                     classDates={classDates}
                     selectedTeacherId={formData.teacherId}

@@ -175,50 +175,55 @@ export default function TeacherSelector({
       </div>
 
       <div
-        className={clsx("mb-4 space-y-2", {
+        className={clsx("mt-8 mb-4 space-y-2", {
           hidden: courseStatus !== "대기 중",
         })}>
-        <div className="flex items-center gap-2">
-          <Search size={25} className="text-gray-400" />
+        <div className="relative flex items-center gap-2">
+          <Search size={20} className="absolute left-3 text-gray-400" />
           <input
             type="text"
             placeholder="이름, 이메일, 전화번호로 검색"
-            className="w-full rounded-md border p-2"
+            className="w-full rounded-md border p-2 pl-10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <div className="flex items-center gap-1">
-            <Filter size={25} className="text-gray-400" />
-            <span>국적</span>
-            <select className="rounded-md border p-1" value={nationFilter} onChange={(e) => setNationFilter(e.target.value)}>
-              {nationOptions.map((option: string, index) => (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+        <div className="mt-4 flex items-center justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <Filter size={20} className="text-gray-400" />
+                <span>국적</span>
+                <select className="rounded-md border p-1" value={nationFilter} onChange={(e) => setNationFilter(e.target.value)}>
+                  {nationOptions.map((option: string, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={"flex items-center gap-2"}>
+                <Filter size={20} className="text-gray-400" />
+                <span>과목</span>
+                <select className="rounded-md border p-1" value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)}>
+                  {subjectOptions.map((option: string, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <span>과목</span>
-            <select className="rounded-md border p-1" value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)}>
-              {subjectOptions.map((option: string, index) => (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <label className="flex items-center gap-1">
+          <label className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={showOnlyAvailable}
               onChange={() => setShowOnlyAvailable(!showOnlyAvailable)}
-              className="h-6 w-6 rounded"
+              className="h-5 w-5 rounded"
             />
             <span className="">배정 가능한 강사만 보기</span>
           </label>
