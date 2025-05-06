@@ -271,15 +271,6 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
     return isHoliday(date) && isSelectedDate(date);
   };
 
-  // ! 툴팁을 위한 아리아 속성 설정
-  const getDayAriaLabel = (date: Date): string => {
-    const dateStr = format(date, "yyyy-MM-dd");
-    if (conflictDates.has(dateStr)) {
-      return `일정 충돌: ${conflictDates.get(dateStr)}`;
-    }
-    return "";
-  };
-
   const CustomDayButton = (props: DayButtonProps) => {
     const { day, ...buttonProps } = props;
     const dateStr = format(day.date, "yyyy-MM-dd");
@@ -340,6 +331,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
           z-index: 10;
           font-size: 12px;
         }
+
         @keyframes pulseRed {
           0% {
             background-color: #fecaca;
@@ -398,6 +390,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
         mode="multiple"
         selected={selectedDates}
         onDayClick={handleDayClick}
+        onSelect={() => {}} // 자동 선택 비활성화
         locale={ko}
         fromDate={minDate}
         formatters={formatters}
@@ -409,7 +402,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
           today: "rdp-day_today",
           startDate: "start-date-highlight",
           endDate: "end-date-highlight",
-          conflictDay: "conflict-day",
+          // conflictDay: "conflict-day",
         }}
         modifiers={{
           saturday: (date) => isSaturday(date),
@@ -419,22 +412,13 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
           holidayAndClassDay: (date) => isHolidayAndClassDay(date),
           startDate: (date) => startDate && format(date, "yyyy-MM-dd") === format(startDate, "yyyy-MM-dd"),
           endDate: (date) => endDate && format(date, "yyyy-MM-dd") === format(endDate, "yyyy-MM-dd"),
-          conflictDay: (date) => isConflictDate(date),
+          // conflictDay: (date) => isConflictDate(date),
         }}
         modifiersStyles={{
           saturday: { color: "#2563eb" },
           sunday: { color: "#dc2626" },
           holiday: { color: "#dc2626", fontWeight: "bold" },
         }}
-        // components={{
-        //   Day: (props) => {
-        //     const dateStr = format(props.date, "yyyy-MM-dd");
-        //     const hasConflict = conflictDates.has(dateStr);
-        //     const ariaLabel = hasConflict ? conflictDates.get(dateStr) : "";
-        //
-        //     return <button {...props} aria-label={ariaLabel} className={`${props.className || ""}`} />;
-        //   },
-        // }}
         components={{
           DayButton: CustomDayButton,
         }}
