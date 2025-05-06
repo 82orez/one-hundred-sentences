@@ -13,7 +13,6 @@ import clsx from "clsx";
 import DatePickerCalendarAddOrRemove from "@/components/DatePickerCalendarAddOrRemove";
 import { FaList } from "react-icons/fa6";
 import TeacherSelector from "@/components/TeacherSelector";
-import { useTeacherConflictStore } from "@/stores/useTeacherConflictStore";
 
 // 타입 정의 확장
 interface Teacher {
@@ -1086,6 +1085,8 @@ export default function CoursePage() {
                         getDayOfWeekName={getDayOfWeekName}
                         startDate={formData.startDate ? new Date(formData.startDate) : undefined}
                         endDate={formData.endDate ? new Date(formData.endDate) : undefined}
+                        startTime={formData.startTime}
+                        endTime={endTime}
                         teacherId={formData.teacherId}
                         checkScheduleConflict={async (dates, newDate) => {
                           // 임시 수업 목록 생성

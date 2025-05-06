@@ -1,10 +1,11 @@
 // components/DatePickerCalendarAddOrRemove.tsx
 import React, { useState, useEffect } from "react";
-import { DayPicker, DayClickEventHandler, Formatters } from "react-day-picker";
+import { DayPicker, DayClickEventHandler, Formatters, DayButtonProps } from "react-day-picker";
 import { ko } from "date-fns/locale";
 import "react-day-picker/dist/style.css";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 // 공휴일 목록 정의
 const koreanHolidays = [
@@ -25,11 +26,6 @@ const koreanHolidays = [
   "2025-12-25", // 크리스마스
 ];
 
-interface ClassDate {
-  date: string;
-  dayOfWeek: string;
-}
-
 interface DatePickerCalendarAddOrRemoveProps {
   selectedDates: Date[];
   onAddDate: (date: Date) => void;
@@ -39,6 +35,8 @@ interface DatePickerCalendarAddOrRemoveProps {
   getDayOfWeekName: (dayNumber: number) => string;
   startDate?: Date;
   endDate?: Date;
+  startTime?: string; // 시작 시간 추가
+  endTime?: string; // 종료 시간 추가
   teacherId?: string; // 강사 ID 추가
   checkScheduleConflict?: (dates: Date[], newDate: Date) => Promise<boolean>; // 충돌 확인 함수 추가
 }
@@ -52,6 +50,8 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
   getDayOfWeekName,
   startDate,
   endDate,
+  startTime,
+  endTime,
   teacherId,
   checkScheduleConflict,
 }) => {
@@ -66,6 +66,9 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
     date: null,
     isAdd: true,
   });
+
+  // 충돌 날짜 및 강좌 정보 상태 추가
+  const [conflictDates, setConflictDates] = useState<Map<string, string>>(new Map());
 
   // selectedDates 변경 감지를 위한 키 값 추가
   const [selectedDatesKey, setSelectedDatesKey] = useState(0);
@@ -91,7 +94,80 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
     return holidayDates.some((holiday) => format(holiday, "yyyy-MM-dd") === format(date, "yyyy-MM-dd"));
   };
 
-  // 날짜 클릭 핸들러 수정
+  // 충돌 날짜 확인 함수
+  const isConflictDate = (date: Date) => {
+    const dateStr = format(date, "yyyy-MM-dd");
+    return conflictDates.has(dateStr);
+  };
+
+  // 날짜 변경 시 해당 월의 모든 날짜에 대해 충돌 확인
+  useEffect(() => {
+    if (!teacherId || !checkScheduleConflict) return;
+
+    // 현재 표시 중인 월의 첫날과 마지막 날
+    const firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
+    const lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 0);
+
+    // 모든 날짜를 배열로
+    const daysInMonth: Date[] = [];
+    let currentDay = new Date(firstDay);
+
+    while (currentDay <= lastDay) {
+      daysInMonth.push(new Date(currentDay));
+      currentDay.setDate(currentDay.getDate() + 1);
+    }
+
+    // 각 날짜에 대해 충돌 확인
+    const checkConflicts = async () => {
+      const newConflictMap = new Map<string, string>();
+
+      for (const day of daysInMonth) {
+        try {
+          // 이미 선택된 날짜는 건너뜀
+          const dayStr = format(day, "yyyy-MM-dd");
+          if (selectedDates.some((d) => format(d, "yyyy-MM-dd") === dayStr)) {
+            continue;
+          }
+
+          // 충돌 확인
+          const tempDates = [...selectedDates];
+
+          if (checkScheduleConflict) {
+            const hasConflict = await checkScheduleConflict(tempDates, day);
+
+            if (hasConflict) {
+              // 충돌 상세 정보 가져오기 (API 호출)
+              try {
+                const response = await axios.post("/api/admin/check-teacher-schedule-conflict", {
+                  teacherId: teacherId,
+                  date: format(day, "yyyy-MM-dd"),
+                  startTime: startTime || "00:00",
+                  endTime: endTime || "23:59",
+                });
+
+                if (response.data.hasConflict && response.data.conflictDetails) {
+                  newConflictMap.set(dayStr, `${response.data.conflictDetails.courseTitle} (${response.data.conflictDetails.time})`);
+                } else {
+                  newConflictMap.set(dayStr, "일정 충돌");
+                }
+              } catch (error) {
+                console.error("충돌 정보 가져오기 오류:", error);
+                newConflictMap.set(dayStr, "일정 충돌");
+              }
+            }
+          }
+        } catch (error) {
+          console.error("충돌 확인 중 오류:", error);
+        }
+      }
+
+      setConflictDates(newConflictMap);
+    };
+
+    checkConflicts();
+  }, [month, teacherId, selectedDates, checkScheduleConflict]);
+
+  // 날짜 클릭 핸들러
   const handleDayClick: DayClickEventHandler = async (day) => {
     const dayString = format(day, "yyyy-MM-dd");
     const isDateSelected = selectedDates.some((selectedDate) => format(selectedDate, "yyyy-MM-dd") === dayString);
@@ -118,7 +194,8 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
         const hasConflict = await checkScheduleConflict(tempDates, day);
 
         if (hasConflict) {
-          toast.error("이 날짜에 다른 강의 일정이 있습니다. 다른 날짜를 선택해주세요.");
+          const conflictInfo = conflictDates.get(dayString) || "다른 강의 일정";
+          toast.error(`이 날짜에 다른 강의 일정이 있습니다: ${conflictInfo}`);
           return;
         }
       } catch (error) {
@@ -194,6 +271,28 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
     return isHoliday(date) && isSelectedDate(date);
   };
 
+  // ! 툴팁을 위한 아리아 속성 설정
+  const getDayAriaLabel = (date: Date): string => {
+    const dateStr = format(date, "yyyy-MM-dd");
+    if (conflictDates.has(dateStr)) {
+      return `일정 충돌: ${conflictDates.get(dateStr)}`;
+    }
+    return "";
+  };
+
+  const CustomDayButton = (props: DayButtonProps) => {
+    const { day, ...buttonProps } = props;
+    const dateStr = format(day.date, "yyyy-MM-dd");
+    const tooltip = conflictDates.get(dateStr);
+    const isConflict = !!tooltip;
+
+    return (
+      <button {...buttonProps} title={tooltip} aria-label={tooltip} className={`${props.className || ""} ${isConflict ? "conflict-day" : ""}`.trim()}>
+        {day.date.getDate()}
+      </button>
+    );
+  };
+
   return (
     <div className="mx-auto flex w-1/2 flex-col items-center rounded-lg border border-gray-200 bg-white p-4 shadow-md">
       <style jsx global>{`
@@ -221,6 +320,25 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
         .holiday-and-class-day {
           background-color: #f97316 !important;
           color: white !important;
+        }
+        .conflict-day {
+          background-color: #e5e7eb !important; /* 회색 배경 */
+          cursor: pointer;
+          position: relative;
+        }
+        .conflict-day:hover::after {
+          content: attr(aria-label);
+          position: absolute;
+          top: -30px;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 5px 10px;
+          border-radius: 4px;
+          white-space: nowrap;
+          z-index: 10;
+          font-size: 12px;
         }
         @keyframes pulseRed {
           0% {
@@ -291,6 +409,7 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
           today: "rdp-day_today",
           startDate: "start-date-highlight",
           endDate: "end-date-highlight",
+          conflictDay: "conflict-day",
         }}
         modifiers={{
           saturday: (date) => isSaturday(date),
@@ -300,11 +419,24 @@ const DatePickerCalendarAddOrRemove: React.FC<DatePickerCalendarAddOrRemoveProps
           holidayAndClassDay: (date) => isHolidayAndClassDay(date),
           startDate: (date) => startDate && format(date, "yyyy-MM-dd") === format(startDate, "yyyy-MM-dd"),
           endDate: (date) => endDate && format(date, "yyyy-MM-dd") === format(endDate, "yyyy-MM-dd"),
+          conflictDay: (date) => isConflictDate(date),
         }}
         modifiersStyles={{
           saturday: { color: "#2563eb" },
           sunday: { color: "#dc2626" },
           holiday: { color: "#dc2626", fontWeight: "bold" },
+        }}
+        // components={{
+        //   Day: (props) => {
+        //     const dateStr = format(props.date, "yyyy-MM-dd");
+        //     const hasConflict = conflictDates.has(dateStr);
+        //     const ariaLabel = hasConflict ? conflictDates.get(dateStr) : "";
+        //
+        //     return <button {...props} aria-label={ariaLabel} className={`${props.className || ""}`} />;
+        //   },
+        // }}
+        components={{
+          DayButton: CustomDayButton,
         }}
       />
 
