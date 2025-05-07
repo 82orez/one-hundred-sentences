@@ -333,7 +333,9 @@ export type Database = {
           createdAt: string
           id: string
           status: Database["public"]["Enums"]["EnrollmentStatus"]
-          studentId: string
+          studentId: string | null
+          studentName: string
+          studentPhone: string
           updatedAt: string
         }
         Insert: {
@@ -341,7 +343,9 @@ export type Database = {
           createdAt?: string
           id: string
           status?: Database["public"]["Enums"]["EnrollmentStatus"]
-          studentId: string
+          studentId?: string | null
+          studentName: string
+          studentPhone: string
           updatedAt: string
         }
         Update: {
@@ -349,7 +353,9 @@ export type Database = {
           createdAt?: string
           id?: string
           status?: Database["public"]["Enums"]["EnrollmentStatus"]
-          studentId?: string
+          studentId?: string | null
+          studentName?: string
+          studentPhone?: string
           updatedAt?: string
         }
         Relationships: [

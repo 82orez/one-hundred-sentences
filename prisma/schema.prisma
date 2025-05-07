@@ -315,16 +315,18 @@ model Lesson {
 }
 
 model Enrollment {
-  id        String           @id @default(cuid())
-  courseId  String
-  studentId String
-  status    EnrollmentStatus @default(active)
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  id           String           @id @default(cuid())
+  courseId     String
+  studentId    String?
+  status       EnrollmentStatus @default(pending)
+  studentName  String
+  studentPhone String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 
   // 관계 설정
   course   Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  student  User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student  User?      @relation(fields: [studentId], references: [id], onDelete: Cascade)
   progress Progress[]
 
   @@unique([courseId, studentId])
