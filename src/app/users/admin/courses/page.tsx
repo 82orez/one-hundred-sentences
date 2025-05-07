@@ -698,14 +698,12 @@ export default function CoursePage() {
               <tr>
                 <th>강좌명</th>
                 <th>강사</th>
-                <th>연락처</th>
-                <th>이메일</th>
                 <th>수업 일정</th>
                 <th>시작일</th>
-                <th>시작 시간</th>
-                <th>수업 진행 시간</th>
-                <th>수업 종료 시간</th>
+                <th>수업 시작</th>
+                <th>진행 시간</th>
                 <th>종료일</th>
+                <th>수강생 등록</th>
                 <th>상태</th>
                 <th>관리</th>
               </tr>
@@ -715,14 +713,12 @@ export default function CoursePage() {
                 <tr key={course.id}>
                   <td className="font-medium">{course.title}</td>
                   <td>{course.teacher?.realName || "미지정"}</td>
-                  <td>{course.teacher?.phone || "-"}</td>
-                  <td>{course.teacher?.email || "-"}</td>
                   <td>{formatSchedule(course)}</td>
                   <td>{formatDate(course.startDate)}</td>
                   <td>{course.startTime || "-"}</td>
-                  <td>{course.duration || "25분"}</td>
-                  <td>{course.endTime || "-"}</td>
+                  <td>{course.duration || "-"}</td>
                   <td>{formatDate(course.endDate)}</td>
+                  <td>등록하기</td>
                   <td>
                     <span
                       className={clsx(
