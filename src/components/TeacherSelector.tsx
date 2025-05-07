@@ -150,13 +150,13 @@ export default function TeacherSelector({
       <div className="mb-4">
         <h3 className="mb-2 text-lg font-semibold">현재 선택된 강사</h3>
         {currentTeacher ? (
-          <div className="flex items-center justify-between rounded-md border bg-gray-50 p-3">
+          <div className="flex items-center justify-between rounded-md border bg-amber-100 p-3">
             <div>
               <p className="font-medium">
                 {currentTeacher.realName} {currentTeacher.nickName && `(${currentTeacher.nickName})`}
               </p>
-              <p className="text-sm text-gray-600">
-                {currentTeacher.email} | {currentTeacher.nation} | {currentTeacher.subject}
+              <p className="mt-2 text-sm text-gray-600">
+                {currentTeacher.email} | {currentTeacher.phone} | {currentTeacher.nation} | {currentTeacher.subject}
               </p>
             </div>
             <button
@@ -266,7 +266,10 @@ export default function TeacherSelector({
                             {teacher.nickName && <div className="text-sm text-gray-500">{teacher.nickName}</div>}
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-sm">{teacher.email}</td>
+                        <td className="px-4 py-3 text-sm">
+                          <div className="font-medium">{teacher.email}</div>
+                          {teacher.phone}
+                        </td>
                         <td className="px-4 py-3 text-sm">{teacher.nation}</td>
                         <td className="px-4 py-3 text-sm">{teacher.subject}</td>
                         <td className="px-4 py-3">
