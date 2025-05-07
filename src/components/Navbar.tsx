@@ -139,7 +139,10 @@ export default function Navbar() {
                     </Link>
                   )}
 
-                  <Link href="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
+                  <Link
+                    href="/users/my-courses"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setMenuOpen(false)}>
                     내 강의 보기
                   </Link>
 
