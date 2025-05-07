@@ -137,15 +137,22 @@ const EditProfilePage = () => {
     e.preventDefault();
     setError(null);
 
-    if (!realName.trim() || !phone.trim()) {
+    const trimmedRealName = realName.replace(/\s+/g, ""); // 중간 공백까지 모두 제거
+    const trimmedPhone = phone.trim();
+
+    if (!trimmedRealName || !trimmedPhone) {
       setError("모든 정보를 입력해주세요.");
       return;
     }
 
-    if (!isValidPhoneNumber(phone)) {
+    if (!isValidPhoneNumber(trimmedPhone)) {
       setError("전화번호 형식이 맞지 않습니다. (예: 010-1234-5678)");
       return;
     }
+
+    // 상태 반영
+    setRealName(trimmedRealName);
+    setPhone(trimmedPhone);
 
     updateProfileMutation.mutate();
   };
