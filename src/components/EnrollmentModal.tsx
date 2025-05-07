@@ -54,17 +54,19 @@ export default function EnrollmentModal({ isOpen, onClose, courseId, courseTitle
       return toast.error("전화번호를 입력해주세요.");
     }
 
-    // 전화번호 형식 확인 (기본적인 검증)
+    const cleanedName = formData.studentName.replace(/\s/g, ""); // 이름 공백 제거
+    const cleanedPhone = formData.studentPhone.replace(/-/g, ""); // 하이픈 제거
+
     const phoneRegex = /^[0-9]{10,11}$/;
-    if (!phoneRegex.test(formData.studentPhone.replace(/-/g, ""))) {
+    if (!phoneRegex.test(cleanedPhone)) {
       return toast.error("유효한 전화번호 형식이 아닙니다.");
     }
 
     enrollMutation.mutate({
       courseId,
       courseTitle,
-      studentName: formData.studentName,
-      studentPhone: formData.studentPhone,
+      studentName: cleanedName,
+      studentPhone: cleanedPhone,
     });
   };
 
