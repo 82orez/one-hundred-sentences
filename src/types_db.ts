@@ -330,6 +330,7 @@ export type Database = {
       Enrollment: {
         Row: {
           courseId: string
+          courseTitle: string
           createdAt: string
           id: string
           status: Database["public"]["Enums"]["EnrollmentStatus"]
@@ -340,6 +341,7 @@ export type Database = {
         }
         Insert: {
           courseId: string
+          courseTitle: string
           createdAt?: string
           id: string
           status?: Database["public"]["Enums"]["EnrollmentStatus"]
@@ -350,6 +352,7 @@ export type Database = {
         }
         Update: {
           courseId?: string
+          courseTitle?: string
           createdAt?: string
           id?: string
           status?: Database["public"]["Enums"]["EnrollmentStatus"]

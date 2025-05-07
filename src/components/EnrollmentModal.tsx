@@ -22,7 +22,7 @@ export default function EnrollmentModal({ isOpen, onClose, courseId, courseTitle
   });
 
   const enrollMutation = useMutation({
-    mutationFn: async (data: { courseId: string; studentName: string; studentPhone: string }) => {
+    mutationFn: async (data: { courseId: string; courseTitle: string; studentName: string; studentPhone: string }) => {
       const response = await axios.post("/api/admin/enrollments", data);
       return response.data;
     },
@@ -62,6 +62,7 @@ export default function EnrollmentModal({ isOpen, onClose, courseId, courseTitle
 
     enrollMutation.mutate({
       courseId,
+      courseTitle,
       studentName: formData.studentName,
       studentPhone: formData.studentPhone,
     });

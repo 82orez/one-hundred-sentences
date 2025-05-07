@@ -14,10 +14,10 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { courseId, studentName, studentPhone } = body;
+    const { courseId, courseTitle, studentName, studentPhone } = body;
 
     // 필수 필드 확인
-    if (!courseId || !studentName || !studentPhone) {
+    if (!courseId || !courseTitle || !studentName || !studentPhone) {
       return NextResponse.json({ message: "모든 필드를 입력해주세요." }, { status: 400 });
     }
 
@@ -50,6 +50,7 @@ export async function POST(req: NextRequest) {
     const enrollment = await prisma.enrollment.create({
       data: {
         courseId,
+        courseTitle,
         studentName,
         studentPhone: cleanPhone,
         status: "pending",
