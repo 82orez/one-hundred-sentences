@@ -13,6 +13,7 @@ import clsx from "clsx";
 import DatePickerCalendarAddOrRemove from "@/components/DatePickerCalendarAddOrRemove";
 import { FaList } from "react-icons/fa6";
 import TeacherSelector from "@/components/TeacherSelector";
+import EnrollmentModal from "@/components/EnrollmentModal";
 
 // 타입 정의 확장
 interface Teacher {
@@ -106,6 +107,16 @@ export default function CoursePage() {
 
   // 선택된 강사의 일정 충돌 상태를 관리하는 상태 변수 추가
   const [hasTeacherConflict, setHasTeacherConflict] = useState(false);
+
+  // 코스 페이지에 모달 상태 관리를 위한 코드 추가
+  const [isEnrollmentModalOpen, setIsEnrollmentModalOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+
+  // 등록 버튼 클릭 핸들러
+  const handleEnrollmentClick = (course: Course) => {
+    setSelectedCourse(course);
+    setIsEnrollmentModalOpen(true);
+  };
 
   // 수업 날짜 목록이 변경될 때마다 종료일 업데이트
   useEffect(() => {
@@ -719,7 +730,9 @@ export default function CoursePage() {
                   <td>{course.duration || "-"}</td>
                   <td>{formatDate(course.endDate)}</td>
                   <td>
-                    <button className="rounded bg-indigo-500 px-3 py-2 text-white hover:bg-indigo-600">관리하기</button>
+                    <button onClick={() => handleEnrollmentClick(course)} className="rounded bg-indigo-500 px-3 py-2 text-white hover:bg-indigo-600">
+                      등록
+                    </button>
                   </td>
                   <td>
                     <span
@@ -746,6 +759,16 @@ export default function CoursePage() {
           </table>
         )}
       </div>
+
+      {/* 수강생 등록 모달 */}
+      {selectedCourse && (
+        <EnrollmentModal
+          isOpen={isEnrollmentModalOpen}
+          onClose={() => setIsEnrollmentModalOpen(false)}
+          courseId={selectedCourse.id}
+          courseTitle={selectedCourse.title}
+        />
+      )}
 
       {/* 강좌 생성/수정 모달 */}
       {isModalOpen && (

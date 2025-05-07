@@ -2,9 +2,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { format, parseISO } from "date-fns";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+
+    // 관리자 권한 확인
+    if (!session || session.user.role !== "admin") {
+      return NextResponse.json({ message: "권한이 없습니다." }, { status: 403 });
+    }
+
     // 요청 본문 파싱
     const { teacherId, courseId, date, startTime, endTime } = await request.json();
 

@@ -162,7 +162,7 @@ export default function TeacherSelector({
             <button
               onClick={() => onChange(null)}
               className={clsx("ml-4 rounded-md bg-gray-200 px-3 py-1 text-sm text-gray-600 hover:bg-gray-300", {
-                hidden: courseStatus !== "대기 중",
+                hidden: courseStatus === "진행 중" || courseStatus === "완료",
               })}>
               선택 취소
             </button>
@@ -176,7 +176,7 @@ export default function TeacherSelector({
 
       <div
         className={clsx("mt-8 mb-4 space-y-2", {
-          hidden: courseStatus !== "대기 중",
+          hidden: courseStatus === "진행 중" || courseStatus === "완료",
         })}>
         <div className="relative flex items-center gap-2">
           <Search size={20} className="absolute left-3 text-gray-400" />
@@ -237,7 +237,7 @@ export default function TeacherSelector({
       ) : (
         <div
           className={clsx("overflow-hidden rounded-md border", {
-            hidden: courseStatus !== "대기 중",
+            hidden: courseStatus === "진행 중" || courseStatus === "완료",
           })}>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">

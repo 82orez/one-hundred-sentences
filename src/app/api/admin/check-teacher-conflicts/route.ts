@@ -1,9 +1,17 @@
 // /app/api/admin/check-teacher-conflicts/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+
+    // 관리자 권한 확인
+    if (!session || session.user.role !== "admin") {
+      return NextResponse.json({ message: "권한이 없습니다." }, { status: 403 });
+    }
     const { classDates, startTime, endTime, currentCourseId } = await request.json();
 
     // 모든 활성 강사 가져오기
