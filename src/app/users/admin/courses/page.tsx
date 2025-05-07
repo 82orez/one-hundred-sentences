@@ -658,7 +658,7 @@ export default function CoursePage() {
           {["전체 보기", "대기 중", "진행 중", "완료"].map((status) => {
             const isActive = statusFilter === status;
             const baseClasses =
-              "min-w-[82px] rounded px-3 py-1 text-sm border transition-colors duration-200 hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-offset-2";
+              "min-w-[82px] rounded px-3 py-1 text-sm border transition-colors duration-200 hover:brightness-105 focus:outline-none cursor-pointer focus:ring-2 focus:ring-offset-2";
 
             const colorClasses = {
               "전체 보기": isActive
@@ -703,7 +703,7 @@ export default function CoursePage() {
                 <th>수업 시작</th>
                 <th>진행 시간</th>
                 <th>종료일</th>
-                <th>수강생 등록</th>
+                <th>수강생 관리</th>
                 <th>상태</th>
                 <th>관리</th>
               </tr>
@@ -718,7 +718,9 @@ export default function CoursePage() {
                   <td>{course.startTime || "-"}</td>
                   <td>{course.duration || "-"}</td>
                   <td>{formatDate(course.endDate)}</td>
-                  <td>등록하기</td>
+                  <td>
+                    <button className="rounded bg-indigo-500 px-3 py-2 text-white hover:bg-indigo-600">관리하기</button>
+                  </td>
                   <td>
                     <span
                       className={clsx(
