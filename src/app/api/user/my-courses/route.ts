@@ -129,8 +129,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "존재하지 않는 등록입니다." }, { status: 404 });
     }
 
-    // 사용자 정보와 등록 정보 일치 확인
-    if (enrollment.studentName !== user.realName || enrollment.studentPhone !== user.phone) {
+    // ✅ 사용자 정보와 등록 정보 일치 확인 (서버의 전화번호 정보에서 하이픈 제거)
+    if (enrollment.studentName !== user.realName || enrollment.studentPhone !== user.phone.replace(/-/g, "")) {
       return NextResponse.json({ message: "등록 정보와 회원 정보가 일치하지 않습니다." }, { status: 403 });
     }
 
