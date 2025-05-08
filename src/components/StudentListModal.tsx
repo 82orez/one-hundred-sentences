@@ -90,6 +90,7 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
             <table className="w-full">
               <thead className="bg-gray-50 text-xs text-gray-700 uppercase">
                 <tr>
+                  <th className="px-6 py-3 text-left">순</th>
                   <th className="px-6 py-3 text-left">이름</th>
                   <th className="px-6 py-3 text-left">전화번호</th>
                   <th className="px-6 py-3 text-left">상태</th>
@@ -98,8 +99,9 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {enrollments.map((enrollment) => (
+                {enrollments.map((enrollment, index) => (
                   <tr key={enrollment.id} className="bg-white hover:bg-gray-50">
+                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{index + 1}</td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{enrollment.studentName}</td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{enrollment.studentPhone}</td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
