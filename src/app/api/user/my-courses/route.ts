@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
     const pendingEnrollments = await prisma.enrollment.findMany({
       where: {
         studentName: user.realName,
-        studentPhone: user.phone,
+        studentPhone: user.phone.replace(/-/g, ""), // ✅ 서버의 전화번호 정보에서 하이픈 제거,
         status: "pending",
         studentId: null, // 아직 studentId가 설정되지 않은 것
       },
