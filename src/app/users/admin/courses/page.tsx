@@ -729,10 +729,11 @@ export default function CoursePage() {
                   <td>{course.startTime || "-"}</td>
                   <td>{course.duration || "-"}</td>
                   <td>{formatDate(course.endDate)}</td>
-                  <td>
-                    <button onClick={() => handleEnrollmentClick(course)} className="rounded bg-indigo-500 px-3 py-2 text-white hover:bg-indigo-600">
+                  <td className="flex gap-2">
+                    <button onClick={() => handleEnrollmentClick(course)} className="rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">
                       등록
                     </button>
+                    <button className="rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">관리</button>
                   </td>
                   <td>
                     <span
