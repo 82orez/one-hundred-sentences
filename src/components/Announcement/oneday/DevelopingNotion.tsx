@@ -56,9 +56,9 @@ const AnnouncementModalForOneDay = () => {
         </p>
 
         {/* 배송지역 버튼 */}
-        {/*<div className="mt-4 flex justify-center">*/}
-        {/*  <button className="rounded-md bg-red-500 px-4 py-2 font-semibold text-white">전주 / 군산 / 익산</button>*/}
-        {/*</div>*/}
+        <div className="mt-4 flex justify-center">
+          <button className="rounded-md bg-red-500 px-4 py-2 font-semibold text-white">불편을 드려 죄송합니다.</button>
+        </div>
 
         {/* '오늘 하루 보지 않기' + 닫기 버튼 수평 정렬 */}
         <div className="mt-4 flex items-center justify-between border-t border-gray-400 pt-3">
