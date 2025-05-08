@@ -45,7 +45,7 @@ export default function MyCoursesPage() {
   if (error) {
     return (
       <div className="container mx-auto py-8">
-        <h1 className="mb-8 text-2xl font-bold">내 강의</h1>
+        <h1 className="mb-8 text-2xl font-bold">내 강의 보기</h1>
         <div className="rounded-lg bg-red-50 p-4 text-red-700">오류가 발생했습니다. 잠시 후 다시 시도해주세요.</div>
       </div>
     );
@@ -54,8 +54,8 @@ export default function MyCoursesPage() {
   const { pendingCourses = [], activeCourses = [] } = data || {};
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="mb-8 text-2xl font-bold">내 강의</h1>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="mb-8 text-2xl font-bold">내 강의 보기</h1>
 
       {pendingCourses.length === 0 && activeCourses.length === 0 ? (
         <div className="rounded-lg bg-gray-50 p-6 text-center text-gray-500">수강 중인 강의가 없습니다.</div>
