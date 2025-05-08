@@ -101,3 +101,36 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: "서버 오류가 발생했습니다." }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    // 관리자 권한 확인
+    if (!session || session.user.role !== "admin") {
+      return NextResponse.json({ message: "권한이 없습니다." }, { status: 403 });
+    }
+
+    const url = new URL(req.url);
+    const id = url.searchParams.get("enrollmentId");
+
+    // 등록 정보 확인
+    const enrollment = await prisma.enrollment.findUnique({
+      where: { id },
+    });
+
+    if (!enrollment) {
+      return NextResponse.json({ message: "존재하지 않는 등록 정보입니다." }, { status: 404 });
+    }
+
+    // 수강생 등록 정보 삭제
+    await prisma.enrollment.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ message: "수강생 등록 정보가 삭제되었습니다." });
+  } catch (error) {
+    console.error("수강생 삭제 오류:", error);
+    return NextResponse.json({ message: "서버 오류가 발생했습니다." }, { status: 500 });
+  }
+}

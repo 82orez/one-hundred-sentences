@@ -14,6 +14,7 @@ import DatePickerCalendarAddOrRemove from "@/components/DatePickerCalendarAddOrR
 import { FaList } from "react-icons/fa6";
 import TeacherSelector from "@/components/TeacherSelector";
 import EnrollmentModal from "@/components/EnrollmentModal";
+import StudentListModal from "@/components/StudentListModal";
 
 // 타입 정의 확장
 interface Teacher {
@@ -111,6 +112,16 @@ export default function CoursePage() {
   // 코스 페이지에 모달 상태 관리를 위한 코드 추가
   const [isEnrollmentModalOpen, setIsEnrollmentModalOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+
+  // 버튼 부분 수정 (해당 페이지 컴포넌트 내에서)
+  const [isStudentListModalOpen, setIsStudentListModalOpen] = useState(false);
+  const [selectedCourseForStudents, setSelectedCourseForStudents] = useState<Course | null>(null);
+
+  // 수강생 관리 버튼 클릭 핸들러
+  const handleManageStudentsClick = (course: Course) => {
+    setSelectedCourseForStudents(course);
+    setIsStudentListModalOpen(true);
+  };
 
   // 등록 버튼 클릭 핸들러
   const handleEnrollmentClick = (course: Course) => {
@@ -733,7 +744,9 @@ export default function CoursePage() {
                     <button onClick={() => handleEnrollmentClick(course)} className="rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">
                       등록
                     </button>
-                    <button className="rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">관리</button>
+                    <button onClick={() => handleManageStudentsClick(course)} className="rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">
+                      관리
+                    </button>
                   </td>
                   <td>
                     <span
@@ -768,6 +781,16 @@ export default function CoursePage() {
           onClose={() => setIsEnrollmentModalOpen(false)}
           courseId={selectedCourse.id}
           courseTitle={selectedCourse.title}
+        />
+      )}
+
+      {/* 수강생 관리 모달 */}
+      {selectedCourseForStudents && (
+        <StudentListModal
+          isOpen={isStudentListModalOpen}
+          onClose={() => setIsStudentListModalOpen(false)}
+          courseId={selectedCourseForStudents.id}
+          courseTitle={selectedCourseForStudents.title}
         />
       )}
 
