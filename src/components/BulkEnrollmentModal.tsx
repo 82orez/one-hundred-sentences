@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { X, Upload, FileText } from "lucide-react";
+import { X, Upload, FileText, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
 import * as XLSX from "xlsx";
 
@@ -20,12 +20,17 @@ interface StudentData {
   studentPhone: string;
 }
 
+interface FailedStudent extends StudentData {
+  reason: string;
+}
+
 export default function BulkEnrollmentModal({ isOpen, onClose, courseId, courseTitle }: BulkEnrollmentModalProps) {
   const queryClient = useQueryClient();
   const [file, setFile] = useState<File | null>(null);
   const [students, setStudents] = useState<StudentData[]>([]);
+  const [failedStudents, setFailedStudents] = useState<FailedStudent[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [step, setStep] = useState<"upload" | "preview" | "processing">("upload");
+  const [step, setStep] = useState<"upload" | "preview" | "processing" | "result">("upload");
 
   const bulkEnrollMutation = useMutation({
     mutationFn: async (data: { courseId: string; courseTitle: string; students: StudentData[] }) => {
@@ -35,11 +40,14 @@ export default function BulkEnrollmentModal({ isOpen, onClose, courseId, courseT
     onSuccess: (data) => {
       toast.success(`${data.successCount}명의 수강생이 등록되었습니다.`);
       if (data.failedCount > 0) {
+        setFailedStudents(data.failedEnrollments);
+        setStep("result");
         toast.error(`${data.failedCount}명의 수강생 등록에 실패했습니다.`);
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["enrollments"] });
+        queryClient.invalidateQueries({ queryKey: ["courses"] });
+        handleClose();
       }
-      queryClient.invalidateQueries({ queryKey: ["enrollments"] });
-      queryClient.invalidateQueries({ queryKey: ["courses"] });
-      handleClose();
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || "수강생 일괄 등록에 실패했습니다.");
@@ -113,9 +121,16 @@ export default function BulkEnrollmentModal({ isOpen, onClose, courseId, courseT
   const handleClose = () => {
     setFile(null);
     setStudents([]);
+    setFailedStudents([]);
     setStep("upload");
     setIsProcessing(false);
     onClose();
+  };
+
+  const handleFinish = () => {
+    queryClient.invalidateQueries({ queryKey: ["enrollments"] });
+    queryClient.invalidateQueries({ queryKey: ["courses"] });
+    handleClose();
   };
 
   if (!isOpen) return null;
@@ -184,14 +199,49 @@ export default function BulkEnrollmentModal({ isOpen, onClose, courseId, courseT
           </div>
         )}
 
+        {step === "result" && failedStudents.length > 0 && (
+          <div className="mb-6">
+            <div className="mb-4 flex items-center">
+              <AlertTriangle className="mr-2 h-5 w-5 text-red-500" />
+              <h4 className="font-medium text-red-500">등록 실패한 수강생 목록 ({failedStudents.length}명)</h4>
+            </div>
+
+            <div className="mb-4 max-h-60 overflow-y-auto rounded border border-red-200">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-red-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">번호</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">이름</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">전화번호</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-700 uppercase">실패 사유</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {failedStudents.map((student, index) => (
+                    <tr key={index}>
+                      <td className="px-6 py-2 text-sm whitespace-nowrap text-gray-500">{index + 1}</td>
+                      <td className="px-6 py-2 text-sm whitespace-nowrap">{student.studentName}</td>
+                      <td className="px-6 py-2 text-sm whitespace-nowrap">{student.studentPhone}</td>
+                      <td className="px-6 py-2 text-sm text-red-500">{student.reason}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-sm text-gray-600">위 학생들은 등록에 실패했습니다. 정보를 확인 후 다시 시도해주세요.</p>
+          </div>
+        )}
+
         <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={handleClose}
-            className="rounded border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            disabled={step === "processing"}>
-            취소
-          </button>
+          {step !== "result" && (
+            <button
+              type="button"
+              onClick={handleClose}
+              className="rounded border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              disabled={step === "processing"}>
+              취소
+            </button>
+          )}
 
           {step === "preview" && (
             <button
@@ -199,6 +249,15 @@ export default function BulkEnrollmentModal({ isOpen, onClose, courseId, courseT
               onClick={handleSubmit}
               className="rounded bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600">
               일괄 등록
+            </button>
+          )}
+
+          {step === "result" && (
+            <button
+              type="button"
+              onClick={handleFinish}
+              className="rounded bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600">
+              닫기
             </button>
           )}
         </div>
