@@ -28,6 +28,8 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
   const queryClient = useQueryClient();
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   // 수강생 목록 조회 쿼리
   const { data: enrollments = [], isLoading } = useQuery({
     queryKey: ["enrollments", courseId],
@@ -60,6 +62,15 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
     deleteMutation.mutate(id);
   };
 
+  const filteredEnrollments = enrollments.filter((enrollment) => {
+    const keyword = searchTerm.toLowerCase();
+    return (
+      enrollment.studentName.toLowerCase().includes(keyword) ||
+      enrollment.studentPhone.toLowerCase().includes(keyword) ||
+      enrollment.status.toLowerCase().includes(keyword)
+    );
+  });
+
   if (!isOpen) return null;
 
   return (
@@ -67,13 +78,25 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
       <div className="w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold">수강생 목록</h2>
-          <button onClick={onClose} className="rounded-full p-1 hover:bg-gray-100">
+          <button
+            onClick={() => {
+              setSearchTerm("");
+              onClose();
+            }}
+            className="rounded-full p-1 hover:bg-gray-100">
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <h3 className="font-medium text-gray-700">강좌: {courseTitle}</h3>
+          <input
+            type="text"
+            placeholder="이름, 전화번호, 상태 검색"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="rounded border border-gray-300 px-3 py-1 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          />
         </div>
 
         {isLoading ? (
@@ -99,7 +122,7 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {enrollments.map((enrollment, index) => (
+                {filteredEnrollments.map((enrollment, index) => (
                   <tr key={enrollment.id} className="bg-white hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{index + 1}</td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{enrollment.studentName}</td>
@@ -135,7 +158,12 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
         )}
 
         <div className="mt-6 flex justify-end">
-          <button onClick={onClose} className="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300">
+          <button
+            onClick={() => {
+              setSearchTerm("");
+              onClose();
+            }}
+            className="rounded bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300">
             닫기
           </button>
         </div>
