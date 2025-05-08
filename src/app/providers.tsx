@@ -5,8 +5,9 @@ import Navbar from "@/components/Navbar";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import AnnouncementModalForOneDay from "@/components/Announcement/AnnouncementModalForOneDay";
+import AnnouncementModalForOneDay from "@/components/Announcement/oneday/AnnouncementModalForOneDay";
 import AnnouncementModal from "@/components/Announcement/AnnouncementModal";
+import DevelopingNotion from "@/components/Announcement/oneday/DevelopingNotion";
 
 interface Props {
   children?: React.ReactNode;
@@ -40,6 +41,7 @@ export const NextLayout = ({ children }: Props) => {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <DevelopingNotion />
       {/*<AnnouncementModalForOneDay />*/}
       {/*<AnnouncementModal />*/}
       <Navbar />
