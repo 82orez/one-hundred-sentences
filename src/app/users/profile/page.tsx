@@ -42,7 +42,7 @@ const ProfilePage = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-blue-50 to-blue-200 p-4 md:p-6">
-      <div className="mt-12 w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 p-8 shadow-xl backdrop-blur-lg">
+      <div className="mt-12 w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 px-2 py-8 shadow-xl backdrop-blur-lg md:px-8">
         <div className="flex flex-col items-center justify-center text-center">
           <div className={"flex items-center justify-center"}>
             <h2 className="text-3xl font-bold text-gray-800">My Profile</h2>
