@@ -33,17 +33,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "존재하지 않는 강좌입니다." }, { status: 404 });
     }
 
-    // 중복 등록 확인 (같은 강좌에 같은 이름, 같은 전화번호)
+    // 중복 등록 확인 (같은 강좌에 같은 이름??, 같은 전화번호)
     const existingEnrollment = await prisma.enrollment.findFirst({
       where: {
         courseId,
-        studentName,
+        // studentName, // 중복 여부를 전화 번호로만 확인하기 위해 주석 처리함.
         studentPhone: cleanPhone,
       },
     });
 
     if (existingEnrollment) {
-      return NextResponse.json({ message: "이미 등록된 수강생입니다." }, { status: 409 });
+      return NextResponse.json({ message: "이미 같은 전화번호로 등록된 수강생입니다." }, { status: 409 });
     }
 
     // 수강생 등록
