@@ -23,6 +23,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid phone number format" }, { status: 400 });
     }
 
+    // 전화번호 중복 확인 - 자신을 제외한 다른 사용자의 번호와 중복 체크
+    const existingUserWithPhone = await prisma.user.findFirst({
+      where: {
+        phone: phone,
+        id: {
+          not: session.user.id,
+        },
+      },
+    });
+
+    if (existingUserWithPhone) {
+      return NextResponse.json({ error: "이미 가입된 전화번호입니다." }, { status: 409 });
+    }
+
     // 사용자 정보 업데이트
     await prisma.user.update({
       where: { id: session.user.id },

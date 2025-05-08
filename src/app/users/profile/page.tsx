@@ -57,7 +57,7 @@ const ProfilePage = () => {
 
           <h3 className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</h3>
 
-          <div className="mt-8 w-full space-y-4 text-gray-700">
+          <div className="mt-8 w-full space-y-4 overflow-auto text-gray-700">
             <div className="flex items-center gap-4 px-2">
               <User size={22} className="text-gray-500" />
               <span className="text-lg">{userInfo?.realName || "등록되지 않음"}</span>

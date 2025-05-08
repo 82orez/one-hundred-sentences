@@ -9,6 +9,7 @@ import { User } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { queryClient } from "@/app/providers";
+import Link from "next/link";
 
 // * DaisyUI Toast 를 위한 함수
 const showToast = (message: string, type: "success" | "error" = "success") => {
@@ -21,7 +22,7 @@ const showToast = (message: string, type: "success" | "error" = "success") => {
   // 새로운 toast 생성
   const toast = document.createElement("div");
   toast.id = "custom-toast";
-  toast.className = "toast toast-bottom toast-end z-50";
+  toast.className = "toast toast-bottom toast-center z-50";
 
   const alert = document.createElement("div");
   alert.className = `alert ${type === "success" ? "alert-neutral" : "alert-error"}`;
@@ -110,8 +111,23 @@ const EditProfilePage = () => {
       showToast("✅ 프로필이 업데이트되었습니다.", "success");
       router.push("/users/profile");
     },
-    onError: () => {
-      showToast("❌ 업데이트 중 오류가 발생했습니다.", "error");
+    onError: (error) => {
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 409) {
+          // 중복된 전화번호 오류 처리
+          setError("이미 가입된 전화번호입니다.");
+          showToast("❌ 이미 가입된 전화번호입니다.", "error");
+        } else if (error.response.data?.error) {
+          setError(error.response.data.error);
+          showToast(`❌ ${error.response.data.error}`, "error");
+        } else {
+          setError("업데이트 중 오류가 발생했습니다.");
+          showToast("❌ 업데이트 중 오류가 발생했습니다.", "error");
+        }
+      } else {
+        setError("업데이트 중 오류가 발생했습니다.");
+        showToast("❌ 업데이트 중 오류가 발생했습니다.", "error");
+      }
     },
   });
 
@@ -166,7 +182,7 @@ const EditProfilePage = () => {
         <div className="card w-full max-w-md rounded-2xl border border-gray-300/50 bg-white/90 shadow-xl backdrop-blur-md">
           <div className="card-body px-4 py-6 md:p-8">
             <h2 className="card-title justify-center text-center text-3xl font-semibold text-gray-800">프로필 등록 및 수정</h2>
-            <p className={"mt-2 text-center text-lg md:text-xl"}>결제 정보 확인을 위해 반드시 정확한 이름과 휴대폰 번호를 입력해 주세요.</p>
+            <p className={"mt-4 text-center text-lg md:text-xl"}>결제 정보 및 본인 확인을 위해 반드시 정확한 이름과 휴대폰 번호를 입력해 주세요.</p>
 
             <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-6 text-xl">
               {/* 실제 이름 입력 */}
@@ -250,13 +266,19 @@ const EditProfilePage = () => {
               {/* 에러 메시지 표시 */}
               {error && <p className="text-lg text-red-500">{error}</p>}
 
-              {/* 저장 버튼 */}
+              {/* 저장 및 닫기 버튼 */}
               <button
                 type="submit"
-                className="h-12 w-full rounded-lg bg-blue-700 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
+                className="h-12 min-w-36 rounded-lg bg-blue-700 text-xl font-semibold text-white shadow-lg hover:bg-blue-600 disabled:opacity-50"
                 disabled={updateProfileMutation.isPending}>
-                {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 정보 수정하기"}
+                {updateProfileMutation.isPending ? "업데이트 중..." : "프로필 등록 및 수정"}
               </button>
+
+              <Link
+                href="/users/profile"
+                className="mx-auto inline-flex h-10 w-full max-w-sm items-center justify-center gap-2 rounded-lg border border-gray-300 bg-transparent text-lg font-medium text-gray-700 shadow-md transition-colors hover:bg-gray-100 md:w-40">
+                닫 기
+              </Link>
             </form>
           </div>
         </div>
