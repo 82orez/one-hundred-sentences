@@ -331,8 +331,8 @@ export default function TeachersManagementPage() {
                           year: "numeric",
                           month: "2-digit",
                           day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
+                          // hour: "2-digit",
+                          // minute: "2-digit",
                         })}
                       </td>
                       <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{teacher.realName}</td>
@@ -353,7 +353,7 @@ export default function TeachersManagementPage() {
                         <button
                           onClick={() => setSelectedTeacherForSchedule(teacher)}
                           className="rounded bg-indigo-500 px-3 py-2 text-white hover:bg-indigo-600">
-                          스케줄 보기
+                          보기
                         </button>
                       </td>
 
@@ -367,7 +367,7 @@ export default function TeachersManagementPage() {
                             {teacher.isActive ? "비활성화" : "활성화"}
                           </button>
                           <button onClick={() => openEditModal(teacher)} className="mr-2 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600">
-                            수정하기
+                            수정
                           </button>
                           <button
                             onClick={() => {
