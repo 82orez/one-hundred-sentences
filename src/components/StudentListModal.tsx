@@ -15,6 +15,9 @@ interface Enrollment {
   courseTitle: string;
   status: string;
   createdAt: string;
+  centerName: string;
+  localName: string;
+  description: string;
 }
 
 interface StudentListModalProps {
@@ -67,7 +70,9 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
     return (
       enrollment.studentName.toLowerCase().includes(keyword) ||
       enrollment.studentPhone.toLowerCase().includes(keyword) ||
-      enrollment.status.toLowerCase().includes(keyword)
+      enrollment.status.toLowerCase().includes(keyword) ||
+      enrollment.centerName.toLowerCase().includes(keyword) ||
+      enrollment.localName.toLowerCase().includes(keyword)
     );
   });
 
@@ -75,7 +80,7 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg">
+      <div className="w-full max-w-5xl rounded-lg bg-white p-6 shadow-lg">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold">수강생 목록</h2>
           <button
@@ -117,6 +122,9 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
                   <th className="px-6 py-3 text-left">이름</th>
                   <th className="px-6 py-3 text-left">전화번호</th>
                   <th className="px-6 py-3 text-left">상태</th>
+                  <th className="px-6 py-3 text-left">센터명</th>
+                  <th className="px-6 py-3 text-left">지점명</th>
+                  <th className="px-6 py-3 text-left">비고</th>
                   <th className="px-6 py-3 text-left">등록일</th>
                   <th className="px-6 py-3 text-center">관리</th>
                 </tr>
@@ -130,6 +138,9 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
                       {enrollment.status === "pending" ? "대기중" : enrollment.status}
                     </td>
+                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{enrollment.centerName || "-"}</td>
+                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{enrollment.localName || "-"}</td>
+                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{enrollment.description || "-"}</td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{new Date(enrollment.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4 text-center text-sm whitespace-nowrap">
                       {deleteConfirmId === enrollment.id ? (

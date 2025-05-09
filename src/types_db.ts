@@ -329,10 +329,13 @@ export type Database = {
       }
       Enrollment: {
         Row: {
+          centerName: string | null
           courseId: string
           courseTitle: string
           createdAt: string
+          description: string | null
           id: string
+          localName: string | null
           status: Database["public"]["Enums"]["EnrollmentStatus"]
           studentId: string | null
           studentName: string
@@ -340,10 +343,13 @@ export type Database = {
           updatedAt: string
         }
         Insert: {
+          centerName?: string | null
           courseId: string
           courseTitle: string
           createdAt?: string
+          description?: string | null
           id: string
+          localName?: string | null
           status?: Database["public"]["Enums"]["EnrollmentStatus"]
           studentId?: string | null
           studentName: string
@@ -351,10 +357,13 @@ export type Database = {
           updatedAt: string
         }
         Update: {
+          centerName?: string | null
           courseId?: string
           courseTitle?: string
           createdAt?: string
+          description?: string | null
           id?: string
+          localName?: string | null
           status?: Database["public"]["Enums"]["EnrollmentStatus"]
           studentId?: string | null
           studentName?: string

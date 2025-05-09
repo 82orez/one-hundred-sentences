@@ -20,11 +20,22 @@ export default function EnrollmentModal({ isOpen, onClose, courseId, courseTitle
   const [formData, setFormData] = useState({
     studentName: "",
     studentPhone: "",
+    centerName: "",
+    localName: "",
+    description: "",
   });
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
   const enrollMutation = useMutation({
-    mutationFn: async (data: { courseId: string; courseTitle: string; studentName: string; studentPhone: string }) => {
+    mutationFn: async (data: {
+      courseId: string;
+      courseTitle: string;
+      studentName: string;
+      studentPhone: string;
+      centerName: string;
+      localName: string;
+      description: string;
+    }) => {
       const response = await axios.post("/api/admin/enrollments", data);
       return response.data;
     },
@@ -37,6 +48,9 @@ export default function EnrollmentModal({ isOpen, onClose, courseId, courseTitle
       setFormData({
         studentName: "",
         studentPhone: "",
+        centerName: "",
+        localName: "",
+        description: "",
       });
     },
     onError: (error: any) => {
@@ -69,6 +83,9 @@ export default function EnrollmentModal({ isOpen, onClose, courseId, courseTitle
       courseTitle,
       studentName: cleanedName,
       studentPhone: cleanedPhone,
+      centerName: formData.centerName,
+      localName: formData.localName,
+      description: formData.description,
     });
   };
 
@@ -130,6 +147,51 @@ export default function EnrollmentModal({ isOpen, onClose, courseId, courseTitle
                 onChange={handleChange}
                 className="w-full rounded-md border border-gray-300 p-2 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
                 placeholder="예) 01012345678"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label htmlFor="centerName" className="mb-1 block text-sm font-medium text-gray-700">
+                센터명
+              </label>
+              <input
+                type="text"
+                id="centerName"
+                name="centerName"
+                value={formData.centerName}
+                onChange={handleChange}
+                className="w-full rounded-md border border-gray-300 p-2 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+                placeholder="예) 롯데마트"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label htmlFor="localName" className="mb-1 block text-sm font-medium text-gray-700">
+                지점명
+              </label>
+              <input
+                type="text"
+                id="localName"
+                name="localName"
+                value={formData.localName}
+                onChange={handleChange}
+                className="w-full rounded-md border border-gray-300 p-2 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+                placeholder="예) 수지점"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label htmlFor="description" className="mb-1 block text-sm font-medium text-gray-700">
+                비 고
+              </label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                className="w-full rounded-md border border-gray-300 p-2 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+                placeholder="예) 반장님"
               />
             </div>
 

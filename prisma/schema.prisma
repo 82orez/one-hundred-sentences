@@ -322,6 +322,9 @@ model Enrollment {
   status       EnrollmentStatus @default(pending)
   studentName  String
   studentPhone String
+  centerName   String?
+  localName    String?
+  description  String?
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 

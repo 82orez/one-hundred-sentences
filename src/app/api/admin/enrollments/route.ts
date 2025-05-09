@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { courseId, courseTitle, studentName, studentPhone } = body;
+    const { courseId, courseTitle, studentName, studentPhone, centerName, localName, description } = body;
 
     // 필수 필드 확인
     if (!courseId || !courseTitle || !studentName || !studentPhone) {
@@ -54,6 +54,9 @@ export async function POST(req: NextRequest) {
         studentName,
         studentPhone: cleanPhone,
         status: "pending",
+        centerName,
+        localName,
+        description,
       },
     });
 
