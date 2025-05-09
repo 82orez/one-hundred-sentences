@@ -227,7 +227,7 @@ const EditProfilePage = () => {
                   <span className="text-lg font-medium text-blue-800">현재 강사직 자격 심사 중입니다.</span>
                   <button
                     onClick={() => cancelTeacherApplicationMutation.mutate()}
-                    className="btn btn-error btn-sm"
+                    className="btn btn-error btn-sm text-white"
                     disabled={cancelTeacherApplicationMutation.isPending}
                     type="button">
                     {cancelTeacherApplicationMutation.isPending ? "취소 중..." : "신청 취소"}

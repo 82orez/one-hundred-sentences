@@ -248,12 +248,21 @@ export default function TeachersManagementPage() {
                       </td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">
                         <button
-                          onClick={() => approveTeacherApplication.mutate(application.id)}
+                          onClick={() => {
+                            if (window.confirm("정말로 승인하시겠습니까?")) {
+                              approveTeacherApplication.mutate(application.id);
+                            }
+                          }}
                           className="mr-2 rounded bg-green-500 px-3 py-1 text-white hover:bg-green-600">
                           승인
                         </button>
+
                         <button
-                          onClick={() => rejectTeacherApplication.mutate(application.id)}
+                          onClick={() => {
+                            if (window.confirm("정말로 거절하시겠습니까?")) {
+                              rejectTeacherApplication.mutate(application.id);
+                            }
+                          }}
                           className="rounded bg-red-500 px-3 py-1 text-white hover:bg-red-600">
                           거절
                         </button>
