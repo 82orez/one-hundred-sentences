@@ -50,8 +50,8 @@ const ProfilePage = () => {
 
           {/* 프로필 이미지 */}
           <div className="mt-8">
-            <div className="h-24 w-24 overflow-hidden rounded-full shadow-md ring-2 ring-blue-300 md:h-32 md:w-32">
-              <img src={session?.user?.image || "/images/anon-user.png"} alt="Profile Image" className="h-full w-full object-cover object-center" />
+            <div className="h-36 w-36 overflow-hidden rounded-full shadow-md ring-2 ring-blue-300 md:h-48 md:w-48">
+              <img src={session?.user?.image || "/images/anon-user-1.jpg"} alt="Profile Image" className="h-full w-full object-cover object-center" />
             </div>
           </div>
 
