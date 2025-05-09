@@ -10,6 +10,7 @@ import { MdOutlinePhoneAndroid } from "react-icons/md";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { queryClient } from "@/app/providers";
 import Link from "next/link";
+import clsx from "clsx";
 
 // * DaisyUI Toast 를 위한 함수
 const showToast = (message: string, type: "success" | "error" = "success") => {
@@ -48,6 +49,13 @@ const EditProfilePage = () => {
     return null;
   }
 
+  const [realName, setRealName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [isApplyForTeacher, setIsApplyForTeacher] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
+  const [isApplyVisible, setIsApplyVisible] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   // ✅ 기존 사용자 정보 불러오기
   const { data: userInfo, isLoading } = useQuery({
     queryKey: ["userProfile", session?.user?.id],
@@ -58,12 +66,6 @@ const EditProfilePage = () => {
     enabled: !!session?.user?.id,
   });
 
-  // 수정 후:
-  const [realName, setRealName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [isApplyForTeacher, setIsApplyForTeacher] = useState(false);
-  const [role, setRole] = useState<string | null>(null);
-
   // userInfo 가 로드된 후 상태 업데이트
   useEffect(() => {
     if (userInfo) {
@@ -73,8 +75,6 @@ const EditProfilePage = () => {
       setRole(userInfo.role || null);
     }
   }, [userInfo]);
-
-  const [error, setError] = useState<string | null>(null);
 
   // ✅ 전화번호 자동 변환 (마지막 4자리 기준)
   const formatPhoneNumber = (value: string) => {
@@ -221,45 +221,84 @@ const EditProfilePage = () => {
                 </div>
               </div>
 
-              {/* 강사 신청 여부 체크박스 - role이 student일 때만 표시 */}
-              {role === "student" && (
+              {/* 강사직 신청 중일 때만 보임 */}
+              {userInfo?.isApplyForTeacher && (
+                <div className="mt-4 flex items-center justify-between rounded-lg bg-blue-100 p-3">
+                  <span className="text-lg font-medium text-blue-800">현재 강사직 자격 심사 중입니다.</span>
+                  <button
+                    onClick={() => cancelTeacherApplicationMutation.mutate()}
+                    className="btn btn-error btn-sm"
+                    disabled={cancelTeacherApplicationMutation.isPending}
+                    type="button">
+                    {cancelTeacherApplicationMutation.isPending ? "취소 중..." : "신청 취소"}
+                  </button>
+                </div>
+              )}
+
+              {/* 강사 신청 여부 체크박스 - role이 student일 때와 강사직 신청 중이 아닐 때에만 표시 */}
+              {role === "student" && !userInfo?.isApplyForTeacher && (
                 <div className="form-control mt-8">
-                  <label className="mb-2 text-lg font-semibold text-gray-700">강사직 지원을 하시겠습니까?</label>
-                  {userInfo?.isApplyForTeacher ? (
-                    <div className="mt-4 flex items-center justify-between rounded-lg bg-blue-100 p-3">
-                      <span className="text-lg font-medium text-blue-800">현재 강사직 자격 심사 중입니다.</span>
-                      <button
-                        onClick={() => cancelTeacherApplicationMutation.mutate()}
-                        className="btn btn-error btn-sm"
-                        disabled={cancelTeacherApplicationMutation.isPending}
-                        type="button">
-                        {cancelTeacherApplicationMutation.isPending ? "취소 중..." : "신청 취소"}
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="mt-4 flex gap-4">
-                      <label className="label cursor-pointer">
-                        <span className="label-text mr-2 text-lg">예</span>
-                        <input
-                          type="radio"
-                          name="isApplyForTeacher"
-                          className="radio radio-primary"
-                          checked={isApplyForTeacher === true}
-                          onChange={() => setIsApplyForTeacher(true)}
-                        />
-                      </label>
-                      <label className="label cursor-pointer">
-                        <span className="label-text mr-2 text-lg">아니오</span>
-                        <input
-                          type="radio"
-                          name="isApplyForTeacher"
-                          className="radio radio-primary"
-                          checked={isApplyForTeacher === false}
-                          onChange={() => setIsApplyForTeacher(false)}
-                        />
-                      </label>
-                    </div>
-                  )}
+                  {/* 활성화 토글 체크박스 */}
+                  <label className="label mb-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="checkbox checkbox-primary"
+                      checked={isApplyVisible}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          const confirmed = window.confirm("다음 부분은 강사직 신청 관련 부분입니다. 강사 활동 중이신가요?");
+                          if (confirmed) {
+                            setIsApplyVisible(true);
+                          }
+                        } else {
+                          setIsApplyVisible(false);
+                        }
+                      }}
+                    />
+                    <span className="label-text mr-2 text-base">강사 신청 옵션 보기</span>
+                  </label>
+
+                  {/* 테두리로 감싼 강사 신청 영역 */}
+                  <fieldset
+                    disabled={!isApplyVisible}
+                    className={clsx("rounded-lg border border-gray-300 p-4 transition-opacity duration-300", { hidden: !isApplyVisible })}>
+                    <label className="mb-2 text-lg font-semibold text-gray-700">강사직 지원을 하시겠습니까?</label>
+                    {userInfo?.isApplyForTeacher ? (
+                      <div className="mt-4 flex items-center justify-between rounded-lg bg-blue-100 p-3">
+                        <span className="text-lg font-medium text-blue-800">현재 강사직 자격 심사 중입니다.</span>
+                        <button
+                          onClick={() => cancelTeacherApplicationMutation.mutate()}
+                          className="btn btn-error btn-sm"
+                          disabled={cancelTeacherApplicationMutation.isPending}
+                          type="button">
+                          {cancelTeacherApplicationMutation.isPending ? "취소 중..." : "신청 취소"}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="mt-4 flex gap-4">
+                        <label className="label cursor-pointer">
+                          <span className="label-text mr-2 text-lg">예</span>
+                          <input
+                            type="radio"
+                            name="isApplyForTeacher"
+                            className="radio radio-primary"
+                            checked={isApplyForTeacher === true}
+                            onChange={() => setIsApplyForTeacher(true)}
+                          />
+                        </label>
+                        <label className="label cursor-pointer">
+                          <span className="label-text mr-2 text-lg">아니오</span>
+                          <input
+                            type="radio"
+                            name="isApplyForTeacher"
+                            className="radio radio-primary"
+                            checked={isApplyForTeacher === false}
+                            onChange={() => setIsApplyForTeacher(false)}
+                          />
+                        </label>
+                      </div>
+                    )}
+                  </fieldset>
                 </div>
               )}
 
