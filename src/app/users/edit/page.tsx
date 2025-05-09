@@ -226,7 +226,12 @@ const EditProfilePage = () => {
                 <div className="mt-4 flex items-center justify-between rounded-lg bg-blue-100 p-3">
                   <span className="text-lg font-medium text-blue-800">현재 강사직 자격 심사 중입니다.</span>
                   <button
-                    onClick={() => cancelTeacherApplicationMutation.mutate()}
+                    onClick={() => {
+                      const confirmed = window.confirm("정말로 신청 취소하시겠습니까?");
+                      if (confirmed) {
+                        cancelTeacherApplicationMutation.mutate();
+                      }
+                    }}
                     className="btn btn-error btn-sm text-white"
                     disabled={cancelTeacherApplicationMutation.isPending}
                     type="button">
