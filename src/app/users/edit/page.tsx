@@ -262,42 +262,29 @@ const EditProfilePage = () => {
                   <fieldset
                     disabled={!isApplyVisible}
                     className={clsx("rounded-lg border border-gray-300 p-4 transition-opacity duration-300", { hidden: !isApplyVisible })}>
-                    <label className="mb-2 text-lg font-semibold text-gray-700">강사직 지원을 하시겠습니까?</label>
-                    {userInfo?.isApplyForTeacher ? (
-                      <div className="mt-4 flex items-center justify-between rounded-lg bg-blue-100 p-3">
-                        <span className="text-lg font-medium text-blue-800">현재 강사직 자격 심사 중입니다.</span>
-                        <button
-                          onClick={() => cancelTeacherApplicationMutation.mutate()}
-                          className="btn btn-error btn-sm"
-                          disabled={cancelTeacherApplicationMutation.isPending}
-                          type="button">
-                          {cancelTeacherApplicationMutation.isPending ? "취소 중..." : "신청 취소"}
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="mt-4 flex gap-4">
-                        <label className="label cursor-pointer">
-                          <span className="label-text mr-2 text-lg">예</span>
-                          <input
-                            type="radio"
-                            name="isApplyForTeacher"
-                            className="radio radio-primary"
-                            checked={isApplyForTeacher === true}
-                            onChange={() => setIsApplyForTeacher(true)}
-                          />
-                        </label>
-                        <label className="label cursor-pointer">
-                          <span className="label-text mr-2 text-lg">아니오</span>
-                          <input
-                            type="radio"
-                            name="isApplyForTeacher"
-                            className="radio radio-primary"
-                            checked={isApplyForTeacher === false}
-                            onChange={() => setIsApplyForTeacher(false)}
-                          />
-                        </label>
-                      </div>
-                    )}
+                    <label className="mb-2 text-lg font-semibold text-gray-700">강사직에 지원을 하시겠습니까?</label>
+                    <div className="mt-4 flex gap-4">
+                      <label className="label cursor-pointer">
+                        <span className="label-text mr-2 text-lg">예</span>
+                        <input
+                          type="radio"
+                          name="isApplyForTeacher"
+                          className="radio radio-primary"
+                          checked={isApplyForTeacher === true}
+                          onChange={() => setIsApplyForTeacher(true)}
+                        />
+                      </label>
+                      <label className="label cursor-pointer">
+                        <span className="label-text mr-2 text-lg">아니오</span>
+                        <input
+                          type="radio"
+                          name="isApplyForTeacher"
+                          className="radio radio-primary"
+                          checked={isApplyForTeacher === false}
+                          onChange={() => setIsApplyForTeacher(false)}
+                        />
+                      </label>
+                    </div>
                   </fieldset>
                 </div>
               )}
