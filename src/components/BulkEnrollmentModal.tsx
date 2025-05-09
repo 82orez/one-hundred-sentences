@@ -18,6 +18,9 @@ interface BulkEnrollmentModalProps {
 interface StudentData {
   studentName: string;
   studentPhone: string;
+  centerName?: string;
+  localName?: string;
+  description?: string;
 }
 
 interface FailedStudent extends StudentData {
@@ -80,6 +83,9 @@ export default function BulkEnrollmentModal({ isOpen, onClose, courseId, courseT
           .map((row) => ({
             studentName: row["이름"]?.toString().trim() || "",
             studentPhone: row["전화번호"]?.toString().trim() || "",
+            centerName: row["센터명"]?.toString().trim() || "",
+            localName: row["지점명"]?.toString().trim() || "",
+            description: row["비고"]?.toString().trim() || "",
           }))
           .filter((student) => student.studentName && student.studentPhone);
 
@@ -154,7 +160,11 @@ export default function BulkEnrollmentModal({ isOpen, onClose, courseId, courseT
             <div className="mb-4 rounded-lg border-2 border-dashed border-gray-300 p-8 text-center">
               <FileText className="mx-auto mb-4 h-12 w-12 text-gray-400" />
               <p className="mb-2 text-sm text-gray-600">수강생 정보가 담긴 Excel 파일을 업로드해주세요.</p>
-              <p className="mb-4 text-xs text-gray-500">파일에는 반드시 '이름'과 '전화번호' 열이 포함되어야 합니다.</p>
+              <p className="mb-4 text-xs text-gray-500">
+                필수 항목: '이름', '전화번호'
+                <br />
+                선택 항목: '센터명', '지점명', '비고'
+              </p>
               <input type="file" id="excelFile" accept=".xlsx, .xls" className="hidden" onChange={handleFileChange} />
               <label
                 htmlFor="excelFile"
@@ -176,6 +186,9 @@ export default function BulkEnrollmentModal({ isOpen, onClose, courseId, courseT
                     <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">번호</th>
                     <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">이름</th>
                     <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">전화번호</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">센터명</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">지점명</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">비고</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
@@ -184,6 +197,9 @@ export default function BulkEnrollmentModal({ isOpen, onClose, courseId, courseT
                       <td className="px-6 py-2 text-sm whitespace-nowrap text-gray-500">{index + 1}</td>
                       <td className="px-6 py-2 text-sm whitespace-nowrap">{student.studentName}</td>
                       <td className="px-6 py-2 text-sm whitespace-nowrap">{student.studentPhone}</td>
+                      <td className="px-6 py-2 text-sm whitespace-nowrap">{student.centerName || "-"}</td>
+                      <td className="px-6 py-2 text-sm whitespace-nowrap">{student.localName || "-"}</td>
+                      <td className="px-6 py-2 text-sm whitespace-nowrap">{student.description || "-"}</td>
                     </tr>
                   ))}
                 </tbody>

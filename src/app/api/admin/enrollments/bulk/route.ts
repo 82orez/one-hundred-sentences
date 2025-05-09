@@ -41,30 +41,30 @@ export async function POST(req: NextRequest) {
     // 각 학생을 등록 처리
     for (const student of students) {
       try {
-        const { studentName, studentPhone } = student;
-        
+        const { studentName, studentPhone, centerName, localName, description } = student;
+
         // 필수 필드 확인
         if (!studentName || !studentPhone) {
           results.failedCount++;
-          results.failedEnrollments.push({ 
-            studentName: studentName || '이름 없음', 
-            studentPhone: studentPhone || '번호 없음',
-            reason: '이름이나 전화번호가 누락되었습니다.' 
+          results.failedEnrollments.push({
+            studentName: studentName || "이름 없음",
+            studentPhone: studentPhone || "번호 없음",
+            reason: "이름이나 전화번호가 누락되었습니다.",
           });
           continue;
         }
 
         // 전화번호 정리 (하이픈 제거)
         const cleanPhone = studentPhone.replace(/-/g, "").replace(/\s/g, "");
-        
+
         // 전화번호 유효성 검사
         const phoneRegex = /^[0-9]{10,11}$/;
         if (!phoneRegex.test(cleanPhone)) {
           results.failedCount++;
-          results.failedEnrollments.push({ 
-            studentName, 
+          results.failedEnrollments.push({
+            studentName,
             studentPhone,
-            reason: '전화번호 형식이 유효하지 않습니다.' 
+            reason: "전화번호 형식이 유효하지 않습니다.",
           });
           continue;
         }
@@ -82,10 +82,10 @@ export async function POST(req: NextRequest) {
 
         if (existingEnrollment) {
           results.failedCount++;
-          results.failedEnrollments.push({ 
-            studentName, 
+          results.failedEnrollments.push({
+            studentName,
             studentPhone,
-            reason: '이미 등록된 전화번호입니다.' 
+            reason: "이미 등록된 전화번호입니다.",
           });
           continue;
         }
@@ -97,6 +97,9 @@ export async function POST(req: NextRequest) {
             courseTitle,
             studentName: cleanName,
             studentPhone: cleanPhone,
+            centerName,
+            localName,
+            description,
             status: "pending",
           },
         });
@@ -106,26 +109,31 @@ export async function POST(req: NextRequest) {
           id: enrollment.id,
           studentName: cleanName,
           studentPhone: cleanPhone,
+          centerName,
+          localName,
+          description,
         });
       } catch (studentError) {
         console.error("개별 수강생 등록 오류:", studentError);
         results.failedCount++;
-        results.failedEnrollments.push({ 
-          studentName: student.studentName || '이름 없음', 
-          studentPhone: student.studentPhone || '번호 없음',
-          reason: '처리 중 오류가 발생했습니다.' 
+        results.failedEnrollments.push({
+          studentName: student.studentName || "이름 없음",
+          studentPhone: student.studentPhone || "번호 없음",
+          reason: "처리 중 오류가 발생했습니다.",
         });
       }
     }
 
-    return NextResponse.json({
-      message: `${results.successCount}명의 수강생이 등록되었습니다. ${results.failedCount}명 실패.`,
-      successCount: results.successCount,
-      failedCount: results.failedCount,
-      successfulEnrollments: results.successfulEnrollments,
-      failedEnrollments: results.failedEnrollments,
-    }, { status: 200 });
-    
+    return NextResponse.json(
+      {
+        message: `${results.successCount}명의 수강생이 등록되었습니다. ${results.failedCount}명 실패.`,
+        successCount: results.successCount,
+        failedCount: results.failedCount,
+        successfulEnrollments: results.successfulEnrollments,
+        failedEnrollments: results.failedEnrollments,
+      },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("수강생 일괄 등록 오류:", error);
     return NextResponse.json({ message: "서버 오류가 발생했습니다." }, { status: 500 });
