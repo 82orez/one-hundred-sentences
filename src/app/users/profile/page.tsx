@@ -1,15 +1,20 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
-import { Mail, User, Edit, Home } from "lucide-react";
+import { Mail, User, Edit, Home, Upload } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
+import { useState, useRef } from "react";
+import toast from "react-hot-toast";
+import { queryClient } from "@/app/providers";
 
 const ProfilePage = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   // user 정보 불러오기
   const {
@@ -24,6 +29,60 @@ const ProfilePage = () => {
     },
     enabled: !!session?.user?.id, // 여기서 조건부 실행 제어
   });
+
+  // 이미지 업로드 mutation
+  const uploadMutation = useMutation({
+    mutationFn: async (file: File) => {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axios.post("/api/user/upload-image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    },
+    onSuccess: async (data) => {
+      // 세션 업데이트
+      await update({ image: data.imageUrl });
+
+      // 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      toast.success("프로필 이미지가 업데이트 되었습니다.");
+    },
+    onError: () => {
+      toast.error("이미지 업로드 중 오류가 발생했습니다.");
+    },
+    onSettled: () => {
+      setIsUploading(false);
+    },
+  });
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // 파일 타입 검증
+    if (!file.type.startsWith("image/")) {
+      toast.error("이미지 파일만 업로드 가능합니다.");
+      return;
+    }
+
+    // 파일 크기 검증 (5MB 제한)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("파일 크기는 5MB 이하여야 합니다.");
+      return;
+    }
+
+    // 파일 업로드 실행
+    uploadMutation.mutate(file);
+  };
 
   if (isLoading) return <LoadingPageSkeleton />;
 
@@ -40,6 +99,9 @@ const ProfilePage = () => {
     );
   }
 
+  // 프로필 이미지 URL 결정 로직
+  const profileImageUrl = userInfo?.customImageUrl || session?.user?.image || "/images/anon-user-1.jpg";
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-blue-200 p-4 md:justify-between md:p-12">
       <div className="w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 px-2 py-8 shadow-xl backdrop-blur-lg md:px-8">
@@ -49,10 +111,21 @@ const ProfilePage = () => {
           </div>
 
           {/* 프로필 이미지 */}
-          <div className="mt-8">
-            <div className="h-36 w-36 overflow-hidden rounded-full shadow-md ring-2 ring-blue-300 md:h-44 md:w-44">
-              <img src={session?.user?.image || "/images/anon-user-1.jpg"} alt="Profile Image" className="h-full w-full object-cover object-center" />
+          <div className="relative mt-8">
+            <div
+              className="relative h-36 w-36 cursor-pointer overflow-hidden rounded-full shadow-md ring-2 ring-blue-300 md:h-44 md:w-44"
+              onClick={handleImageClick}>
+              <img src={profileImageUrl} alt="Profile Image" className="h-full w-full object-cover object-center" />
+              {isUploading && (
+                <div className="bg-opacity-50 absolute inset-0 flex items-center justify-center bg-black">
+                  <div className="h-10 w-10 animate-spin rounded-full border-t-2 border-b-2 border-white"></div>
+                </div>
+              )}
+              <div className="absolute right-0 bottom-0 rounded-full bg-blue-600 p-2 shadow-md">
+                <Upload size={16} className="text-white" />
+              </div>
             </div>
+            <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
           </div>
 
           <h3 className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</h3>
