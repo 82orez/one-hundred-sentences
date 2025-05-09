@@ -41,8 +41,8 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-blue-50 to-blue-200 p-4 md:p-6">
-      <div className="mt-12 w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 px-2 py-8 shadow-xl backdrop-blur-lg md:px-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-blue-200 p-4 md:justify-between md:p-12">
+      <div className="w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 px-2 py-8 shadow-xl backdrop-blur-lg md:px-8">
         <div className="flex flex-col items-center justify-center text-center">
           <div className={"flex items-center justify-center"}>
             <h2 className="text-3xl font-bold text-gray-800">My Profile</h2>
@@ -50,7 +50,7 @@ const ProfilePage = () => {
 
           {/* 프로필 이미지 */}
           <div className="mt-8">
-            <div className="h-36 w-36 overflow-hidden rounded-full shadow-md ring-2 ring-blue-300 md:h-48 md:w-48">
+            <div className="h-36 w-36 overflow-hidden rounded-full shadow-md ring-2 ring-blue-300 md:h-44 md:w-44">
               <img src={session?.user?.image || "/images/anon-user-1.jpg"} alt="Profile Image" className="h-full w-full object-cover object-center" />
             </div>
           </div>
