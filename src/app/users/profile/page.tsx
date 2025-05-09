@@ -49,7 +49,9 @@ const ProfilePage = () => {
       await update({ image: data.imageUrl });
 
       // 캐시 무효화
-      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      queryClient.invalidateQueries({
+        queryKey: ["userProfile", session?.user?.id],
+      });
       toast.success("프로필 이미지가 업데이트 되었습니다.");
     },
     onError: () => {
