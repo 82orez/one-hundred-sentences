@@ -462,8 +462,8 @@ export default function TeachersManagementPage() {
 
       {/* 스케줄 모달 추가 */}
       {selectedTeacherForSchedule && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/30">
-          <div className="my-8 max-h-full w-full max-w-5xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="my-8 max-h-full w-full max-w-5xl rounded-lg bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-xl font-bold">{selectedTeacherForSchedule.realName} 강사의 수업 일정</h2>
               <button onClick={closeScheduleModal} className="rounded-full p-1 hover:bg-gray-100">

@@ -128,7 +128,7 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
       const duration = endMinutes - startMinutes;
 
       // 시작 시간의 상대적 위치 (하루 = 1440분)
-      const top = (startMinutes / 1440) * 100;
+      const top = (startMinutes / 1440) * 200;
       // 강의 길이의 상대적 높이
       const height = (duration / 1440) * 100;
 
@@ -138,6 +138,7 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
       };
     };
 
+    // renderDayView 함수 내부의 해당 부분을 다음과 같이 수정합니다
     return (
       <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm">
         <h3 className="mb-4 text-xl font-medium">{format(currentDate, "yyyy년 MM월 dd일 (EEEE)", { locale: ko })}</h3>
@@ -145,7 +146,8 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
         {isLoading ? (
           <div className="p-6 text-center">불러오는 중...</div>
         ) : (
-          <div className="relative flex h-[1200px]">
+          // 높이 고정값을 제거하고 스크롤 가능하도록 수정
+          <div className="relative flex h-[600px] overflow-y-auto">
             {/* 시간 눈금 */}
             <div className="w-16 flex-shrink-0 pr-2 text-right">
               {hours.map((hour) => (
@@ -166,12 +168,12 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
 
               {/* 현재 시간 표시선 */}
               <div
-                className="absolute left-0 z-10 w-full border-t border-red-400"
+                className="absolute left-0 z-10 w-full border-t-2 border-red-400"
                 style={{
-                  top: `${((new Date().getHours() * 60 + new Date().getMinutes()) / 1440) * 100}%`,
+                  top: `${((new Date().getHours() * 60 + new Date().getMinutes()) / 1440) * 1200}px`,
                 }}>
                 <div className="relative">
-                  <span className="absolute -top-2 -left-18 rounded bg-red-400 px-1 text-xs text-white">현재</span>
+                  <span className="absolute -top-2 -left-16 rounded bg-red-400 px-1 text-xs text-white">현재</span>
                 </div>
               </div>
 
