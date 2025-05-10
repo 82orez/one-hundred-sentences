@@ -1,4 +1,3 @@
-// app/api/user/my-courses/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
@@ -45,8 +44,12 @@ export async function GET(req: NextRequest) {
         course: {
           include: {
             teacher: {
-              select: {
-                realName: true,
+              include: {
+                user: {
+                  select: {
+                    realName: true,
+                  },
+                },
               },
             },
           },
@@ -64,8 +67,12 @@ export async function GET(req: NextRequest) {
         course: {
           include: {
             teacher: {
-              select: {
-                realName: true,
+              include: {
+                user: {
+                  select: {
+                    realName: true,
+                  },
+                },
               },
             },
           },

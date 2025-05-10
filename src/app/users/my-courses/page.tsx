@@ -1,17 +1,14 @@
-// app/dashboard/my-courses/page.tsx
 "use client";
 
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { format } from "date-fns";
 import { Play, Clock, CheckCircle } from "lucide-react";
+import { queryClient } from "@/app/providers";
 
 export default function MyCoursesPage() {
-  const queryClient = useQueryClient();
-
   // 내 강의 목록 조회
   const { data, isLoading, error } = useQuery({
     queryKey: ["my-courses"],
@@ -74,7 +71,7 @@ export default function MyCoursesPage() {
                         대기중
                       </span>
                     </div>
-                    <p className="mb-4 text-sm text-gray-600">강사: {enrollment.course.teacher.realName}</p>
+                    <p className="mb-4 text-sm text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
                     <button
                       onClick={() => handleStartCourse(enrollment.id)}
                       className="flex w-full items-center justify-center rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600"
@@ -101,7 +98,7 @@ export default function MyCoursesPage() {
                         수강중
                       </span>
                     </div>
-                    <p className="mb-2 text-sm text-gray-600">강사: {enrollment.course.teacher.realName}</p>
+                    <p className="mb-2 text-sm text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
                     <p className="mb-4 text-xs text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
                     <a
                       href={`/dashboard/courses/${enrollment.course.id}`}
