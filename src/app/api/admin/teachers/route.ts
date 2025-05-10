@@ -1,4 +1,3 @@
-// /app/api/admin/teachers/[id]/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
@@ -10,6 +9,15 @@ export async function GET(request: Request) {
     const teacher = await prisma.teachers.findUnique({
       where: {
         id: teacherId,
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+            realName: true,
+            phone: true,
+          },
+        },
       },
     });
 

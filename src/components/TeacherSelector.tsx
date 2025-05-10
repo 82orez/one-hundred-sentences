@@ -153,10 +153,10 @@ export default function TeacherSelector({
           <div className="flex items-center justify-between rounded-md border bg-amber-100 p-3">
             <div>
               <p className="font-medium">
-                {currentTeacher.realName} {currentTeacher.nickName && `(${currentTeacher.nickName})`}
+                {currentTeacher.user.realName} {currentTeacher.nickName && `(${currentTeacher.nickName})`}
               </p>
               <p className="mt-2 text-sm text-gray-600">
-                {currentTeacher.email} | {currentTeacher.phone} | {currentTeacher.nation} | {currentTeacher.subject}
+                {currentTeacher.user.email} | {currentTeacher.user.phone} | {currentTeacher.nation} | {currentTeacher.subject}
               </p>
             </div>
             <button
