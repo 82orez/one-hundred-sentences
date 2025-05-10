@@ -797,13 +797,10 @@ export type Database = {
       Teachers: {
         Row: {
           createdAt: string
-          email: string
           id: string
           isActive: boolean
           nation: Database["public"]["Enums"]["Nation"]
           nickName: string | null
-          phone: string
-          realName: string
           subject: Database["public"]["Enums"]["Subject"]
           teacherImgUrl: string | null
           updatedAt: string
@@ -812,13 +809,10 @@ export type Database = {
         }
         Insert: {
           createdAt?: string
-          email: string
           id: string
           isActive?: boolean
           nation?: Database["public"]["Enums"]["Nation"]
           nickName?: string | null
-          phone: string
-          realName: string
           subject?: Database["public"]["Enums"]["Subject"]
           teacherImgUrl?: string | null
           updatedAt: string
@@ -827,13 +821,10 @@ export type Database = {
         }
         Update: {
           createdAt?: string
-          email?: string
           id?: string
           isActive?: boolean
           nation?: Database["public"]["Enums"]["Nation"]
           nickName?: string | null
-          phone?: string
-          realName?: string
           subject?: Database["public"]["Enums"]["Subject"]
           teacherImgUrl?: string | null
           updatedAt?: string

@@ -13,15 +13,18 @@ import TeacherSchedule from "@/components/TeacherSchedule";
 interface Teacher {
   id: string;
   userId: string;
-  realName: string;
-  email: string;
-  phone: string;
   nation: "KR" | "PH";
   subject: "en" | "ja" | "ko" | "zh";
   nickName?: string; // 별칭 필드 추가
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  // User 모델에서 가져오는 정보
+  user: {
+    email: string;
+    phone: string;
+    realName: string;
+  };
 }
 
 interface TeacherApplication {
@@ -84,7 +87,7 @@ export default function TeachersManagementPage() {
     setFormData({
       nation: teacher.nation,
       subject: teacher.subject,
-      phone: teacher.phone || "", // 전화번호 추가
+      phone: teacher.user.phone || "", // 전화번호 추가
       nickName: teacher.nickName || "", // 별칭 필드 추가
     });
     setIsEditModalOpen(true);
@@ -335,10 +338,10 @@ export default function TeachersManagementPage() {
                           // minute: "2-digit",
                         })}
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{teacher.realName}</td>
+                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{teacher.user.realName}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.nickName || "-"}</td>
-                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.email}</td>
-                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.phone || "-"}</td>
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.user.email}</td>
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.user.phone || "-"}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.nation || "-"}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.subject}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -401,7 +404,12 @@ export default function TeachersManagementPage() {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="mb-2 block text-sm font-bold text-gray-700">이름</label>
-                <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2" value={selectedTeacher.realName} disabled />
+                <input
+                  type="text"
+                  className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2"
+                  value={selectedTeacher.user.realName}
+                  disabled
+                />
               </div>
               <div className="mb-4">
                 <label htmlFor="nickName" className="mb-2 block text-sm font-bold text-gray-700">
@@ -418,7 +426,7 @@ export default function TeachersManagementPage() {
               </div>
               <div className="mb-4">
                 <label className="mb-2 block text-sm font-bold text-gray-700">이메일</label>
-                <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2" value={selectedTeacher.email} disabled />
+                <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2" value={selectedTeacher.user.email} disabled />
               </div>
               <div className="mb-4">
                 <label className="mb-2 block text-sm font-bold text-gray-700">전화번호</label>
@@ -465,7 +473,7 @@ export default function TeachersManagementPage() {
         <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
           <div className="my-8 max-h-full w-full max-w-5xl rounded-lg bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold">{selectedTeacherForSchedule.realName} 강사의 수업 일정</h2>
+              <h2 className="text-xl font-bold">{selectedTeacherForSchedule.user.realName} 강사의 수업 일정</h2>
               <button onClick={closeScheduleModal} className="rounded-full p-1 hover:bg-gray-100">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

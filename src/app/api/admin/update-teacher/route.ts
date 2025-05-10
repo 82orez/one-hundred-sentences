@@ -22,7 +22,7 @@ export async function POST(request) {
     }
 
     // 요청 데이터 파싱
-    const { teacherId, nation, subject, phone, nickName } = await request.json();
+    const { teacherId, nation, subject, nickName } = await request.json();
 
     // 필수 필드 확인
     if (!teacherId || !nation || !subject) {
@@ -43,32 +43,16 @@ export async function POST(request) {
       return NextResponse.json({ error: "해당 강사를 찾을 수 없습니다." }, { status: 404 });
     }
 
-    // 트랜잭션으로 두 모델 동시에 업데이트
-    const updatedTeacher = await prisma.$transaction(async (tx) => {
-      // 1. Teachers 모델 업데이트
-      const teacherUpdate = await tx.teachers.update({
-        where: {
-          id: teacherId,
-        },
-        data: {
-          nation,
-          subject,
-          phone,
-          nickName, // 별칭 필드 추가
-        },
-      });
-
-      // 2. User 모델의 phone 필드도 함께 업데이트
-      await tx.user.update({
-        where: {
-          id: teacher.userId,
-        },
-        data: {
-          phone,
-        },
-      });
-
-      return teacherUpdate;
+    // 트랜잭션 제거 후 간단한 업데이트
+    const updatedTeacher = await prisma.teachers.update({
+      where: {
+        id: teacherId,
+      },
+      data: {
+        nation,
+        subject,
+        nickName, // 별칭 필드
+      },
     });
 
     return NextResponse.json(updatedTeacher);

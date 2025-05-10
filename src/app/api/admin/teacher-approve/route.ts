@@ -46,9 +46,6 @@ export async function POST(req: Request) {
       const newTeacher = await tx.teachers.create({
         data: {
           userId: userId,
-          realName: user.realName || "",
-          email: user.email,
-          phone: user.phone,
         },
       });
 

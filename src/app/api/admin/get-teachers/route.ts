@@ -18,14 +18,17 @@ export async function GET() {
       include: {
         user: {
           select: {
+            realName: true,
+            email: true,
+            phone: true,
             name: true,
-            image: true
-          }
-        }
+            image: true,
+          },
+        },
       },
       orderBy: {
-        createdAt: "desc"
-      }
+        createdAt: "desc",
+      },
     });
 
     return NextResponse.json(teachers);
