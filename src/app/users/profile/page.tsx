@@ -62,6 +62,23 @@ const ProfilePage = () => {
     },
   });
 
+  // 이미지 리셋 mutation
+  const resetImageMutation = useMutation({
+    mutationFn: async () => {
+      return await axios.post("/api/user/reset-image");
+    },
+    onSuccess: async () => {
+      // 캐시 무효화
+      queryClient.invalidateQueries({
+        queryKey: ["userProfile", session?.user?.id],
+      });
+      toast.success("프로필 이미지가 초기화되었습니다.");
+    },
+    onError: () => {
+      toast.error("이미지 초기화 중 오류가 발생했습니다.");
+    },
+  });
+
   const handleImageClick = () => {
     fileInputRef.current?.click();
   };
@@ -84,6 +101,10 @@ const ProfilePage = () => {
 
     // 파일 업로드 실행
     uploadMutation.mutate(file);
+  };
+
+  const handleResetImage = () => {
+    resetImageMutation.mutate();
   };
 
   if (isLoading) return <LoadingPageSkeleton />;
@@ -123,9 +144,9 @@ const ProfilePage = () => {
                   <div className="h-10 w-10 animate-spin rounded-full border-t-2 border-b-2 border-white"></div>
                 </div>
               )}
-              <div className="absolute right-0 bottom-0 rounded-full bg-blue-600 p-2 shadow-md">
-                <Upload size={16} className="text-white" />
-              </div>
+              {/*<div className="absolute right-0 bottom-0 rounded-full bg-blue-600 p-2 shadow-md">*/}
+              {/*  <Upload size={16} className="text-white" />*/}
+              {/*</div>*/}
             </div>
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
           </div>
@@ -135,12 +156,12 @@ const ProfilePage = () => {
             <button
               onClick={handleImageClick}
               className="inline-flex items-center justify-center rounded-lg bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">
-              이미지 변경
+              Change
             </button>
             <button
-              // onClick={}
+              onClick={handleResetImage}
               className="inline-flex items-center justify-center rounded-lg border border-gray-400 bg-white px-3 py-1 text-gray-800 hover:bg-gray-100">
-              되돌리기
+              Reset
             </button>
           </div>
 
