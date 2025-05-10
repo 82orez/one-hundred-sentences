@@ -72,6 +72,7 @@ export default function MyCoursesPage() {
                       </span>
                     </div>
                     <p className="mb-4 text-sm text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
+                    <p className="mb-4 text-xs text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
                     <button
                       onClick={() => handleStartCourse(enrollment.id)}
                       className="flex w-full items-center justify-center rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600"
