@@ -73,7 +73,7 @@ export default function MyCourses() {
                   <div className="mt-4 space-y-2 text-sm">
                     {course.teacher && (
                       <p>
-                        <span className="font-medium">교사:</span> {course.teacher.nickName || "미정"}
+                        <span className="font-medium">교사:</span> {course.teacher.user?.realName || "미정"}
                       </p>
                     )}
 

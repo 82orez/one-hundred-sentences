@@ -37,7 +37,9 @@ export async function GET() {
     if (session.user.role === "teacher") {
       const teacherId = await prisma.teachers.findUnique({
         where: { userId },
-        select: { id: true },
+        include: {
+          user: true, // ⬅️ 여기서 가져오고
+        },
       });
 
       if (!teacherId) {
@@ -51,6 +53,11 @@ export async function GET() {
         include: {
           classDates: true,
           enrollments: true,
+          teacher: {
+            include: {
+              user: true, // ⬅️ Course.teacher.user 정보까지 포함
+            },
+          },
         },
       });
 
@@ -64,7 +71,12 @@ export async function GET() {
           generatorId: userId,
         },
         include: {
-          teacher: true,
+          teacher: {
+            include: {
+              user: true, // teacher.user
+            },
+          },
+          generator: true, // generator = User
           classDates: true,
           enrollments: true,
         },
