@@ -8,30 +8,11 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user) {
+    if (!session || !session.user || session.user.role === "student") {
       return NextResponse.json({ error: "인증이 필요합니다" }, { status: 401 });
     }
 
     const userId = session.user.id;
-
-    // 학생인 경우, 등록한 강좌 조회
-    if (session.user.role === "student") {
-      const enrolledCourses = await prisma.enrollment.findMany({
-        where: {
-          studentId: userId,
-        },
-        include: {
-          course: {
-            include: {
-              teacher: true,
-              classDates: true,
-            },
-          },
-        },
-      });
-
-      return NextResponse.json({ courses: enrolledCourses });
-    }
 
     // 교사인 경우, 자신이 가르치는 강좌 조회
     if (session.user.role === "teacher") {
