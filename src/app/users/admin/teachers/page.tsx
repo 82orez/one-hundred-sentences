@@ -411,6 +411,25 @@ export default function TeachersManagementPage() {
                   disabled
                 />
               </div>
+
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-bold text-gray-700">이메일</label>
+                <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2" value={selectedTeacher.user.email} disabled />
+              </div>
+
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-bold text-gray-700">전화번호</label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2"
+                  placeholder="전화번호를 입력하세요"
+                  disabled
+                />
+              </div>
+
               <div className="mb-4">
                 <label htmlFor="nickName" className="mb-2 block text-sm font-bold text-gray-700">
                   별칭
@@ -424,21 +443,7 @@ export default function TeachersManagementPage() {
                   className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
-              <div className="mb-4">
-                <label className="mb-2 block text-sm font-bold text-gray-700">이메일</label>
-                <input type="text" className="w-full rounded-lg border border-gray-300 bg-gray-100 p-2" value={selectedTeacher.user.email} disabled />
-              </div>
-              <div className="mb-4">
-                <label className="mb-2 block text-sm font-bold text-gray-700">전화번호</label>
-                <input
-                  type="text"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="w-full rounded-lg border border-gray-300 p-2"
-                  placeholder="전화번호를 입력하세요"
-                />
-              </div>
+
               <div className="mb-4">
                 <label className="mb-2 block text-sm font-bold text-gray-700">국적</label>
                 <select name="nation" value={formData.nation} onChange={handleInputChange} className="w-full rounded-lg border border-gray-300 p-2">
@@ -446,6 +451,7 @@ export default function TeachersManagementPage() {
                   <option value="PH">필리핀 (PH)</option>
                 </select>
               </div>
+
               <div className="mb-6">
                 <label className="mb-2 block text-sm font-bold text-gray-700">과목</label>
                 <select name="subject" value={formData.subject} onChange={handleInputChange} className="w-full rounded-lg border border-gray-300 p-2">
@@ -455,6 +461,7 @@ export default function TeachersManagementPage() {
                   <option value="zh">중국어 (zh)</option>
                 </select>
               </div>
+
               <div className="flex justify-end space-x-4">
                 <button type="button" onClick={closeEditModal} className="rounded bg-gray-300 px-4 py-2 hover:bg-gray-400">
                   취소
