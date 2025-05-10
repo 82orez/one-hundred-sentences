@@ -130,6 +130,20 @@ const ProfilePage = () => {
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
           </div>
 
+          {/* ✅ 추가된 버튼 그룹 */}
+          <div className="mt-4 flex w-full max-w-xs flex-col gap-2 text-sm md:flex-row md:justify-center">
+            <button
+              onClick={handleImageClick}
+              className="inline-flex items-center justify-center rounded-lg bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">
+              이미지 변경
+            </button>
+            <button
+              // onClick={}
+              className="inline-flex items-center justify-center rounded-lg border border-gray-400 bg-white px-3 py-1 text-gray-800 hover:bg-gray-100">
+              되돌리기
+            </button>
+          </div>
+
           <h3 className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</h3>
 
           <div className="mt-8 w-full space-y-4 overflow-auto text-gray-700">
