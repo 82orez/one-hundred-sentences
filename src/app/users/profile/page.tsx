@@ -154,15 +154,15 @@ const ProfilePage = () => {
           </div>
 
           {/* ✅ 추가된 버튼 그룹 */}
-          <div className="mt-4 flex w-full max-w-xs flex-col gap-2 text-sm md:flex-row md:justify-center">
+          <div className="mt-4 flex w-full max-w-xs justify-center gap-6 text-sm md:flex-row">
             <button
               onClick={handleImageClick}
-              className="inline-flex items-center justify-center rounded-lg bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">
+              className="inline-flex w-20 items-center justify-center rounded-lg bg-blue-500 px-3 py-2 text-white hover:bg-blue-600">
               Change
             </button>
             <button
               onClick={handleResetImage}
-              className="inline-flex items-center justify-center rounded-lg border border-gray-400 bg-white px-3 py-1 text-gray-800 hover:bg-gray-100">
+              className="inline-flex w-20 items-center justify-center rounded-lg border border-gray-400 bg-white px-3 py-2 text-gray-800 hover:bg-gray-100">
               Reset
             </button>
           </div>
@@ -174,7 +174,7 @@ const ProfilePage = () => {
             </div>
             <div className="flex items-center gap-4 px-2">
               <Mail size={22} className="text-gray-500" />
-              <span className="text-lg">{session?.user?.email || "등록되지 않음"}</span>
+              <span className="text-sm md:text-lg">{session?.user?.email || "등록되지 않음"}</span>
             </div>
             <div className="flex items-center gap-4 px-2">
               <MdOutlinePhoneAndroid size={22} className="text-gray-500" />
