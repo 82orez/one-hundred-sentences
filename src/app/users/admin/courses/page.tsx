@@ -19,10 +19,13 @@ import StudentListModal from "@/components/StudentListModal";
 // 타입 정의 확장
 interface Teacher {
   id: string;
-  realName: string;
-  email: string;
-  phone: string;
   isActive: boolean;
+  // User 모델에서 가져오는 정보
+  user: {
+    email: string;
+    phone: string;
+    realName: string;
+  };
 }
 
 interface Course {
@@ -734,7 +737,7 @@ export default function CoursePage() {
               {filteredCourses.map((course: Course) => (
                 <tr key={course.id}>
                   <td className="font-medium">{course.title}</td>
-                  <td>{course.teacher?.realName || "미지정"}</td>
+                  <td>{course.teacher?.user.realName || "미지정"}</td>
                   <td>{formatSchedule(course)}</td>
                   <td>{formatDate(course.startDate)}</td>
                   <td>{course.startTime || "-"}</td>

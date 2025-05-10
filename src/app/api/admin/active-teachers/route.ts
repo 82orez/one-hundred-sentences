@@ -18,17 +18,33 @@ export async function GET() {
       },
       select: {
         id: true,
-        realName: true,
-        email: true,
-        phone: true,
         isActive: true,
-        nation: true, // 국적 필드 추가
-        subject: true, // 과목 필드 추가
-        nickName: true, // 닉네임도 추가
+        nation: true,
+        subject: true,
+        nickName: true,
+        user: {
+          select: {
+            realName: true,
+            email: true,
+            phone: true,
+          },
+        },
       },
     });
 
-    return NextResponse.json({ teachers });
+    // user 모델의 필드를 최상위 레벨로 재구성
+    const formattedTeachers = teachers.map((teacher) => ({
+      id: teacher.id,
+      realName: teacher.user.realName,
+      email: teacher.user.email,
+      phone: teacher.user.phone,
+      isActive: teacher.isActive,
+      nation: teacher.nation,
+      subject: teacher.subject,
+      nickName: teacher.nickName,
+    }));
+
+    return NextResponse.json({ teachers: formattedTeachers });
   } catch (error) {
     console.error("강사 목록 조회 오류:", error);
     return NextResponse.json({ error: "강사 목록을 불러오는데 실패했습니다." }, { status: 500 });

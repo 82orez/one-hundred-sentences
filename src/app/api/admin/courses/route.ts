@@ -43,9 +43,15 @@ export async function GET(request: Request) {
           teacher: {
             select: {
               id: true,
-              realName: true,
-              email: true,
-              phone: true,
+              userId: true,
+              isActive: true,
+              user: {
+                select: {
+                  realName: true, // User 모델을 통해 realName에 접근
+                  email: true,
+                  phone: true,
+                },
+              },
             },
           },
           classDates: {
@@ -76,9 +82,15 @@ export async function GET(request: Request) {
           teacher: {
             select: {
               id: true,
-              realName: true,
-              email: true,
-              phone: true,
+              userId: true,
+              isActive: true,
+              user: {
+                select: {
+                  realName: true, // User 모델을 통해 realName에 접근
+                  email: true,
+                  phone: true,
+                },
+              },
             },
           },
           classDates: {

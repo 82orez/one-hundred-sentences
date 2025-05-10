@@ -338,10 +338,10 @@ export default function TeachersManagementPage() {
                           // minute: "2-digit",
                         })}
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{teacher.user.realName}</td>
+                      <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">{teacher.user?.realName}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.nickName || "-"}</td>
-                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.user.email}</td>
-                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.user.phone || "-"}</td>
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.user?.email}</td>
+                      <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.user?.phone || "-"}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.nation || "-"}</td>
                       <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-500">{teacher.subject}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
