@@ -133,8 +133,10 @@ const ProfilePage = () => {
             <h2 className="text-3xl font-bold text-gray-800">My Profile</h2>
           </div>
 
+          <h3 className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</h3>
+
           {/* 프로필 이미지 */}
-          <div className="relative mt-8">
+          <div className="relative mt-4">
             <div
               className="relative h-36 w-36 cursor-pointer overflow-hidden rounded-full shadow-md ring-2 ring-blue-300 md:h-44 md:w-44"
               onClick={handleImageClick}>
@@ -164,8 +166,6 @@ const ProfilePage = () => {
               Reset
             </button>
           </div>
-
-          <h3 className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</h3>
 
           <div className="mt-8 w-full space-y-4 overflow-auto text-gray-700">
             <div className="flex items-center gap-4 px-2">
