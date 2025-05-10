@@ -23,10 +23,7 @@ export const NextLayout = ({ children }: Props) => {
   useEffect(() => {
     if (status === "authenticated") {
       console.log("data: ", session);
-      if (session?.user.role === "teacher") {
-        console.log("Session:", session);
-        router.replace("/users/teacher");
-      } else if (session?.user.role === "student") {
+      if (session?.user.role === "student") {
         // student 인 경우 realName 과 phone 값 확인
         const userRealName = session?.user.realName;
         const userPhone = session?.user.phone;

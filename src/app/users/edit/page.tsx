@@ -109,7 +109,7 @@ const EditProfilePage = () => {
     onSuccess: () => {
       update({ realName, phone }); // 세션 업데이트 추가
       showToast("✅ 프로필이 업데이트되었습니다.", "success");
-      router.push("/users/profile");
+      // router.push("/users/profile");
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {
