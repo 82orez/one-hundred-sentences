@@ -31,6 +31,8 @@ interface Teacher {
 interface Course {
   id: string;
   title: string;
+  location: string;
+  contents: string;
   description: string;
   teacherId: string;
   teacher: Teacher;
@@ -74,6 +76,8 @@ export default function CoursePage() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    location: "",
+    contents: "",
     teacherId: "",
     scheduleMonday: false,
     scheduleTuesday: false,
@@ -452,6 +456,8 @@ export default function CoursePage() {
     setFormData({
       title: "",
       description: "",
+      location: "",
+      contents: "",
       teacherId: "",
       scheduleMonday: false,
       scheduleTuesday: false,
@@ -509,6 +515,8 @@ export default function CoursePage() {
     setFormData({
       title: course.title,
       description: course.description || "",
+      location: course.location,
+      contents: course.contents,
       teacherId: course.teacherId,
       scheduleMonday: course.scheduleMonday,
       scheduleTuesday: course.scheduleTuesday,
@@ -567,6 +575,16 @@ export default function CoursePage() {
 
     if (!formData.title) {
       toast.error("강좌 제목을 입력해주세요.");
+      return;
+    }
+
+    if (!formData.location) {
+      toast.error("수업 장소를 선택해주세요.");
+      return;
+    }
+
+    if (!formData.contents) {
+      toast.error("컨텐츠를 선택해주세요.");
       return;
     }
 
@@ -822,6 +840,37 @@ export default function CoursePage() {
                   className="input input-bordered w-full"
                   required
                 />
+              </div>
+              {/* 수업 장소 선택 */}
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-bold text-gray-700">수업 장소 *</label>
+                <select
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+                  required>
+                  <option value="">-</option>
+                  <option value="online">온라인</option>
+                  <option value="offline">오프라인</option>
+                  <option value="hybrid">하이브리드</option>
+                </select>
+              </div>
+
+              {/* 컨텐츠 선택 */}
+              <div className="mb-4">
+                <label className="mb-2 block text-sm font-bold text-gray-700">컨텐츠 *</label>
+                <select
+                  name="contents"
+                  value={formData.contents}
+                  onChange={handleInputChange}
+                  className="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+                  required>
+                  <option value="">-</option>
+                  <option value="tour100">tour100</option>
+                  <option value="basic100">basic100</option>
+                  <option value="wh100">wh100</option>
+                </select>
               </div>
 
               {/* 강좌 설명 */}
