@@ -740,7 +740,9 @@ export default function CoursePage() {
             <thead>
               <tr>
                 <th>강좌명</th>
+                <th>구분</th>
                 <th>강사</th>
+                <th>컨텐츠</th>
                 <th>수업 일정</th>
                 <th>시작일</th>
                 <th>수업 시작</th>
@@ -755,7 +757,9 @@ export default function CoursePage() {
               {filteredCourses.map((course: Course) => (
                 <tr key={course.id}>
                   <td className="font-medium">{course.title}</td>
+                  <td>{course.location}</td>
                   <td>{course.teacher?.user.realName || "미지정"}</td>
+                  <td>{course.contents}</td>
                   <td>{formatSchedule(course)}</td>
                   <td>{formatDate(course.startDate)}</td>
                   <td>{course.startTime || "-"}</td>
