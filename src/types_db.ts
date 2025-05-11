@@ -881,6 +881,7 @@ export type Database = {
           realName: string | null
           role: Database["public"]["Enums"]["Role"]
           updatedAt: string
+          zoomInviteUrl: string | null
         }
         Insert: {
           createdAt?: string
@@ -897,6 +898,7 @@ export type Database = {
           realName?: string | null
           role?: Database["public"]["Enums"]["Role"]
           updatedAt: string
+          zoomInviteUrl?: string | null
         }
         Update: {
           createdAt?: string
@@ -913,6 +915,7 @@ export type Database = {
           realName?: string | null
           role?: Database["public"]["Enums"]["Role"]
           updatedAt?: string
+          zoomInviteUrl?: string | null
         }
         Relationships: []
       }

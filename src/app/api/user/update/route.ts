@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { realName, phone, isApplyForTeacher } = await req.json();
+    const { realName, phone, isApplyForTeacher, zoomInviteUrl } = await req.json();
 
     // 필수 정보 유효성 검사
     if (!realName || !phone) {
@@ -21,6 +21,31 @@ export async function POST(req: NextRequest) {
     const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
     if (!phoneRegex.test(phone)) {
       return NextResponse.json({ error: "Invalid phone number format" }, { status: 400 });
+    }
+
+    // Zoom URL 유효성 검사 (선택적)
+    let validatedZoomUrl = undefined;
+    if (zoomInviteUrl) {
+      // 현재 사용자가 강사인지 확인
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { role: true },
+      });
+
+      if (user?.role !== "teacher") {
+        return NextResponse.json({ error: "Zoom URL은 강사만 등록할 수 있습니다." }, { status: 403 });
+      }
+
+      // URL 형식 유효성 검사
+      try {
+        const url = new URL(zoomInviteUrl);
+        if (url.protocol !== "https:") {
+          return NextResponse.json({ error: "Zoom URL은 https 형식이어야 합니다." }, { status: 400 });
+        }
+        validatedZoomUrl = zoomInviteUrl;
+      } catch (e) {
+        return NextResponse.json({ error: "유효한 URL 형식이 아닙니다." }, { status: 400 });
+      }
     }
 
     // 전화번호 중복 확인 - 자신을 제외한 다른 사용자의 번호와 중복 체크
@@ -44,6 +69,7 @@ export async function POST(req: NextRequest) {
         realName,
         phone,
         isApplyForTeacher: isApplyForTeacher !== undefined ? isApplyForTeacher : undefined,
+        zoomInviteUrl: validatedZoomUrl !== undefined ? validatedZoomUrl : undefined,
       },
     });
 

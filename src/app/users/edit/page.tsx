@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { User } from "lucide-react";
+import { User, Link2 } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { queryClient } from "@/app/providers";
@@ -55,6 +55,7 @@ const EditProfilePage = () => {
   const [role, setRole] = useState<string | null>(null);
   const [isApplyVisible, setIsApplyVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [zoomInviteUrl, setZoomInviteUrl] = useState("");
 
   // ✅ 기존 사용자 정보 불러오기
   const { data: userInfo, isLoading } = useQuery({
@@ -73,6 +74,7 @@ const EditProfilePage = () => {
       setPhone(userInfo.phone || "");
       setIsApplyForTeacher(userInfo.isApplyForTeacher || false);
       setRole(userInfo.role || null);
+      setZoomInviteUrl(userInfo.zoomInviteUrl || "");
     }
   }, [userInfo]);
 
@@ -101,10 +103,26 @@ const EditProfilePage = () => {
     return phoneRegex.test(value);
   };
 
+  // ✅ Zoom URL 유효성 검사
+  const isValidZoomUrl = (url: string) => {
+    if (!url) return true; // 빈 값은 유효함 (필수 아님)
+    try {
+      const urlObj = new URL(url);
+      return urlObj.protocol === "https:";
+    } catch (e) {
+      return false;
+    }
+  };
+
   // ✅ 정보 업데이트 Mutation
   const updateProfileMutation = useMutation({
     mutationFn: async () => {
-      return axios.post("/api/user/update", { realName, phone, isApplyForTeacher });
+      return axios.post("/api/user/update", {
+        realName,
+        phone,
+        isApplyForTeacher,
+        ...(role === "teacher" ? { zoomInviteUrl } : {}),
+      });
     },
     onSuccess: () => {
       update({ realName, phone }); // 세션 업데이트 추가
@@ -156,6 +174,7 @@ const EditProfilePage = () => {
 
     const trimmedRealName = realName.replace(/\s+/g, ""); // 중간 공백까지 모두 제거
     const trimmedPhone = phone.trim();
+    const trimmedZoomUrl = zoomInviteUrl.trim();
 
     if (!trimmedRealName || !trimmedPhone) {
       setError("모든 정보를 입력해주세요.");
@@ -167,9 +186,16 @@ const EditProfilePage = () => {
       return;
     }
 
+    // Zoom URL 유효성 검사 (강사인 경우)
+    if (role === "teacher" && trimmedZoomUrl && !isValidZoomUrl(trimmedZoomUrl)) {
+      setError("Zoom 초대 링크는 유효한 https URL 이어야 합니다.");
+      return;
+    }
+
     // 상태 반영
     setRealName(trimmedRealName);
     setPhone(trimmedPhone);
+    setZoomInviteUrl(trimmedZoomUrl);
 
     updateProfileMutation.mutate();
   };
@@ -221,6 +247,27 @@ const EditProfilePage = () => {
                   />
                 </div>
               </div>
+
+              {/* 강사인 경우에만 Zoom 초대 링크 입력 필드 표시 */}
+              {role === "teacher" && (
+                <div>
+                  <label htmlFor="zoomInviteUrl" className="text-lg font-semibold text-gray-700">
+                    Zoom 초대 링크
+                  </label>
+                  <div className="relative mt-2">
+                    <Link2 className="absolute top-3 left-5 text-gray-500" size={24} />
+                    <input
+                      id="zoomInviteUrl"
+                      type="url"
+                      value={zoomInviteUrl}
+                      onChange={(e) => setZoomInviteUrl(e.target.value)}
+                      className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-gray-400"
+                      placeholder="https://zoom.us/j/..."
+                    />
+                  </div>
+                  <p className="mt-1 text-sm text-gray-500">학생들에게 제공할 Zoom 미팅 초대 링크를 입력해주세요. https:// 로 시작해야 합니다.</p>
+                </div>
+              )}
 
               {/* 강사직 신청 중일 때만 보임 */}
               {userInfo?.isApplyForTeacher && (
