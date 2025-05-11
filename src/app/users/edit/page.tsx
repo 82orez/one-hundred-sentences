@@ -251,17 +251,18 @@ const EditProfilePage = () => {
               {/* 강사인 경우에만 Zoom 초대 링크 입력 필드 표시 */}
               {role === "teacher" && (
                 <div>
+                  <hr className="my-4 border-t border-gray-300" />
+
                   <label htmlFor="zoomInviteUrl" className="text-lg font-semibold text-gray-700">
                     Zoom Invite Link
                   </label>
                   <div className="relative mt-2">
-                    <Link2 className="absolute top-3 left-5 text-gray-500" size={24} />
                     <input
                       id="zoomInviteUrl"
                       type="url"
                       value={zoomInviteUrl}
                       onChange={(e) => setZoomInviteUrl(e.target.value)}
-                      className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-sm shadow-md focus:ring-2 focus:ring-gray-400"
+                      className="h-12 w-full rounded-lg border border-gray-400 p-2 text-sm shadow-md focus:ring-2 focus:ring-gray-400"
                       placeholder="https://"
                     />
                   </div>
