@@ -869,9 +869,9 @@ export default function CoursePage() {
                     className="focus:shadow-outline w-full appearance-none rounded border border-gray-300 px-3 py-2 leading-tight text-gray-500 shadow focus:outline-none"
                     required>
                     <option value="">-</option>
-                    <option value="tour100">tour100</option>
-                    <option value="basic100">basic100</option>
-                    <option value="wh100">wh100</option>
+                    <option value="tour100">여행영어 100</option>
+                    <option value="basic100">기초영어 100</option>
+                    <option value="wh100">워홀 100</option>
                   </select>
                 </div>
               </div>
