@@ -14,6 +14,7 @@ export default function MyCoursesPage() {
     queryKey: ["my-courses"],
     queryFn: async () => {
       const response = await axios.get("/api/user/my-courses");
+      console.log(response.data);
       return response.data;
     },
   });
@@ -35,6 +36,19 @@ export default function MyCoursesPage() {
 
   const handleStartCourse = (enrollmentId: string) => {
     startCourseMutation.mutate(enrollmentId);
+  };
+
+  const formatScheduleDays = (data) => {
+    const days = [];
+    if (data.scheduleMonday) days.push("월");
+    if (data.scheduleTuesday) days.push("화");
+    if (data.scheduleWednesday) days.push("수");
+    if (data.scheduleThursday) days.push("목");
+    if (data.scheduleFriday) days.push("금");
+    if (data.scheduleSaturday) days.push("토");
+    if (data.scheduleSunday) days.push("일");
+
+    return days.join(" / ");
   };
 
   if (isLoading) return <LoadingPageSkeleton />;
@@ -72,6 +86,9 @@ export default function MyCoursesPage() {
                       </span>
                     </div>
                     <p className="mb-4 text-sm text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
+                    <p className="mb-4 text-sm text-gray-600">
+                      <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)}
+                    </p>
                     <p className="mb-4 text-xs text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
                     <button
                       onClick={() => handleStartCourse(enrollment.id)}
@@ -100,6 +117,9 @@ export default function MyCoursesPage() {
                       </span>
                     </div>
                     <p className="mb-2 text-sm text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
+                    <p className="mb-4 text-sm text-gray-600">
+                      <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)}
+                    </p>
                     <p className="mb-4 text-xs text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
                     <a
                       href={`/dashboard/courses/${enrollment.course.id}`}
