@@ -252,7 +252,7 @@ const EditProfilePage = () => {
               {role === "teacher" && (
                 <div>
                   <label htmlFor="zoomInviteUrl" className="text-lg font-semibold text-gray-700">
-                    Zoom 초대 링크
+                    Zoom Invite Link
                   </label>
                   <div className="relative mt-2">
                     <Link2 className="absolute top-3 left-5 text-gray-500" size={24} />
@@ -261,8 +261,8 @@ const EditProfilePage = () => {
                       type="url"
                       value={zoomInviteUrl}
                       onChange={(e) => setZoomInviteUrl(e.target.value)}
-                      className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-gray-400"
-                      placeholder="https://zoom.us/j/..."
+                      className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-sm shadow-md focus:ring-2 focus:ring-gray-400"
+                      placeholder="https://"
                     />
                   </div>
                   <p className="mt-1 text-sm text-gray-500">학생들에게 제공할 Zoom 미팅 초대 링크를 입력해주세요. https:// 로 시작해야 합니다.</p>

@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
-import { Mail, User, Edit, Home, Upload } from "lucide-react";
+import { Mail, User, Edit, Home, Upload, Link2 } from "lucide-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { useState, useRef } from "react";
@@ -179,6 +179,11 @@ const ProfilePage = () => {
             <div className="flex items-center gap-4 px-2">
               <MdOutlinePhoneAndroid size={22} className="text-gray-500" />
               <span className="text-lg">{userInfo?.phone || "등록되지 않음"}</span>
+            </div>
+
+            <div className="flex items-center gap-4 px-2">
+              <Link2 size={22} className="text-gray-500" />
+              <span className="text-xs">{userInfo?.zoomInviteUrl || "등록되지 않음"}</span>
             </div>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-4 md:flex-row md:justify-between">
