@@ -182,8 +182,8 @@ const ProfilePage = () => {
             </div>
 
             <div className="flex items-center gap-4 px-2">
-              <Link2 size={22} className="text-gray-500" />
-              <span className="text-xs">{userInfo?.zoomInviteUrl || "등록되지 않음"}</span>
+              <Link2 size={22} className="min-h-[22px] min-w-[22px] text-gray-500" />
+              <span className="text-left break-all whitespace-normal">{userInfo?.zoomInviteUrl || "등록되지 않음"}</span>
             </div>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-4 md:flex-row md:justify-between">
