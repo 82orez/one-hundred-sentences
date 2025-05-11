@@ -41,6 +41,76 @@ const courseColorPalette = [
   { bg: "bg-cyan-100", text: "text-cyan-800", border: "border-cyan-200" },
 ];
 
+// 하단에 추가
+function MobileSchedule({
+  currentDate,
+  setCurrentDate,
+  setViewMode,
+  classDates,
+}: {
+  currentDate: Date;
+  setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+  setViewMode: React.Dispatch<React.SetStateAction<"day" | "week" | "month">>;
+  classDates: ClassDate[] | undefined;
+}) {
+  const monthStart = startOfMonth(currentDate);
+  const monthEnd = endOfMonth(currentDate);
+  const startDate = startOfWeek(monthStart, { weekStartsOn: 0 });
+  const endDate = endOfWeek(monthEnd, { weekStartsOn: 0 });
+
+  const days = eachDayOfInterval({ start: startDate, end: endDate });
+
+  const classDateMap = useMemo(() => {
+    const map = new Set<string>();
+    classDates?.forEach((cd) => {
+      map.add(format(new Date(cd.date), "yyyy-MM-dd"));
+    });
+    return map;
+  }, [classDates]);
+
+  return (
+    <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm sm:hidden">
+      <h3 className="mb-4 text-center text-lg font-semibold">{format(currentDate, "yyyy년 MM월", { locale: ko })}</h3>
+
+      <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium">
+        {["일", "월", "화", "수", "목", "금", "토"].map((day, idx) => (
+          <div key={idx} className={clsx(idx === 0 && "text-red-500", idx === 6 && "text-blue-500")}>
+            {day}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-1 grid grid-cols-7 gap-1">
+        {days.map((day, idx) => {
+          const dateStr = format(day, "yyyy-MM-dd");
+          const hasClass = classDateMap.has(dateStr);
+          const isToday = isSameDay(day, new Date());
+          const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+
+          return (
+            <div
+              key={idx}
+              onClick={() => {
+                setCurrentDate(day);
+                setViewMode("day");
+              }}
+              className={clsx(
+                "flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md p-1 text-xs",
+                isToday && "bg-blue-100 font-bold",
+                !isCurrentMonth && "text-gray-400",
+                day.getDay() === 0 && "text-red-500",
+                day.getDay() === 6 && "text-blue-500",
+              )}>
+              <div>{format(day, "d")}</div>
+              {hasClass && <div className="mt-1 h-1.5 w-1.5 rounded-full bg-green-500" />}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
   const [viewMode, setViewMode] = useState<"day" | "week" | "month">("month");
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -378,8 +448,35 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
 
   return (
     <div className="rounded-lg bg-gray-50 p-4">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex space-x-2">
+      {/* 상단 네비게이션 */}
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        {/* ✅ 모바일 보기 전환 버튼 */}
+        <div className="flex w-full flex-col gap-2 sm:hidden">
+          <div className="flex justify-between">
+            <span className="text-sm font-semibold">{viewMode === "month" ? "월간 보기" : viewMode === "day" ? "일간 보기" : ""}</span>
+            <div className="flex gap-1">
+              <button
+                onClick={() => setViewMode("month")}
+                className={clsx(
+                  "rounded-md px-2 py-1 text-xs",
+                  viewMode === "month" ? "bg-blue-500 text-white" : "border border-gray-300 bg-white text-gray-700",
+                )}>
+                월
+              </button>
+              <button
+                onClick={() => setViewMode("day")}
+                className={clsx(
+                  "rounded-md px-2 py-1 text-xs",
+                  viewMode === "day" ? "bg-blue-500 text-white" : "border border-gray-300 bg-white text-gray-700",
+                )}>
+                일
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ✅ 데스크탑 전용 보기 전환 버튼 */}
+        <div className="hidden space-x-2 sm:flex">
           <button
             onClick={() => setViewMode("month")}
             className={clsx(
@@ -406,6 +503,7 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
           </button>
         </div>
 
+        {/* 날짜 이동 버튼은 그대로 유지 */}
         <div className="flex items-center space-x-2">
           <button onClick={() => moveDate("prev")} className="rounded p-1 hover:bg-gray-200">
             <ChevronLeft size={20} />
@@ -419,9 +517,21 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
         </div>
       </div>
 
-      {viewMode === "day" && renderDayView()}
-      {viewMode === "week" && renderWeekView()}
-      {viewMode === "month" && renderMonthView()}
+      {/* ✅ 모바일 월간 보기: 월간 보기 상태일 때만 보임 */}
+      {viewMode === "month" && (
+        <MobileSchedule currentDate={currentDate} setCurrentDate={setCurrentDate} setViewMode={setViewMode} classDates={classDates} />
+      )}
+
+      {/* ✅ 일간 보기: 모바일 + PC 공통 */}
+      {viewMode === "day" && <div className="block sm:block">{renderDayView()}</div>}
+
+      {/* ✅ 데스크탑용 주/월 보기 */}
+      {viewMode !== "day" && (
+        <div className="hidden sm:block">
+          {viewMode === "week" && renderWeekView()}
+          {viewMode === "month" && renderMonthView()}
+        </div>
+      )}
     </div>
   );
 }
