@@ -248,9 +248,14 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
               return (
                 <div key={index} className="h-full min-h-[120px]">
                   <div
-                    className={clsx("mb-1 rounded-t p-1 text-center text-sm", isSameDay(day, new Date()) ? "bg-blue-100 font-bold" : "bg-gray-100")}>
+                    className={clsx(
+                      "mb-1 rounded-t p-1 text-center text-sm",
+                      isSameDay(day, new Date()) ? "bg-blue-100 font-bold" : "bg-gray-100",
+                      day.getDay() === 0 && "text-red-500", // 일요일
+                      day.getDay() === 6 && "text-blue-500", // 토요일
+                    )}>
                     <div>{format(day, "E", { locale: ko })}</div>
-                    <div className={isSameDay(day, new Date()) ? "text-blue-600" : ""}>{format(day, "d")}</div>
+                    <div>{format(day, "d")}</div>
                   </div>
 
                   <div className="p-1">
@@ -311,7 +316,13 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
           <div className="grid grid-cols-7 gap-2">
             {/* 요일 헤더 */}
             {["일", "월", "화", "수", "목", "금", "토"].map((day, index) => (
-              <div key={index} className="p-2 text-center font-medium">
+              <div
+                key={index}
+                className={clsx(
+                  "p-2 text-center font-medium",
+                  index === 0 && "text-red-500", // 일요일
+                  index === 6 && "text-blue-500", // 토요일
+                )}>
                 {day}
               </div>
             ))}
@@ -338,6 +349,8 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
                     "min-h-[100px] cursor-pointer border p-1",
                     !isCurrentMonth && "bg-gray-50 text-gray-400",
                     isToday && "bg-blue-50 font-bold",
+                    day.getDay() === 0 && isCurrentMonth && "border-gray-600 text-red-500", // 일요일
+                    day.getDay() === 6 && isCurrentMonth && "border-gray-600 text-blue-500", // 토요일
                   )}
                   onClick={() => handleDateDoubleClick(day)}>
                   <div className={clsx("mb-1 text-right", isToday && "text-blue-600")}>{format(day, "d")}</div>

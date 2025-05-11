@@ -8,11 +8,35 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.user || session.user.role === "student") {
+    if (!session || !session.user) {
       return NextResponse.json({ error: "인증이 필요합니다" }, { status: 401 });
     }
 
     const userId = session.user.id;
+
+    // 학생인 경우, 등록한 강좌 조회
+    if (session.user.role === "student") {
+      const enrolledCourses = await prisma.enrollment.findMany({
+        where: {
+          studentName: session.user.realName,
+          studentPhone: session.user.phone.replace(/-/g, ""), // ✅ 서버의 전화번호 정보에서 하이픈 제거,
+        },
+        include: {
+          course: {
+            include: {
+              classDates: true,
+              teacher: {
+                include: {
+                  user: true, // ⬅️ Course.teacher.user 정보까지 포함
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return NextResponse.json({ courses: enrolledCourses });
+    }
 
     // 교사인 경우, 자신이 가르치는 강좌 조회
     if (session.user.role === "teacher") {
