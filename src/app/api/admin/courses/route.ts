@@ -236,6 +236,8 @@ export async function PUT(request: Request) {
         data: {
           title: data.title,
           description: data.description,
+          location: data.location, // Location enum 값 추가
+          contents: data.contents, // Contents enum 값 추가
           teacherId: data.teacherId,
           scheduleMonday: data.scheduleMonday,
           scheduleTuesday: data.scheduleTuesday,
