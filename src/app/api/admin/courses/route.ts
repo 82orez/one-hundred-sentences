@@ -134,6 +134,8 @@ export async function POST(request: Request) {
       data: {
         title: data.title,
         description: data.description,
+        location: data.location, // Location enum 값 추가
+        contents: data.contents, // Contents enum 값 추가
         generatorId: session.user.id,
         teacherId: data.teacherId,
         scheduleMonday: data.scheduleMonday,

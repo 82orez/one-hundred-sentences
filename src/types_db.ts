@@ -222,6 +222,7 @@ export type Database = {
       Course: {
         Row: {
           classCount: number | null
+          contents: Database["public"]["Enums"]["Contents"]
           createdAt: string
           description: string | null
           duration: string | null
@@ -229,6 +230,7 @@ export type Database = {
           endTime: string | null
           generatorId: string
           id: string
+          location: Database["public"]["Enums"]["Location"]
           scheduleFriday: boolean
           scheduleMonday: boolean
           scheduleSaturday: boolean
@@ -244,6 +246,7 @@ export type Database = {
         }
         Insert: {
           classCount?: number | null
+          contents: Database["public"]["Enums"]["Contents"]
           createdAt?: string
           description?: string | null
           duration?: string | null
@@ -251,6 +254,7 @@ export type Database = {
           endTime?: string | null
           generatorId: string
           id: string
+          location: Database["public"]["Enums"]["Location"]
           scheduleFriday?: boolean
           scheduleMonday?: boolean
           scheduleSaturday?: boolean
@@ -266,6 +270,7 @@ export type Database = {
         }
         Update: {
           classCount?: number | null
+          contents?: Database["public"]["Enums"]["Contents"]
           createdAt?: string
           description?: string | null
           duration?: string | null
@@ -273,6 +278,7 @@ export type Database = {
           endTime?: string | null
           generatorId?: string
           id?: string
+          location?: Database["public"]["Enums"]["Location"]
           scheduleFriday?: boolean
           scheduleMonday?: boolean
           scheduleSaturday?: boolean
@@ -1013,7 +1019,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      Contents: "tour100" | "basic100" | "wh100"
       EnrollmentStatus: "pending" | "active" | "completed" | "dropped"
+      Location: "online" | "offline" | "hybrid"
       Nation: "KR" | "PH"
       Role: "admin" | "semiAdmin" | "teacher" | "student"
       Subject: "en" | "ja" | "ko" | "zh"
@@ -1132,7 +1140,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      Contents: ["tour100", "basic100", "wh100"],
       EnrollmentStatus: ["pending", "active", "completed", "dropped"],
+      Location: ["online", "offline", "hybrid"],
       Nation: ["KR", "PH"],
       Role: ["admin", "semiAdmin", "teacher", "student"],
       Subject: ["en", "ja", "ko", "zh"],

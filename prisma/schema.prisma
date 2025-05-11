@@ -253,10 +253,23 @@ model Purchase {
   @@index([userId])
 }
 
-// Course 모델 수정 (classDates 필드 제거)
+enum Contents {
+  tour100
+  basic100
+  wh100
+}
+
+enum Location {
+  online
+  offline
+  hybrid
+}
+
 model Course {
   id                String    @id @default(cuid())
   title             String
+  location          Location // 추가
+  contents          Contents // 추가
   description       String?
   generatorId       String
   teacherId         String
