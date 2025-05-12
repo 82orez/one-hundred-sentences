@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { format } from "date-fns";
+import { format, isToday } from "date-fns";
 import TeacherSchedule from "@/components/TeacherSchedule";
 
 // 강좌 타입 정의
@@ -16,12 +16,22 @@ type Course = {
   teacherId: string;
 };
 
+// ClassDate 타입 정의
+type ClassDateType = {
+  id: string;
+  courseId: string;
+  date: string;
+  dayOfWeek: string;
+  startTime: string | null;
+  endTime: string | null;
+};
+
 export default function TeacherDashboard() {
   // 스케줄 모달 상태 관리
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
   // React Query를 사용하여 강사의 강좌 데이터 가져오기
-  const { data: courses, isLoading } = useQuery({
+  const { data: courses, isLoading: isCoursesLoading } = useQuery({
     queryKey: ["teacherCourses"],
     queryFn: async () => {
       const response = await axios.get("/api/admin/teacher-dashboard");
@@ -29,6 +39,44 @@ export default function TeacherDashboard() {
       return response.data as Course[];
     },
   });
+
+  // 수업 일정 데이터 가져오기
+  const { data: classDates, isLoading: isClassDatesLoading } = useQuery({
+    queryKey: ["teacherClassDates"],
+    queryFn: async () => {
+      const response = await axios.get("/api/admin/teacher-dashboard/class-dates");
+      return response.data as ClassDateType[];
+    },
+    enabled: !!courses && courses.length > 0,
+  });
+
+  // 현재 날짜와 시간
+  const now = new Date();
+
+  // 오늘 진행할 수업 갯수 계산
+  const getTodayClassesCount = () => {
+    if (!classDates) return 0;
+
+    return classDates.filter((classDate) => {
+      // 날짜 객체로 변환
+      const classDateObj = new Date(classDate.date);
+
+      // 오늘 날짜인지 확인
+      if (!isToday(classDateObj)) return false;
+
+      // 시간 확인
+      if (classDate.startTime) {
+        const [hours, minutes] = classDate.startTime.split(":").map(Number);
+        const classTime = new Date();
+        classTime.setHours(hours, minutes, 0, 0);
+
+        // 현재 시간 이후의 수업만 포함
+        if (classTime < now) return false;
+      }
+
+      return true;
+    }).length;
+  };
 
   // 현재 날짜
   const today = new Date();
@@ -67,6 +115,9 @@ export default function TeacherDashboard() {
   const courseStats = getCourseStats();
   // 현재 로그인한 강사의 ID 가져오기
   const teacherId = courses?.[0]?.teacherId || "";
+
+  // 오늘의 수업 갯수
+  const todayClassesCount = getTodayClassesCount();
 
   return (
     <div className="container mx-auto p-6">
@@ -115,9 +166,9 @@ export default function TeacherDashboard() {
         </div>
 
         <div className="rounded-lg bg-white p-6 shadow-md">
-          <h2 className="mb-2 text-xl font-semibold">수업 일정</h2>
-          <p className="text-3xl">0</p>
-          <button onClick={() => setIsScheduleModalOpen(true)} className="rounded-md bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">
+          <h2 className="mb-2 text-xl font-semibold">오늘 진행할 수업</h2>
+          <p className="text-3xl">{isClassDatesLoading ? "로딩 중..." : todayClassesCount}</p>
+          <button onClick={() => setIsScheduleModalOpen(true)} className="mt-4 rounded-md bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">
             전체 수업 일정 보기
           </button>
         </div>
