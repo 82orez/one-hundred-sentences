@@ -101,7 +101,7 @@ function MobileSchedule({
                 isToday && "bg-blue-100 font-bold",
                 !isCurrentMonth && "text-gray-400",
                 isHoliday && "font-semibold text-red-500",
-                day.getDay() === 0 && "text-red-500",
+                day.getDay() === 0 && isCurrentMonth && "text-red-500",
                 day.getDay() === 6 && "text-blue-500", // 토요일만 파란색
               )}>
               <div>{format(day, "d")}</div>
