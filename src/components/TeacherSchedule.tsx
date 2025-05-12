@@ -8,6 +8,7 @@ import { format, startOfWeek, endOfWeek, addDays, startOfMonth, endOfMonth, each
 import { ko } from "date-fns/locale";
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { koreanHolidays } from "@/lib/koreanHolidays";
 
 // 타입 정의
 interface ClassDate {
@@ -86,6 +87,7 @@ function MobileSchedule({
           const hasClass = classDateMap.has(dateStr);
           const isToday = isSameDay(day, new Date());
           const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+          const isHoliday = koreanHolidays.includes(dateStr);
 
           return (
             <div
@@ -98,8 +100,9 @@ function MobileSchedule({
                 "flex aspect-square cursor-pointer flex-col items-center justify-between gap-1.5 rounded-md p-1 text-sm",
                 isToday && "bg-blue-100 font-bold",
                 !isCurrentMonth && "text-gray-400",
+                isHoliday && "font-semibold text-red-500",
                 day.getDay() === 0 && "text-red-500",
-                day.getDay() === 6 && "text-blue-500",
+                day.getDay() === 6 && "text-blue-500", // 토요일만 파란색
               )}>
               <div>{format(day, "d")}</div>
               <div className="h-1.5">{hasClass && <div className="h-1.5 w-1.5 rounded-full bg-green-500" />}</div>
