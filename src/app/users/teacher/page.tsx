@@ -150,6 +150,14 @@ export default function TeacherDashboard() {
         </div>
 
         <div className="rounded-lg bg-white p-6 shadow-md">
+          <h2 className="mb-2 text-xl font-semibold">오늘 진행할 수업</h2>
+          <p className="text-3xl">{isClassDatesLoading ? "로딩 중..." : todayClassesCount}</p>
+          <button onClick={() => setIsScheduleModalOpen(true)} className="mt-4 rounded-md bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">
+            전체 수업 일정 보기
+          </button>
+        </div>
+
+        <div className="rounded-lg bg-white p-6 shadow-md">
           <h2 className="mb-2 text-xl font-semibold">내 학생</h2>
           <p className="text-3xl">0</p>
           <Link href="/users/teacher/students" className="mt-2 inline-block text-blue-500 hover:underline">
@@ -163,14 +171,6 @@ export default function TeacherDashboard() {
           <Link href="/users/teacher/assignments" className="mt-2 inline-block text-blue-500 hover:underline">
             과제 확인하기
           </Link>
-        </div>
-
-        <div className="rounded-lg bg-white p-6 shadow-md">
-          <h2 className="mb-2 text-xl font-semibold">오늘 진행할 수업</h2>
-          <p className="text-3xl">{isClassDatesLoading ? "로딩 중..." : todayClassesCount}</p>
-          <button onClick={() => setIsScheduleModalOpen(true)} className="mt-4 rounded-md bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">
-            전체 수업 일정 보기
-          </button>
         </div>
       </div>
 

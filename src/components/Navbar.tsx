@@ -90,6 +90,15 @@ export default function Navbar() {
               </>
             )}
 
+            {isTeacher && (
+              <Link
+                href="/users/teacher"
+                className={clsx("hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block", {})}
+                onClick={() => setMenuOpen(false)}>
+                강사 페이지
+              </Link>
+            )}
+
             {/* 아래는 드롭다운 버튼 영역 */}
             <div className="relative" ref={dropdownRef}>
               <button

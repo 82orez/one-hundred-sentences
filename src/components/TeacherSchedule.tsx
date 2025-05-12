@@ -98,7 +98,7 @@ function MobileSchedule({
               }}
               className={clsx(
                 "flex aspect-square cursor-pointer flex-col items-center justify-between gap-1.5 rounded-md p-1 text-sm",
-                isToday && "bg-blue-100 font-bold",
+                isToday && "animate-pulse bg-blue-100 font-bold",
                 !isCurrentMonth && "text-gray-400",
                 isHoliday && "font-semibold text-red-500",
                 day.getDay() === 0 && isCurrentMonth && "text-red-500",
@@ -359,7 +359,7 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
                       return (
                         <div
                           key={classDate.id}
-                          className={`mb-1 cursor-pointer rounded px-1 py-0.5 text-xs ${courseColor.bg} ${courseColor.text}`}
+                          className={`mb-1 cursor-pointer rounded px-1 py-0.5 ${courseColor.bg} ${courseColor.text} ${isSameDay(day, new Date()) && "animate-pulse"}`}
                           onClick={() => handleDateDoubleClick(day)}>
                           <div className="truncate font-medium">{classDate.course.title}</div>
                           <div className="text-gray-500">
@@ -444,7 +444,7 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
                   className={clsx(
                     "min-h-[100px] cursor-pointer rounded-md border p-1",
                     !isCurrentMonth && "bg-gray-50 text-gray-400",
-                    isToday && "bg-blue-50 font-bold",
+                    isToday && "animate-pulse border-2 bg-blue-50 font-bold",
                     day.getDay() === 0 && isCurrentMonth && "border-gray-600 text-red-500", // 일요일
                     day.getDay() === 6 && isCurrentMonth && "border-gray-600 text-blue-500", // 토요일
                     isHoliday && isCurrentMonth && "font-semibold text-red-500", // 공휴일
