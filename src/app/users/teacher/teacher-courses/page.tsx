@@ -7,6 +7,8 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import clsx from "clsx";
+import Link from "next/link";
 
 export default function MyCourses() {
   const [courses, setCourses] = useState([]);
@@ -56,54 +58,64 @@ export default function MyCourses() {
           <p className="text-gray-600">현재 등록된 강좌가 없습니다.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {courses.map((item) => {
-            // Enrollment 또는 Course 구조에 따라 데이터 추출
-            const course = item.course || item;
+        <>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {courses.map((item) => {
+              // Enrollment 또는 Course 구조에 따라 데이터 추출
+              const course = item.course || item;
 
-            return (
-              <div
-                key={course.id}
-                className="cursor-pointer overflow-hidden rounded-lg border transition-shadow hover:shadow-lg"
-                onClick={() => router.push(`/dashboard/courses/${course.id}`)}>
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold">{course.title}</h2>
-                  <p className="mt-2 line-clamp-2 text-gray-600">{course.description || "설명 없음"}</p>
+              return (
+                <div
+                  key={course.id}
+                  className="cursor-pointer overflow-hidden rounded-lg border transition-shadow hover:shadow-lg"
+                  onClick={() => router.push(`/dashboard/courses/${course.id}`)}>
+                  <div className="p-4">
+                    <h2 className="text-xl font-semibold">{course.title}</h2>
+                    <p className="mt-2 line-clamp-2 text-gray-600">{course.description || "설명 없음"}</p>
 
-                  <div className="mt-4 space-y-2 text-sm">
-                    {course.teacher && (
+                    <div className="mt-4 space-y-2 text-sm">
+                      {course.teacher && (
+                        <p>
+                          <span className="font-medium">교사:</span> {course.teacher.user?.realName || "미정"}
+                        </p>
+                      )}
+
                       <p>
-                        <span className="font-medium">교사:</span> {course.teacher.user?.realName || "미정"}
+                        <span className="font-medium">수업일:</span> {formatScheduleDays(course)}
                       </p>
-                    )}
 
-                    <p>
-                      <span className="font-medium">수업일:</span> {formatScheduleDays(course)}
-                    </p>
+                      {course.startDate && (
+                        <p>
+                          <span className="font-medium">기간:</span> {format(new Date(course.startDate), "yyyy.MM.dd", { locale: ko })}
+                          {course.endDate && ` ~ ${format(new Date(course.endDate), "yyyy.MM.dd", { locale: ko })}`}
+                        </p>
+                      )}
 
-                    {course.startDate && (
-                      <p>
-                        <span className="font-medium">기간:</span> {format(new Date(course.startDate), "yyyy.MM.dd", { locale: ko })}
-                        {course.endDate && ` ~ ${format(new Date(course.endDate), "yyyy.MM.dd", { locale: ko })}`}
-                      </p>
-                    )}
+                      {course.startTime && (
+                        <p>
+                          <span className="font-medium">시간:</span> {course.startTime}
+                          {course.endTime && ` ~ ${course.endTime}`}
+                        </p>
+                      )}
+                    </div>
+                  </div>
 
-                    {course.startTime && (
-                      <p>
-                        <span className="font-medium">시간:</span> {course.startTime}
-                        {course.endTime && ` ~ ${course.endTime}`}
-                      </p>
-                    )}
+                  <div className="bg-gray-50 px-4 py-3 text-right">
+                    <span className="text-sm font-medium text-blue-600">자세히 보기 →</span>
                   </div>
                 </div>
+              );
+            })}
+          </div>
 
-                <div className="bg-gray-50 px-4 py-3 text-right">
-                  <span className="text-sm font-medium text-blue-600">자세히 보기 →</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+          <div
+            className={clsx(
+              "mt-4 flex justify-center hover:underline md:mt-10",
+              // { "pointer-events-none": isLoading }
+            )}>
+            <Link href={"/users/teacher"}>Back to Teacher Dashboard</Link>
+          </div>
+        </>
       )}
     </div>
   );
