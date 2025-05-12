@@ -9,10 +9,15 @@ import { toast } from "react-hot-toast";
 import clsx from "clsx";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import { X } from "lucide-react";
+import CourseSchedule from "@/components/CourseSchedule"; // X 아이콘 import
 
 export default function MyCourses() {
   const [courses, setCourses] = useState([]);
   const router = useRouter();
+  // 모달 상태와 선택된 강좌 ID를 관리할 state
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
 
   const { isPending: loading } = useQuery({
     queryKey: ["myCourses"],
@@ -40,6 +45,19 @@ export default function MyCourses() {
     if (course.scheduleSunday) days.push("일");
 
     return days.join(", ");
+  };
+
+  // 수업 일정 버튼 클릭 핸들러
+  const handleScheduleClick = (e, courseId) => {
+    e.stopPropagation(); // 이벤트 버블링 방지 (카드 클릭 이벤트가 발생하지 않도록)
+    setSelectedCourseId(courseId);
+    setIsScheduleModalOpen(true);
+  };
+
+  // 모달 닫기 핸들러
+  const handleCloseModal = () => {
+    setIsScheduleModalOpen(false);
+    setSelectedCourseId(null);
   };
 
   return (
@@ -95,6 +113,12 @@ export default function MyCourses() {
                         </p>
                       )}
                     </div>
+
+                    <button
+                      className="mt-8 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+                      onClick={(e) => handleScheduleClick(e, course.id)}>
+                      수업 일정 보기
+                    </button>
                   </div>
 
                   <div className="bg-gray-50 px-4 py-3 text-right">
@@ -109,6 +133,20 @@ export default function MyCourses() {
             <Link href={"/users/teacher"}>Back to Teacher Dashboard</Link>
           </div>
         </>
+      )}
+
+      {/* 수업 일정 모달 */}
+      {isScheduleModalOpen && (
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+          <div className="relative max-h-[90vh] w-[95vw] max-w-5xl overflow-auto rounded-lg bg-white p-4 shadow-lg">
+            <button
+              onClick={handleCloseModal}
+              className="absolute top-4 right-4 rounded-full p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+              <X size={24} />
+            </button>
+            <CourseSchedule courseId={selectedCourseId} />
+          </div>
+        </div>
       )}
     </div>
   );

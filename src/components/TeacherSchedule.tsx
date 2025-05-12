@@ -442,11 +442,11 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
                 <div
                   key={idx}
                   className={clsx(
-                    "min-h-[100px] cursor-pointer rounded-md border p-1",
+                    "min-h-[100px] cursor-pointer rounded-md border border-gray-400 p-1",
                     !isCurrentMonth && "bg-gray-50 text-gray-400",
-                    isToday && "animate-pulse border-2 bg-blue-50 font-bold",
-                    day.getDay() === 0 && isCurrentMonth && "border-gray-600 text-red-500", // 일요일
-                    day.getDay() === 6 && isCurrentMonth && "border-gray-600 text-blue-500", // 토요일
+                    isToday && "animate-pulse border-[3px] border-green-600 bg-blue-50 font-bold",
+                    day.getDay() === 0 && isCurrentMonth && "text-red-500", // 일요일
+                    day.getDay() === 6 && isCurrentMonth && "text-blue-500", // 토요일
                     isHoliday && isCurrentMonth && "font-semibold text-red-500", // 공휴일
                   )}
                   onClick={() => handleDateDoubleClick(day)}>
