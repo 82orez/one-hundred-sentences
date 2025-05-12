@@ -95,14 +95,14 @@ function MobileSchedule({
                 setViewMode("day");
               }}
               className={clsx(
-                "flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md p-1 text-sm",
+                "flex aspect-square cursor-pointer flex-col items-center justify-between gap-1.5 rounded-md p-1 text-sm",
                 isToday && "bg-blue-100 font-bold",
                 !isCurrentMonth && "text-gray-400",
                 day.getDay() === 0 && "text-red-500",
                 day.getDay() === 6 && "text-blue-500",
               )}>
               <div>{format(day, "d")}</div>
-              {hasClass && <div className="mt-1 h-1.5 w-1.5 rounded-full bg-green-500" />}
+              <div className="h-1.5">{hasClass && <div className="h-1.5 w-1.5 rounded-full bg-green-500" />}</div>
             </div>
           );
         })}
