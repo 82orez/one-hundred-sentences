@@ -72,7 +72,7 @@ function MobileSchedule({
     <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm sm:hidden">
       <h3 className="mb-4 text-center text-lg font-semibold">{format(currentDate, "yyyy년 MM월", { locale: ko })}</h3>
 
-      <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium">
+      <div className="grid grid-cols-7 gap-1 text-center text-sm font-medium">
         {["일", "월", "화", "수", "목", "금", "토"].map((day, idx) => (
           <div key={idx} className={clsx(idx === 0 && "text-red-500", idx === 6 && "text-blue-500")}>
             {day}
@@ -95,7 +95,7 @@ function MobileSchedule({
                 setViewMode("day");
               }}
               className={clsx(
-                "flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md p-1 text-xs",
+                "flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md p-1 text-sm",
                 isToday && "bg-blue-100 font-bold",
                 !isCurrentMonth && "text-gray-400",
                 day.getDay() === 0 && "text-red-500",
@@ -449,16 +449,15 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
   return (
     <div className="rounded-lg bg-gray-50 p-4">
       {/* 상단 네비게이션 */}
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-4 flex gap-2 sm:items-center sm:justify-between">
         {/* ✅ 모바일 보기 전환 버튼 */}
         <div className="flex w-full flex-col gap-2 sm:hidden">
           <div className="flex justify-between">
-            <span className="text-sm font-semibold">{viewMode === "month" ? "월간 보기" : viewMode === "day" ? "일간 보기" : ""}</span>
-            <div className="flex gap-1">
+            <div className="flex gap-2">
               <button
                 onClick={() => setViewMode("month")}
                 className={clsx(
-                  "rounded-md px-2 py-1 text-xs",
+                  "rounded-md px-2 py-1 text-sm",
                   viewMode === "month" ? "bg-blue-500 text-white" : "border border-gray-300 bg-white text-gray-700",
                 )}>
                 월
@@ -466,7 +465,7 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
               <button
                 onClick={() => setViewMode("day")}
                 className={clsx(
-                  "rounded-md px-2 py-1 text-xs",
+                  "rounded-md px-2 py-1 text-sm",
                   viewMode === "day" ? "bg-blue-500 text-white" : "border border-gray-300 bg-white text-gray-700",
                 )}>
                 일
@@ -508,7 +507,7 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
           <button onClick={() => moveDate("prev")} className="rounded p-1 hover:bg-gray-200">
             <ChevronLeft size={20} />
           </button>
-          <button onClick={() => setCurrentDate(new Date())} className="rounded-md bg-white px-3 py-1 text-sm hover:bg-gray-100">
+          <button onClick={() => setCurrentDate(new Date())} className="min-w-14 rounded-md bg-white px-3 py-1 text-sm hover:bg-gray-100">
             오늘
           </button>
           <button onClick={() => moveDate("next")} className="rounded p-1 hover:bg-gray-200">
