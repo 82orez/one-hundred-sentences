@@ -304,6 +304,8 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
         ) : (
           <div className="grid grid-cols-7 gap-2">
             {days.map((day, index) => {
+              const dateKey = format(day, "yyyy-MM-dd");
+              const isHoliday = koreanHolidays.includes(dateKey);
               const dayCourses = classDates
                 ?.filter((classDate) => {
                   // 날짜가 같은지 확인
@@ -324,6 +326,7 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
                     className={clsx(
                       "mb-1 rounded-t p-1 text-center text-sm",
                       isSameDay(day, new Date()) ? "bg-blue-100 font-bold" : "bg-gray-100",
+                      isHoliday ? "font-semibold text-red-500" : "",
                       day.getDay() === 0 && "text-red-500", // 일요일
                       day.getDay() === 6 && "text-blue-500", // 토요일
                     )}>
