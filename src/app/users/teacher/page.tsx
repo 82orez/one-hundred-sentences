@@ -141,7 +141,7 @@ export default function TeacherDashboard() {
                 </svg>
               </button>
             </div>
-            <div className="max-h-[80vh] overflow-y-auto p-4">
+            <div className="max-h-[85vh] overflow-y-auto p-4">
               <TeacherSchedule teacherId={teacherId} />
             </div>
           </div>
