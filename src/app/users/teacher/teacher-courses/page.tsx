@@ -1,7 +1,6 @@
-// src/app/users/teacher/teacher-courses/page.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -9,28 +8,26 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import clsx from "clsx";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 
 export default function MyCourses() {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchMyCourses = async () => {
+  const { isPending: loading } = useQuery({
+    queryKey: ["myCourses"],
+    queryFn: async () => {
       try {
-        setLoading(true);
         const response = await axios.get("/api/my-courses");
         setCourses(response.data.courses);
+        return response.data.courses;
       } catch (error) {
         console.error("강좌 조회 실패:", error);
         toast.error("강좌를 불러오는 중 오류가 발생했습니다.");
-      } finally {
-        setLoading(false);
+        throw error;
       }
-    };
-
-    fetchMyCourses();
-  }, []);
+    },
+  });
 
   const formatScheduleDays = (course) => {
     const days = [];
@@ -108,11 +105,7 @@ export default function MyCourses() {
             })}
           </div>
 
-          <div
-            className={clsx(
-              "mt-4 flex justify-center hover:underline md:mt-10",
-              // { "pointer-events-none": isLoading }
-            )}>
+          <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": loading })}>
             <Link href={"/users/teacher"}>Back to Teacher Dashboard</Link>
           </div>
         </>
