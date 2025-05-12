@@ -359,7 +359,7 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
                       return (
                         <div
                           key={classDate.id}
-                          className={`mb-1 cursor-pointer rounded px-1 py-0.5 ${courseColor.bg} ${courseColor.text} ${isSameDay(day, new Date()) && "animate-pulse"}`}
+                          className={`mb-2 cursor-pointer rounded px-1 py-0.5 ${courseColor.bg} ${courseColor.text} ${isSameDay(day, new Date()) && "animate-pulse border-2"}`}
                           onClick={() => handleDateDoubleClick(day)}>
                           <div className="truncate font-medium">{classDate.course.title}</div>
                           <div className="text-gray-500">
