@@ -211,10 +211,26 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
       };
     };
 
+    // 해당 날짜가 주말인지 공휴일인지 확인
+    const dateKey = format(currentDate, "yyyy-MM-dd");
+    const isHoliday = koreanHolidays.includes(dateKey);
+    const isSunday = currentDate.getDay() === 0;
+    const isSaturday = currentDate.getDay() === 6;
+
+    // 제목 스타일 결정
+    const getTitleStyle = () => {
+      if (isHoliday || isSunday) return "text-red-500";
+      if (isSaturday) return "text-blue-500";
+      return "";
+    };
+
     // renderDayView 함수 내부의 해당 부분을 다음과 같이 수정합니다
     return (
       <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm">
-        <h3 className="mb-4 text-xl font-medium">{format(currentDate, "yyyy년 MM월 dd일 (EEEE)", { locale: ko })}</h3>
+        <h3 className={`mb-4 text-xl font-medium ${getTitleStyle()}`}>
+          {format(currentDate, "yyyy년 MM월 dd일 (EEEE)", { locale: ko })}
+          {isHoliday && " (공휴일)"}
+        </h3>
 
         {isLoading ? (
           <div className="p-6 text-center">불러오는 중...</div>
@@ -233,10 +249,13 @@ export default function TeacherSchedule({ teacherId }: TeacherScheduleProps) {
             </div>
 
             {/* 시간표 그리드 및 강의 */}
-            <div className="relative flex-grow border-l border-gray-200">
+            <div className={`relative flex-grow border-l border-gray-200 ${isHoliday || isSunday ? "bg-red-50" : isSaturday ? "bg-blue-50" : ""}`}>
               {/* 시간대 배경 */}
               {hours.map((hour) => (
-                <div key={hour} className={`h-[50px] border-b border-gray-100 ${hour % 2 === 0 ? "bg-gray-100" : ""}`} />
+                <div
+                  key={hour}
+                  className={`h-[50px] border-b border-gray-100 ${hour % 2 === 0 ? (isHoliday || isSunday ? "bg-red-100/30" : isSaturday ? "bg-blue-100/30" : "bg-gray-100") : ""}`}
+                />
               ))}
 
               {/* 현재 시간 표시선 */}
