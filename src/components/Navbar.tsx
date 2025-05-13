@@ -170,16 +170,16 @@ export default function Navbar() {
                         내 강의 보기
                       </Link>
 
-                      <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
-                        대시보드
-                      </Link>
+                      {/*<Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>*/}
+                      {/*  대시보드*/}
+                      {/*</Link>*/}
 
-                      <Link href="/favorites" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
-                        <div className="flex items-center">
-                          <Heart className="mr-2" size={16} />
-                          즐겨찾기 목록
-                        </div>
-                      </Link>
+                      {/*<Link href="/favorites" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>*/}
+                      {/*  <div className="flex items-center">*/}
+                      {/*    <Heart className="mr-2" size={16} />*/}
+                      {/*    즐겨찾기 목록*/}
+                      {/*  </div>*/}
+                      {/*</Link>*/}
                     </>
                   )}
 
