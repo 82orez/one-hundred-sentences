@@ -446,6 +446,7 @@ export default function CourseSchedule({ courseId }: CourseScheduleProps) {
                     "min-h-[100px] cursor-pointer rounded-md border border-gray-400 p-1",
                     !isCurrentMonth && "bg-gray-50 text-gray-400",
                     isToday && "animate-pulse border-[3px] border-green-600 bg-blue-50 font-bold",
+                    dayClassDates.length > 0 && isCurrentMonth && "bg-green-100", // ✅ 수업 있는 날 배경색
                     day.getDay() === 0 && isCurrentMonth && "text-red-500", // 일요일
                     day.getDay() === 6 && isCurrentMonth && "text-blue-500", // 토요일
                     isHoliday && isCurrentMonth && "font-semibold text-red-500", // 공휴일
