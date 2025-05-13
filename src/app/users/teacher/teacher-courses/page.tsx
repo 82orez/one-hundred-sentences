@@ -18,6 +18,7 @@ export default function MyCourses() {
   // 모달 상태와 선택된 강좌 ID를 관리할 state
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
+  const [selectedCourseTitle, setSelectedCourseTitle] = useState("");
 
   const { isPending: loading } = useQuery({
     queryKey: ["myCourses"],
@@ -25,6 +26,7 @@ export default function MyCourses() {
       try {
         const response = await axios.get("/api/my-courses");
         setCourses(response.data.courses);
+        console.log(response.data.courses);
         return response.data.courses;
       } catch (error) {
         console.error("강좌 조회 실패:", error);
@@ -48,9 +50,10 @@ export default function MyCourses() {
   };
 
   // 수업 일정 버튼 클릭 핸들러
-  const handleScheduleClick = (e, courseId) => {
+  const handleScheduleClick = (e, courseId, courseTitle) => {
     e.stopPropagation(); // 이벤트 버블링 방지 (카드 클릭 이벤트가 발생하지 않도록)
     setSelectedCourseId(courseId);
+    setSelectedCourseTitle(courseTitle);
     setIsScheduleModalOpen(true);
   };
 
@@ -116,7 +119,7 @@ export default function MyCourses() {
 
                     <button
                       className="mt-8 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
-                      onClick={(e) => handleScheduleClick(e, course.id)}>
+                      onClick={(e) => handleScheduleClick(e, course.id, course.title)}>
                       수업 일정 보기
                     </button>
                   </div>
@@ -144,6 +147,7 @@ export default function MyCourses() {
               className="absolute top-4 right-4 rounded-full p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
               <X size={24} />
             </button>
+            <h2 className="mb-4 text-xl font-semibold">{selectedCourseTitle}</h2>
             <CourseSchedule courseId={selectedCourseId} />
           </div>
         </div>
