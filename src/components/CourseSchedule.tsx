@@ -98,7 +98,8 @@ function MobileSchedule({
               }}
               className={clsx(
                 "flex aspect-square cursor-pointer flex-col items-center justify-between gap-1.5 rounded-md p-1 text-sm",
-                isToday && "animate-pulse bg-blue-100 font-bold",
+                isToday && "animate-pulse border-2 bg-blue-100 font-bold",
+                hasClass && "bg-green-100",
                 !isCurrentMonth && "text-gray-400",
                 isHoliday && "font-semibold text-red-500",
                 day.getDay() === 0 && isCurrentMonth && "text-red-500",
