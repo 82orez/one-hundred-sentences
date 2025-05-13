@@ -161,13 +161,13 @@ export default function MyCoursesPage() {
       {/* 모달 창 */}
       {isModalOpen && (
         <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
-          <div className="relative h-full w-full max-w-5xl overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
+          <div className="relative h-full w-full max-w-5xl overflow-y-auto rounded-lg bg-white px-1 py-6 shadow-lg md:px-6">
             <button onClick={closeModal} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <h2 className="mb-4 text-xl font-semibold">수업 일정</h2>
+            <h2 className="mb-4 text-center text-xl font-semibold">수업 일정</h2>
             <CourseSchedule courseId={selectedCourseId} />
           </div>
         </div>
