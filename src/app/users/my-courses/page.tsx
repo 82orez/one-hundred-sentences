@@ -136,18 +136,18 @@ export default function MyCoursesPage() {
                     <p className="mb-4 text-sm text-gray-600">
                       <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)}
                     </p>
-                    <p className="mb-4 text-xs text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
-                    <p className="mb-4 text-xs text-gray-500">종료일: {format(new Date(enrollment.course.endDate), "yyyy년 MM월 dd일")}</p>
+                    <p className="mb-4 text-sm text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
+                    <p className="mb-4 text-sm text-gray-500">종료일: {format(new Date(enrollment.course.endDate), "yyyy년 MM월 dd일")}</p>
 
                     <button
                       onClick={() => openScheduleModal(enrollment.course.id)}
-                      className="mt-8 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
+                      className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
                       수업 일정 보기
                     </button>
 
                     <a
                       href={`/dashboard/courses/${enrollment.course.id}`}
-                      className="block w-full rounded-lg bg-gray-100 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-200">
+                      className="mt-4 block w-full rounded-lg bg-gray-100 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-200">
                       강의 상세보기
                     </a>
                   </div>
