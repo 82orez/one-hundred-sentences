@@ -1,3 +1,4 @@
+// components/CourseSchedule.tsx
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -27,16 +28,21 @@ interface CourseScheduleProps {
   courseId: string;
 }
 
-// 일정 색상 팔레트 정의
-const scheduleColorPalette = [
+// 강좌 색상 팔레트 정의
+const courseColorPalette = [
   { bg: "bg-blue-100", text: "text-blue-800", border: "border-blue-200" },
   { bg: "bg-green-100", text: "text-green-800", border: "border-green-200" },
   { bg: "bg-purple-100", text: "text-purple-800", border: "border-purple-200" },
   { bg: "bg-orange-100", text: "text-orange-800", border: "border-orange-200" },
   { bg: "bg-pink-100", text: "text-pink-800", border: "border-pink-200" },
+  { bg: "bg-teal-100", text: "text-teal-800", border: "border-teal-200" },
+  { bg: "bg-indigo-100", text: "text-indigo-800", border: "border-indigo-200" },
+  { bg: "bg-red-100", text: "text-red-800", border: "border-red-200" },
+  { bg: "bg-yellow-100", text: "text-yellow-800", border: "border-yellow-200" },
+  { bg: "bg-cyan-100", text: "text-cyan-800", border: "border-cyan-200" },
 ];
 
-// 모바일 달력 컴포넌트
+// 하단에 추가
 function MobileSchedule({
   currentDate,
   setCurrentDate,
@@ -122,11 +128,23 @@ export default function CourseSchedule({ courseId }: CourseScheduleProps) {
     enabled: !!courseId,
   });
 
-  // 시작/종료 시간을 분 단위로 변환하는 함수
-  const timeToMinutes = (timeString: string | null): number => {
-    if (!timeString) return 0;
-    const [hours, minutes] = timeString.split(":").map(Number);
-    return hours * 60 + minutes;
+  // 강좌 ID를 기반으로 색상 맵 생성
+  const courseColorMap = useMemo(() => {
+    const colorMap = new Map<string, (typeof courseColorPalette)[0]>();
+
+    classDates?.forEach((classDate) => {
+      if (!colorMap.has(classDate.course.id)) {
+        const colorIndex = colorMap.size % courseColorPalette.length;
+        colorMap.set(classDate.course.id, courseColorPalette[colorIndex]);
+      }
+    });
+
+    return colorMap;
+  }, [classDates]);
+
+  // 강좌에 색상 할당
+  const getCourseColor = (courseId: string) => {
+    return courseColorMap.get(courseId) || courseColorPalette[0];
   };
 
   // 날짜 이동 함수
@@ -144,35 +162,18 @@ export default function CourseSchedule({ courseId }: CourseScheduleProps) {
     setCurrentDate(newDate);
   };
 
-  // 날짜 셀을 더블 클릭했을 때 해당 날짜로 이동하고 일간 보기로 전환하는 함수
+  // 시작/종료 시간을 분 단위로 변환하는 함수
+  const timeToMinutes = (timeString: string | null): number => {
+    if (!timeString) return 0;
+    const [hours, minutes] = timeString.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  // 날짜 셀을 더블 클릭했을 때 해당 날짜로 이동하고 일간 보기로 전환하는 함수 추가
   const handleDateDoubleClick = (day: Date) => {
     setCurrentDate(day);
     setViewMode("day");
   };
-
-  // 월간 데이터 계산을 위한 필요한 값들
-  const monthStart = useMemo(() => startOfMonth(currentDate), [currentDate]);
-  const monthEnd = useMemo(() => endOfMonth(currentDate), [currentDate]);
-  const startDate = useMemo(() => startOfWeek(monthStart, { weekStartsOn: 0 }), [monthStart]);
-  const endDate = useMemo(() => endOfWeek(monthEnd, { weekStartsOn: 0 }), [monthEnd]);
-  const monthDays = useMemo(() => eachDayOfInterval({ start: startDate, end: endDate }), [startDate, endDate]);
-
-  // 월간 수업 분류 - 컴포넌트 최상위 레벨로 이동
-  const monthClassDates = useMemo(() => {
-    if (!classDates) return {};
-
-    const result: Record<string, ClassDate[]> = {};
-
-    monthDays.forEach((day) => {
-      const dateStr = format(day, "yyyy-MM-dd");
-      result[dateStr] = classDates.filter((classDate) => {
-        const classDateObj = new Date(classDate.date);
-        return isSameDay(classDateObj, day);
-      });
-    });
-
-    return result;
-  }, [classDates, monthDays]);
 
   // 일간 보기 렌더링
   const renderDayView = () => {
@@ -223,6 +224,7 @@ export default function CourseSchedule({ courseId }: CourseScheduleProps) {
       return "";
     };
 
+    // renderDayView 함수 내부의 해당 부분을 다음과 같이 수정합니다
     return (
       <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm">
         <h3 className={`mb-4 text-xl font-medium ${getTitleStyle()}`}>
@@ -233,6 +235,7 @@ export default function CourseSchedule({ courseId }: CourseScheduleProps) {
         {isLoading ? (
           <div className="p-6 text-center">불러오는 중...</div>
         ) : (
+          // 높이 고정값을 제거하고 스크롤 가능하도록 수정
           <div className="relative flex h-[600px] overflow-y-auto">
             {/* 시간 눈금 */}
             <div className="w-16 flex-shrink-0 pr-2 text-right">
@@ -266,32 +269,32 @@ export default function CourseSchedule({ courseId }: CourseScheduleProps) {
                 </div>
               </div>
 
-              {/* 수업 일정 블록 */}
+              {/* 강의 블록 */}
               {filteredClassDates?.map((classDate) => {
-                const scheduleColor = scheduleColorPalette[0]; // 같은 강좌에 속한 일정이므로 색상 통일
+                const courseColor = getCourseColor(classDate.course.id);
                 const position = calculateCoursePosition(classDate);
 
                 return (
                   <div
                     key={classDate.id}
-                    className={`absolute right-0 left-0 z-10 mx-1 rounded-md border ${scheduleColor.border} ${scheduleColor.bg} p-2 shadow-sm`}
+                    className={`absolute left-0 z-0 w-full rounded-md border ${courseColor.border} ${courseColor.bg} px-3 py-1 shadow-sm transition-all hover:z-10 hover:shadow-md`}
                     style={{
                       top: position.top,
                       height: position.height,
+                      minHeight: "20px",
                     }}>
-                    <div className={`text-sm font-medium ${scheduleColor.text}`}>
-                      {classDate.startTime && classDate.endTime && `${classDate.startTime} - ${classDate.endTime}`}
-                    </div>
-                    <div className="text-xs">{classDate.course.title}</div>
+                    <h4 className={`font-medium ${courseColor.text} truncate`}>{classDate.course.title}</h4>
+                    {parseFloat(position.height) > 3 && (
+                      <>
+                        <p className="truncate text-xs text-gray-600">{classDate.course.description}</p>
+                        <div className="mt-1 text-xs text-gray-500">
+                          {classDate.startTime} - {classDate.endTime}
+                        </div>
+                      </>
+                    )}
                   </div>
                 );
               })}
-
-              {filteredClassDates?.length === 0 && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-gray-500">이 날짜에 예정된 수업이 없습니다.</p>
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -301,84 +304,76 @@ export default function CourseSchedule({ courseId }: CourseScheduleProps) {
 
   // 주간 보기 렌더링
   const renderWeekView = () => {
-    const startOfWeekDate = startOfWeek(currentDate, { weekStartsOn: 0 });
-    const endOfWeekDate = endOfWeek(currentDate, { weekStartsOn: 0 });
-    const days = eachDayOfInterval({ start: startOfWeekDate, end: endOfWeekDate });
+    const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 }); // 일요일부터 시작
+    const weekEnd = endOfWeek(currentDate, { weekStartsOn: 0 });
+    const days = [];
 
-    // 주간 수업 분류
-    const weekClassDates = useMemo(() => {
-      if (!classDates) return {};
-
-      const result: Record<string, ClassDate[]> = {};
-
-      days.forEach((day) => {
-        const dateStr = format(day, "yyyy-MM-dd");
-        result[dateStr] = classDates.filter((classDate) => {
-          const classDateObj = new Date(classDate.date);
-          return isSameDay(classDateObj, day);
-        });
-      });
-
-      return result;
-    }, [classDates, days]);
-
-    // 각 요일에 대한 스타일 가져오기
-    const getDayHeaderStyle = (day: Date) => {
-      const dateStr = format(day, "yyyy-MM-dd");
-      const isHoliday = koreanHolidays.includes(dateStr);
-      const isSunday = day.getDay() === 0;
-      const isSaturday = day.getDay() === 6;
-
-      if (isHoliday || isSunday) return "text-red-500";
-      if (isSaturday) return "text-blue-500";
-      return "";
-    };
+    for (let i = 0; i < 7; i++) {
+      days.push(addDays(weekStart, i));
+    }
 
     return (
-      <div className="mt-4 hidden rounded-lg border bg-white p-4 shadow-sm sm:block">
-        <div className="grid grid-cols-7 gap-2">
-          {days.map((day, idx) => {
-            const dateStr = format(day, "yyyy-MM-dd");
-            const dailyClasses = weekClassDates[dateStr] || [];
-            const isToday = isSameDay(day, new Date());
-            const headerStyle = getDayHeaderStyle(day);
-            const isHoliday = koreanHolidays.includes(dateStr);
+      <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm">
+        <h3 className="mb-4 text-xl font-medium">
+          {format(weekStart, "yyyy년 MM월 dd일", { locale: ko })} ~ {format(weekEnd, "MM월 dd일", { locale: ko })}
+        </h3>
 
-            return (
-              <div
-                key={idx}
-                className={`min-h-[150px] rounded-md border p-2 ${isToday ? "border-blue-400 bg-blue-50" : "border-gray-200"} ${isHoliday ? "bg-red-50" : day.getDay() === 0 ? "bg-red-50" : day.getDay() === 6 ? "bg-blue-50" : ""}`}
-                onDoubleClick={() => handleDateDoubleClick(day)}>
-                <div className={`mb-2 text-center font-medium ${headerStyle}`}>
-                  {format(day, "MM/dd (EEE)", { locale: ko })}
-                  {isHoliday && " (공휴일)"}
-                </div>
+        {isLoading ? (
+          <div className="p-6 text-center">불러오는 중...</div>
+        ) : (
+          <div className="grid grid-cols-7 gap-2">
+            {days.map((day, index) => {
+              const dateKey = format(day, "yyyy-MM-dd");
+              const isHoliday = koreanHolidays.includes(dateKey);
+              const dayCourses = classDates
+                ?.filter((classDate) => {
+                  // 날짜가 같은지 확인
+                  const classDateObj = new Date(classDate.date);
+                  return isSameDay(classDateObj, day);
+                })
+                .sort((a, b) => {
+                  // 시작 시간이 없는 경우 처리
+                  if (!a.startTime) return 1;
+                  if (!b.startTime) return -1;
 
-                <div className="space-y-1">
-                  {dailyClasses.length === 0 ? (
-                    <div className="text-center text-xs text-gray-400">수업 없음</div>
-                  ) : (
-                    dailyClasses
-                      .sort((a, b) => {
-                        if (!a.startTime) return 1;
-                        if (!b.startTime) return -1;
-                        return a.startTime.localeCompare(b.startTime);
-                      })
-                      .map((classDate) => (
+                  return a.startTime.localeCompare(b.startTime);
+                });
+
+              return (
+                <div key={index} className="h-full min-h-[120px]">
+                  <div
+                    className={clsx(
+                      "mb-1 rounded-t p-1 text-center text-sm",
+                      isSameDay(day, new Date()) ? "bg-blue-100 font-bold" : "bg-gray-100",
+                      isHoliday ? "font-semibold text-red-500" : "",
+                      day.getDay() === 0 && "text-red-500", // 일요일
+                      day.getDay() === 6 && "text-blue-500", // 토요일
+                    )}>
+                    <div>{format(day, "E", { locale: ko })}</div>
+                    <div>{format(day, "d")}</div>
+                  </div>
+
+                  <div className="p-1">
+                    {dayCourses?.map((classDate) => {
+                      const courseColor = getCourseColor(classDate.course.id);
+                      return (
                         <div
                           key={classDate.id}
-                          className={`rounded-md border ${scheduleColorPalette[0].border} ${scheduleColorPalette[0].bg} p-1 text-xs ${scheduleColorPalette[0].text}`}>
-                          <div className="font-medium">
-                            {classDate.startTime} {classDate.endTime && `- ${classDate.endTime}`}
+                          className={`mb-2 cursor-pointer rounded px-1 py-0.5 ${courseColor.bg} ${courseColor.text} ${isSameDay(day, new Date()) && "animate-pulse border-2"}`}
+                          onClick={() => handleDateDoubleClick(day)}>
+                          <div className="truncate font-medium">{classDate.course.title}</div>
+                          <div className="text-gray-500">
+                            {classDate.startTime} - {classDate.endTime}
                           </div>
                         </div>
-                      ))
-                  )}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   };
@@ -389,103 +384,180 @@ export default function CourseSchedule({ courseId }: CourseScheduleProps) {
     const monthEnd = endOfMonth(currentDate);
     const startDate = startOfWeek(monthStart, { weekStartsOn: 0 });
     const endDate = endOfWeek(monthEnd, { weekStartsOn: 0 });
+
     const days = eachDayOfInterval({ start: startDate, end: endDate });
 
+    // 날짜별 수업 그룹화
+    const classDatesByDay = new Map<string, ClassDate[]>();
+
+    classDates?.forEach((classDate) => {
+      const dateObj = new Date(classDate.date);
+      const dateKey = format(dateObj, "yyyy-MM-dd");
+
+      if (!classDatesByDay.has(dateKey)) {
+        classDatesByDay.set(dateKey, []);
+      }
+
+      classDatesByDay.get(dateKey)?.push(classDate);
+    });
+
     return (
-      <div className="mt-4 hidden rounded-lg border bg-white p-4 shadow-sm sm:block">
-        <div className="grid grid-cols-7 text-center">
-          {["일", "월", "화", "수", "목", "금", "토"].map((dayName, idx) => (
-            <div key={idx} className={`mb-2 font-medium ${idx === 0 ? "text-red-500" : idx === 6 ? "text-blue-500" : ""}`}>
-              {dayName}
-            </div>
-          ))}
+      <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm">
+        <h3 className="mb-4 text-xl font-medium">{format(currentDate, "yyyy년 MM월", { locale: ko })}</h3>
 
-          {days.map((day, idx) => {
-            const dateStr = format(day, "yyyy-MM-dd");
-            const dailyClasses = monthClassDates[dateStr] || [];
-            const isToday = isSameDay(day, new Date());
-            const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-            const isHoliday = koreanHolidays.includes(dateStr);
-
-            return (
+        {isLoading ? (
+          <div className="p-6 text-center">불러오는 중...</div>
+        ) : (
+          <div className="grid grid-cols-7 gap-2">
+            {/* 요일 헤더 */}
+            {["일", "월", "화", "수", "목", "금", "토"].map((day, index) => (
               <div
-                key={idx}
-                className={`min-h-[100px] border p-1 ${isToday ? "border-blue-400 bg-blue-50" : "border-gray-200"} ${!isCurrentMonth ? "bg-gray-50" : ""}`}
-                onDoubleClick={() => handleDateDoubleClick(day)}>
-                <div
-                  className={clsx(
-                    "mb-1 text-right text-sm font-medium",
-                    !isCurrentMonth && "text-gray-400",
-                    isHoliday && "text-red-500",
-                    !isHoliday && day.getDay() === 0 && "text-red-500",
-                    day.getDay() === 6 && "text-blue-500",
-                  )}>
-                  {format(day, "d")}
-                </div>
-
-                <div className="space-y-1">
-                  {dailyClasses.slice(0, 3).map((classDate) => (
-                    <div key={classDate.id} className="rounded-sm bg-green-100 px-1 py-0.5 text-xs text-green-800">
-                      {classDate.startTime}
-                    </div>
-                  ))}
-                  {dailyClasses.length > 3 && <div className="text-xs text-gray-500">+{dailyClasses.length - 3}개 더</div>}
-                </div>
+                key={index}
+                className={clsx(
+                  "p-2 text-center font-medium",
+                  index === 0 && "text-red-500", // 일요일
+                  index === 6 && "text-blue-500", // 토요일
+                )}>
+                {day}
               </div>
-            );
-          })}
-        </div>
+            ))}
+
+            {/* 날짜 */}
+            {days.map((day, idx) => {
+              const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+              const isToday = isSameDay(day, new Date());
+              const dateKey = format(day, "yyyy-MM-dd");
+              const isHoliday = koreanHolidays.includes(dateKey);
+              const dayClassDates = (classDatesByDay.get(dateKey) || []).sort((a, b) => {
+                if (!a.startTime) return 1;
+                if (!b.startTime) return -1;
+                return a.startTime.localeCompare(b.startTime);
+              });
+
+              // 최대 3개까지만 표시하고 나머지는 +N 형태로 보여줌
+              const visibleEvents = dayClassDates.slice(0, 3);
+              const remainingCount = dayClassDates.length - visibleEvents.length;
+
+              return (
+                <div
+                  key={idx}
+                  className={clsx(
+                    "min-h-[100px] cursor-pointer rounded-md border border-gray-400 p-1",
+                    !isCurrentMonth && "bg-gray-50 text-gray-400",
+                    isToday && "animate-pulse border-[3px] border-green-600 bg-blue-50 font-bold",
+                    day.getDay() === 0 && isCurrentMonth && "text-red-500", // 일요일
+                    day.getDay() === 6 && isCurrentMonth && "text-blue-500", // 토요일
+                    isHoliday && isCurrentMonth && "font-semibold text-red-500", // 공휴일
+                  )}
+                  onClick={() => handleDateDoubleClick(day)}>
+                  <div className={clsx("mb-1 text-right", isToday && "text-blue-600")}>{format(day, "d")}</div>
+                  <div className="space-y-1">
+                    {visibleEvents.map((classDate) => {
+                      const courseColor = getCourseColor(classDate.course.id);
+                      return (
+                        <div key={classDate.id} className={`rounded-sm px-1 py-0.5 text-xs ${courseColor.bg} ${courseColor.text} truncate`}>
+                          {classDate.startTime} {classDate.course.title}
+                        </div>
+                      );
+                    })}
+                    {remainingCount > 0 && (
+                      <div className="rounded-sm bg-gray-100 px-1 py-0.5 text-center text-xs text-gray-800">+{remainingCount}개 더</div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   };
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">수업 일정</h2>
-
-        <div className="flex items-center space-x-4">
-          <div className="flex space-x-1">
-            <button onClick={() => moveDate("prev")} className="rounded-md border p-1 text-gray-700 hover:bg-gray-100">
-              <ChevronLeft size={16} />
-            </button>
-            <button onClick={() => moveDate("next")} className="rounded-md border p-1 text-gray-700 hover:bg-gray-100">
-              <ChevronRight size={16} />
-            </button>
+    <div className="rounded-lg bg-gray-50 p-4">
+      {/* 상단 네비게이션 */}
+      <div className="mb-4 flex gap-2 sm:items-center sm:justify-between">
+        {/* ✅ 모바일 보기 전환 버튼 */}
+        <div className="flex w-full flex-col gap-2 sm:hidden">
+          <div className="flex justify-between">
+            <div className="flex gap-2">
+              <button
+                onClick={() => setViewMode("month")}
+                className={clsx(
+                  "rounded-md px-2 py-1 text-sm",
+                  viewMode === "month" ? "bg-blue-500 text-white" : "border border-gray-300 bg-white text-gray-700",
+                )}>
+                월
+              </button>
+              <button
+                onClick={() => setViewMode("day")}
+                className={clsx(
+                  "rounded-md px-2 py-1 text-sm",
+                  viewMode === "day" ? "bg-blue-500 text-white" : "border border-gray-300 bg-white text-gray-700",
+                )}>
+                일
+              </button>
+            </div>
           </div>
+        </div>
 
-          <button onClick={() => setCurrentDate(new Date())} className="rounded-md border bg-white px-2 py-1 text-sm text-gray-700 hover:bg-gray-100">
+        {/* ✅ 데스크탑 전용 보기 전환 버튼 */}
+        <div className="hidden space-x-2 sm:flex">
+          <button
+            onClick={() => setViewMode("month")}
+            className={clsx(
+              "rounded-md px-3 py-1 text-sm",
+              viewMode === "month" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-100",
+            )}>
+            월
+          </button>
+          <button
+            onClick={() => setViewMode("week")}
+            className={clsx(
+              "rounded-md px-3 py-1 text-sm",
+              viewMode === "week" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-100",
+            )}>
+            주
+          </button>
+          <button
+            onClick={() => setViewMode("day")}
+            className={clsx(
+              "rounded-md px-3 py-1 text-sm",
+              viewMode === "day" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-100",
+            )}>
+            일
+          </button>
+        </div>
+
+        {/* 날짜 이동 버튼은 그대로 유지 */}
+        <div className="flex items-center space-x-2">
+          <button onClick={() => moveDate("prev")} className="rounded p-1 hover:bg-gray-200">
+            <ChevronLeft size={20} />
+          </button>
+          <button onClick={() => setCurrentDate(new Date())} className="min-w-14 rounded-md bg-white px-3 py-1 text-sm hover:bg-gray-100">
             오늘
           </button>
-
-          <div className="flex rounded-md border">
-            <button
-              onClick={() => setViewMode("day")}
-              className={`px-3 py-1 text-sm ${viewMode === "day" ? "bg-blue-100 font-medium text-blue-800" : "bg-white text-gray-700 hover:bg-gray-100"}`}>
-              일간
-            </button>
-            <button
-              onClick={() => setViewMode("week")}
-              className={`px-3 py-1 text-sm ${viewMode === "week" ? "bg-blue-100 font-medium text-blue-800" : "bg-white text-gray-700 hover:bg-gray-100"}`}>
-              주간
-            </button>
-            <button
-              onClick={() => setViewMode("month")}
-              className={`px-3 py-1 text-sm ${viewMode === "month" ? "bg-blue-100 font-medium text-blue-800" : "bg-white text-gray-700 hover:bg-gray-100"}`}>
-              월간
-            </button>
-          </div>
+          <button onClick={() => moveDate("next")} className="rounded p-1 hover:bg-gray-200">
+            <ChevronRight size={20} />
+          </button>
         </div>
       </div>
 
-      {isLoading && <div className="mt-4 rounded-md border bg-white p-6 text-center">수업 일정을 불러오는 중...</div>}
+      {/* ✅ 모바일 월간 보기: 월간 보기 상태일 때만 보임 */}
+      {viewMode === "month" && (
+        <MobileSchedule currentDate={currentDate} setCurrentDate={setCurrentDate} setViewMode={setViewMode} classDates={classDates} />
+      )}
 
-      {!isLoading && viewMode === "day" && renderDayView()}
-      {!isLoading && viewMode === "week" && renderWeekView()}
-      {!isLoading && viewMode === "month" && renderMonthView()}
+      {/* ✅ 일간 보기: 모바일 + PC 공통 */}
+      {viewMode === "day" && <div className="block sm:block">{renderDayView()}</div>}
 
-      {/* 모바일 달력 뷰 */}
-      <MobileSchedule currentDate={currentDate} setCurrentDate={setCurrentDate} setViewMode={setViewMode} classDates={classDates} />
+      {/* ✅ 데스크탑용 주/월 보기 */}
+      {viewMode !== "day" && (
+        <div className="hidden sm:block">
+          {viewMode === "week" && renderWeekView()}
+          {viewMode === "month" && renderMonthView()}
+        </div>
+      )}
     </div>
   );
 }
