@@ -137,7 +137,7 @@ export default function MyCourses() {
 
       {/* 수업 일정 모달 */}
       {isScheduleModalOpen && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
           <div className="relative max-h-[90vh] w-[95vw] max-w-5xl overflow-auto rounded-lg bg-white p-4 shadow-lg">
             <button
               onClick={handleCloseModal}
