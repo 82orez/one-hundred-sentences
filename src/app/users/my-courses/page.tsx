@@ -117,10 +117,13 @@ export default function MyCoursesPage() {
                       </span>
                     </div>
                     <p className="mb-2 text-sm text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
+                    <p className="mb-2 text-sm text-gray-600">이메일: {enrollment.course.teacher.user.email}</p>
+                    <p className="mb-2 text-sm text-gray-600">전화번호: {enrollment.course.teacher.user.phone}</p>
                     <p className="mb-4 text-sm text-gray-600">
                       <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)}
                     </p>
                     <p className="mb-4 text-xs text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
+                    <p className="mb-4 text-xs text-gray-500">종료일: {format(new Date(enrollment.course.endDate), "yyyy년 MM월 dd일")}</p>
                     <a
                       href={`/dashboard/courses/${enrollment.course.id}`}
                       className="block w-full rounded-lg bg-gray-100 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-200">

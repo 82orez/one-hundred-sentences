@@ -48,6 +48,8 @@ export async function GET(req: NextRequest) {
                 user: {
                   select: {
                     realName: true,
+                    email: true,
+                    phone: true,
                   },
                 },
               },
@@ -71,6 +73,8 @@ export async function GET(req: NextRequest) {
                 user: {
                   select: {
                     realName: true,
+                    email: true,
+                    phone: true,
                   },
                 },
               },
