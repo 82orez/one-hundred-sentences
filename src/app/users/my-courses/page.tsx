@@ -131,8 +131,8 @@ export default function MyCoursesPage() {
                       </span>
                     </div>
                     <p className="mb-4 text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
-                    {/*<p className="mb-2 text-gray-600">이메일: {enrollment.course.teacher.user.email}</p>*/}
-                    {/*<p className="mb-2 text-gray-600">전화번호: {enrollment.course.teacher.user.phone}</p>*/}
+                    <p className="mb-4 text-gray-600">이메일: {enrollment.course.teacher.user.email}</p>
+                    {/*<p className="mb-4 text-gray-600">전화번호: {enrollment.course.teacher.user.phone}</p>*/}
                     <p className="mb-4 text-gray-600">
                       <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)}
                     </p>
