@@ -20,14 +20,29 @@ export default async function LandingPage() {
         <Card className="mx-auto flex w-full max-w-4xl flex-col items-center rounded-2xl bg-white p-6 text-gray-800 shadow-xl md:flex-row">
           <Image src="/images/english-learning.png" width={300} height={300} alt="영어 학습" className="mb-4 rounded-lg shadow-md md:mr-6 md:mb-0" />
           <Button className="mb-4 flex cursor-pointer items-center rounded-full bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700 md:hidden">
-            학습 시작하기 <FaArrowRight className="ml-2" />
+            개인 회원 <FaArrowRight className="ml-2" />
+          </Button>
+
+          <Button className="mb-4 flex cursor-pointer items-center rounded-full bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700 md:hidden">
+            문화센터 등록 회원 <FaArrowRight className="ml-2" />
           </Button>
           <CardContent className="text-center md:text-left">
             <h2 className="mb-1 text-xl font-semibold md:mb-3 md:text-2xl">영어 100문장으로 영어의 기초를 완성하세요.</h2>
             <p className="mb-4 text-gray-600">반복 학습과 체계적인 암기법을 통해 누구나 쉽게 영어 실력을 높일 수 있습니다.</p>
-            <Button className="hidden cursor-pointer items-center rounded-full bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700 md:flex">
-              학습 시작하기 <FaArrowRight className="ml-2" />
-            </Button>
+
+            <div className={"flex justify-center md:gap-6"}>
+              <Button className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700 md:flex md:min-w-[150px] md:gap-0">
+                <div className={"flex flex-col items-center"}>
+                  <span>문화센터</span>
+                  <span>등록 회원</span>
+                </div>
+                <FaArrowRight className="ml-2" />
+              </Button>
+
+              <Button className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700 md:flex md:min-w-[150px]">
+                개인 회원 <FaArrowRight className="ml-2" />
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
