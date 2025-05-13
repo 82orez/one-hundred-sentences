@@ -123,25 +123,25 @@ export default function MyCoursesPage() {
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {activeCourses.map((enrollment: any) => (
                   <div key={enrollment.id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                    <div className="mb-2 flex items-center justify-between">
-                      <h3 className="font-medium">{enrollment.course.title}</h3>
+                    <div className="mb-4 flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">{enrollment.course.title}</h3>
                       <span className="rounded-full bg-green-100 px-2 py-1 text-xs text-green-700">
                         <CheckCircle className="mr-1 inline-block h-3 w-3" />
                         수강중
                       </span>
                     </div>
-                    <p className="mb-2 text-sm text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
-                    <p className="mb-2 text-sm text-gray-600">이메일: {enrollment.course.teacher.user.email}</p>
-                    <p className="mb-2 text-sm text-gray-600">전화번호: {enrollment.course.teacher.user.phone}</p>
-                    <p className="mb-4 text-sm text-gray-600">
+                    <p className="mb-4 text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
+                    {/*<p className="mb-2 text-gray-600">이메일: {enrollment.course.teacher.user.email}</p>*/}
+                    {/*<p className="mb-2 text-gray-600">전화번호: {enrollment.course.teacher.user.phone}</p>*/}
+                    <p className="mb-4 text-gray-600">
                       <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)}
                     </p>
-                    <p className="mb-4 text-sm text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
-                    <p className="mb-4 text-sm text-gray-500">종료일: {format(new Date(enrollment.course.endDate), "yyyy년 MM월 dd일")}</p>
+                    <p className="mb-4 text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
+                    <p className="mb-4 text-gray-500">종강일: {format(new Date(enrollment.course.endDate), "yyyy년 MM월 dd일")}</p>
 
                     <button
                       onClick={() => openScheduleModal(enrollment.course.id)}
-                      className="mt-4 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
+                      className="mt-0 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
                       수업 일정 보기
                     </button>
 
