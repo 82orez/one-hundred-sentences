@@ -130,17 +130,25 @@ export default function MyCoursesPage() {
                         수강중
                       </span>
                     </div>
-                    <p className="mb-4 text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
-                    <p className="mb-4 text-gray-600">이메일: {enrollment.course.teacher.user.email}</p>
+                    <p className="mb-1 text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
+                    <p className="mb-4 text-sm text-gray-600">이메일: {enrollment.course.teacher.user.email}</p>
                     {/*<p className="mb-4 text-gray-600">전화번호: {enrollment.course.teacher.user.phone}</p>*/}
 
                     <p className="mb-4 text-gray-600">
                       <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)}
                     </p>
-                    <p className="mb-4 text-gray-600">시작 시간: {enrollment.course.startTime}</p>
+                    <p className="mb-4 text-gray-600">
+                      시작 시간:{" "}
+                      {enrollment.course.startTime
+                        ? format(new Date(`2000-01-01T${enrollment.course.startTime}`), "a h시 mm분")
+                            .replace("AM", "오전")
+                            .replace("PM", "오후")
+                            .replace(":00분", "시")
+                        : "시간 정보 없음"}
+                    </p>
                     <p className="mb-4 text-gray-600">수업 시간: {enrollment.course.duration}</p>
 
-                    <p className="mb-4 text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
+                    <p className="mb-4 text-gray-500">개강일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
                     <p className="mb-4 text-gray-500">종강일: {format(new Date(enrollment.course.endDate), "yyyy년 MM월 dd일")}</p>
 
                     <button
@@ -152,7 +160,7 @@ export default function MyCoursesPage() {
                     <a
                       href={`/dashboard/courses/${enrollment.course.id}`}
                       className="mt-4 block w-full rounded-lg bg-gray-100 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-200">
-                      강의 상세보기
+                      학습 시작하기
                     </a>
                   </div>
                 ))}
