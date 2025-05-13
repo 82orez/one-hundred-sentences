@@ -7,8 +7,13 @@ import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { format } from "date-fns";
 import { Play, Clock, CheckCircle } from "lucide-react";
 import { queryClient } from "@/app/providers";
+import { useState } from "react";
+import CourseSchedule from "@/components/CourseSchedule";
 
 export default function MyCoursesPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+
   // 내 강의 목록 조회
   const { data, isLoading, error } = useQuery({
     queryKey: ["my-courses"],
@@ -49,6 +54,15 @@ export default function MyCoursesPage() {
     if (data.scheduleSunday) days.push("일");
 
     return days.join(" / ");
+  };
+
+  const openScheduleModal = (courseId: string) => {
+    setSelectedCourseId(courseId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   if (isLoading) return <LoadingPageSkeleton />;
@@ -124,6 +138,13 @@ export default function MyCoursesPage() {
                     </p>
                     <p className="mb-4 text-xs text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
                     <p className="mb-4 text-xs text-gray-500">종료일: {format(new Date(enrollment.course.endDate), "yyyy년 MM월 dd일")}</p>
+
+                    <button
+                      onClick={() => openScheduleModal(enrollment.course.id)}
+                      className="mt-8 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
+                      수업 일정 보기
+                    </button>
+
                     <a
                       href={`/dashboard/courses/${enrollment.course.id}`}
                       className="block w-full rounded-lg bg-gray-100 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-200">
@@ -135,6 +156,21 @@ export default function MyCoursesPage() {
             </div>
           )}
         </>
+      )}
+
+      {/* 모달 창 */}
+      {isModalOpen && (
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
+          <div className="relative h-full w-full max-w-5xl overflow-y-auto rounded-lg bg-white p-6 shadow-lg">
+            <button onClick={closeModal} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <h2 className="mb-4 text-xl font-semibold">수업 일정</h2>
+            <CourseSchedule courseId={selectedCourseId} />
+          </div>
+        </div>
       )}
     </div>
   );
