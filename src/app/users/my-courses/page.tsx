@@ -25,6 +25,11 @@ export default function MyCoursesPage() {
     },
   });
 
+  const { pendingCourses = [], activeCourses = [] } = data || {};
+
+  console.log("pendingCourses: ", pendingCourses);
+  console.log("activeCourses: ", activeCourses);
+
   // 수강 시작 mutation
   const startCourseMutation = useMutation({
     mutationFn: async (enrollmentId: string) => {
@@ -76,8 +81,6 @@ export default function MyCoursesPage() {
       </div>
     );
   }
-
-  const { pendingCourses = [], activeCourses = [] } = data || {};
 
   return (
     <div className="container mx-auto px-4 py-8">
