@@ -693,6 +693,7 @@ export type Database = {
       Sentence: {
         Row: {
           audioUrl: string | null
+          contents: Database["public"]["Enums"]["Contents"]
           en: string
           id: string
           ko: string
@@ -701,6 +702,7 @@ export type Database = {
         }
         Insert: {
           audioUrl?: string | null
+          contents: Database["public"]["Enums"]["Contents"]
           en: string
           id: string
           ko: string
@@ -709,6 +711,7 @@ export type Database = {
         }
         Update: {
           audioUrl?: string | null
+          contents?: Database["public"]["Enums"]["Contents"]
           en?: string
           id?: string
           ko?: string

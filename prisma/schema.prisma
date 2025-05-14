@@ -132,6 +132,7 @@ model unitSubject {
 
 model Sentence {
   id                 String               @id @default(cuid())
+  contents           Contents
   no                 Int                  @unique // 문장 번호 (1~100)
   en                 String // 영어 문장
   ko                 String // 한국어 번역
