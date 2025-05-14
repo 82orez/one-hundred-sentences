@@ -170,8 +170,8 @@ export default function MyCoursesPage() {
                     </button>
 
                     <Link
-                      // href={`/dashboard/courses/${enrollment.course.id}`}
-                      href={`/dashboard`}
+                      href={`/dashboard/${enrollment.course.id}`}
+                      // href={`/dashboard`}
                       className="mt-4 block w-full rounded-lg bg-gray-100 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-200">
                       학습 시작하기
                     </Link>
