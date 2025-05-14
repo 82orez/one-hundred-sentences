@@ -34,8 +34,6 @@ export const sentences = [
   { no: 24, en: "Is it possible to pay with cash?", ko: "결제는 현금으로도 가능한가요?" },
   { no: 25, en: "Do I need to buy a bag?", ko: "봉투는 사야 하나요?" },
 
-  // 6 review
-
   // 7
   { no: 26, en: "I’d like a small cappuccino, please.", ko: "작은 사이즈 카푸치노 한 잔 주세요." },
   { no: 27, en: "Can you warm up this muffin?", ko: "이 머핀을 데워주실 수 있나요?" }, // 원어민 파일 확인 - Will 과 내용 다름.
