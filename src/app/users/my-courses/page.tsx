@@ -9,6 +9,7 @@ import { Play, Clock, CheckCircle } from "lucide-react";
 import { queryClient } from "@/app/providers";
 import { useState } from "react";
 import CourseSchedule from "@/components/CourseSchedule";
+import Link from "next/link";
 
 export default function MyCoursesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -157,11 +158,12 @@ export default function MyCoursesPage() {
                       수업 일정 보기
                     </button>
 
-                    <a
-                      href={`/dashboard/courses/${enrollment.course.id}`}
+                    <Link
+                      // href={`/dashboard/courses/${enrollment.course.id}`}
+                      href={`/dashboard`}
                       className="mt-4 block w-full rounded-lg bg-gray-100 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-200">
                       학습 시작하기
-                    </a>
+                    </Link>
                   </div>
                 ))}
               </div>

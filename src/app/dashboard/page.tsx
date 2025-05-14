@@ -457,14 +457,14 @@ export default function Dashboard() {
       <AnimatePresence>
         {selectedDay && (
           <motion.div
-            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-200"
+            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/30"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedDay(null)} // 모달 외부 클릭 시 닫기
           >
             <motion.div
-              className="relative h-svh w-full max-w-lg overflow-auto rounded-lg bg-white px-4 py-6 shadow-lg md:px-6"
+              className="relative h-svh w-full max-w-lg overflow-auto rounded-lg bg-white px-4 py-10 shadow-lg md:h-fit md:px-6"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
