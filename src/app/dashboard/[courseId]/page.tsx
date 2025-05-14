@@ -54,7 +54,7 @@ export default function Dashboard({ params }: Props) {
   const getSentenceCount = useQuery({
     queryKey: ["SentenceCount"],
     queryFn: async () => {
-      const { count, error } = await supabase.from("Sentence").select("*", { count: "exact", head: true });
+      const { count, error } = await supabase.from("Sentence").select("*", { count: "exact", head: true }).eq("contents", "tour100");
 
       if (error) {
         console.error("Sentence 카운트 조회 실패:", error);
