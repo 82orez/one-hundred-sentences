@@ -155,15 +155,15 @@ export default function Navbar() {
                         onClick={() => setMenuOpen(false)}>
                         강사 페이지
                       </Link>
+
+                      <Link
+                        href="/users/teacher/teacher-courses"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setMenuOpen(false)}>
+                        teacher-courses
+                      </Link>
                     </>
                   )}
-
-                  <Link
-                    href="/users/teacher/teacher-courses"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setMenuOpen(false)}>
-                    teacher-courses
-                  </Link>
 
                   {!isTeacher && (
                     <>

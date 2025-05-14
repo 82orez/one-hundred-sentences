@@ -87,7 +87,15 @@ export default function MyCoursesPage() {
       <h1 className="mb-8 text-2xl font-bold">내 강의 보기</h1>
 
       {pendingCourses.length === 0 && activeCourses.length === 0 ? (
-        <div className="rounded-lg bg-gray-50 p-6 text-center text-gray-500">수강 중인 강의가 없습니다.</div>
+        <div className="rounded-lg bg-gray-50 p-6 text-center text-gray-500">
+          <p>수강 중인 강의가 없습니다.</p>
+          <p className={"mt-4"}>
+            <Link href={"/users/profile"} className={"font-semibold underline"}>
+              회원 정보
+            </Link>
+            에서 정확한 실제 이름과 전화번호를 입력해주세요.
+          </p>
+        </div>
       ) : (
         <>
           {pendingCourses.length > 0 && (
@@ -103,11 +111,11 @@ export default function MyCoursesPage() {
                         대기중
                       </span>
                     </div>
-                    <p className="mb-4 text-sm text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
-                    <p className="mb-4 text-sm text-gray-600">
+                    <p className="mb-4 text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
+                    <p className="mb-4 text-gray-600">
                       <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)}
                     </p>
-                    <p className="mb-4 text-xs text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
+                    <p className="mb-4 text-gray-500">시작일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
                     <button
                       onClick={() => handleStartCourse(enrollment.id)}
                       className="flex w-full items-center justify-center rounded-lg bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600"

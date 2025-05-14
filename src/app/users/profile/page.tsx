@@ -181,7 +181,7 @@ const ProfilePage = () => {
               <span className="text-lg">{userInfo?.phone || "등록되지 않음"}</span>
             </div>
 
-            {session.user.role !== "student" && (
+            {session?.user.role !== "student" && (
               <div className="flex items-center gap-4 px-2">
                 <Link2 size={22} className="min-h-[22px] min-w-[22px] text-gray-500" />
                 <span className="text-left break-all whitespace-normal">{userInfo?.zoomInviteUrl || "등록되지 않음"}</span>
