@@ -17,9 +17,9 @@ export default function MyCoursesPage() {
   // Zustand 스토어에서 상태와 액션 가져오기
   // const { selectedCourseId, setSelectedCourseId, selectedCourseContents, setSelectedCourseContents } = useCourseStore();
 
-  const [selectedCourseId, setSelectedCourseId] = useState("");
-  const [selectedCourseContents, setSelectedCourseContents] = useState("");
-  const [selectedCourseTitle, setSelectedCourseTitle] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [selectedCourseContents, setSelectedCourseContents] = useState<string | null>(null);
+  const [selectedCourseTitle, setSelectedCourseTitle] = useState<string | null>(null);
 
   // 내 강의 목록 조회
   const { data, isLoading, error } = useQuery({
