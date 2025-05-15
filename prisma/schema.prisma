@@ -304,7 +304,7 @@ model Course {
   classDates  ClassDate[] // 관계 추가
 }
 
-// 수업 일자 모델 수정
+// 수업 일자 모델
 model ClassDate {
   id        String   @id @default(cuid())
   courseId  String
@@ -319,6 +319,13 @@ model ClassDate {
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@index([courseId])
+}
+
+model Selected {
+  id                     String  @id @default(cuid())
+  selectedCourseId       String?
+  selectedCourseContents String?
+  selectedCourseTitle    String?
 }
 
 model Lesson {

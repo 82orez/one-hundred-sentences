@@ -15,7 +15,11 @@ import { useCourseStore } from "@/stores/useCourseStore";
 export default function MyCoursesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Zustand 스토어에서 상태와 액션 가져오기
-  const { selectedCourseId, setSelectedCourseId, selectedCourseContents, setSelectedCourseContents } = useCourseStore();
+  // const { selectedCourseId, setSelectedCourseId, selectedCourseContents, setSelectedCourseContents } = useCourseStore();
+
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [selectedCourseContents, setSelectedCourseContents] = useState("");
+  const [selectedCourseTitle, setSelectedCourseTitle] = useState("");
 
   // 내 강의 목록 조회
   const { data, isLoading, error } = useQuery({
@@ -186,9 +190,23 @@ export default function MyCoursesPage() {
 
                     <Link
                       href={`/dashboard/${enrollment.course.id}`}
-                      onClick={() => {
+                      onClick={async () => {
+                        // 로컬 상태 업데이트
                         setSelectedCourseId(enrollment.course.id);
                         setSelectedCourseContents(enrollment.course.contents);
+                        setSelectedCourseTitle(enrollment.course.title);
+
+                        // API로 데이터 저장
+                        try {
+                          await axios.post("/api/admin/selected", {
+                            selectedCourseId: enrollment.course.id,
+                            selectedCourseContents: enrollment.course.contents,
+                            selectedCourseTitle: enrollment.course.title,
+                          });
+                        } catch (error) {
+                          toast.error("코스 정보 저장에 실패했습니다");
+                          console.error("코스 정보 저장 오류:", error);
+                        }
                       }}
                       className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-center font-semibold text-gray-700 hover:bg-gray-200">
                       <Play className="mr-1 h-4 w-4" />

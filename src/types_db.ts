@@ -693,6 +693,27 @@ export type Database = {
           },
         ]
       }
+      Selected: {
+        Row: {
+          id: string
+          selectedCourseContents: string | null
+          selectedCourseId: string | null
+          selectedCourseTitle: string | null
+        }
+        Insert: {
+          id: string
+          selectedCourseContents?: string | null
+          selectedCourseId?: string | null
+          selectedCourseTitle?: string | null
+        }
+        Update: {
+          id?: string
+          selectedCourseContents?: string | null
+          selectedCourseId?: string | null
+          selectedCourseTitle?: string | null
+        }
+        Relationships: []
+      }
       Sentence: {
         Row: {
           audioUrl: string | null
