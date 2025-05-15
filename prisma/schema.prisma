@@ -57,6 +57,7 @@ model User {
   favoriteSentence   favoriteSentence[]
   NativeAudioAttempt NativeAudioAttempt[]
   Teachers           Teachers?
+  Selected           Selected[]
 }
 
 model Account {
@@ -323,9 +324,12 @@ model ClassDate {
 
 model Selected {
   id                     String  @id @default(cuid())
+  userId                 String
   selectedCourseId       String?
   selectedCourseContents String?
   selectedCourseTitle    String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Lesson {

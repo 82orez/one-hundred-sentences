@@ -699,20 +699,31 @@ export type Database = {
           selectedCourseContents: string | null
           selectedCourseId: string | null
           selectedCourseTitle: string | null
+          userId: string
         }
         Insert: {
           id: string
           selectedCourseContents?: string | null
           selectedCourseId?: string | null
           selectedCourseTitle?: string | null
+          userId: string
         }
         Update: {
           id?: string
           selectedCourseContents?: string | null
           selectedCourseId?: string | null
           selectedCourseTitle?: string | null
+          userId?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "Selected_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       Sentence: {
         Row: {
