@@ -12,7 +12,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { sentenceNo, duration } = await req.json();
+    const { sentenceNo, duration, courseId } = await req.json();
+
+    // courseId 유효성 검사
+    if (!courseId) {
+      return NextResponse.json({ error: "courseId가 필요합니다" }, { status: 400 });
+    }
 
     // ✅ 3초 이상 시청한 경우만 기록
     if (duration >= 3) {
@@ -21,6 +26,7 @@ export async function POST(req: Request) {
 
       const attempt = await prisma.youTubeViewAttempt.create({
         data: {
+          courseId: courseId, // courseId 추가
           userId: session.user.id,
           sentenceNo: sentenceNo,
           duration: limitedDuration,

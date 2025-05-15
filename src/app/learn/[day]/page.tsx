@@ -425,7 +425,7 @@ const LearnPage = ({ params }: Props) => {
 
       try {
         const response = await axios.post("/api/youtube-view", {
-          selectedCourseId: selectedCourseId,
+          courseId: selectedCourseId,
           sentenceNo: currentSentenceForYoutube,
           duration: duration,
         });
