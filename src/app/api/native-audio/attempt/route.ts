@@ -21,11 +21,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "사용자를 찾을 수 없습니다" }, { status: 404 });
     }
 
-    // 요청 본문에서 문장 번호 추출
-    const { sentenceNo } = await req.json();
-    
+    // 요청 본문에서 문장 번호와 강좌 ID 추출
+    const { sentenceNo, courseId } = await req.json();
+
     if (!sentenceNo) {
       return NextResponse.json({ error: "문장 번호가 필요합니다" }, { status: 400 });
+    }
+
+    if (!courseId) {
+      return NextResponse.json({ error: "강좌 ID가 필요합니다" }, { status: 400 });
     }
 
     // 이미 해당 사용자와 문장에 대한 기록이 있는지 확인
@@ -33,6 +37,7 @@ export async function POST(req: NextRequest) {
       where: {
         userId: user.id,
         sentenceNo: parseInt(sentenceNo, 10),
+        courseId: courseId,
       },
     });
 
@@ -50,6 +55,7 @@ export async function POST(req: NextRequest) {
         data: {
           userId: user.id,
           sentenceNo: parseInt(sentenceNo, 10),
+          courseId: courseId,
           attemptNativeAudio: 1,
         },
       });

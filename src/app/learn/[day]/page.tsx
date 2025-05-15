@@ -205,9 +205,9 @@ const LearnPage = ({ params }: Props) => {
     }
   }, [currentPageNumber, nextDay]);
 
-  // ✅ 원어민 음성 시청 기록
+  // ! ✅ 원어민 음성 시청 기록
   const recordNativeAudioAttemptMutation = useMutation({
-    mutationFn: async (params: { sentenceNo: number }) => {
+    mutationFn: async (params: { sentenceNo: number; courseId: string }) => {
       const response = await axios.post("/api/native-audio/attempt", params);
       return response.data;
     },
@@ -316,8 +316,8 @@ const LearnPage = ({ params }: Props) => {
 
     setIsPlayingSentenceNo(sentenceNo);
 
-    // ✅ 네이티브 오디오 시도 기록 추가
-    recordNativeAudioAttemptMutation.mutate({ sentenceNo });
+    // ! ✅ 네이티브 오디오 시도 기록 추가
+    recordNativeAudioAttemptMutation.mutate({ sentenceNo, courseId: selectedCourseId });
 
     const audio = new Audio(audioUrl);
     // ✅ 재생 속도 설정

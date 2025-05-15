@@ -191,6 +191,7 @@ model QuizAttempt {
 
 model NativeAudioAttempt {
   id                 String   @id @default(cuid())
+  courseId           String
   userId             String
   sentenceNo         Int
   attemptNativeAudio Int?

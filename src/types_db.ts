@@ -470,6 +470,7 @@ export type Database = {
       NativeAudioAttempt: {
         Row: {
           attemptNativeAudio: number | null
+          courseId: string
           createdAt: string
           id: string
           sentenceNo: number
@@ -477,6 +478,7 @@ export type Database = {
         }
         Insert: {
           attemptNativeAudio?: number | null
+          courseId: string
           createdAt?: string
           id: string
           sentenceNo: number
@@ -484,6 +486,7 @@ export type Database = {
         }
         Update: {
           attemptNativeAudio?: number | null
+          courseId?: string
           createdAt?: string
           id?: string
           sentenceNo?: number
