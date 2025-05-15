@@ -7,7 +7,7 @@ import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { format } from "date-fns";
 import { Play, Clock, CheckCircle } from "lucide-react";
 import { queryClient } from "@/app/providers";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CourseSchedule from "@/components/CourseSchedule";
 import Link from "next/link";
 import { useCourseStore } from "@/stores/useCourseStore";
@@ -20,6 +20,19 @@ export default function MyCoursesPage() {
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [selectedCourseContents, setSelectedCourseContents] = useState<string | null>(null);
   const [selectedCourseTitle, setSelectedCourseTitle] = useState<string | null>(null);
+
+  // 페이지 로드 시 Selected 데이터 초기화
+  useEffect(() => {
+    const resetSelectedData = async () => {
+      try {
+        await axios.post("/api/admin/selected/reset");
+      } catch (error) {
+        console.error("Selected 데이터 초기화 오류:", error);
+      }
+    };
+
+    resetSelectedData();
+  }, []);
 
   // 내 강의 목록 조회
   const { data, isLoading, error } = useQuery({
