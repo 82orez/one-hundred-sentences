@@ -1,15 +1,21 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Contents } from "@prisma/client"; // Contents enum 추가
 
 export async function GET(request: Request) {
   try {
-    // URL 에서 unitNumber 파라미터 추출
+    // URL 에서 unitNumber 파라미터와 selectedCourseContents 파라미터 추출
     const { searchParams } = new URL(request.url);
     const unitNumberParam = searchParams.get("unitNumber");
+    const selectedCourseContents = searchParams.get("selectedCourseContents");
 
     // 파라미터 유효성 검사
     if (!unitNumberParam) {
       return NextResponse.json({ error: "unitNumber 파라미터가 필요합니다." }, { status: 400 });
+    }
+
+    if (!selectedCourseContents) {
+      return NextResponse.json({ error: "selectedCourseContents 파라미터가 필요합니다." }, { status: 400 });
     }
 
     // 문자열을 숫자로 변환
@@ -20,13 +26,22 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "유효한 unitNumber 가 필요합니다." }, { status: 400 });
     }
 
-    // DB 에서 해당 unitNumber 를 가진 unitSubject 조회
+    // 문자열을 Contents enum 으로 변환 (타입 어설션 사용)
+    // 유효한 enum 값인지 확인
+    if (!Object.values(Contents).includes(selectedCourseContents as Contents)) {
+      return NextResponse.json({ error: "유효하지 않은 contents 값입니다." }, { status: 400 });
+    }
+
+    // DB 에서 해당 unitNumber를 가진 unitSubject 조회
     const unitSubject = await prisma.unitSubject.findFirst({
-      where: { unitNumber },
+      where: {
+        unitNumber,
+        contents: selectedCourseContents as Contents, // 타입 변환 추가
+      },
       select: {
         subjectKo: true,
         subjectEn: true,
-        unitUtubeUrl: true, // 추가
+        unitUtubeUrl: true,
       },
     });
 

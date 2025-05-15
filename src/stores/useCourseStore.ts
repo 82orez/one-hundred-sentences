@@ -1,5 +1,6 @@
 // /stores/useCourseStore.ts
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface CourseState {
   selectedCourseId: string;
@@ -9,10 +10,17 @@ interface CourseState {
   setSelectedCourseContents: (contents: string) => void;
 }
 
-export const useCourseStore = create<CourseState>((set) => ({
-  selectedCourseId: "",
-  setSelectedCourseId: (id) => set({ selectedCourseId: id }),
+export const useCourseStore = create<CourseState>()(
+  persist(
+    (set) => ({
+      selectedCourseId: "",
+      setSelectedCourseId: (id) => set({ selectedCourseId: id }),
 
-  selectedCourseContents: "",
-  setSelectedCourseContents: (contents) => set({ selectedCourseContents: contents }),
-}));
+      selectedCourseContents: "",
+      setSelectedCourseContents: (contents) => set({ selectedCourseContents: contents }),
+    }),
+    {
+      name: "course-storage", // localStorage에 저장될 키 이름
+    },
+  ),
+);

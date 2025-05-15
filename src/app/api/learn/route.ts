@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Prisma 연결
+import { prisma } from "@/lib/prisma";
+import { Contents } from "@prisma/client"; // Prisma 연결
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -8,9 +9,7 @@ export async function GET(req: Request) {
 
   const sentences = await prisma.sentence.findMany({
     where: {
-      ...(selectedCourseContents && {
-        contents: selectedCourseContents as any, // 타입 에러를 우회하는 방법
-      }),
+      contents: selectedCourseContents as Contents,
     },
     skip: (day - 1) * 5,
     take: 5,

@@ -122,7 +122,7 @@ const LearnPage = ({ params }: Props) => {
   const { data: unitSubjectAndUtubeUrl, isLoading: isUnitSubjectAndUtubeUrlLoading } = useQuery({
     queryKey: ["unitSubject", day],
     queryFn: async () => {
-      const res = await axios.get(`/api/unit-subject?unitNumber=${currentPageNumber}`);
+      const res = await axios.get(`/api/unit-subject?unitNumber=${currentPageNumber}&selectedCourseContents=${selectedCourseContents}`);
       return {
         subjectKo: res.data?.subjectKo || null,
         unitUtubeUrl: res.data?.unitUtubeUrl || null,
@@ -542,7 +542,7 @@ const LearnPage = ({ params }: Props) => {
 
         <div className="flex flex-col items-center gap-1 md:gap-2">
           <h1 className="text-2xl font-bold md:text-3xl">학습 {day}일차</h1>
-          <h1 className="text-xl font-semibold md:text-2xl">{isUnitSubjectAndUtubeUrlLoading ? "Loading" : unitSubjectAndUtubeUrl.subjectKo}</h1>
+          <h1 className="text-xl font-semibold md:text-2xl">{isUnitSubjectAndUtubeUrlLoading ? "Loading" : unitSubjectAndUtubeUrl?.subjectKo}</h1>
         </div>
 
         <button
