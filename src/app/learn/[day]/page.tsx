@@ -567,16 +567,16 @@ const LearnPage = ({ params }: Props) => {
         {/*  </label>*/}
         {/*</div>*/}
 
-        {/* ✅ 유튜브 버튼 */}
-        {/*{unitSubjectAndUtubeUrl?.unitUtubeUrl && (*/}
-        {/*  <button*/}
-        {/*    className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 text-red-600 hover:bg-red-100 md:p-2"*/}
-        {/*    aria-label="유튜브 재생"*/}
-        {/*    onClick={() => handleYoutubeClick(unitSubjectAndUtubeUrl.unitUtubeUrl, currentPageNumber)}>*/}
-        {/*    <TfiYoutube size={30} className={"md:hidden"} />*/}
-        {/*    <ImYoutube2 size={50} className={"hidden md:block"} />*/}
-        {/*  </button>*/}
-        {/*)}*/}
+        {/* ✅ Unit Dialogue 재생 유튜브 버튼 */}
+        {unitSubjectAndUtubeUrl?.unitUtubeUrl && (
+          <button
+            className="flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border border-gray-300 text-red-600 hover:bg-red-100 md:p-2"
+            aria-label="유튜브 재생"
+            onClick={() => handleYoutubeClick(unitSubjectAndUtubeUrl.unitUtubeUrl, currentPageNumber)}>
+            <TfiYoutube size={30} className={"md:hidden"} />
+            <ImYoutube2 size={50} className={"hidden md:block"} />
+          </button>
+        )}
 
         {/* ✅ 완료 표시 */}
         <div className="flex items-center">
