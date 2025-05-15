@@ -23,6 +23,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
 import SpeakingQuizComponent from "@/components/SpeakingQuizComponent";
+import { useCourseStore } from "@/stores/useCourseStore";
 
 interface Sentence {
   no: number;
@@ -40,6 +41,8 @@ const LearnPage = ({ params }: Props) => {
   const { day } = use(params);
   const currentPageNumber = parseInt(day, 10); // url 의 파라미터로 받아온 day 를 현재 페이지 no. 로 저장
   const { nextDay, markSentenceComplete, updateNextDayInDB, setNextDay } = useLearningStore();
+  const { selectedCourseId } = useCourseStore();
+  console.log("selectedCourseId: ", selectedCourseId);
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정

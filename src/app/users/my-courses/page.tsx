@@ -10,10 +10,12 @@ import { queryClient } from "@/app/providers";
 import { useState } from "react";
 import CourseSchedule from "@/components/CourseSchedule";
 import Link from "next/link";
+import { useCourseStore } from "@/stores/useCourseStore";
 
 export default function MyCoursesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCourseId, setSelectedCourseId] = useState("");
+  // Zustand 스토어에서 상태와 액션 가져오기
+  const { selectedCourseId, setSelectedCourseId } = useCourseStore();
 
   // 내 강의 목록 조회
   const { data, isLoading, error } = useQuery({
@@ -184,7 +186,7 @@ export default function MyCoursesPage() {
 
                     <Link
                       href={`/dashboard/${enrollment.course.id}`}
-                      // href={`/dashboard`}
+                      onClick={() => setSelectedCourseId(enrollment.course.id)}
                       className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-center font-semibold text-gray-700 hover:bg-gray-200">
                       <Play className="mr-1 h-4 w-4" />
                       <div>학습 시작하기</div>
