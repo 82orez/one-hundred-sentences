@@ -205,7 +205,7 @@ const LearnPage = ({ params }: Props) => {
     }
   }, [currentPageNumber, nextDay]);
 
-  // ! ✅ 원어민 음성 시청 기록
+  // ✅ 원어민 음성 시청 기록
   const recordNativeAudioAttemptMutation = useMutation({
     mutationFn: async (params: { sentenceNo: number; courseId: string }) => {
       const response = await axios.post("/api/native-audio/attempt", params);
@@ -316,7 +316,7 @@ const LearnPage = ({ params }: Props) => {
 
     setIsPlayingSentenceNo(sentenceNo);
 
-    // ! ✅ 네이티브 오디오 시도 기록 추가
+    // ✅ 네이티브 오디오 시도 기록 추가
     recordNativeAudioAttemptMutation.mutate({ sentenceNo, courseId: selectedCourseId });
 
     const audio = new Audio(audioUrl);
@@ -415,7 +415,7 @@ const LearnPage = ({ params }: Props) => {
     setCurrentSentenceForYoutube(sentenceNo);
   };
 
-  // ! ✅ 유튜브 모달 닫기 함수
+  // ✅ 유튜브 모달 닫기 함수
   const handleCloseYoutubeModal = async () => {
     setShowYoutubeModal(false);
 
