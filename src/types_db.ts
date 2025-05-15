@@ -980,6 +980,7 @@ export type Database = {
       }
       YouTubeViewAttempt: {
         Row: {
+          courseId: string
           duration: number
           id: string
           sentenceNo: number
@@ -987,6 +988,7 @@ export type Database = {
           viewedAt: string
         }
         Insert: {
+          courseId: string
           duration?: number
           id: string
           sentenceNo: number
@@ -994,6 +996,7 @@ export type Database = {
           viewedAt?: string
         }
         Update: {
+          courseId?: string
           duration?: number
           id?: string
           sentenceNo?: number

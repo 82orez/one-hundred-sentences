@@ -415,7 +415,7 @@ const LearnPage = ({ params }: Props) => {
     setCurrentSentenceForYoutube(sentenceNo);
   };
 
-  // ✅ 유튜브 모달 닫기 함수
+  // ! ✅ 유튜브 모달 닫기 함수
   const handleCloseYoutubeModal = async () => {
     setShowYoutubeModal(false);
 
@@ -425,6 +425,7 @@ const LearnPage = ({ params }: Props) => {
 
       try {
         const response = await axios.post("/api/youtube-view", {
+          selectedCourseId: selectedCourseId,
           sentenceNo: currentSentenceForYoutube,
           duration: duration,
         });

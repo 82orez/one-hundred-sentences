@@ -219,6 +219,7 @@ model Recordings {
 // 유튜브 시청 시도 기록 모델
 model YouTubeViewAttempt {
   id         String   @id @default(cuid())
+  courseId   String
   userId     String
   sentenceNo Int
   viewedAt   DateTime @default(now())
