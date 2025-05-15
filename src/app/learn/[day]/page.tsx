@@ -44,6 +44,7 @@ const LearnPage = ({ params }: Props) => {
   const { selectedCourseId, selectedCourseContents } = useCourseStore();
   console.log("selectedCourseId: ", selectedCourseId);
   console.log("selectedCourseContents: ", selectedCourseContents);
+
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
   const [allEnglishHidden, setAllEnglishHidden] = useState(false); // ✅ 처음에는 영어가 보이도록 설정
@@ -137,7 +138,7 @@ const LearnPage = ({ params }: Props) => {
   } = useQuery({
     queryKey: ["sentences", day],
     queryFn: async () => {
-      const res = await axios.get(`/api/learn?day=${day}`);
+      const res = await axios.get(`/api/learn?day=${day}&selectedCourseContents=${selectedCourseContents}`);
       console.log("todaySentences: ", res.data);
       return res.data as Sentence[];
     },
