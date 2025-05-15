@@ -55,6 +55,31 @@ export default function MyCoursesPage() {
     startCourseMutation.mutate(enrollmentId);
   };
 
+  const saveSelectedCourseMutation = useMutation({
+    mutationFn: async ({
+      selectedCourseId,
+      selectedCourseContents,
+      selectedCourseTitle,
+    }: {
+      selectedCourseId: string;
+      selectedCourseContents: any; // 타입 명확히 알면 지정
+      selectedCourseTitle: string;
+    }) => {
+      await axios.post("/api/admin/selected", {
+        selectedCourseId,
+        selectedCourseContents,
+        selectedCourseTitle,
+      });
+    },
+    onSuccess: () => {
+      toast.success("코스 정보가 성공적으로 저장되었습니다.");
+    },
+    onError: (error) => {
+      toast.error("코스 정보 저장에 실패했습니다");
+      console.error("코스 정보 저장 오류:", error);
+    },
+  });
+
   const formatScheduleDays = (data) => {
     const days = [];
     if (data.scheduleMonday) days.push("월");
@@ -197,16 +222,11 @@ export default function MyCoursesPage() {
                         setSelectedCourseTitle(enrollment.course.title);
 
                         // API로 데이터 저장
-                        try {
-                          await axios.post("/api/admin/selected", {
-                            selectedCourseId: enrollment.course.id,
-                            selectedCourseContents: enrollment.course.contents,
-                            selectedCourseTitle: enrollment.course.title,
-                          });
-                        } catch (error) {
-                          toast.error("코스 정보 저장에 실패했습니다");
-                          console.error("코스 정보 저장 오류:", error);
-                        }
+                        saveSelectedCourseMutation.mutate({
+                          selectedCourseId: enrollment.course.id,
+                          selectedCourseContents: enrollment.course.contents,
+                          selectedCourseTitle: enrollment.course.title,
+                        });
                       }}
                       className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-center font-semibold text-gray-700 hover:bg-gray-200">
                       <Play className="mr-1 h-4 w-4" />
