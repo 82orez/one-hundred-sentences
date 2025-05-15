@@ -163,7 +163,7 @@ export default function Dashboard({ params }: Props) {
     queryFn: async () => {
       if (!session?.user?.id) return 0;
 
-      const res = await axios.get(`/api/youtube-view/total?userId=${session.user.id}`);
+      const res = await axios.get(`/api/youtube-view/total?userId=${session.user.id}&courseId=${selectedCourseId}`);
       return res.data.totalDuration || 0;
     },
     enabled: status === "authenticated" && !!session?.user?.id,

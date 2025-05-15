@@ -7,6 +7,7 @@ import { authOptions } from "@/lib/auth";
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const userId = url.searchParams.get("userId");
+  const courseId = url.searchParams.get("courseId");
 
   const session = await getServerSession(authOptions);
 
@@ -23,6 +24,7 @@ export async function GET(req: Request) {
       },
       where: {
         userId: userId,
+        courseId: courseId, // courseId 조건 추가
       },
     });
 
