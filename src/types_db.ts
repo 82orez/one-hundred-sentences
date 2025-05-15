@@ -852,6 +852,7 @@ export type Database = {
       }
       unitSubject: {
         Row: {
+          contents: Database["public"]["Enums"]["Contents"]
           id: string
           subjectEn: string | null
           subjectKo: string | null
@@ -859,6 +860,7 @@ export type Database = {
           unitUtubeUrl: string | null
         }
         Insert: {
+          contents: Database["public"]["Enums"]["Contents"]
           id: string
           subjectEn?: string | null
           subjectKo?: string | null
@@ -866,6 +868,7 @@ export type Database = {
           unitUtubeUrl?: string | null
         }
         Update: {
+          contents?: Database["public"]["Enums"]["Contents"]
           id?: string
           subjectEn?: string | null
           subjectKo?: string | null

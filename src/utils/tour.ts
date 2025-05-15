@@ -9,7 +9,7 @@ async function updateAllSentenceContentsToTour100(): Promise<number> {
 
   try {
     // Sentence 모델의 모든 레코드의 contents 필드를 'tour100'으로 업데이트
-    const updateResult = await prisma.sentence.updateMany({
+    const updateResult = await prisma.unitSubject.updateMany({
       data: {
         contents: "tour100", // Contents enum 값
       },

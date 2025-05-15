@@ -123,7 +123,8 @@ model PasswordResetToken {
 }
 
 model unitSubject {
-  id           String  @id @default(cuid())
+  id           String   @id @default(cuid())
+  contents     Contents
   unitNumber   Int?
   subjectKo    String?
   subjectEn    String?
@@ -131,13 +132,14 @@ model unitSubject {
 }
 
 model Sentence {
-  id                 String               @id @default(cuid())
-  contents           Contents
-  no                 Int                  @unique // 문장 번호 (1~100)
-  en                 String // 영어 문장
-  ko                 String // 한국어 번역
-  audioUrl           String? // MP3 파일 경로 추가
-  utubeUrl           String?
+  id       String   @id @default(cuid())
+  contents Contents
+  no       Int      @unique // 문장 번호 (1~100)
+  en       String // 영어 문장
+  ko       String // 한국어 번역
+  audioUrl String? // MP3 파일 경로 추가
+  utubeUrl String?
+
   CompletedSentence  CompletedSentence[]
   QuizAttempt        QuizAttempt[]
   Recordings         Recordings[]
