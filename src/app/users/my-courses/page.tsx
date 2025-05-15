@@ -10,12 +10,10 @@ import { queryClient } from "@/app/providers";
 import { useState, useEffect } from "react";
 import CourseSchedule from "@/components/CourseSchedule";
 import Link from "next/link";
-import { useCourseStore } from "@/stores/useCourseStore";
+import { resetSelectedData } from "@/utils/resetSelectedData";
 
 export default function MyCoursesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // Zustand 스토어에서 상태와 액션 가져오기
-  // const { selectedCourseId, setSelectedCourseId, selectedCourseContents, setSelectedCourseContents } = useCourseStore();
 
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [selectedCourseContents, setSelectedCourseContents] = useState<string | null>(null);
@@ -23,14 +21,6 @@ export default function MyCoursesPage() {
 
   // 페이지 로드 시 Selected 데이터 초기화
   useEffect(() => {
-    const resetSelectedData = async () => {
-      try {
-        await axios.post("/api/admin/selected/reset");
-      } catch (error) {
-        console.error("Selected 데이터 초기화 오류:", error);
-      }
-    };
-
     resetSelectedData();
   }, []);
 
@@ -75,7 +65,7 @@ export default function MyCoursesPage() {
       selectedCourseTitle,
     }: {
       selectedCourseId: string;
-      selectedCourseContents: any; // 타입 명확히 알면 지정
+      selectedCourseContents: string;
       selectedCourseTitle: string;
     }) => {
       await axios.post("/api/admin/selected", {
@@ -84,9 +74,9 @@ export default function MyCoursesPage() {
         selectedCourseTitle,
       });
     },
-    onSuccess: () => {
-      toast.success("코스 정보가 성공적으로 저장되었습니다.");
-    },
+    // onSuccess: () => {
+    //   toast.success("코스 정보가 성공적으로 저장되었습니다.");
+    // },
     onError: (error) => {
       toast.error("코스 정보 저장에 실패했습니다");
       console.error("코스 정보 저장 오류:", error);
