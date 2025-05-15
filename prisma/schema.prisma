@@ -324,7 +324,7 @@ model ClassDate {
 
 model Selected {
   id                     String  @id @default(cuid())
-  userId                 String
+  userId                 String  @unique
   selectedCourseId       String?
   selectedCourseContents String?
   selectedCourseTitle    String?
