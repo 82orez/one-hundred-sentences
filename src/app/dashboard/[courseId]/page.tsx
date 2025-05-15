@@ -17,6 +17,7 @@ import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { HiOutlineSparkles } from "react-icons/hi2";
 import FlipCounter from "@/components/FlipCounterAnimation";
+import { useCourseStore } from "@/stores/useCourseStore";
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -34,6 +35,8 @@ export default function Dashboard({ params }: Props) {
   const [isNavigating, setIsNavigating] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const { selectedCourseId, selectedCourseContents } = useCourseStore();
 
   const router = useRouter();
   const supabase = createClient();
@@ -138,7 +141,7 @@ export default function Dashboard({ params }: Props) {
     queryKey: ["reviewSentences", selectedDay],
     queryFn: async () => {
       if (!selectedDay) return [];
-      const res = await axios.get(`/api/review/sentences?day=${selectedDay}`);
+      const res = await axios.get(`/api/review/sentences?day=${selectedDay}&selectedCourseContents=${selectedCourseContents}`);
       return res.data;
     },
     enabled: !!selectedDay,
