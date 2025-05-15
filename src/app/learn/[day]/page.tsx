@@ -779,6 +779,7 @@ const LearnPage = ({ params }: Props) => {
               currentSentenceNumber={quizSentenceNo}
               // onComplete={handleQuizComplete}
               nativeAudioAttemptMutation={recordNativeAudioAttemptMutation}
+              selectedCourseId={selectedCourseId}
               showNavigation={true}
               onFavoriteToggle={handleFavoriteToggle}
             />

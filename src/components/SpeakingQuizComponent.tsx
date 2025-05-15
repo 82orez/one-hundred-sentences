@@ -27,6 +27,7 @@ type SpeakingQuizProps = {
   onComplete?: (sentenceNo: number, isCorrect: boolean) => void;
   showNavigation?: boolean;
   nativeAudioAttemptMutation?: any; // 이름 변경
+  selectedCourseId?: string;
   onFavoriteToggle?: (sentenceNo: number, isFavorite: boolean) => void; // 추가
 };
 
@@ -35,6 +36,7 @@ export default function SpeakingQuizComponent({
   onComplete,
   showNavigation = true,
   nativeAudioAttemptMutation,
+  selectedCourseId,
   onFavoriteToggle,
 }: SpeakingQuizProps) {
   const { data: session } = useSession();
@@ -168,7 +170,7 @@ export default function SpeakingQuizComponent({
     setIsPlaying(true);
 
     if (recordNativeAudioAttemptMutation) {
-      recordNativeAudioAttemptMutation.mutate({ sentenceNo: currentSentence.no });
+      recordNativeAudioAttemptMutation.mutate({ sentenceNo: currentSentence.no, courseId: selectedCourseId });
     }
 
     audio.onended = () => {
