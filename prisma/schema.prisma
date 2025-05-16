@@ -152,6 +152,7 @@ model Sentence {
 /// 완료된 학습 문장 모델
 model CompletedSentence {
   id          String   @id @default(cuid())
+  courseId    String
   userId      String
   userEmail   String?
   sentenceNo  Int
@@ -161,7 +162,7 @@ model CompletedSentence {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 
-  @@unique([userId, sentenceNo]) // 한 문장은 한 번만 학습 완료 가능
+  @@unique([userId, courseId, sentenceNo]) // 동일 강좌 내에서만 중복 제한
 }
 
 model favoriteSentence {

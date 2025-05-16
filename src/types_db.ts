@@ -183,6 +183,7 @@ export type Database = {
       CompletedSentence: {
         Row: {
           completedAt: string
+          courseId: string
           id: string
           sentenceNo: number
           userEmail: string | null
@@ -190,6 +191,7 @@ export type Database = {
         }
         Insert: {
           completedAt?: string
+          courseId: string
           id: string
           sentenceNo: number
           userEmail?: string | null
@@ -197,6 +199,7 @@ export type Database = {
         }
         Update: {
           completedAt?: string
+          courseId?: string
           id?: string
           sentenceNo?: number
           userEmail?: string | null
