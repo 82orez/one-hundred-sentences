@@ -26,6 +26,7 @@ interface Props {
   onClose: () => void;
   handleToggleFavorite: (sentenceNo: number) => void;
   isFavorite: { [key: number]: boolean };
+  courseId: string;
 }
 
 const AudioRecorder = ({
@@ -40,6 +41,7 @@ const AudioRecorder = ({
   sentenceNativeAudioUrl,
   handleToggleFavorite,
   isFavorite,
+  courseId,
 }: Props) => {
   const { isRecording, isLoading, startRecording, stopRecording } = useRecordingStore();
   const [audioURL, setAudioURL] = useState<string | null>(null);
@@ -134,7 +136,6 @@ const AudioRecorder = ({
     }
   };
 
-  // !
   const handleSaveRecording = async () => {
     if (!audioURL || !hasNewRecording) {
       alert("새로운 녹음이 필요합니다. 녹음 후 다시 시도해주세요.");
@@ -151,7 +152,8 @@ const AudioRecorder = ({
       const response = await fetch(audioURL);
       const audioBlob = await response.blob();
       const formData = new FormData();
-      formData.append("audio", new File([audioBlob], `recording-${sentenceNo}.mp3`));
+      formData.append("audio", new File([audioBlob], `recording-${courseId}-${sentenceNo}.mp3`));
+      formData.append("courseId", courseId);
       formData.append("sentenceNo", sentenceNo.toString());
 
       const uploadResponse = await fetch("/api/recorder", {

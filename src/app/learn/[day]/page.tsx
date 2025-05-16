@@ -734,6 +734,7 @@ const LearnPage = ({ params }: Props) => {
                 isCompleted={completedSentences?.includes(selectedSentenceNo)}
                 handleToggleFavorite={handleToggleFavorite}
                 isFavorite={isFavorite}
+                courseId={selectedData.selectedCourseId}
               />
             </div>
           )}

@@ -22,17 +22,21 @@ export async function POST(req: NextRequest) {
     const supabase = await createClient();
     const formData = await req.formData();
     const audioFile = formData.get("audio") as File;
+    const courseId = formData.get("courseId") as string;
     const sentenceNo = formData.get("sentenceNo") as string;
 
     if (!audioFile) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    }
+    if (!courseId) {
+      return NextResponse.json({ error: "courseId is required" }, { status: 400 });
     }
     if (!sentenceNo) {
       return NextResponse.json({ error: "Sentence number is required" }, { status: 400 });
     }
 
     const buffer = Buffer.from(await audioFile.arrayBuffer());
-    const fileName = `recordings/${user.id}/sentence-${sentenceNo}-${Date.now()}.mp3`;
+    const fileName = `recordings/${courseId}/${user.id}/sentence-${sentenceNo}-${Date.now()}.mp3`;
 
     const { error } = await supabase.storage.from("recordings").upload(fileName, buffer, {
       contentType: "audio/mpeg",
@@ -53,6 +57,7 @@ export async function POST(req: NextRequest) {
     const existingRecording = await prisma.recordings.findFirst({
       where: {
         userId: user.id,
+        courseId,
         sentenceNo: parseInt(sentenceNo, 10),
       },
     });
@@ -68,6 +73,7 @@ export async function POST(req: NextRequest) {
       await prisma.recordings.create({
         data: {
           userId: user.id,
+          courseId,
           sentenceNo: parseInt(sentenceNo, 10),
           fileUrl,
           attemptCount: 1,
@@ -78,6 +84,7 @@ export async function POST(req: NextRequest) {
     const count = await prisma.recordings.findFirst({
       where: {
         userId: user.id,
+        courseId,
         sentenceNo: parseInt(sentenceNo, 10),
       },
     });
