@@ -199,9 +199,9 @@ export default function Dashboard({ params }: Props) {
 
   // ✅ 숙제 제출 횟수 조회
   const { data: totalRecordingAttempts, isLoading: isRecordingAttemptsLoading } = useQuery({
-    queryKey: ["totalRecordingAttempts", session?.user?.id],
+    queryKey: ["totalRecordingAttempts", session?.user?.id, selectedCourseId],
     queryFn: async () => {
-      const res = await axios.get(`/api/recorder/total?userId=${session?.user?.id}`);
+      const res = await axios.get(`/api/recorder/total?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
       return res.data.totalAttempts;
     },
     enabled: status === "authenticated" && !!session?.user?.id,
