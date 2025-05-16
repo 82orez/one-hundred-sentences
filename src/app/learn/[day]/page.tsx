@@ -194,8 +194,8 @@ const LearnPage = ({ params }: Props) => {
 
   // ✅ 완료된 문장을 DB 에 등록 - useMutation
   const completeSentenceMutation = useMutation({
-    mutationFn: async (sentenceNo: number) => {
-      const res = await axios.post("/api/progress", { sentenceNo });
+    mutationFn: async (params: { sentenceNo: number; courseId: string }) => {
+      const res = await axios.post("/api/progress", params);
       console.log("res.data: ", res.data);
       return res.data;
     },
@@ -367,7 +367,7 @@ const LearnPage = ({ params }: Props) => {
   // ✅ 완료 버튼 클릭 핸들러
   const handleComplete = async (sentenceNo: number) => {
     try {
-      await completeSentenceMutation.mutateAsync(sentenceNo); // useMutation 사용
+      await completeSentenceMutation.mutateAsync({ sentenceNo, courseId: selectedData.selectedCourseId }); // useMutation 사용
       // markSentenceComplete(sentenceNo); // useLearningStore 사용
 
       // ✅ 모든 문장이 완료되었는지 확인

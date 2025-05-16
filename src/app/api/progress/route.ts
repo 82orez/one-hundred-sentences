@@ -29,12 +29,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { sentenceNo } = await req.json();
+  const { sentenceNo, courseId } = await req.json();
   const userId = session.user.id;
   const userEmail = session.user.email;
 
   if (!sentenceNo || typeof sentenceNo !== "number") {
     return NextResponse.json({ error: "Invalid sentenceNo format" }, { status: 400 });
+  }
+
+  if (!courseId || typeof courseId !== "string") {
+    return NextResponse.json({ error: "Invalid courseId format" }, { status: 400 });
   }
 
   try {
@@ -49,7 +53,13 @@ export async function POST(req: Request) {
 
     // ✅ 이미 완료한 문장인지 확인하고 기완료된 문장이면 메세지 반환 -> error X
     const existing = await prisma.completedSentence.findUnique({
-      where: { userId_sentenceNo: { userId, sentenceNo } },
+      where: {
+        userId_courseId_sentenceNo: {
+          userId,
+          courseId,
+          sentenceNo,
+        },
+      },
     });
 
     if (existing) {
@@ -62,6 +72,7 @@ export async function POST(req: Request) {
         userId,
         userEmail,
         sentenceNo,
+        courseId,
       },
     });
 
