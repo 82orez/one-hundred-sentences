@@ -36,7 +36,20 @@ export default function Dashboard({ params }: Props) {
   const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  const { selectedCourseId, selectedCourseContents } = useCourseStore();
+  // 추가할 코드: 로그인한 사용자의 Selected 정보 가져오기
+  const { data: selectedData } = useQuery({
+    queryKey: ["selected", session?.user?.id],
+    queryFn: async () => {
+      const response = await axios.get(`/api/admin/selected?userId=${session?.user?.id}`);
+      return response.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id,
+  });
+
+  // 필요한 변수 추출하기
+  const selectedCourseId = selectedData?.selectedCourseId || "";
+  const selectedCourseContents = selectedData?.selectedCourseContents || "";
+  const selectedCourseTitle = selectedData?.selectedCourseTitle || "";
 
   const router = useRouter();
   const supabase = createClient();
