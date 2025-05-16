@@ -72,18 +72,21 @@ export default function Dashboard({ params }: Props) {
 
   // ✅ Sentence 모델에 등록된 문장 갯수 가져오기
   const getSentenceCount = useQuery({
-    queryKey: ["SentenceCount"],
+    queryKey: ["SentenceCount", selectedCourseContents], // selectedCourseContents가 query에 반영되도록
     queryFn: async () => {
-      const { count, error } = await supabase.from("Sentence").select("*", { count: "exact", head: true }).eq("contents", selectedCourseContents);
+      try {
+        const response = await axios.get("/api/sentence/count", {
+          params: { contents: selectedCourseContents },
+        });
 
-      if (error) {
+        console.log("전체 Sentence 갯수: ", response.data.count);
+        return { count: response.data.count };
+      } catch (error) {
         console.error("Sentence 카운트 조회 실패:", error);
         throw new Error("문장 수 조회에 실패했습니다.");
       }
-
-      console.log("전체 Sentence 갯수: ", count);
-      return { count };
     },
+    enabled: !!selectedCourseContents, // selectedCourseContents가 null이 아닐 때만 실행
   });
 
   // ✅ 사용자가 완료한 문장 정보 가져오기
