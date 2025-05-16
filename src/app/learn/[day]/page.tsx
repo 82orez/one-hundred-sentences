@@ -695,7 +695,7 @@ const LearnPage = ({ params }: Props) => {
               )}
             </button>
 
-            {/* ✅ 완료 버튼 */}
+            {/* ✅ 숙제 제출 완료 버튼 */}
             <button
               className={clsx("h-9 min-w-9 cursor-pointer rounded bg-cyan-400 text-white", {
                 hidden: !completedSentences?.includes(sentence.no),

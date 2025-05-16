@@ -1,4 +1,3 @@
-// src/app/api/admin/selected/reset/route.ts
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -12,12 +11,18 @@ export async function POST() {
       return NextResponse.json({ error: "인증되지 않았습니다." }, { status: 401 });
     }
 
-    // 사용자의 Selected 데이터 초기화
-    await prisma.selected.update({
+    // 사용자의 Selected 데이터 초기화 (upsert 사용)
+    await prisma.selected.upsert({
       where: {
         userId: session.user.id,
       },
-      data: {
+      update: {
+        selectedCourseId: null,
+        selectedCourseContents: null,
+        selectedCourseTitle: null,
+      },
+      create: {
+        userId: session.user.id,
         selectedCourseId: null,
         selectedCourseContents: null,
         selectedCourseTitle: null,
