@@ -168,9 +168,9 @@ export default function Dashboard({ params }: Props) {
 
   // ✅ 원어민 음성 듣기 횟수 조회
   const { data: nativeAudioData } = useQuery({
-    queryKey: ["nativeAudioCount", session?.user?.id],
+    queryKey: ["nativeAudioCount", session?.user?.id, selectedCourseId],
     queryFn: async () => {
-      const res = await axios.get(`/api/native-audio/count?userId=${session?.user?.id}`);
+      const res = await axios.get(`/api/native-audio/count?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
       return res.data;
     },
     enabled: status === "authenticated" && !!session?.user?.id,
