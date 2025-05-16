@@ -41,9 +41,6 @@ const LearnPage = ({ params }: Props) => {
   const { day } = use(params);
   const currentPageNumber = parseInt(day, 10); // url 의 파라미터로 받아온 day 를 현재 페이지 no. 로 저장
   const { nextDay, markSentenceComplete, updateNextDayInDB, setNextDay } = useLearningStore();
-  const { selectedCourseId, selectedCourseContents } = useCourseStore();
-  console.log("selectedCourseId: ", selectedCourseId);
-  console.log("selectedCourseContents: ", selectedCourseContents);
 
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
@@ -86,6 +83,16 @@ const LearnPage = ({ params }: Props) => {
     }
   }, [showQuizModal, quizSentenceNo, session?.user?.id, day]);
 
+  // ✅ 로그인한 사용자의 Selected 정보 가져오기
+  const { data: selectedData } = useQuery({
+    queryKey: ["selected", session?.user?.id],
+    queryFn: async () => {
+      const response = await axios.get(`/api/admin/selected?userId=${session?.user?.id}`);
+      return response.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id,
+  });
+
   // useNativeAudioAttempt 훅 사용
   // const nativeAudioAttemptMutation = useNativeAudioAttempt();
 
@@ -122,7 +129,7 @@ const LearnPage = ({ params }: Props) => {
   const { data: unitSubjectAndUtubeUrl, isLoading: isUnitSubjectAndUtubeUrlLoading } = useQuery({
     queryKey: ["unitSubject", day],
     queryFn: async () => {
-      const res = await axios.get(`/api/unit-subject?unitNumber=${currentPageNumber}&selectedCourseContents=${selectedCourseContents}`);
+      const res = await axios.get(`/api/unit-subject?unitNumber=${currentPageNumber}&selectedCourseContents=${selectedData.selectedCourseContents}`);
       return {
         subjectKo: res.data?.subjectKo || null,
         unitUtubeUrl: res.data?.unitUtubeUrl || null,
@@ -138,7 +145,7 @@ const LearnPage = ({ params }: Props) => {
   } = useQuery({
     queryKey: ["sentences", day],
     queryFn: async () => {
-      const res = await axios.get(`/api/learn?day=${day}&selectedCourseContents=${selectedCourseContents}`);
+      const res = await axios.get(`/api/learn?day=${day}&selectedCourseContents=${selectedData.selectedCourseContents}`);
       console.log("todaySentences: ", res.data);
       return res.data as Sentence[];
     },
@@ -317,7 +324,7 @@ const LearnPage = ({ params }: Props) => {
     setIsPlayingSentenceNo(sentenceNo);
 
     // ✅ 네이티브 오디오 시도 기록 추가
-    recordNativeAudioAttemptMutation.mutate({ sentenceNo, courseId: selectedCourseId });
+    recordNativeAudioAttemptMutation.mutate({ sentenceNo, courseId: selectedData.selectedCourseId });
 
     const audio = new Audio(audioUrl);
     // ✅ 재생 속도 설정
@@ -425,7 +432,7 @@ const LearnPage = ({ params }: Props) => {
 
       try {
         const response = await axios.post("/api/youtube-view", {
-          courseId: selectedCourseId,
+          courseId: selectedData.selectedCourseId,
           sentenceNo: currentSentenceForYoutube,
           duration: duration,
         });
@@ -779,7 +786,7 @@ const LearnPage = ({ params }: Props) => {
               currentSentenceNumber={quizSentenceNo}
               // onComplete={handleQuizComplete}
               nativeAudioAttemptMutation={recordNativeAudioAttemptMutation}
-              selectedCourseId={selectedCourseId}
+              selectedCourseId={selectedData.selectedCourseId}
               showNavigation={true}
               onFavoriteToggle={handleFavoriteToggle}
             />
