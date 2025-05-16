@@ -178,7 +178,7 @@ export default function Dashboard({ params }: Props) {
 
   // ✅ 영상 시청 시간 합계 가져오기
   const { data: totalVideoDuration, isLoading: isVideoDurationLoading } = useQuery({
-    queryKey: ["videoDuration", session?.user?.id],
+    queryKey: ["videoDuration", session?.user?.id, selectedCourseId],
     queryFn: async () => {
       if (!session?.user?.id) return 0;
 
@@ -273,7 +273,7 @@ export default function Dashboard({ params }: Props) {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="mb-4 text-center text-2xl font-semibold md:mb-8 md:text-4xl">나의 학습 현황</h1>
+      <h1 className="mb-4 text-center text-2xl font-semibold md:mb-8 md:text-4xl">나의 학습 현황 - {selectedCourseTitle}</h1>
 
       {/* 학습 진행 상황 개요 */}
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
