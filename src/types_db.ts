@@ -651,6 +651,7 @@ export type Database = {
       Recordings: {
         Row: {
           attemptCount: number
+          courseId: string
           createdAt: string
           fileUrl: string
           id: string
@@ -660,6 +661,7 @@ export type Database = {
         }
         Insert: {
           attemptCount: number
+          courseId: string
           createdAt?: string
           fileUrl: string
           id: string
@@ -669,6 +671,7 @@ export type Database = {
         }
         Update: {
           attemptCount?: number
+          courseId?: string
           createdAt?: string
           fileUrl?: string
           id?: string
