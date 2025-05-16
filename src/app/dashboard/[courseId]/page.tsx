@@ -51,6 +51,10 @@ export default function Dashboard({ params }: Props) {
   const selectedCourseContents = selectedData?.selectedCourseContents || "";
   const selectedCourseTitle = selectedData?.selectedCourseTitle || "";
 
+  console.log("selectedCourseId: ", selectedCourseId);
+  console.log("selectedCourseContents: ", selectedCourseContents);
+  console.log("selectedCourseTitle: ", selectedCourseTitle);
+
   const router = useRouter();
   const supabase = createClient();
   console.log("courseId: ", courseId);
@@ -70,7 +74,7 @@ export default function Dashboard({ params }: Props) {
   const getSentenceCount = useQuery({
     queryKey: ["SentenceCount"],
     queryFn: async () => {
-      const { count, error } = await supabase.from("Sentence").select("*", { count: "exact", head: true }).eq("contents", "tour100");
+      const { count, error } = await supabase.from("Sentence").select("*", { count: "exact", head: true }).eq("contents", selectedCourseContents);
 
       if (error) {
         console.error("Sentence 카운트 조회 실패:", error);
