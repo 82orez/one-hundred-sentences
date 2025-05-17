@@ -400,12 +400,12 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
-  // ✅ 해당 문장의 녹음 횟수 데이터를 가져오는 쿼리 추가
+  // ! ✅ 해당 문장의 녹음 횟수 데이터를 가져오는 쿼리 추가
   const { data: recordingCounts } = useQuery({
     queryKey: ["recordingCounts", session?.user?.id],
     queryFn: async () => {
       if (!session?.user?.id) return {};
-      const res = await axios.get(`/api/recorder/recording-counter?userId=${session.user.id}`);
+      const res = await axios.get(`/api/recorder/recording-counter?userId=${session.user.id}&courseId=${selectedData.selectedCourseId}`);
       return res.data.reduce((acc: { [key: number]: number }, item: { sentenceNo: number; attemptCount: number }) => {
         acc[item.sentenceNo] = item.attemptCount;
         return acc;
