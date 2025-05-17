@@ -155,7 +155,7 @@ const LearnPage = ({ params }: Props) => {
   const { data: completedSentences } = useQuery({
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
-      const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
+      const res = await axios.get(`/api/progress?userId=${session?.user?.id}&courseId=${selectedData.selectedCourseId}`);
       console.log("completedSentences: ", res.data);
       return res.data.map((item: { sentenceNo: number }) => item.sentenceNo); // 완료된 문장 번호가 담긴 새로운 배열
     },

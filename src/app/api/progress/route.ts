@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/auth";
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const userId = url.searchParams.get("userId");
+  const courseId = url.searchParams.get("courseId");
 
   if (!userId) {
     return NextResponse.json({ error: "User ID is required" }, { status: 400 });
@@ -13,8 +14,13 @@ export async function GET(req: Request) {
 
   try {
     const completedSentences = await prisma.completedSentence.findMany({
-      where: { userId },
-      include: { sentence: true },
+      where: {
+        userId,
+        ...(courseId ? { courseId } : {}),
+      },
+      select: {
+        sentenceNo: true,
+      },
     });
 
     return NextResponse.json(completedSentences);
