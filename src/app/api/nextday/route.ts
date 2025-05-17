@@ -4,19 +4,25 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 // ✅ GET: 현재 사용자의 nextday 정보를 가져옴
-export async function GET() {
+export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
+  const url = new URL(request.url);
+  const courseId = url.searchParams.get("courseId");
 
   if (!session || !session.user?.id) {
     return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
   }
 
+  if (!courseId) {
+    return NextResponse.json({ error: "코스 ID가 필요합니다." }, { status: 400 });
+  }
+
   const userId = session.user.id;
 
   try {
-    // 사용자의 nextday 정보 조회
+    // 사용자와 코스에 대한 nextday 정보 조회
     let userNextDayData = await prisma.userNextDay.findFirst({
-      where: { userId },
+      where: { userId, courseId },
     });
 
     // 없으면 기본값 생성
@@ -24,6 +30,7 @@ export async function GET() {
       userNextDayData = await prisma.userNextDay.create({
         data: {
           userId,
+          courseId,
           userNextDay: 1,
           totalCompleted: false,
         },
@@ -46,12 +53,16 @@ export async function POST(request: Request) {
   }
 
   const userId = session.user.id;
-  const { nextDay, totalCompleted } = await request.json();
+  const { courseId, nextDay, totalCompleted } = await request.json();
+
+  if (!courseId) {
+    return NextResponse.json({ error: "코스 ID가 필요합니다." }, { status: 400 });
+  }
 
   try {
     // 기존 데이터 찾기
     let userNextDayData = await prisma.userNextDay.findFirst({
-      where: { userId },
+      where: { userId, courseId },
     });
 
     // 결과 데이터
@@ -71,6 +82,7 @@ export async function POST(request: Request) {
       result = await prisma.userNextDay.create({
         data: {
           userId,
+          courseId,
           userNextDay: nextDay ?? 1,
           totalCompleted: totalCompleted ?? false,
         },

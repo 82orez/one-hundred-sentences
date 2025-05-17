@@ -117,12 +117,20 @@ export default function Dashboard({ params }: Props) {
     console.log("completedSentencesStore: ", completedSentencesStore);
   }, [completedSentences, isCompletedSentencesLoading, setCompletedSentencesStore]);
 
-  // ! ✅ 페이지가 로드 되면 DB 에서 nextDay 정보 초기화
+  // ✅ 페이지가 로드 되면 DB 의 nextDay 정보 초기화
   useEffect(() => {
-    if (status === "authenticated" && session?.user?.id) {
+    if (status === "authenticated" && session?.user?.id && selectedCourseId) {
+      const initializeNextDay = async () => {
+        try {
+          const response = await axios.get(`/api/nextday?courseId=${selectedCourseId}`);
+        } catch (error) {
+          console.error("nextDay 초기화 중 오류:", error);
+        }
+      };
+
       initializeNextDay();
     }
-  }, [initializeNextDay, session?.user?.id, status]);
+  }, [session?.user?.id, status, selectedCourseId]);
 
   // ! *✅ 다음 학습일(nextDay) 계산 부분을 src/app/learn/[day]/page.tsx 페이지로 이동
 
