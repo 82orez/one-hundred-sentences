@@ -209,9 +209,9 @@ export default function Dashboard({ params }: Props) {
 
   // ✅ 퀴즈 풀이 통계 조회
   const { data: quizStats, isLoading: isQuizStatsLoading } = useQuery({
-    queryKey: ["quizStats", session?.user?.id],
+    queryKey: ["quizStats", session?.user?.id, selectedCourseId],
     queryFn: async () => {
-      const res = await axios.get(`/api/attempts/quiz-stats?userId=${session?.user?.id}`);
+      const res = await axios.get(`/api/attempts/quiz-stats?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
       return res.data;
     },
     enabled: status === "authenticated" && !!session?.user?.id,

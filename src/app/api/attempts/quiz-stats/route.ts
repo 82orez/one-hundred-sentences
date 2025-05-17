@@ -1,4 +1,3 @@
-// src/app/api/quizzes/stats/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
@@ -6,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
+  const courseId = url.searchParams.get("courseId");
   const userId = url.searchParams.get("userId");
 
   const session = await getServerSession(authOptions);
@@ -19,11 +19,12 @@ export async function GET(req: Request) {
     // 사용자의 퀴즈 시도 횟수와 정답 수 합산 조회
     const quizStats = await prisma.quizAttempt.aggregate({
       _sum: {
-        attemptQuiz: true,  // 퀴즈 풀이 시도 횟수
-        correctCount: true,  // 정답 수
+        attemptQuiz: true, // 퀴즈 풀이 시도 횟수
+        correctCount: true, // 정답 수
       },
       where: {
         userId: userId,
+        courseId,
       },
     });
 
