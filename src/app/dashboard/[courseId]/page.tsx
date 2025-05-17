@@ -94,9 +94,9 @@ export default function Dashboard({ params }: Props) {
     isLoading: isCompletedSentencesLoading,
     error: isCompletedSentencesError,
   } = useQuery({
-    queryKey: ["completedSentences", session?.user?.id],
+    queryKey: ["completedSentences", session?.user?.id, selectedCourseId],
     queryFn: async () => {
-      const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
+      const res = await axios.get(`/api/progress?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
 
       console.log(
         "completedSentences@dashboard: ",

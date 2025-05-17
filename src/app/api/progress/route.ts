@@ -12,6 +12,10 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "User ID is required" }, { status: 400 });
   }
 
+  if (!courseId) {
+    return NextResponse.json({ error: "Course ID is required" }, { status: 400 });
+  }
+
   try {
     const completedSentences = await prisma.completedSentence.findMany({
       where: {
