@@ -24,7 +24,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { selectedCourseId, selectedCourseContents, selectedCourseTitle, isLoading: isLoadingUseSelectedData } = useSelectedData();
+  // const { selectedCourseId, selectedCourseContents, selectedCourseTitle, isLoading: isLoadingUseSelectedData } = useSelectedData();
 
   // 경로가 변경될 때마다 로딩 상태 초기화 - 로그인 페이지에서는 로딩 상태 false
   useEffect(() => {

@@ -88,7 +88,7 @@ export default function Dashboard({ params }: Props) {
     enabled: !!selectedCourseContents, // selectedCourseContents가 null이 아닐 때만 실행
   });
 
-  // ✅ 사용자가 완료한 문장 정보 가져오기
+  // ! ✅ 사용자가 완료한 문장 정보 가져오기
   const {
     data: completedSentences,
     isLoading: isCompletedSentencesLoading,
@@ -110,7 +110,7 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // 쿼리 결과가 변경될 때마다 store 에 저장
+  // ! 쿼리 결과가 변경될 때마다 store 에 저장
   useEffect(() => {
     if (completedSentences && !isCompletedSentencesLoading) {
       setCompletedSentencesStore(completedSentences);
