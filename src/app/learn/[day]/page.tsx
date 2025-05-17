@@ -157,7 +157,7 @@ const LearnPage = ({ params }: Props) => {
     queryFn: async () => {
       const res = await axios.get(`/api/progress?userId=${session?.user?.id}&courseId=${selectedData.selectedCourseId}`);
       console.log("completedSentences: ", res.data);
-      return res.data.map((item: { sentenceNo: number }) => item.sentenceNo); // 완료된 문장 번호가 담긴 새로운 배열
+      return res.data.map((item: { sentenceNo: number }) => item.sentenceNo); // 완료된 문장 번호가 담긴 새로운 배열 [1, 2, ...]
     },
     enabled: status === "authenticated" && !!session?.user?.id, // 로그인한 경우만 실행
   });
