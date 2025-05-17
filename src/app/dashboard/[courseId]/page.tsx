@@ -50,13 +50,12 @@ export default function Dashboard({ params }: Props) {
   const selectedCourseContents = selectedData?.selectedCourseContents || "";
   const selectedCourseTitle = selectedData?.selectedCourseTitle || "";
 
-  console.log("selectedCourseId: ", selectedCourseId);
-  console.log("selectedCourseContents: ", selectedCourseContents);
-  console.log("selectedCourseTitle: ", selectedCourseTitle);
+  // console.log("selectedCourseId: ", selectedCourseId);
+  // console.log("selectedCourseContents: ", selectedCourseContents);
+  // console.log("selectedCourseTitle: ", selectedCourseTitle);
 
   const router = useRouter();
-  const supabase = createClient();
-  console.log("courseId: ", courseId);
+  // console.log("courseId: ", courseId);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -118,14 +117,14 @@ export default function Dashboard({ params }: Props) {
     console.log("completedSentencesStore: ", completedSentencesStore);
   }, [completedSentences, isCompletedSentencesLoading, setCompletedSentencesStore]);
 
-  // ✅ 페이지가 로드 되면 DB 에서 nextDay 정보 초기화
+  // ! ✅ 페이지가 로드 되면 DB 에서 nextDay 정보 초기화
   useEffect(() => {
     if (status === "authenticated" && session?.user?.id) {
       initializeNextDay();
     }
   }, [initializeNextDay, session?.user?.id, status]);
 
-  // *✅ 다음 학습일(nextDay) 계산 부분을 src/app/learn/[day]/page.tsx 페이지로 이동
+  // ! *✅ 다음 학습일(nextDay) 계산 부분을 src/app/learn/[day]/page.tsx 페이지로 이동
 
   // ✅ 학습 완료된 문장 갯수 산출
   useEffect(() => {
@@ -146,7 +145,7 @@ export default function Dashboard({ params }: Props) {
     ],
   };
 
-  // ✅ 완료된 학습일 가져오기
+  // ! ✅ 완료된 학습일 가져오기
   const { data: completedDays, isLoading } = useQuery({
     queryKey: ["completedDays"],
     queryFn: async () => {
