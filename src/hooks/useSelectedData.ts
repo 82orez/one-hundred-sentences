@@ -9,10 +9,10 @@ interface SelectedData {
   selectedCourseTitle: string;
 }
 
-export const useSelectedCourseData = () => {
+export const useSelectedData = () => {
   const { data: session, status } = useSession();
 
-  const { data: selectedCourseData, isLoading: isLoadingSelectedCourseData } = useQuery({
+  const { data: selectedData, isLoading } = useQuery({
     queryKey: ["selected", session?.user?.id],
     queryFn: async () => {
       const response = await axios.get(`/api/admin/selected?userId=${session?.user?.id}`);
@@ -22,13 +22,13 @@ export const useSelectedCourseData = () => {
   });
 
   // 필요한 변수 추출하기
-  const selectedCourseId = selectedCourseData?.selectedCourseId || "";
-  const selectedCourseContents = selectedCourseData?.selectedCourseContents || "";
-  const selectedCourseTitle = selectedCourseData?.selectedCourseTitle || "";
+  const selectedCourseId = selectedData?.selectedCourseId || "";
+  const selectedCourseContents = selectedData?.selectedCourseContents || "";
+  const selectedCourseTitle = selectedData?.selectedCourseTitle || "";
 
   return {
-    selectedCourseData,
-    isLoadingSelectedCourseData,
+    selectedData,
+    isLoading,
     selectedCourseId,
     selectedCourseContents,
     selectedCourseTitle,

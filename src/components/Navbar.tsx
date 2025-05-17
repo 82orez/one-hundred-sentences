@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { usePathname } from "next/navigation";
 import { ChevronDown, ChevronUp, Heart } from "lucide-react";
+import { useSelectedData } from "@/hooks/useSelectedData";
 
 export default function Navbar() {
   const router = useRouter();
@@ -22,6 +23,8 @@ export default function Navbar() {
   // 드롭다운 메뉴 상태 추가
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { selectedCourseId, selectedCourseContents, selectedCourseTitle, isLoading: isLoadingUseSelectedData } = useSelectedData();
 
   // 경로가 변경될 때마다 로딩 상태 초기화 - 로그인 페이지에서는 로딩 상태 false
   useEffect(() => {
