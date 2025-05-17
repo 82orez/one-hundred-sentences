@@ -11,9 +11,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "로그인이 필요합니다" }, { status: 401 });
     }
 
-    const { sentenceNo, isCorrect } = await request.json();
+    const { sentenceNo, isCorrect, courseId } = await request.json();
     if (!sentenceNo) {
       return NextResponse.json({ error: "문장 번호가 필요합니다" }, { status: 400 });
+    }
+
+    if (!courseId) {
+      return NextResponse.json({ error: "강좌 ID가 필요합니다" }, { status: 400 });
     }
 
     // 기존 시도 기록 조회
@@ -21,6 +25,7 @@ export async function POST(request: Request) {
       where: {
         userId: session.user.id,
         sentenceNo: sentenceNo,
+        courseId: courseId,
         kind: "speaking",
       },
     });
@@ -47,6 +52,7 @@ export async function POST(request: Request) {
         data: {
           userId: session.user.id,
           sentenceNo: sentenceNo,
+          courseId: courseId,
           kind: "speaking",
           attemptQuiz: 1,
           correctCount: isCorrect ? 1 : 0,

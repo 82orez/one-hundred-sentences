@@ -179,6 +179,7 @@ model favoriteSentence {
 /// 퀴즈 기록 모델
 model QuizAttempt {
   id           String   @id @default(cuid())
+  courseId     String
   userId       String
   sentenceNo   Int
   kind         String? // speaking or dictation

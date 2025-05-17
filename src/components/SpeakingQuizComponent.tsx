@@ -336,6 +336,7 @@ export default function SpeakingQuizComponent({
         if (session?.user) {
           try {
             await axios.post("/api/attempts/speaking", {
+              courseId: selectedCourseId,
               sentenceNo: currentSentence.no,
               isCorrect,
             });

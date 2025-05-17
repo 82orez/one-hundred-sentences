@@ -610,6 +610,7 @@ export type Database = {
         Row: {
           attemptQuiz: number | null
           correctCount: number | null
+          courseId: string
           createdAt: string
           id: string
           kind: string | null
@@ -619,6 +620,7 @@ export type Database = {
         Insert: {
           attemptQuiz?: number | null
           correctCount?: number | null
+          courseId: string
           createdAt?: string
           id: string
           kind?: string | null
@@ -628,6 +630,7 @@ export type Database = {
         Update: {
           attemptQuiz?: number | null
           correctCount?: number | null
+          courseId?: string
           createdAt?: string
           id?: string
           kind?: string | null
