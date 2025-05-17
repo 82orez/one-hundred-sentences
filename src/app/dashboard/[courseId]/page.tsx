@@ -11,7 +11,6 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useLearningStore } from "@/stores/useLearningStore";
 import { useQuery } from "@tanstack/react-query";
-import { createClient } from "@/utils/supabase/client";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
@@ -26,12 +25,12 @@ type Props = {
 };
 
 export default function Dashboard({ params }: Props) {
-  const { courseId } = use(params);
+  // const { courseId } = use(params);
   const { data: session, status } = useSession();
-  const { completedSentencesStore, setCompletedSentencesStore, nextDay, setNextDay, initializeNextDay, updateNextDayInDB } = useLearningStore();
+  // const { completedSentencesStore, setCompletedSentencesStore, nextDay, setNextDay, initializeNextDay, updateNextDayInDB } = useLearningStore();
   const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
-  const [isNavigating, setIsNavigating] = useState(false);
+  // const [isNavigating, setIsNavigating] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -87,7 +86,7 @@ export default function Dashboard({ params }: Props) {
     enabled: !!selectedCourseContents, // selectedCourseContents가 null이 아닐 때만 실행
   });
 
-  // ! ✅ 사용자가 완료한 문장 정보 가져오기
+  // ✅ 사용자가 완료한 문장 정보 가져오기
   const {
     data: completedSentences,
     isLoading: isCompletedSentencesLoading,
@@ -109,30 +108,16 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // ! 쿼리 결과가 변경될 때마다 store 에 저장
-  useEffect(() => {
-    if (completedSentences && !isCompletedSentencesLoading) {
-      setCompletedSentencesStore(completedSentences);
-    }
-    console.log("completedSentencesStore: ", completedSentencesStore);
-  }, [completedSentences, isCompletedSentencesLoading, setCompletedSentencesStore]);
-
   // ✅ 페이지가 로드 되면 DB 의 nextDay 정보 초기화
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.id && selectedCourseId) {
-      const initializeNextDay = async () => {
-        try {
-          const response = await axios.get(`/api/nextday?courseId=${selectedCourseId}`);
-          console.log("nextDay: ", response.data.userNextDay);
-          return response.data;
-        } catch (error) {
-          console.error("nextDay 초기화 중 오류:", error);
-        }
-      };
-
-      initializeNextDay();
-    }
-  }, [session?.user?.id, status, selectedCourseId]);
+  const { data: nextDay } = useQuery({
+    queryKey: ["nextDay", session?.user?.id, selectedCourseId],
+    queryFn: async () => {
+      const response = await axios.get(`/api/nextday?courseId=${selectedCourseId}`);
+      console.log("nextDay: ", response.data.userNextDay);
+      return response.data.userNextDay;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
+  });
 
   // ! *✅ 다음 학습일(nextDay) 계산 부분을 src/app/learn/[day]/page.tsx 페이지로 이동
 
@@ -158,7 +143,7 @@ export default function Dashboard({ params }: Props) {
   // ✅ 완료된 학습일 가져오기
   // ? queryKey 추가 여부 selectedDay, selectedCourseContents, selectedCourseId
   const { data: completedDays, isLoading } = useQuery({
-    queryKey: ["completedDays"],
+    queryKey: ["completedDays", selectedCourseId],
     queryFn: async () => {
       const res = await axios.get(`/api/review?courseId=${selectedCourseId}`);
       console.log("completedDays: ", res.data.completedDays);
