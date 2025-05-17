@@ -24,6 +24,7 @@ import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
 import SpeakingQuizComponent from "@/components/SpeakingQuizComponent";
 import { useCourseStore } from "@/stores/useCourseStore";
+import { updateNextDayInDB } from "@/utils/updateNextDayInDB";
 
 interface Sentence {
   no: number;
@@ -40,7 +41,7 @@ type Props = {
 const LearnPage = ({ params }: Props) => {
   const { day } = use(params);
   const currentPageNumber = parseInt(day, 10); // url 의 파라미터로 받아온 day 를 현재 페이지 no. 로 저장
-  const { nextDay, markSentenceComplete, updateNextDayInDB, setNextDay } = useLearningStore();
+  const { nextDay, markSentenceComplete, setNextDay } = useLearningStore();
 
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
@@ -188,7 +189,7 @@ const LearnPage = ({ params }: Props) => {
       const allCompleted = completedSentences.length >= 100;
 
       // ✅ DB 에 nextDay 와 totalCompleted 업데이트하고 로컬의 nextDay 상태 업데이트
-      updateNextDayInDB(calculatedNextDay, allCompleted);
+      updateNextDayInDB(calculatedNextDay, allCompleted, selectedData.selectedCourseId);
     }
   }, [completedSentences, setNextDay, updateNextDayInDB, status]);
 

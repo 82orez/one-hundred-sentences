@@ -123,6 +123,8 @@ export default function Dashboard({ params }: Props) {
       const initializeNextDay = async () => {
         try {
           const response = await axios.get(`/api/nextday?courseId=${selectedCourseId}`);
+          console.log("nextDay: ", response.data.userNextDay);
+          return response.data;
         } catch (error) {
           console.error("nextDay 초기화 중 오류:", error);
         }
