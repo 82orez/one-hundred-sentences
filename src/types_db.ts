@@ -977,18 +977,21 @@ export type Database = {
       }
       UserNextDay: {
         Row: {
+          courseId: string
           id: string
           totalCompleted: boolean
           userId: string
           userNextDay: number
         }
         Insert: {
+          courseId: string
           id: string
           totalCompleted?: boolean
           userId: string
           userNextDay: number
         }
         Update: {
+          courseId?: string
           id?: string
           totalCompleted?: boolean
           userId?: string

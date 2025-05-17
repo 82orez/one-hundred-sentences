@@ -239,6 +239,7 @@ model YouTubeViewAttempt {
 
 model UserNextDay {
   id             String  @id @default(cuid())
+  courseId       String
   userId         String
   userNextDay    Int
   totalCompleted Boolean @default(false)
