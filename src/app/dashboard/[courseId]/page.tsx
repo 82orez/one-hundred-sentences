@@ -145,11 +145,12 @@ export default function Dashboard({ params }: Props) {
     ],
   };
 
-  // ! ✅ 완료된 학습일 가져오기
+  // ✅ 완료된 학습일 가져오기
   const { data: completedDays, isLoading } = useQuery({
     queryKey: ["completedDays"],
     queryFn: async () => {
-      const res = await axios.get("/api/review");
+      const res = await axios.get(`/api/review?courseId=${selectedCourseId}`);
+      console.log("completedDays: ", res.data.completedDays);
       return res.data.completedDays;
     },
   });

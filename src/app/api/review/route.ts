@@ -9,10 +9,21 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // URL 에서 courseId 파라미터 가져오기
+  const url = new URL(req.url);
+  const courseId = url.searchParams.get("courseId");
+
+  if (!courseId) {
+    return NextResponse.json({ error: "Course ID is required" }, { status: 400 });
+  }
+
   try {
-    // ✅ 사용자가 완료한 문장 번호 목록 가져오기
+    // ✅ 사용자가 완료한 문장 번호 목록 가져오기 (courseId 포함)
     const completedSentences = await prisma.completedSentence.findMany({
-      where: { userId: session.user.id },
+      where: {
+        userId: session.user.id,
+        courseId: courseId,
+      },
       select: { sentenceNo: true },
     });
 

@@ -179,7 +179,7 @@ const LearnPage = ({ params }: Props) => {
       : lastCompletedDay || 1; // 빈 경우 최소 Day 1 보장
   };
 
-  // *✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다 getNextLearningDay 함수를 실행해서 nextDay 업데이트
+  // ! *✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다 getNextLearningDay 함수를 실행해서 nextDay 업데이트
   useEffect(() => {
     if (completedSentences && status === "authenticated") {
       const calculatedNextDay = getNextLearningDay();
