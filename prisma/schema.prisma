@@ -217,7 +217,7 @@ model Recordings {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 
-  @@unique([userId, sentenceNo]) // 한 문장은 한 번만 등록 가능
+  @@unique([userId, courseId, sentenceNo]) // 각 강좌에서 각 문장을 한 번만 등록 가능
 }
 
 // 유튜브 시청 시도 기록 모델
