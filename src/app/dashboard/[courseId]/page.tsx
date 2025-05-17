@@ -146,6 +146,7 @@ export default function Dashboard({ params }: Props) {
   };
 
   // ✅ 완료된 학습일 가져오기
+  // ? queryKey 추가 여부 selectedDay, selectedCourseContents, selectedCourseId
   const { data: completedDays, isLoading } = useQuery({
     queryKey: ["completedDays"],
     queryFn: async () => {
@@ -156,6 +157,7 @@ export default function Dashboard({ params }: Props) {
   });
 
   // ✅ 선택한 학습일의 문장 목록 가져오기
+  // ? queryKey 추가 여부 selectedDay, selectedCourseContents, selectedCourseId
   const { data: sentences, isFetching } = useQuery({
     queryKey: ["reviewSentences", selectedDay],
     queryFn: async () => {
