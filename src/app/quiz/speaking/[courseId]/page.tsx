@@ -406,11 +406,12 @@ export default function SpeakingPage({ params }: Props) {
     }
   };
 
-  // ? ✅ 음성 인식 후 결과 관련 횟수를 서버에 저장하는 함수
+  // ✅ 음성 인식 후 결과 관련 횟수를 서버에 저장하는 함수
   const handleSpeechResult = async (isCorrect: boolean) => {
     if (currentSentence && session?.user) {
       try {
         await axios.post("/api/attempts/speaking", {
+          courseId,
           sentenceNo: currentSentence.no,
           isCorrect,
         });
