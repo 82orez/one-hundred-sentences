@@ -252,7 +252,7 @@ export default function MyCoursesPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <h2 className="mb-4 text-center text-xl font-semibold">
+            <h2 className="mt-4 mb-4 text-center text-xl font-semibold">
               {activeCourses.find((enrollment) => enrollment.course.id === selectedCourseId)?.course.title || ""} 수업 일정
             </h2>
             <CourseSchedule courseId={selectedCourseId} />
