@@ -166,26 +166,31 @@ const LearnPage = ({ params }: Props) => {
 
   // * ✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다 getNextLearningDay 함수를 실행해서 nextDay 업데이트
   useEffect(() => {
-    if (completedSentences && status === "authenticated") {
-      const calculatedNextDay = getNextLearningDay();
+    const updateNextDay = async () => {
+      if (completedSentences && status === "authenticated") {
+        const calculatedNextDay = getNextLearningDay();
 
-      // 100 문장 모두 완료했는지 확인
-      const allCompleted = completedSentences.length >= 100;
+        // 100 문장 모두 완료했는지 확인
+        const allCompleted = completedSentences.length >= 100;
 
-      // ✅ DB 에 nextDay 와 totalCompleted 업데이트하고 로컬의 nextDay 상태 업데이트
-      updateNextDayInDB(calculatedNextDay, allCompleted, selectedData.selectedCourseId);
-    }
-  }, [completedSentences, updateNextDayInDB, status]);
+        // DB에 nextDay와 totalCompleted 업데이트하고 로컬의 nextDay 상태 업데이트
+        await updateNextDayInDB(calculatedNextDay, allCompleted, selectedData.selectedCourseId);
+        queryClient.invalidateQueries({ queryKey: ["nextDay"] });
+      }
+    };
+
+    updateNextDay();
+  }, [completedSentences, status, selectedData?.selectedCourseId]);
 
   // ✅ 페이지가 로드 되면 DB 의 nextDay 정보 초기화
   const { data: nextDay } = useQuery({
-    queryKey: ["nextDay", session?.user?.id, selectedData.selectedCourseId],
+    queryKey: ["nextDay", session?.user?.id, selectedData?.selectedCourseId],
     queryFn: async () => {
       const response = await axios.get(`/api/nextday?courseId=${selectedData.selectedCourseId}`);
       console.log("nextDay: ", response.data.userNextDay);
       return response.data.userNextDay;
     },
-    enabled: status === "authenticated" && !!session?.user?.id && !!selectedData.selectedCourseId,
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedData?.selectedCourseId,
   });
 
   // ✅ 완료된 문장을 DB 에 등록 - useMutation
