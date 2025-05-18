@@ -93,12 +93,12 @@ export default function SpeakingPage({ params }: Props) {
     enabled: !!session?.user?.id,
   });
 
-  // ! ✅ 즐겨찾기 문장 목록 가져오기
+  // ✅ 즐겨찾기 문장 목록 가져오기
   const { data: favoriteSentences, isLoading: isLoadingFavorites } = useQuery({
     queryKey: ["favoriteSentences", session?.user?.id],
     queryFn: async () => {
       try {
-        const res = await axios.get("/api/favorites/favorites-page");
+        const res = await axios.get(`/api/favorites/favorites-page?courseId=${courseId}`);
         console.log("🔹 즐겨찾기 API 응답:", res.data);
         return res.data.map((item: { sentence: { en: string; ko: string; audioUrl: string; no: number } }) => ({
           en: item.sentence?.en ?? "No text found",
