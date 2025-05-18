@@ -430,7 +430,7 @@ export default function Dashboard({ params }: Props) {
 
           <div className="mt-8 flex flex-col items-center justify-center gap-4 md:flex-row md:justify-between">
             <Link
-              href={`/favorites`}
+              href={`/favorites/${selectedCourseId}`}
               className="w-full cursor-pointer rounded-lg bg-yellow-400 px-4 py-2 text-center text-white shadow transition hover:bg-yellow-600">
               즐겨찾기 목록
             </Link>

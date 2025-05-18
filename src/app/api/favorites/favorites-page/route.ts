@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 // 즐겨찾기 조회
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -12,10 +12,18 @@ export async function GET() {
       return NextResponse.json({ error: "인증이 필요합니다" }, { status: 401 });
     }
 
+    const { searchParams } = new URL(request.url);
+    const courseId = searchParams.get("courseId");
+
+    if (!courseId) {
+      return NextResponse.json({ error: "강좌 ID가 필요합니다" }, { status: 400 });
+    }
+
     // 즐겨찾기 문장 조회 및 문장 정보 함께 가져오기
     const favorites = await prisma.favoriteSentence.findMany({
       where: {
         userId: session.user.id,
+        courseId: courseId,
       },
       include: {
         sentence: true, // 문장 정보도 가져옴
@@ -43,9 +51,14 @@ export async function DELETE(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const sentenceNo = searchParams.get("sentenceNo");
+    const courseId = searchParams.get("courseId");
 
     if (!sentenceNo) {
       return NextResponse.json({ error: "문장 번호가 필요합니다" }, { status: 400 });
+    }
+
+    if (!courseId) {
+      return NextResponse.json({ error: "강좌 ID가 필요합니다" }, { status: 400 });
     }
 
     // 사용자의 해당 즐겨찾기 찾기
@@ -53,6 +66,7 @@ export async function DELETE(request: Request) {
       where: {
         userId: session.user.id,
         sentenceNo: Number(sentenceNo),
+        courseId: courseId,
       },
     });
 
