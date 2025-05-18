@@ -495,7 +495,7 @@ const LearnPage = ({ params }: Props) => {
 
       const favoriteStatuses: { [key: number]: boolean } = {};
       for (const sentence of todaySentences) {
-        const res = await axios.get(`/api/favorites?sentenceNo=${sentence.no}`);
+        const res = await axios.get(`/api/favorites?sentenceNo=${sentence.no}&courseId=${selectedData.selectedCourseId}`);
         favoriteStatuses[sentence.no] = res.data.isFavorite;
       }
       return favoriteStatuses;
@@ -513,7 +513,10 @@ const LearnPage = ({ params }: Props) => {
   // ✅ 즐겨찾기 토글 뮤테이션
   const toggleFavoriteMutation = useMutation({
     mutationFn: async (sentenceNo: number) => {
-      const res = await axios.post("/api/favorites", { sentenceNo });
+      const res = await axios.post("/api/favorites", {
+        sentenceNo,
+        courseId: selectedData.selectedCourseId,
+      });
       return res.data;
     },
     onSuccess: (data, sentenceNo) => {
