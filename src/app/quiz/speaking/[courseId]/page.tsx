@@ -77,7 +77,7 @@ export default function SpeakingPage({ params }: Props) {
     queryKey: ["completedSentences", session?.user?.id],
     queryFn: async () => {
       try {
-        const res = await axios.get(`/api/progress?userId=${session?.user?.id}`);
+        const res = await axios.get(`/api/speaking-quiz?userId=${session?.user?.id}&courseId=${courseId}`);
         console.log("🔹 API 응답 데이터:", res.data);
         return res.data.map((item: { sentence: { en: string; ko: string; audioUrl: string; no: number } }) => ({
           en: item.sentence?.en ?? "No text found",
