@@ -9,7 +9,6 @@ import Link from "next/link";
 import { FaCheck, FaChevronLeft, FaChevronRight, FaPlay } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import { useSession } from "next-auth/react";
-import { useLearningStore } from "@/stores/useLearningStore";
 import { FaA, FaMicrophone } from "react-icons/fa6";
 import { TbAlphabetKorean } from "react-icons/tb";
 import AudioRecorder from "@/components/Recoder";
@@ -23,7 +22,6 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
 import SpeakingQuizComponent from "@/components/SpeakingQuizComponent";
-import { useCourseStore } from "@/stores/useCourseStore";
 import { updateNextDayInDB } from "@/utils/updateNextDayInDB";
 
 interface Sentence {
@@ -41,7 +39,6 @@ type Props = {
 const LearnPage = ({ params }: Props) => {
   const { day } = use(params);
   const currentPageNumber = parseInt(day, 10); // url 의 파라미터로 받아온 day 를 현재 페이지 no. 로 저장
-  const { nextDay, markSentenceComplete, setNextDay } = useLearningStore();
 
   const [visibleTranslations, setVisibleTranslations] = useState<{ [key: number]: boolean }>({});
   const [visibleEnglish, setVisibleEnglish] = useState<{ [key: number]: boolean }>({});
@@ -69,6 +66,16 @@ const LearnPage = ({ params }: Props) => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
+  // ✅ 로그인한 사용자의 Selected 정보 가져오기
+  const { data: selectedData } = useQuery({
+    queryKey: ["selected", session?.user?.id],
+    queryFn: async () => {
+      const response = await axios.get(`/api/admin/selected?userId=${session?.user?.id}`);
+      return response.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id,
+  });
+
   // ✅ 퀴즈 모달 닫을 때 즐겨찾기 상태 다시 로드
   useEffect(() => {
     if (!showQuizModal && quizSentenceNo) {
@@ -83,29 +90,6 @@ const LearnPage = ({ params }: Props) => {
       });
     }
   }, [showQuizModal, quizSentenceNo, session?.user?.id, day]);
-
-  // ✅ 로그인한 사용자의 Selected 정보 가져오기
-  const { data: selectedData } = useQuery({
-    queryKey: ["selected", session?.user?.id],
-    queryFn: async () => {
-      const response = await axios.get(`/api/admin/selected?userId=${session?.user?.id}`);
-      return response.data;
-    },
-    enabled: status === "authenticated" && !!session?.user?.id,
-  });
-
-  // useNativeAudioAttempt 훅 사용
-  // const nativeAudioAttemptMutation = useNativeAudioAttempt();
-
-  // 퀴즈 완료 핸들러
-  // const handleQuizComplete = (sentenceNo: number, isCorrect: boolean) => {
-  //   if (isCorrect) {
-  //     // 퀴즈를 성공적으로 완료한 경우 문장 완료 표시
-  //     // markSentenceComplete(sentenceNo);
-  //   }
-  //   // 모달 닫기 (또는 다음 문장으로 이동 등의 로직 추가 가능)
-  //   setShowQuizModal(false);
-  // };
 
   // ✅ 퀴즈 모달 열기 함수
   const openQuizModal = (sentenceNo: number) => {
@@ -180,7 +164,7 @@ const LearnPage = ({ params }: Props) => {
       : lastCompletedDay || 1; // 빈 경우 최소 Day 1 보장
   };
 
-  // ! *✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다 getNextLearningDay 함수를 실행해서 nextDay 업데이트
+  // * ✅ useEffect 를 사용하여 completedSentences 가 변경될 때마다 getNextLearningDay 함수를 실행해서 nextDay 업데이트
   useEffect(() => {
     if (completedSentences && status === "authenticated") {
       const calculatedNextDay = getNextLearningDay();
@@ -191,7 +175,18 @@ const LearnPage = ({ params }: Props) => {
       // ✅ DB 에 nextDay 와 totalCompleted 업데이트하고 로컬의 nextDay 상태 업데이트
       updateNextDayInDB(calculatedNextDay, allCompleted, selectedData.selectedCourseId);
     }
-  }, [completedSentences, setNextDay, updateNextDayInDB, status]);
+  }, [completedSentences, updateNextDayInDB, status]);
+
+  // ✅ 페이지가 로드 되면 DB 의 nextDay 정보 초기화
+  const { data: nextDay } = useQuery({
+    queryKey: ["nextDay", session?.user?.id, selectedData.selectedCourseId],
+    queryFn: async () => {
+      const response = await axios.get(`/api/nextday?courseId=${selectedData.selectedCourseId}`);
+      console.log("nextDay: ", response.data.userNextDay);
+      return response.data.userNextDay;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedData.selectedCourseId,
+  });
 
   // ✅ 완료된 문장을 DB 에 등록 - useMutation
   const completeSentenceMutation = useMutation({
@@ -368,7 +363,8 @@ const LearnPage = ({ params }: Props) => {
   // ✅ 완료 버튼 클릭 핸들러
   const handleComplete = async (sentenceNo: number) => {
     try {
-      await completeSentenceMutation.mutateAsync({ sentenceNo, courseId: selectedData.selectedCourseId }); // useMutation 사용
+      await completeSentenceMutation.mutateAsync({ sentenceNo, courseId: selectedData.selectedCourseId });
+      // useMutation 사용
       // markSentenceComplete(sentenceNo); // useLearningStore 사용
 
       // ✅ 모든 문장이 완료되었는지 확인
@@ -401,7 +397,7 @@ const LearnPage = ({ params }: Props) => {
     }
   };
 
-  // ! ✅ 해당 문장의 녹음 횟수 데이터를 가져오는 쿼리 추가
+  // ✅ 해당 문장의 녹음 횟수 데이터를 가져오는 쿼리 추가
   const { data: recordingCounts } = useQuery({
     queryKey: ["recordingCounts", session?.user?.id],
     queryFn: async () => {
