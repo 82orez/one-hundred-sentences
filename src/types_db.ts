@@ -398,18 +398,21 @@ export type Database = {
       }
       favoriteSentence: {
         Row: {
+          courseId: string
           createdAt: string
           id: string
           sentenceNo: number
           userId: string
         }
         Insert: {
+          courseId: string
           createdAt?: string
           id: string
           sentenceNo: number
           userId: string
         }
         Update: {
+          courseId?: string
           createdAt?: string
           id?: string
           sentenceNo?: number

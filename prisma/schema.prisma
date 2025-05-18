@@ -167,6 +167,7 @@ model CompletedSentence {
 
 model favoriteSentence {
   id         String   @id @default(cuid())
+  courseId   String
   userId     String
   sentenceNo Int
   createdAt  DateTime @default(now()) // 학습 완료 날짜
