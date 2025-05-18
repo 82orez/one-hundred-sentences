@@ -21,6 +21,7 @@ import AudioWaveform from "@/components/AudioWaveform";
 import { AnimatePresence, motion } from "framer-motion";
 import ListeningModal from "@/components/ListeningModal";
 import { useAudioResources } from "@/hooks/useAudioResources";
+import { useRouter } from "next/navigation";
 
 type Props = {
   params: Promise<{ courseId: string }>;
@@ -29,6 +30,7 @@ type Props = {
 export default function SpeakingPage({ params }: Props) {
   const { courseId } = use(params);
   const { data: session } = useSession();
+  const router = useRouter();
   const [currentSentence, setCurrentSentence] = useState<{ en: string; ko: string; audioUrl: string; no: number } | null>(null);
   const [userSpoken, setUserSpoken] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -464,9 +466,11 @@ export default function SpeakingPage({ params }: Props) {
       {currentData?.length === 0 ? (
         <div className="my-8 rounded-lg bg-gray-100 p-4 text-yellow-800">
           {mode === "normal" ? <p>학습 완료된 문장이 없습니다. 먼저 학습을 진행해주세요.</p> : <p>등록된 즐겨찾기 문장이 없습니다.</p>}
-          <Link href="/dashboard" className={clsx("mt-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600", { hidden: mode !== "normal" })}>
+          <button
+            onClick={() => router.push(`/dashboard/${courseId}`)}
+            className={clsx("mt-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600", { hidden: mode !== "normal" })}>
             학습하러 가기
-          </Link>
+          </button>
         </div>
       ) : (
         <div>

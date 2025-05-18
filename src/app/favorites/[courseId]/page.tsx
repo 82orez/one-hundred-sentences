@@ -130,7 +130,7 @@ export default function FavoriteSentencesPage({ params }: Props) {
           <Bookmark className="mx-auto mb-4 text-gray-400" size={48} />
           <p className="text-gray-500">즐겨찾기한 문장이 없습니다.</p>
           <button
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push(`/dashboard/${courseId}`)}
             className="mt-4 rounded-md bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
             문장 학습하러 가기
           </button>
