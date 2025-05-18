@@ -93,7 +93,7 @@ export default function SpeakingPage({ params }: Props) {
     enabled: !!session?.user?.id,
   });
 
-  // ✅ 즐겨찾기 문장 목록 가져오기
+  // ! ✅ 즐겨찾기 문장 목록 가져오기
   const { data: favoriteSentences, isLoading: isLoadingFavorites } = useQuery({
     queryKey: ["favoriteSentences", session?.user?.id],
     queryFn: async () => {
@@ -137,7 +137,7 @@ export default function SpeakingPage({ params }: Props) {
     }
   }, [currentData]);
 
-  // ! 두 문장만 남았을 때 즐겨찾기 모드에서 목록 변경 감지 및 처리
+  // ✅ 두 문장만 남았을 때 즐겨찾기 모드에서 목록 변경 감지 및 처리
   useEffect(() => {
     if (mode === "favorite" && favoriteSentences) {
       // 현재 문장이 없거나 현재 문장이 즐겨찾기 목록에 더 이상 없는 경우
@@ -207,7 +207,7 @@ export default function SpeakingPage({ params }: Props) {
     setIsVisible(false);
   };
 
-  // ✅ 즐겨찾기 상태 확인 useQuery
+  // ! ✅ 즐겨찾기 상태 확인 useQuery
   const { data: favoriteStatus } = useQuery({
     queryKey: ["favoriteStatus", session?.user?.id, currentSentence?.no],
     queryFn: async () => {
@@ -221,14 +221,14 @@ export default function SpeakingPage({ params }: Props) {
     enabled: !!session?.user && typeof currentSentence?.no === "number",
   });
 
-  // ✅ isFavorite 상태 업데이트
+  // ! ✅ isFavorite 상태 업데이트
   useEffect(() => {
     if (favoriteStatus) {
       setIsFavorite(favoriteStatus.isFavorite);
     }
   }, [favoriteStatus]);
 
-  // ✅ 즐겨찾기 토글 useMutation
+  // ! ✅ 즐겨찾기 토글 useMutation
   const toggleFavoriteMutation = useMutation({
     mutationFn: async (sentenceNo: number) => {
       const response = await axios.post("/api/favorites", { sentenceNo });
@@ -245,13 +245,13 @@ export default function SpeakingPage({ params }: Props) {
     },
   });
 
-  // ✅ 즐겨찾기 토글 함수
+  // ! ✅ 즐겨찾기 토글 함수
   const toggleFavorite = () => {
     if (!session?.user || !currentSentence.no) return;
     toggleFavoriteMutation.mutate(currentSentence.no);
   };
 
-  // ✅ 원어민 음성 재생 함수
+  // ! ✅ 원어민 음성 재생 함수
   const playNativeAudio = () => {
     if (!currentSentence?.audioUrl) return;
 
@@ -269,7 +269,7 @@ export default function SpeakingPage({ params }: Props) {
 
     setIsPlaying(true);
 
-    recordNativeAudioAttemptMutation.mutate({ sentenceNo: currentSentence.no });
+    recordNativeAudioAttemptMutation.mutate({ sentenceNo: currentSentence.no, courseId });
 
     audio.onended = () => {
       setIsPlaying(false);
@@ -406,7 +406,7 @@ export default function SpeakingPage({ params }: Props) {
     }
   };
 
-  // ✅ 음성 인식 후 결과 관련 횟수를 서버에 저장하는 함수
+  // ? ✅ 음성 인식 후 결과 관련 횟수를 서버에 저장하는 함수
   const handleSpeechResult = async (isCorrect: boolean) => {
     if (currentSentence && session?.user) {
       try {
@@ -683,7 +683,7 @@ export default function SpeakingPage({ params }: Props) {
       </div>
 
       <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": isLoading })}>
-        <Link href={"/dashboard"}>Back to My Dashboard</Link>
+        <Link href={`/dashboard/${courseId}`}>Back to My Dashboard</Link>
       </div>
 
       {/* 👇 페이지 최하단 ref */}

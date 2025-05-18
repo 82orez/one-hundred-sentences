@@ -9,7 +9,7 @@ import { queryClient } from "@/app/providers";
  */
 export function useNativeAudioAttempt() {
   return useMutation({
-    mutationFn: async (params: { sentenceNo: number }) => {
+    mutationFn: async (params: { sentenceNo: number; courseId: string }) => {
       const response = await axios.post("/api/native-audio/attempt", params);
       return response.data;
     },
