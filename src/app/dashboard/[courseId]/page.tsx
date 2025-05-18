@@ -9,7 +9,6 @@ import { Calendar, LucideBook, Award, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { useLearningStore } from "@/stores/useLearningStore";
 import { useQuery } from "@tanstack/react-query";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import clsx from "clsx";
