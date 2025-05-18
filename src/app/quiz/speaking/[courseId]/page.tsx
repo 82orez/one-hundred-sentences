@@ -207,7 +207,7 @@ export default function SpeakingPage({ params }: Props) {
     setIsVisible(false);
   };
 
-  // ! ✅ 즐겨찾기 상태 확인 useQuery
+  // ✅ 즐겨찾기 상태 확인 useQuery
   const { data: favoriteStatus } = useQuery({
     queryKey: ["favoriteStatus", session?.user?.id, currentSentence?.no],
     queryFn: async () => {
@@ -215,7 +215,7 @@ export default function SpeakingPage({ params }: Props) {
         return { isFavorite: false };
       }
 
-      const response = await axios.get(`/api/favorites?sentenceNo=${currentSentence.no}`);
+      const response = await axios.get(`/api/favorites?sentenceNo=${currentSentence.no}&courseId=${courseId}`);
       return response.data;
     },
     enabled: !!session?.user && typeof currentSentence?.no === "number",
