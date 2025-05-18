@@ -231,7 +231,7 @@ export default function SpeakingPage({ params }: Props) {
   // ! ✅ 즐겨찾기 토글 useMutation
   const toggleFavoriteMutation = useMutation({
     mutationFn: async (sentenceNo: number) => {
-      const response = await axios.post("/api/favorites", { sentenceNo });
+      const response = await axios.post("/api/favorites", { sentenceNo, courseId });
       return response.data;
     },
     onSuccess: (data) => {
