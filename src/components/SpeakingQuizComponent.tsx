@@ -29,6 +29,7 @@ type SpeakingQuizProps = {
   nativeAudioAttemptMutation?: any; // 이름 변경
   selectedCourseId?: string;
   onFavoriteToggle?: (sentenceNo: number, isFavorite: boolean) => void; // 추가
+  courseId: string;
 };
 
 export default function SpeakingQuizComponent({
@@ -38,6 +39,7 @@ export default function SpeakingQuizComponent({
   nativeAudioAttemptMutation,
   selectedCourseId,
   onFavoriteToggle,
+  courseId,
 }: SpeakingQuizProps) {
   const { data: session } = useSession();
   const [currentSentence, setCurrentSentence] = useState<{ en: string; ko: string; audioUrl: string; no: number } | null>(null);
@@ -113,7 +115,7 @@ export default function SpeakingQuizComponent({
         return { isFavorite: false };
       }
 
-      const response = await axios.get(`/api/favorites?sentenceNo=${currentSentence.no}`);
+      const response = await axios.get(`/api/favorites?sentenceNo=${currentSentence.no}&courseId=${selectedCourseId}`);
       return response.data;
     },
     enabled: !!session?.user && typeof currentSentence?.no === "number",

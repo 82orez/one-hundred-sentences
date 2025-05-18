@@ -795,6 +795,7 @@ const LearnPage = ({ params }: Props) => {
               selectedCourseId={selectedData.selectedCourseId}
               showNavigation={true}
               onFavoriteToggle={handleFavoriteToggle}
+              courseId={selectedData.selectedCourseId}
             />
 
             <div className="mt-6 flex justify-center">
