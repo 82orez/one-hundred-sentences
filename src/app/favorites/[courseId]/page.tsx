@@ -91,7 +91,7 @@ export default function FavoriteSentencesPage({ params }: Props) {
     // 현재 재생 중인 오디오를 설정
     setCurrentlyPlaying(sentenceNo);
 
-    // ! recordNativeAudioAttemptMutation.mutate({ sentenceNo });
+    recordNativeAudioAttemptMutation.mutate({ sentenceNo, courseId });
 
     const audio = new Audio(audioUrl);
 
