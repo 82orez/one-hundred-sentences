@@ -553,7 +553,7 @@ export default function Dashboard({ params }: Props) {
               <div className="flex flex-col gap-4">
                 <button
                   className="relative w-full rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:brightness-110"
-                  onClick={() => router.push("/quiz/speaking")}>
+                  onClick={() => router.push(`/quiz/speaking/${selectedCourseId}`)}>
                   <div className="flex animate-pulse items-center justify-center gap-2">
                     <HiOutlineSparkles className="animate-spin-slow h-5 w-5 text-white" />
                     <span className="drop-shadow-md">영어로 말하기 with AI</span>
