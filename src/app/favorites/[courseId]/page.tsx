@@ -178,7 +178,7 @@ export default function FavoriteSentencesPage({ params }: Props) {
       )}
 
       <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": isLoading })}>
-        <Link href={"/dashboard"}>Back to My Dashboard</Link>
+        <Link href={`/dashboard/${courseId}`}>Back to My Dashboard</Link>
       </div>
     </div>
   );
