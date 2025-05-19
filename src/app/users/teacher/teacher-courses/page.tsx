@@ -148,7 +148,7 @@ export default function MyCourses() {
               <X size={24} />
             </button>
             <h2 className="mb-4 text-xl font-semibold">{selectedCourseTitle}</h2>
-            <CourseSchedule courseId={selectedCourseId} />
+            <CourseSchedule courseId={selectedCourseId} zoomInviteUrl={null} />
           </div>
         </div>
       )}
