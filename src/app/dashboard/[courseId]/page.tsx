@@ -213,7 +213,7 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // 저장된 포인트 정보 불러오기
+  // ✅ 개별 포인트 정보 불러오기
   const { data: savedPoints } = useQuery({
     queryKey: ["coursePoints", session?.user?.id, selectedCourseId],
     queryFn: async () => {
@@ -281,7 +281,27 @@ export default function Dashboard({ params }: Props) {
     selectedCourseId,
   ]);
 
-  // 학생 수 조회 useQuery 추가
+  // ✅ 팀 전체 포인트 정보 불러오기
+  const { data: teamPointsData, isLoading: isTeamPointsLoading } = useQuery({
+    queryKey: ["teamPoints", selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/course-points/team?courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!selectedCourseId,
+  });
+
+  // 팀 포인트 상태 관리
+  const [teamPoints, setTeamPoints] = useState(0);
+
+  // 팀 포인트 데이터가 변경될 때 상태 업데이트
+  useEffect(() => {
+    if (teamPointsData) {
+      setTeamPoints(teamPointsData.totalPoints || 0);
+    }
+  }, [teamPointsData]);
+
+  // ✅ 팀 전체 학생 수 조회 useQuery 추가
   const { data: studentsData } = useQuery({
     queryKey: ["enrollmentsCount", selectedCourseId],
     queryFn: async () => {
@@ -374,13 +394,14 @@ export default function Dashboard({ params }: Props) {
           </div>
 
           <div className="py-4 text-center">
-            {/* 학생 수 표시 영역 */}
-            <div className="mt-4 rounded-lg bg-white p-4 shadow-md">
-              <div className="flex flex-col items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-700">Team Total Point</h3>
-                <span className="text-2xl font-bold text-indigo-600">Team Total PointP</span>
-              </div>
-              <p className="mt-1 text-sm text-gray-500">현재 이 강좌에 등록된 활성 수강생 수</p>
+            {/* TTP 표시 영역 */}
+            <div className="flex flex-col items-center">
+              <span className="text-2xl font-bold text-indigo-600">Team Total Points</span>
+              {isTeamPointsLoading ? (
+                <div className="mt-2 animate-pulse">로딩 중...</div>
+              ) : (
+                <span className="mt-2 text-3xl font-extrabold">{teamPoints.toLocaleString()}</span>
+              )}
             </div>
 
             {/* 학생 수 표시 영역 */}
