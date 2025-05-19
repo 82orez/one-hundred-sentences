@@ -139,6 +139,48 @@ export type Database = {
           },
         ]
       }
+      Attendance: {
+        Row: {
+          classDate: string
+          courseId: string
+          createdAt: string
+          id: string
+          isAttended: boolean
+          userId: string
+        }
+        Insert: {
+          classDate: string
+          courseId: string
+          createdAt?: string
+          id: string
+          isAttended?: boolean
+          userId: string
+        }
+        Update: {
+          classDate?: string
+          courseId?: string
+          createdAt?: string
+          id?: string
+          isAttended?: boolean
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Attendance_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Attendance_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ClassDate: {
         Row: {
           courseId: string
