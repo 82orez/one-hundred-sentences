@@ -294,23 +294,6 @@ export default function Dashboard({ params }: Props) {
             <Calendar className="mr-2 h-6 w-6 text-purple-500" />
             <h2 className="text-xl font-semibold">나의 학업 성취 Point</h2>
           </div>
-          {/*<p className="text-3xl font-bold">*/}
-          {/*  {progress === 100 ? 20 : nextDay - 1}/{getSentenceCount.data?.count / 5 || 100}*/}
-          {/*</p>*/}
-          {/*<p className="text-gray-500">학습 완료 현황</p>*/}
-          {/*<div className="mt-2">*/}
-          {/*  <p className="text-sm">*/}
-          {/*    전체 진행률:{" "}*/}
-          {/*    <span className="font-semibold">*/}
-          {/*      {progress === 100 ? 100 : Math.round(((nextDay - 1) / (getSentenceCount.data?.count / 5)) * 100)}%*/}
-          {/*    </span>*/}
-          {/*  </p>*/}
-          {/*  <div className="mt-1 h-2 w-full rounded-full bg-gray-200">*/}
-          {/*    <div*/}
-          {/*      className="h-2 rounded-full bg-purple-500"*/}
-          {/*      style={{ width: `${progress === 100 ? 100 : ((nextDay - 1) / (getSentenceCount.data?.count / 5)) * 100}%` }}></div>*/}
-          {/*  </div>*/}
-          {/*</div>*/}
           <div className="flex items-center justify-between">
             <div>강의 영상 시청</div>
             <div>{!isVideoDurationLoading && <span className="font-semibold text-blue-600">총 {formatDuration(totalVideoDuration)}</span>}</div>

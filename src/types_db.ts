@@ -1020,6 +1020,48 @@ export type Database = {
         }
         Relationships: []
       }
+      UserCoursePoints: {
+        Row: {
+          courseId: string
+          createdAt: string
+          id: string
+          points: number
+          updatedAt: string
+          userId: string
+        }
+        Insert: {
+          courseId: string
+          createdAt?: string
+          id: string
+          points?: number
+          updatedAt: string
+          userId: string
+        }
+        Update: {
+          courseId?: string
+          createdAt?: string
+          id?: string
+          points?: number
+          updatedAt?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "UserCoursePoints_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "UserCoursePoints_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       UserNextDay: {
         Row: {
           courseId: string

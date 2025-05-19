@@ -59,6 +59,7 @@ model User {
   Teachers           Teachers?
   Selected           Selected[]
   Attendance         Attendance[]
+  UserCoursePoints   UserCoursePoints[]
 }
 
 model Account {
@@ -303,13 +304,14 @@ model Course {
   updatedAt DateTime @updatedAt
 
   // 관계 설정
-  generator   User         @relation(fields: [generatorId], references: [id])
-  teacher     Teachers?    @relation(fields: [teacherId], references: [id])
-  lessons     Lesson[]
-  enrollments Enrollment[]
-  assignments Assignment[]
-  classDates  ClassDate[] // 관계 추가
-  Attendance  Attendance[]
+  generator        User               @relation(fields: [generatorId], references: [id])
+  teacher          Teachers?          @relation(fields: [teacherId], references: [id])
+  lessons          Lesson[]
+  enrollments      Enrollment[]
+  assignments      Assignment[]
+  classDates       ClassDate[] // 관계 추가
+  Attendance       Attendance[]
+  UserCoursePoints UserCoursePoints[]
 }
 
 // 수업 일자 모델
@@ -468,4 +470,20 @@ model Teachers {
   // 관계 설정
   user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   Course Course[]
+}
+
+model UserCoursePoints {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  points    Int      @default(0)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
 }
