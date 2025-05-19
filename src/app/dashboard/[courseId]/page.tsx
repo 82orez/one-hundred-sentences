@@ -213,6 +213,16 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
+  // 저장된 포인트 정보 불러오기
+  const { data: savedPoints } = useQuery({
+    queryKey: ["coursePoints", session?.user?.id, selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/course-points?courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
+  });
+
   // 포인트 계산을 위한 useState 추가
   const [totalPoints, setTotalPoints] = useState(0);
 
@@ -220,31 +230,45 @@ export default function Dashboard({ params }: Props) {
   useEffect(() => {
     if (isQuizStatsLoading || isVideoDurationLoading) return;
 
-    // 각 활동별 포인트 가중치 설정
-    const VIDEO_POINT_PER_SECOND = 0.5; // 영상 시청 1초당 0.5 포인트
-    const AUDIO_POINT_PER_ATTEMPT = 1; // 원어민 음성 듣기 1회당 1 포인트
-    const RECORDING_POINT_PER_ATTEMPT = 20; // 숙제 제출 1회당 10 포인트
-    const QUIZ_ATTEMPT_POINT = 3; // 퀴즈 풀이 1회당 3 포인트
-    const QUIZ_CORRECT_POINT = 3; // 퀴즈 정답 1회당 3 포인트 추가
+    // 포인트 계산 로직 (기존과 동일)
+    const VIDEO_POINT_PER_SECOND = 0.5;
+    const AUDIO_POINT_PER_ATTEMPT = 1;
+    const RECORDING_POINT_PER_ATTEMPT = 20;
+    const QUIZ_ATTEMPT_POINT = 3;
+    const QUIZ_CORRECT_POINT = 3;
 
-    // 영상 시청 포인트 (초 단위 시청 시간 * 포인트)
     const videoPoints = totalVideoDuration * VIDEO_POINT_PER_SECOND;
-
-    // 원어민 음성 듣기 포인트
     const audioPoints = (nativeAudioData?.totalAttempts || 0) * AUDIO_POINT_PER_ATTEMPT;
-
-    // 숙제 제출 포인트
     const recordingPoints = (totalRecordingAttempts || 0) * RECORDING_POINT_PER_ATTEMPT;
-
-    // 퀴즈 풀이 및 정답 포인트
     const quizAttemptPoints = (quizStats?.totalAttempts || 0) * QUIZ_ATTEMPT_POINT;
     const quizCorrectPoints = (quizStats?.totalCorrect || 0) * QUIZ_CORRECT_POINT;
 
-    // 총 포인트 계산
     const total = Math.round(videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints);
 
-    // 상태 업데이트
-    setTotalPoints(total);
+    // 계산된 총 포인트가 기존 저장된 포인트와 다를 때만 상태 업데이트
+    if (savedPoints?.points !== total) {
+      setTotalPoints(total);
+
+      // 포인트가 다른 경우에만 서버에 저장
+      if (selectedCourseId && session?.user?.id) {
+        const savePointsToServer = async () => {
+          try {
+            await axios.post("/api/course-points", {
+              courseId: selectedCourseId,
+              points: total,
+            });
+            console.log("포인트가 서버에 업데이트되었습니다:", total);
+          } catch (error) {
+            console.error("포인트 저장 중 오류 발생:", error);
+          }
+        };
+
+        savePointsToServer();
+      }
+    } else {
+      // 이미 저장된 값과 같으면 해당 값 사용
+      setTotalPoints(savedPoints.points);
+    }
   }, [
     totalVideoDuration,
     nativeAudioData?.totalAttempts,
@@ -253,6 +277,8 @@ export default function Dashboard({ params }: Props) {
     quizStats?.totalCorrect,
     isQuizStatsLoading,
     isVideoDurationLoading,
+    session?.user?.id,
+    selectedCourseId,
   ]);
 
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
