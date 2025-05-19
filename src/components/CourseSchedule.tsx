@@ -280,7 +280,7 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
                 return (
                   <button
                     key={classDate.id}
-                    className={`absolute left-0 z-0 w-full rounded-md border ${courseColor.border} ${courseColor.bg} cursor-pointer px-3 py-1 shadow-sm transition-all hover:z-10 hover:shadow-md`}
+                    className={`absolute left-0 z-0 w-full rounded-md border ${courseColor.border} ${courseColor.bg} ${location === "online" ? "cursor-pointer" : "pointer-events-none cursor-not-allowed opacity-70"} px-3 py-1 shadow-sm transition-all hover:z-10 hover:shadow-md`}
                     onClick={() => {
                       // 수업 시작 시간을 Date 객체로 변환
                       const classDate_obj = new Date(classDate.date);
