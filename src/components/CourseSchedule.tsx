@@ -281,6 +281,26 @@ export default function CourseSchedule({ courseId, zoomInviteUrl }: CourseSchedu
                     key={classDate.id}
                     className={`absolute left-0 z-0 w-full rounded-md border ${courseColor.border} ${courseColor.bg} cursor-pointer px-3 py-1 shadow-sm transition-all hover:z-10 hover:shadow-md`}
                     onClick={() => {
+                      // 수업 시작 시간을 Date 객체로 변환
+                      const classDate_obj = new Date(classDate.date);
+                      const [hours, minutes] = (classDate.startTime || "00:00").split(":").map(Number);
+                      classDate_obj.setHours(hours, minutes, 0, 0);
+
+                      // 현재 시간 가져오기
+                      const currentTime = new Date();
+
+                      // 수업 시작 15분 전 시간 계산
+                      const fifteenMinutesBeforeClass = new Date(classDate_obj);
+                      fifteenMinutesBeforeClass.setMinutes(fifteenMinutesBeforeClass.getMinutes() - 15);
+
+                      // 현재 시간이 수업 시작 15분 전보다 이전인지 확인
+                      if (currentTime < fifteenMinutesBeforeClass) {
+                        // 아직 수업 참여 불가능
+                        window.alert("아직 수업이 시작되지 않았습니다.");
+                        return;
+                      }
+
+                      // 수업 참여 가능
                       const confirmed = window.confirm("수업에 참여하시겠습니까?");
                       if (confirmed) {
                         window.open(zoomInviteUrl, "_blank");
