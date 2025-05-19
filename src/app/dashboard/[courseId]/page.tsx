@@ -281,6 +281,20 @@ export default function Dashboard({ params }: Props) {
     selectedCourseId,
   ]);
 
+  // 학생 수 조회 useQuery 추가
+  const { data: studentsData } = useQuery({
+    queryKey: ["enrollmentsCount", selectedCourseId],
+    queryFn: async () => {
+      if (!selectedCourseId) return { count: 0 };
+      const response = await axios.get(`/api/admin/enrollments/count?courseId=${selectedCourseId}`);
+      return response.data;
+    },
+    enabled: !!selectedCourseId,
+  });
+
+  // 학생 수 가져오기
+  const totalStudents = studentsData?.count || 0;
+
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
     console.log(getSentenceCount.error.message);
@@ -359,6 +373,7 @@ export default function Dashboard({ params }: Props) {
             <h2 className="text-xl font-semibold">학습 성취도</h2>
           </div>
           <div className="py-4 text-center">
+            <div>현재 강좌 수강생 총합: {totalStudents}</div>
             {progress < 5 ? (
               <>
                 <p className="text-xl font-medium">초보 학습자</p>
