@@ -315,6 +315,26 @@ export default function Dashboard({ params }: Props) {
   // 학생 수 가져오기
   const totalStudents = studentsData?.count || 0;
 
+  // 전체 학생 수와 현재 사용자의 순위 조회
+  const { data: rankData, isLoading: isRankLoading } = useQuery({
+    queryKey: ["userRank", session?.user?.id, selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/course-points/rank?courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
+  });
+
+  const [userRank, setUserRank] = useState(0);
+
+  // 순위 데이터가 로드되면 상태 업데이트
+  useEffect(() => {
+    if (rankData) {
+      setUserRank(rankData.rank);
+      // setTotalStudents(rankData.totalStudents);
+    }
+  }, [rankData]);
+
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
     console.log(getSentenceCount.error.message);
@@ -416,7 +436,15 @@ export default function Dashboard({ params }: Props) {
               </div>
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-700">나의 기여도 순위</h3>
-                <span className="text-2xl font-bold text-indigo-600">나의 순위/{totalStudents}명 중</span>
+                <div className="text-2xl font-bold text-indigo-600">
+                  {totalPoints ? (
+                    <div>
+                      {userRank}/{totalStudents}명 중
+                    </div>
+                  ) : (
+                    <div>기여도 없음</div>
+                  )}
+                </div>
               </div>
               <p className="mt-1 text-sm text-gray-500">현재 이 강좌에 등록된 활성 수강생 수</p>
             </div>
