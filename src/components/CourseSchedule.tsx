@@ -287,8 +287,20 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
                       const [hours, minutes] = (classDate.startTime || "00:00").split(":").map(Number);
                       classDate_obj.setHours(hours, minutes, 0, 0);
 
+                      // 수업 종료 시간을 Date 객체로 변환
+                      const classEndDate_obj = new Date(classDate.date);
+                      const [endHours, endMinutes] = (classDate.endTime || "00:00").split(":").map(Number);
+                      classEndDate_obj.setHours(endHours, endMinutes, 0, 0);
+
                       // 현재 시간 가져오기
                       const currentTime = new Date();
+
+                      // 수업 종료 시간이 지났는지 확인
+                      if (currentTime > classEndDate_obj) {
+                        // 수업 시간이 지났음
+                        window.alert("수강 시간이 지났습니다.");
+                        return;
+                      }
 
                       // 수업 시작 15분 전 시간 계산
                       const fifteenMinutesBeforeClass = new Date(classDate_obj);
