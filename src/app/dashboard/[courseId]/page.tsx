@@ -399,7 +399,7 @@ export default function Dashboard({ params }: Props) {
 
           {/* 총 획득 포인트 표시 */}
           <div className="flex items-center justify-between">
-            <div className="text-lg font-medium">총 획득 포인트</div>
+            <div className="text-lg font-medium">나의 총 획득 포인트</div>
             <div className="flex text-xl font-bold text-indigo-600">
               <FlipCounter value={totalPoints} className={""} />
               <span className="ml-1">P</span>
@@ -410,7 +410,7 @@ export default function Dashboard({ params }: Props) {
         <div className="rounded-lg bg-white p-6 shadow-md">
           <div className="mb-4 flex items-center">
             <Award className="mr-2 h-6 w-6 text-yellow-500" />
-            <h2 className="text-xl font-semibold">학습 성취도</h2>
+            <h2 className="text-xl font-semibold">Team 활동 현황</h2>
           </div>
 
           <div className="py-4 text-center">
@@ -427,26 +427,18 @@ export default function Dashboard({ params }: Props) {
             {/* 학생 수 표시 영역 */}
             <div className="mt-4 rounded-lg bg-white p-4 shadow-md">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-700">나의 기여도</h3>
+                <h3 className="text-lg font-semibold text-gray-700">나의 팀 기여도</h3>
                 <span className="text-2xl font-bold text-indigo-600">{teamPoints ? ((totalPoints / teamPoints) * 100).toFixed(1) : 0}%</span>
               </div>
+              {/*<div className="flex items-center justify-between">*/}
+              {/*  <h3 className="text-lg font-semibold text-gray-700">총 수강생</h3>*/}
+              {/*  <span className="text-2xl font-bold text-indigo-600">{totalStudents}명</span>*/}
+              {/*</div>*/}
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-700">총 수강생</h3>
-                <span className="text-2xl font-bold text-indigo-600">{totalStudents}명</span>
+                <h3 className="text-lg font-semibold text-gray-700">나의 순위</h3>
+                <div className="text-2xl font-bold text-indigo-600">{totalPoints ? <div>{userRank} 등</div> : <div>기여도 없음</div>}</div>
               </div>
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-700">나의 기여도 순위</h3>
-                <div className="text-2xl font-bold text-indigo-600">
-                  {totalPoints ? (
-                    <div>
-                      {userRank}/{totalStudents}명 중
-                    </div>
-                  ) : (
-                    <div>기여도 없음</div>
-                  )}
-                </div>
-              </div>
-              <p className="mt-1 text-sm text-gray-500">현재 이 강좌에 등록된 활성 수강생 수</p>
+              <p className="mt-1 text-sm text-gray-500">(현재 이 강좌에 등록된 활성 수강생 수 {totalStudents}명)</p>
             </div>
 
             {/*{progress < 5 ? (*/}
@@ -579,6 +571,10 @@ export default function Dashboard({ params }: Props) {
             </div>
           )}
         </div>
+      </div>
+
+      <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": isLoading })}>
+        <Link href={"/users/my-courses"}>내 강의 보기</Link>
       </div>
 
       {/* ✅ 복습 모달 (framer-motion 적용) */}
