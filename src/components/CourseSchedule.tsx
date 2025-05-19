@@ -281,8 +281,10 @@ export default function CourseSchedule({ courseId, zoomInviteUrl }: CourseSchedu
                     key={classDate.id}
                     className={`absolute left-0 z-0 w-full rounded-md border ${courseColor.border} ${courseColor.bg} cursor-pointer px-3 py-1 shadow-sm transition-all hover:z-10 hover:shadow-md`}
                     onClick={() => {
-                      // alert(zoomInviteUrl);
-                      window.open(zoomInviteUrl, "_blank");
+                      const confirmed = window.confirm("수업에 참여하시겠습니까?");
+                      if (confirmed) {
+                        window.open(zoomInviteUrl, "_blank");
+                      }
                     }}
                     style={{
                       top: position.top,
