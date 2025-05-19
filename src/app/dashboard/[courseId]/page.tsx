@@ -395,20 +395,28 @@ export default function Dashboard({ params }: Props) {
 
           <div className="py-4 text-center">
             {/* TTP 표시 영역 */}
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col">
               <span className="text-2xl font-bold text-indigo-600">Team Total Points</span>
               {isTeamPointsLoading ? (
                 <div className="mt-2 animate-pulse">로딩 중...</div>
               ) : (
-                <span className="mt-2 text-3xl font-extrabold">{teamPoints.toLocaleString()}</span>
+                <span className="mt-2 text-3xl font-extrabold">{teamPoints.toLocaleString()} P</span>
               )}
             </div>
 
             {/* 학생 수 표시 영역 */}
             <div className="mt-4 rounded-lg bg-white p-4 shadow-md">
               <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-700">나의 기여도</h3>
+                <span className="text-2xl font-bold text-indigo-600">{teamPoints ? ((totalPoints / teamPoints) * 100).toFixed(1) : 0}%</span>
+              </div>
+              <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-700">총 수강생</h3>
                 <span className="text-2xl font-bold text-indigo-600">{totalStudents}명</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-700">나의 기여도 순위</h3>
+                <span className="text-2xl font-bold text-indigo-600">나의 순위/{totalStudents}명 중</span>
               </div>
               <p className="mt-1 text-sm text-gray-500">현재 이 강좌에 등록된 활성 수강생 수</p>
             </div>
