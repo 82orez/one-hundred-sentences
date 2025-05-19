@@ -223,10 +223,10 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
   });
 
-  // 포인트 계산을 위한 useState 추가
+  // ✅ 포인트 계산을 위한 useState 추가
   const [totalPoints, setTotalPoints] = useState(0);
 
-  // 포인트 계산 로직
+  // ✅ 포인트 계산 로직
   useEffect(() => {
     if (isQuizStatsLoading || isVideoDurationLoading) return;
 
@@ -291,10 +291,10 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!selectedCourseId,
   });
 
-  // 팀 포인트 상태 관리
+  // ✅ 팀 포인트 상태 관리
   const [teamPoints, setTeamPoints] = useState(0);
 
-  // 팀 포인트 데이터가 변경될 때 상태 업데이트
+  // ✅ 팀 포인트 데이터가 변경될 때 상태 업데이트
   useEffect(() => {
     if (teamPointsData) {
       setTeamPoints(teamPointsData.totalPoints || 0);
@@ -312,10 +312,10 @@ export default function Dashboard({ params }: Props) {
     enabled: !!selectedCourseId,
   });
 
-  // 학생 수 가져오기
+  // ✅ 학생 수 가져오기
   const totalStudents = studentsData?.count || 0;
 
-  // 전체 학생 수와 현재 사용자의 순위 조회
+  // ✅ 전체 학생 수와 현재 사용자의 순위 조회
   const { data: rankData, isLoading: isRankLoading } = useQuery({
     queryKey: ["userRank", session?.user?.id, selectedCourseId],
     queryFn: async () => {
@@ -327,7 +327,7 @@ export default function Dashboard({ params }: Props) {
 
   const [userRank, setUserRank] = useState(0);
 
-  // 순위 데이터가 로드되면 상태 업데이트
+  // ✅ 순위 데이터가 로드되면 상태 업데이트
   useEffect(() => {
     if (rankData) {
       setUserRank(rankData.rank);
