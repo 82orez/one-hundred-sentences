@@ -190,7 +190,7 @@ export default function MyCoursesPage() {
                     </div>
                     <p className="mb-1 text-gray-600">강사: {enrollment.course.teacher.user.realName}</p>
                     <p className="mb-4 text-sm text-gray-600">이메일: {enrollment.course.teacher.user.email}</p>
-                    <p className="mb-4 text-sm text-gray-600">Zoom: {enrollment.course.teacher.user.zoomInviteUrl}</p>
+                    {/*<p className="mb-4 text-sm text-gray-600">Zoom: {enrollment.course.teacher.user.zoomInviteUrl}</p>*/}
 
                     {/*<p className="mb-4 text-gray-600">전화번호: {enrollment.course.teacher.user.phone}</p>*/}
 
@@ -257,7 +257,10 @@ export default function MyCoursesPage() {
             <h2 className="mt-4 mb-4 text-center text-xl font-semibold">
               {activeCourses.find((enrollment) => enrollment.course.id === selectedCourseId)?.course.title || ""} 수업 일정
             </h2>
-            <CourseSchedule courseId={selectedCourseId} />
+            <CourseSchedule
+              courseId={selectedCourseId}
+              zoomInviteUrl={activeCourses.find((enrollment) => enrollment.course.id === selectedCourseId)?.course?.teacher?.user?.zoomInviteUrl}
+            />
           </div>
         </div>
       )}

@@ -1,10 +1,10 @@
 // components/CourseSchedule.tsx
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { format, startOfWeek, endOfWeek, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isWithinInterval, isSameDay } from "date-fns";
+import { addDays, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, startOfMonth, startOfWeek } from "date-fns";
 import { ko } from "date-fns/locale";
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -26,6 +26,7 @@ interface ClassDate {
 
 interface CourseScheduleProps {
   courseId: string;
+  zoomInviteUrl: string | null;
 }
 
 // 강좌 색상 팔레트 정의
@@ -115,7 +116,7 @@ function MobileSchedule({
   );
 }
 
-export default function CourseSchedule({ courseId }: CourseScheduleProps) {
+export default function CourseSchedule({ courseId, zoomInviteUrl }: CourseScheduleProps) {
   const [viewMode, setViewMode] = useState<"day" | "week" | "month">("month");
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
@@ -276,9 +277,13 @@ export default function CourseSchedule({ courseId }: CourseScheduleProps) {
                 const position = calculateCoursePosition(classDate);
 
                 return (
-                  <div
+                  <button
                     key={classDate.id}
-                    className={`absolute left-0 z-0 w-full rounded-md border ${courseColor.border} ${courseColor.bg} px-3 py-1 shadow-sm transition-all hover:z-10 hover:shadow-md`}
+                    className={`absolute left-0 z-0 w-full rounded-md border ${courseColor.border} ${courseColor.bg} cursor-pointer px-3 py-1 shadow-sm transition-all hover:z-10 hover:shadow-md`}
+                    onClick={() => {
+                      // alert(zoomInviteUrl);
+                      window.open(zoomInviteUrl, "_blank");
+                    }}
                     style={{
                       top: position.top,
                       height: position.height,
@@ -293,7 +298,7 @@ export default function CourseSchedule({ courseId }: CourseScheduleProps) {
                         </div>
                       </>
                     )}
-                  </div>
+                  </button>
                 );
               })}
             </div>
