@@ -372,24 +372,42 @@ export default function Dashboard({ params }: Props) {
             <Award className="mr-2 h-6 w-6 text-yellow-500" />
             <h2 className="text-xl font-semibold">학습 성취도</h2>
           </div>
+
           <div className="py-4 text-center">
-            <div>현재 강좌 수강생 총합: {totalStudents}</div>
-            {progress < 5 ? (
-              <>
-                <p className="text-xl font-medium">초보 학습자</p>
-                <p className="mt-2 text-gray-500">5일 이상 완료하면 중급 학습자로 승급!</p>
-              </>
-            ) : progress < 15 ? (
-              <>
-                <p className="text-xl font-medium">중급 학습자</p>
-                <p className="mt-2 text-gray-500">15일 이상 완료하면 고급 학습자로 승급!</p>
-              </>
-            ) : (
-              <>
-                <p className="text-xl font-medium">고급 학습자</p>
-                <p className="mt-2 text-gray-500">축하합니다! 최고 레벨에 도달했습니다.</p>
-              </>
-            )}
+            {/* 학생 수 표시 영역 */}
+            <div className="mt-4 rounded-lg bg-white p-4 shadow-md">
+              <div className="flex flex-col items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-700">Team Total Point</h3>
+                <span className="text-2xl font-bold text-indigo-600">Team Total PointP</span>
+              </div>
+              <p className="mt-1 text-sm text-gray-500">현재 이 강좌에 등록된 활성 수강생 수</p>
+            </div>
+
+            {/* 학생 수 표시 영역 */}
+            <div className="mt-4 rounded-lg bg-white p-4 shadow-md">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-700">총 수강생</h3>
+                <span className="text-2xl font-bold text-indigo-600">{totalStudents}명</span>
+              </div>
+              <p className="mt-1 text-sm text-gray-500">현재 이 강좌에 등록된 활성 수강생 수</p>
+            </div>
+
+            {/*{progress < 5 ? (*/}
+            {/*  <>*/}
+            {/*    <p className="text-xl font-medium">초보 학습자</p>*/}
+            {/*    <p className="mt-2 text-gray-500">5일 이상 완료하면 중급 학습자로 승급!</p>*/}
+            {/*  </>*/}
+            {/*) : progress < 15 ? (*/}
+            {/*  <>*/}
+            {/*    <p className="text-xl font-medium">중급 학습자</p>*/}
+            {/*    <p className="mt-2 text-gray-500">15일 이상 완료하면 고급 학습자로 승급!</p>*/}
+            {/*  </>*/}
+            {/*) : (*/}
+            {/*  <>*/}
+            {/*    <p className="text-xl font-medium">고급 학습자</p>*/}
+            {/*    <p className="mt-2 text-gray-500">축하합니다! 최고 레벨에 도달했습니다.</p>*/}
+            {/*  </>*/}
+            {/*)}*/}
           </div>
         </div>
       </div>
