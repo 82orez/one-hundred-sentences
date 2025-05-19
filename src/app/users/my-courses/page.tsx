@@ -260,6 +260,7 @@ export default function MyCoursesPage() {
             <CourseSchedule
               courseId={selectedCourseId}
               zoomInviteUrl={activeCourses.find((enrollment) => enrollment.course.id === selectedCourseId)?.course?.teacher?.user?.zoomInviteUrl}
+              location={activeCourses.find((enrollment) => enrollment.course.id === selectedCourseId)?.course?.location}
             />
           </div>
         </div>

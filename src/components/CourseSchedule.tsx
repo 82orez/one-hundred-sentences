@@ -27,6 +27,7 @@ interface ClassDate {
 interface CourseScheduleProps {
   courseId: string;
   zoomInviteUrl: string | null;
+  location: string | null;
 }
 
 // 강좌 색상 팔레트 정의
@@ -116,7 +117,7 @@ function MobileSchedule({
   );
 }
 
-export default function CourseSchedule({ courseId, zoomInviteUrl }: CourseScheduleProps) {
+export default function CourseSchedule({ courseId, zoomInviteUrl, location }: CourseScheduleProps) {
   const [viewMode, setViewMode] = useState<"day" | "week" | "month">("month");
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
