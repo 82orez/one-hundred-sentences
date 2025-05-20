@@ -433,7 +433,11 @@ export default function Dashboard({ params }: Props) {
                 <div className="flex text-2xl font-bold text-indigo-600">
                   <FlipCounter
                     value={
-                      teamPoints ? ((totalPoints / teamPoints) * 100 === 100 ? 100 : parseFloat(((totalPoints / teamPoints) * 100).toFixed(1))) : 0
+                      teamPoints
+                        ? (totalPoints / teamPoints) * 100 === 100
+                          ? 100
+                          : Math.min(parseFloat(((totalPoints / teamPoints) * 100).toFixed(1)), 100)
+                        : 0
                     }
                     className={""}
                   />
