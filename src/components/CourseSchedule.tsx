@@ -316,7 +316,27 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
                       // 수업 참여 가능
                       const confirmed = window.confirm("수업에 참여하시겠습니까?");
                       if (confirmed) {
-                        window.open(zoomInviteUrl, "_blank");
+                        // 출석 체크 API 호출
+                        axios
+                          .post("/api/user/attendance", {
+                            classDateId: classDate.id,
+                            courseId: classDate.course.id,
+                          })
+                          .then((response) => {
+                            if (response.data.isAttended) {
+                              window.alert("출석이 완료되었습니다.");
+                            } else {
+                              window.alert("출석은 처리되었지만, 출석 인정 시간이 아닙니다.");
+                            }
+                            // 화상 수업 참여 (Zoom URL 열기)
+                            window.open(zoomInviteUrl, "_blank");
+                          })
+                          .catch((error) => {
+                            console.error("출석 체크 실패:", error);
+                            window.alert("출석 체크에 실패했습니다.");
+                            // 오류가 발생해도 수업에는 참여할 수 있도록 함
+                            window.open(zoomInviteUrl, "_blank");
+                          });
                       }
                     }}
                     style={{
