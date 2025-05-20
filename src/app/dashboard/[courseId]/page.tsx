@@ -430,9 +430,15 @@ export default function Dashboard({ params }: Props) {
             <div className="mt-4 rounded-lg bg-white p-4 shadow-md">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-700">나의 팀 기여도</h3>
-                <span className="text-2xl font-bold text-indigo-600">
-                  {teamPoints ? ((totalPoints / teamPoints) * 100 === 100 ? "100%" : ((totalPoints / teamPoints) * 100).toFixed(1) + "%") : "0%"}
-                </span>
+                <div className="flex text-2xl font-bold text-indigo-600">
+                  <FlipCounter
+                    value={
+                      teamPoints ? ((totalPoints / teamPoints) * 100 === 100 ? 100 : parseFloat(((totalPoints / teamPoints) * 100).toFixed(1))) : 0
+                    }
+                    className={""}
+                  />
+                  <span className="ml-1">%</span>
+                </div>
               </div>
               {/*<div className="flex items-center justify-between">*/}
               {/*  <h3 className="text-lg font-semibold text-gray-700">총 수강생</h3>*/}
@@ -440,7 +446,16 @@ export default function Dashboard({ params }: Props) {
               {/*</div>*/}
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-700">나의 순위</h3>
-                <div className="text-2xl font-bold text-indigo-600">{totalPoints ? <div>{userRank} 등</div> : <div>기여도 없음</div>}</div>
+                <div className="text-2xl font-bold text-indigo-600">
+                  {totalPoints ? (
+                    <div className="flex items-center">
+                      <FlipCounter value={userRank} className={""} />
+                      <span className="ml-1">등</span>
+                    </div>
+                  ) : (
+                    <div>기여도 없음</div>
+                  )}
+                </div>
               </div>
               <p className="mt-1 text-sm text-gray-500">(현재 이 강좌에 등록된 활성 수강생 수 {totalStudents}명)</p>
             </div>
