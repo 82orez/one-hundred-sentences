@@ -283,7 +283,7 @@ export default function Dashboard({ params }: Props) {
 
   // ✅ 팀 전체 포인트 정보 불러오기
   const { data: teamPointsData, isLoading: isTeamPointsLoading } = useQuery({
-    queryKey: ["teamPoints", selectedCourseId],
+    queryKey: ["teamPoints", selectedCourseId, totalPoints],
     queryFn: async () => {
       const res = await axios.get(`/api/course-points/team?courseId=${selectedCourseId}`);
       return res.data;
@@ -428,7 +428,9 @@ export default function Dashboard({ params }: Props) {
             <div className="mt-4 rounded-lg bg-white p-4 shadow-md">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-700">나의 팀 기여도</h3>
-                <span className="text-2xl font-bold text-indigo-600">{teamPoints ? ((totalPoints / teamPoints) * 100).toFixed(1) : 0}%</span>
+                <span className="text-2xl font-bold text-indigo-600">
+                  {teamPoints ? ((totalPoints / teamPoints) * 100 === 100 ? "100%" : ((totalPoints / teamPoints) * 100).toFixed(1) + "%") : "0%"}
+                </span>
               </div>
               {/*<div className="flex items-center justify-between">*/}
               {/*  <h3 className="text-lg font-semibold text-gray-700">총 수강생</h3>*/}
