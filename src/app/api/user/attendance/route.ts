@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
       where: {
         userId: session.user.id,
         courseId: courseId,
-        classDate: classDateId,
+        classDateId: classDateId,
       },
     });
 
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
         data: {
           courseId,
           userId: session.user.id,
-          classDate: classDateId,
+          classDateId: classDateId,
           isAttended,
         },
       });

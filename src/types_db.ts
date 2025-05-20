@@ -141,7 +141,7 @@ export type Database = {
       }
       Attendance: {
         Row: {
-          classDate: string
+          classDateId: string
           courseId: string
           createdAt: string
           id: string
@@ -149,7 +149,7 @@ export type Database = {
           userId: string
         }
         Insert: {
-          classDate: string
+          classDateId: string
           courseId: string
           createdAt?: string
           id: string
@@ -157,7 +157,7 @@ export type Database = {
           userId: string
         }
         Update: {
-          classDate?: string
+          classDateId?: string
           courseId?: string
           createdAt?: string
           id?: string
