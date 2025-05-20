@@ -213,6 +213,16 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
+  // ! ✅ 출석 정보 조회
+  const { data: attendanceData } = useQuery({
+    queryKey: ["attendance", session?.user?.id, selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/user/attendance/dashboard?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
+  });
+
   // ✅ 개별 포인트 정보 불러오기
   const { data: savedPoints } = useQuery({
     queryKey: ["coursePoints", session?.user?.id, selectedCourseId],
@@ -391,6 +401,13 @@ export default function Dashboard({ params }: Props) {
             <div>스피킹/퀴즈 (정답)횟수</div>
             <div className="font-semibold text-blue-600">
               ({quizStats?.totalCorrect || 0}) {quizStats?.totalAttempts || 0}회
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>수업 출석 횟수</div>
+            <div className="font-semibold text-blue-600">
+              {attendanceData ? `${attendanceData.totalClassDates}회 중 ${attendanceData.attendedClassDates}일 출석` : "로딩 중..."}
             </div>
           </div>
 

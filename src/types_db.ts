@@ -166,6 +166,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "Attendance_classDateId_fkey"
+            columns: ["classDateId"]
+            isOneToOne: false
+            referencedRelation: "ClassDate"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "Attendance_courseId_fkey"
             columns: ["courseId"]
             isOneToOne: false

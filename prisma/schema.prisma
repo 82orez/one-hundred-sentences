@@ -326,7 +326,8 @@ model ClassDate {
   updatedAt DateTime @updatedAt
 
   // 관계 설정
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course     Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  Attendance Attendance[]
 
   @@index([courseId])
 }
@@ -392,8 +393,9 @@ model Attendance {
   createdAt   DateTime @default(now())
 
   // 관계 설정
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  classDate ClassDate @relation(fields: [classDateId], references: [id])
 
   @@unique([userId, courseId, classDateId]) // 한 학생이 한 강좌의 특정 수업에 대해 하나의 출석 기록만 가지도록
   @@index([userId])
