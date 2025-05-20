@@ -405,6 +405,11 @@ export default function AdminPage() {
                   </button>
                 </div>
               </div>
+
+              <div className="mt-6 flex items-center justify-between rounded-lg bg-white p-6 shadow-md">
+                <div className={"text-lg font-semibold"}>모든 레코딩 파일 삭제하기</div>
+                <button className={"rounded-md bg-red-400 p-2 text-white"}>삭제</button>
+              </div>
             </div>
           )}
         </div>
