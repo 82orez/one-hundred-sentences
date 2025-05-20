@@ -420,7 +420,9 @@ export default function Dashboard({ params }: Props) {
               {isTeamPointsLoading ? (
                 <div className="mt-2 animate-pulse">로딩 중...</div>
               ) : (
-                <span className="mt-2 text-3xl font-extrabold">{teamPoints.toLocaleString()} P</span>
+                <span className="mt-2 text-3xl font-extrabold">
+                  <FlipCounter value={teamPoints} className={""} />
+                </span>
               )}
             </div>
 
