@@ -383,21 +383,23 @@ enum EnrollmentStatus {
   dropped
 }
 
+// Attendance 모델 추가
 model Attendance {
   id         String   @id @default(cuid())
-  courseId   String
   userId     String
-  classDate  String // 수업 날짜(YYYY-MM-DD 형식)
+  courseId   String
+  classDate  String // ClassDate의 ID를 참조
   isAttended Boolean  @default(false)
-  createdAt  DateTime @default(now()) // 출석 체크 시간
+  createdAt  DateTime @default(now())
 
   // 관계 설정
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, courseId, classDate]) // 한 학생은 하루에 한 강좌에 대해 한 번만 출석 체크 가능
+  @@unique([userId, courseId, classDate]) // 한 학생이 한 강좌의 특정 수업에 대해 하나의 출석 기록만 가지도록
   @@index([userId])
   @@index([courseId])
+  @@index([classDate])
 }
 
 model Assignment {
