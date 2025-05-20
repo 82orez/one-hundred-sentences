@@ -85,6 +85,28 @@ export default function AdminPage() {
     }
   };
 
+  // recordings 버킷의 모든 파일 삭제하기
+  const deleteAllRecordings = async () => {
+    try {
+      const response = await fetch("/api/admin/delete-recordings", {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("모든 녹음 파일이 삭제되었습니다:", data);
+        // 성공 처리 로직 (예: 토스트 메시지 표시)
+      } else {
+        console.error("파일 삭제 오류:", data.error);
+        // 오류 처리 로직
+      }
+    } catch (error) {
+      console.error("요청 처리 중 오류 발생:", error);
+      // 예외 처리 로직
+    }
+  };
+
   return (
     <div className="relative flex h-screen flex-col bg-gray-100 md:flex-row">
       {/* 모바일 토글 버튼 */}
@@ -408,7 +430,15 @@ export default function AdminPage() {
 
               <div className="mt-6 flex items-center justify-between rounded-lg bg-white p-6 shadow-md">
                 <div className={"text-lg font-semibold"}>모든 레코딩 파일 삭제하기</div>
-                <button className={"rounded-md bg-red-400 p-2 text-white"}>삭제</button>
+                <button
+                  className={"rounded-md bg-red-400 p-2 text-white"}
+                  onClick={() => {
+                    if (window.confirm("정말로 모든 녹음 파일을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+                      deleteAllRecordings();
+                    }
+                  }}>
+                  삭제
+                </button>
               </div>
             </div>
           )}
