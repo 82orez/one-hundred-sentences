@@ -246,14 +246,16 @@ export default function Dashboard({ params }: Props) {
     const RECORDING_POINT_PER_ATTEMPT = 20;
     const QUIZ_ATTEMPT_POINT = 3;
     const QUIZ_CORRECT_POINT = 3;
+    const ATTENDANCE_POINT = 50;
 
     const videoPoints = totalVideoDuration * VIDEO_POINT_PER_SECOND;
     const audioPoints = (nativeAudioData?.totalAttempts || 0) * AUDIO_POINT_PER_ATTEMPT;
     const recordingPoints = (totalRecordingAttempts || 0) * RECORDING_POINT_PER_ATTEMPT;
     const quizAttemptPoints = (quizStats?.totalAttempts || 0) * QUIZ_ATTEMPT_POINT;
     const quizCorrectPoints = (quizStats?.totalCorrect || 0) * QUIZ_CORRECT_POINT;
+    const attendancePoints = (attendanceData?.attendedClassDates || 0) * ATTENDANCE_POINT;
 
-    const total = Math.round(videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints);
+    const total = Math.round(videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints);
 
     // 계산된 총 포인트가 기존 저장된 포인트와 다를 때만 상태 업데이트
     if (savedPoints?.points !== total) {
@@ -285,6 +287,7 @@ export default function Dashboard({ params }: Props) {
     totalRecordingAttempts,
     quizStats?.totalAttempts,
     quizStats?.totalCorrect,
+    attendanceData?.attendedClassDates,
     isQuizStatsLoading,
     isVideoDurationLoading,
     session?.user?.id,
