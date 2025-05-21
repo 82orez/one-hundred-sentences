@@ -296,7 +296,7 @@ export default function Dashboard({ params }: Props) {
 
   // ✅ 팀 전체 포인트 정보 불러오기
   const { data: teamPointsData, isLoading: isTeamPointsLoading } = useQuery({
-    queryKey: ["teamPoints", selectedCourseId, totalPoints],
+    queryKey: ["teamPoints", session?.user?.id, selectedCourseId, totalPoints],
     queryFn: async () => {
       const res = await axios.get(`/api/course-points/team?courseId=${selectedCourseId}`);
       return res.data;
