@@ -100,7 +100,6 @@ export default function MyCourses() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold">내 강좌</h1>
-
       {loading ? (
         <div className="py-10 text-center">
           <p>강좌 정보를 불러오고 있습니다...</p>
@@ -251,18 +250,30 @@ export default function MyCourses() {
                           const attendance = student.attendance.find((a) => a.classDateId === classDate.id);
                           // 현재 날짜와 시간
                           const now = new Date();
-                          // 수업 날짜
+                          // 수업 날짜와 시간 정보를 가져옴
                           const classDateTime = new Date(classDate.date);
-                          // 수업이 지났는지 여부 체크
-                          const isPastClass = classDateTime < now;
+
+                          // 수업 종료 시간이 있으면 파싱하여 설정
+                          if (classDate.endTime) {
+                            const [hours, minutes] = classDate.endTime.split(":").map(Number);
+                            classDateTime.setHours(hours, minutes);
+                          }
+
+                          // 수업이 끝났는지 여부 체크 (현재 시간이 수업 종료 시간을 지났는지)
+                          const isClassEnded = now > classDateTime;
+
+                          // 출석 여부 결정
+                          // 1. 출석 정보가 있고 isAttended가 true면 출석
+                          // 2. 수업이 끝났고 출석 정보가 없거나 isAttended가 false면 결석
+                          // 3. 그 외의 경우는 아직 진행 중이거나 시작 전인 수업
+                          const isAttended = attendance?.isAttended === true;
+                          const isAbsent = isClassEnded && (!attendance || attendance.isAttended === false);
 
                           return (
-                            <td key={`${student.id}-${classDate.id}`} className={`px-3 py-4 text-center ${isPastClass ? "bg-gray-50" : ""}`}>
-                              <span
-                                className={`inline-block h-3 w-3 rounded-full ${
-                                  attendance?.isAttended ? "bg-green-500" : attendance ? "bg-red-500" : "bg-gray-300"
-                                }`}
-                              />
+                            <td key={`${student.id}-${classDate.id}`} className={`px-3 py-4 text-center ${isClassEnded ? "bg-gray-50" : ""}`}>
+                              {isAttended || isAbsent ? (
+                                <span className={`inline-block h-3 w-3 rounded-full ${isAttended ? "bg-green-500" : "bg-red-500"}`} />
+                              ) : null}
                             </td>
                           );
                         })}
@@ -278,10 +289,6 @@ export default function MyCourses() {
                   <div className="flex items-center">
                     <span className="mr-2 inline-block h-3 w-3 rounded-full bg-red-500"></span>
                     <span>결석</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-2 inline-block h-3 w-3 rounded-full bg-gray-300"></span>
-                    <span>미체크</span>
                   </div>
                   <div className="flex items-center">
                     <span className="mr-2 inline-block h-3 w-3 border border-gray-200 bg-gray-50"></span>
