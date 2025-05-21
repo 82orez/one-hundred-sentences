@@ -207,6 +207,16 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
     enabled: !!courseId,
   });
 
+  // 출석 정보 조회
+  const { data: attendanceData } = useQuery({
+    queryKey: ["userAttendance", courseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/user/attendance?courseId=${courseId}`);
+      return res.data as AttendanceInfo[];
+    },
+    enabled: !!courseId,
+  });
+
   // 강좌 ID를 기반으로 색상 맵 생성
   const courseColorMap = useMemo(() => {
     const colorMap = new Map<string, (typeof courseColorPalette)[0]>();
@@ -523,6 +533,7 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
     const endDate = endOfWeek(monthEnd, { weekStartsOn: 0 });
 
     const days = eachDayOfInterval({ start: startDate, end: endDate });
+    const now = new Date(); // 현재 시간 추가
 
     // 날짜별 수업 그룹화
     const classDatesByDay = new Map<string, ClassDate[]>();
@@ -536,6 +547,12 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
       }
 
       classDatesByDay.get(dateKey)?.push(classDate);
+    });
+
+    // 출석 정보 그룹화 (classDateId를 키로 사용)
+    const attendanceByClassDateId = new Map<string, boolean>();
+    attendanceData?.forEach((attendance) => {
+      attendanceByClassDateId.set(attendance.classDateId, attendance.isAttended);
     });
 
     return (
@@ -592,9 +609,43 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
                   <div className="space-y-1">
                     {visibleEvents.map((classDate) => {
                       const courseColor = getCourseColor(classDate.course.id);
+
+                      // 각 수업의 종료 시간 객체 생성
+                      const endTimeDate = new Date(classDate.date);
+                      if (classDate.endTime) {
+                        const [hours, minutes] = classDate.endTime.split(":").map(Number);
+                        endTimeDate.setHours(hours, minutes, 0, 0);
+                      }
+
+                      // 수업이 이미 종료되었는지 확인
+                      const isClassEnded = now > endTimeDate;
+
+                      // 출석 여부 확인
+                      const hasAttendance = attendanceByClassDateId.has(classDate.id);
+                      const isAttended = attendanceByClassDateId.get(classDate.id);
+
+                      // 출석 상태 메시지 표시 조건
+                      let statusText = null;
+                      if (isClassEnded) {
+                        if (hasAttendance && isAttended) {
+                          statusText = "출석 완료";
+                        } else if (!hasAttendance || !isAttended) {
+                          statusText = "결석";
+                        }
+                      }
+
                       return (
-                        <div key={classDate.id} className={`rounded-sm px-1 py-0.5 text-xs ${courseColor.bg} ${courseColor.text} truncate`}>
-                          {classDate.startTime} {classDate.course.title}
+                        <div
+                          key={classDate.id}
+                          className={clsx(
+                            "truncate rounded-sm px-1 py-0.5 text-xs",
+                            statusText === "출석 완료"
+                              ? "bg-green-200 text-green-800"
+                              : statusText === "결석"
+                                ? "bg-red-200 text-red-800"
+                                : `${courseColor.bg} ${courseColor.text}`,
+                          )}>
+                          {statusText || `${classDate.startTime} ${classDate.course.title}`}
                         </div>
                       );
                     })}
