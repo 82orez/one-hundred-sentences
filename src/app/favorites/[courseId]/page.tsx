@@ -131,7 +131,7 @@ export default function FavoriteSentencesPage({ params }: Props) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: index * 0.05 }}
-          className="rounded-lg bg-white p-4 shadow-md dark:bg-gray-800">
+          className="mt-4 rounded-lg border border-gray-400 bg-white p-4 shadow-md dark:bg-gray-800">
           <div className="mb-2 flex items-start justify-between">
             <span className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
               {item.sentenceNo}번 문장
