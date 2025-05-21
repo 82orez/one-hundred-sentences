@@ -10,7 +10,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
-import CourseSchedule from "@/components/CourseSchedule"; // X 아이콘 import
+import CourseSchedule from "@/components/CourseSchedule";
 
 export default function MyCourses() {
   const [courses, setCourses] = useState([]);
@@ -19,6 +19,12 @@ export default function MyCourses() {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [selectedCourseTitle, setSelectedCourseTitle] = useState("");
+
+  // 출석부 모달 상태 관리
+  const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [classDates, setClassDates] = useState([]);
+  const [isAttendanceLoading, setIsAttendanceLoading] = useState(false);
 
   const { isPending: loading } = useQuery({
     queryKey: ["myCourses"],
@@ -61,6 +67,34 @@ export default function MyCourses() {
   const handleCloseModal = () => {
     setIsScheduleModalOpen(false);
     setSelectedCourseId(null);
+  };
+
+  // 출석부 버튼 클릭 핸들러
+  const handleAttendanceClick = async (e, courseId, courseTitle) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
+    setSelectedCourseId(courseId);
+    setSelectedCourseTitle(courseTitle);
+    setIsAttendanceLoading(true);
+
+    try {
+      // API 호출로 학생 목록과 출결 데이터 가져오기
+      const response = await axios.get(`/api/attendance/${courseId}`);
+      setAttendanceData(response.data.students || []);
+      setClassDates(response.data.classDates || []);
+      setIsAttendanceModalOpen(true);
+    } catch (error) {
+      console.error("출석부 데이터 조회 실패:", error);
+      toast.error("출석부 정보를 불러오는 중 오류가 발생했습니다.");
+    } finally {
+      setIsAttendanceLoading(false);
+    }
+  };
+
+  // 출석부 모달 닫기
+  const handleCloseAttendanceModal = () => {
+    setIsAttendanceModalOpen(false);
+    setAttendanceData([]);
+    setClassDates([]);
   };
 
   return (
@@ -117,11 +151,19 @@ export default function MyCourses() {
                       )}
                     </div>
 
-                    <button
-                      className="mt-8 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
-                      onClick={(e) => handleScheduleClick(e, course.id, course.title)}>
-                      수업 일정 보기
-                    </button>
+                    <div className="mt-8 flex space-x-2">
+                      <button
+                        className="rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+                        onClick={(e) => handleScheduleClick(e, course.id, course.title)}>
+                        수업 일정 보기
+                      </button>
+
+                      <button
+                        className="rounded-md bg-green-500 px-4 py-2 text-white transition-colors hover:bg-green-600"
+                        onClick={(e) => handleAttendanceClick(e, course.id, course.title)}>
+                        출석부
+                      </button>
+                    </div>
                   </div>
 
                   <div className="bg-gray-50 px-4 py-3 text-right">
@@ -140,7 +182,7 @@ export default function MyCourses() {
 
       {/* 수업 일정 모달 */}
       {isScheduleModalOpen && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
           <div className="relative max-h-[90vh] w-[95vw] max-w-5xl overflow-auto rounded-lg bg-white p-4 shadow-lg">
             <button
               onClick={handleCloseModal}
@@ -149,6 +191,81 @@ export default function MyCourses() {
             </button>
             <h2 className="mb-4 text-xl font-semibold">{selectedCourseTitle}</h2>
             <CourseSchedule courseId={selectedCourseId} zoomInviteUrl={null} location={null} />
+          </div>
+        </div>
+      )}
+
+      {/* 출석부 모달 */}
+      {isAttendanceModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="relative max-h-[90vh] w-[95vw] max-w-5xl overflow-auto rounded-lg bg-white p-4 shadow-lg">
+            <button
+              onClick={handleCloseAttendanceModal}
+              className="absolute top-4 right-4 rounded-full p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+              <X size={24} />
+            </button>
+            <h2 className="mb-6 text-xl font-semibold">{selectedCourseTitle} - 출석부</h2>
+
+            {isAttendanceLoading ? (
+              <div className="flex h-40 items-center justify-center">
+                <p>출석 정보를 불러오고 있습니다...</p>
+              </div>
+            ) : classDates.length === 0 ? (
+              <div className="py-10 text-center">
+                <p className="text-gray-600">등록된 수업 일정이 없습니다.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">학생</th>
+                      {classDates.map((classDate) => (
+                        <th key={classDate.id} className="px-3 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
+                          {format(new Date(classDate.date), "MM.dd", { locale: ko })}
+                          <div className="text-xs font-normal">{classDate.dayOfWeek}요일</div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-white">
+                    {attendanceData.map((student) => (
+                      <tr key={student.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{student.name || student.email}</div>
+                        </td>
+                        {classDates.map((classDate) => {
+                          const attendance = student.attendance.find((a) => a.classDateId === classDate.id);
+                          return (
+                            <td key={`${student.id}-${classDate.id}`} className="px-3 py-4 text-center">
+                              <span
+                                className={`inline-block h-3 w-3 rounded-full ${
+                                  attendance?.isAttended ? "bg-green-500" : attendance ? "bg-red-500" : "bg-gray-300"
+                                }`}
+                              />
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="mt-4 flex items-center space-x-4 text-sm">
+                  <div className="flex items-center">
+                    <span className="mr-2 inline-block h-3 w-3 rounded-full bg-green-500"></span>
+                    <span>출석</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2 inline-block h-3 w-3 rounded-full bg-red-500"></span>
+                    <span>결석</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2 inline-block h-3 w-3 rounded-full bg-gray-300"></span>
+                    <span>미체크</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
