@@ -1,8 +1,8 @@
-// /app/api/user/attendance/dashboard/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { addHours } from "date-fns";
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,7 +20,12 @@ export async function GET(request: NextRequest) {
     }
 
     // 현재 날짜 기준으로 진행해야 할 강좌의 전체 수업일 수 조회
-    const today = new Date();
+    // 한국 시간(UTC+9)으로 설정
+    // const today = new Date();
+    // today.setHours(today.getHours() + 9); // UTC+9 시간대로 조정
+
+    const today = addHours(new Date(), 9); // UTC+9 시간대로 조정
+
     const totalClassDates = await prisma.classDate.count({
       where: {
         courseId: courseId,

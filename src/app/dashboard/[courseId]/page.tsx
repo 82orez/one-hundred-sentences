@@ -405,9 +405,9 @@ export default function Dashboard({ params }: Props) {
           </div>
 
           <div className="flex items-center justify-between">
-            <div>수업 출석 횟수</div>
+            <div>수업 출석 (수업일)횟수</div>
             <div className="font-semibold text-blue-600">
-              {attendanceData ? `${attendanceData.totalClassDates}회 중 ${attendanceData.attendedClassDates}일 출석` : "로딩 중..."}
+              {attendanceData ? `(${attendanceData.totalClassDates}) ${attendanceData.attendedClassDates}회` : "로딩 중..."}
             </div>
           </div>
 
