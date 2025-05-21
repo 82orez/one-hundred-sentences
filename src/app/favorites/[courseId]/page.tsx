@@ -125,57 +125,51 @@ export default function FavoriteSentencesPage({ params }: Props) {
         <Heart className="mr-2 text-red-500" size={24} />내 즐겨찾기 문장 목록
       </h1>
 
-      {favoriteSentences?.length === 0 ? (
-        <div className="py-10 text-center">
-          <Bookmark className="mx-auto mb-4 text-gray-400" size={48} />
-          <p className="text-gray-500">즐겨찾기한 문장이 없습니다.</p>
-          <button
-            onClick={() => router.push(`/dashboard/${courseId}`)}
-            className="mt-4 rounded-md bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700">
-            문장 학습하러 가기
-          </button>
-        </div>
-      ) : (
-        <div className="grid gap-4">
-          {favoriteSentences?.map((item, index) => (
-            <motion.div
-              key={item.id || index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              className="rounded-lg bg-white p-4 shadow-md dark:bg-gray-800">
-              <div className="mb-2 flex items-start justify-between">
-                <span className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-                  {item.sentenceNo}번 문장
-                </span>
-                <button
-                  onClick={() => handleRemoveFavorite(item.sentence.no)}
-                  disabled={isDeleting || currentlyPlaying !== null}
-                  className="text-gray-500 transition-colors hover:text-red-500">
-                  <Trash2 size={18} />
-                </button>
-              </div>
+      {favoriteSentences?.map((item, index) => (
+        <motion.div
+          key={item.id || index}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+          className="rounded-lg bg-white p-4 shadow-md dark:bg-gray-800">
+          <div className="mb-2 flex items-start justify-between">
+            <span className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
+              {item.sentenceNo}번 문장
+            </span>
+            <button
+              onClick={() => handleRemoveFavorite(item.sentence.no)}
+              disabled={isDeleting || currentlyPlaying !== null}
+              className="text-gray-500 transition-colors hover:text-red-500">
+              <Trash2 size={18} />
+            </button>
+          </div>
 
-              <p className="mb-2 text-lg font-medium">{item.sentence?.en}</p>
-              <p className="mb-3 text-gray-600 dark:text-gray-400">{item.sentence?.ko}</p>
+          <p className="mb-2 text-lg font-medium">{item.sentence?.en}</p>
+          <p className="mb-3 text-gray-600 dark:text-gray-400">{item.sentence?.ko}</p>
 
-              {item.sentence?.audioUrl && (
-                <button
-                  onClick={() => playAudio(item.sentence.no, item.sentence.audioUrl)}
-                  disabled={(currentlyPlaying !== null && currentlyPlaying !== item.sentence.no) || isPlayingNativeAudio}
-                  className={`flex items-center text-sm ${
-                    currentlyPlaying !== null && currentlyPlaying !== item.sentence.no
-                      ? "cursor-not-allowed text-gray-400"
-                      : "text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
-                  }`}>
-                  <span className="mr-1">🔊</span>
-                  {currentlyPlaying === item.sentence.no ? "재생 중..." : "발음 듣기"}
-                </button>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      )}
+          <div className="flex items-center justify-between">
+            {item.sentence?.audioUrl && (
+              <button
+                onClick={() => playAudio(item.sentence.no, item.sentence.audioUrl)}
+                disabled={(currentlyPlaying !== null && currentlyPlaying !== item.sentence.no) || isPlayingNativeAudio}
+                className={`flex items-center text-sm ${
+                  currentlyPlaying !== null && currentlyPlaying !== item.sentence.no
+                    ? "cursor-not-allowed text-gray-400"
+                    : "text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
+                }`}>
+                <span className="mr-1">🔊</span>
+                {currentlyPlaying === item.sentence.no ? "재생 중..." : "발음 듣기"}
+              </button>
+            )}
+
+            <button
+              onClick={() => router.push(`/learn/${Math.ceil(item.sentenceNo / 5)}`)}
+              className="rounded-md bg-indigo-600 px-3 py-1 text-sm text-white transition-colors hover:bg-indigo-700">
+              학습하러 가기
+            </button>
+          </div>
+        </motion.div>
+      ))}
 
       <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": isLoading })}>
         <Link href={`/dashboard/${courseId}`}>Back to My Dashboard</Link>
