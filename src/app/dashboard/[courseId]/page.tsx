@@ -223,7 +223,7 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
   });
 
-  // ✅ 개별 포인트 정보 불러오기
+  // ✅ userCoursePoints 에 있는 개별 total 포인트 정보 불러오기
   const { data: savedPoints } = useQuery({
     queryKey: ["coursePoints", session?.user?.id, selectedCourseId],
     queryFn: async () => {
@@ -258,7 +258,7 @@ export default function Dashboard({ params }: Props) {
     const total = Math.round(videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints);
 
     // 계산된 총 포인트가 기존 저장된 포인트와 다를 때만 상태 업데이트
-    if (savedPoints?.points !== total) {
+    if (savedPoints?.points < total) {
       setTotalPoints(total);
 
       // 포인트가 다른 경우에만 서버에 저장
@@ -279,7 +279,7 @@ export default function Dashboard({ params }: Props) {
       }
     } else {
       // 이미 저장된 값과 같으면 해당 값 사용
-      setTotalPoints(savedPoints.points);
+      setTotalPoints(savedPoints?.points);
     }
   }, [
     totalVideoDuration,
@@ -292,6 +292,7 @@ export default function Dashboard({ params }: Props) {
     isVideoDurationLoading,
     session?.user?.id,
     selectedCourseId,
+    savedPoints,
   ]);
 
   // ✅ 팀 전체 포인트 정보 불러오기
