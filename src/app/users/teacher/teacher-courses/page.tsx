@@ -220,12 +220,25 @@ export default function MyCourses() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">학생</th>
-                      {classDates.map((classDate) => (
-                        <th key={classDate.id} className="px-3 py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase">
-                          {format(new Date(classDate.date), "MM.dd", { locale: ko })}
-                          <div className="text-xs font-normal">{classDate.dayOfWeek}요일</div>
-                        </th>
-                      ))}
+                      {classDates.map((classDate) => {
+                        // 현재 날짜와 시간
+                        const now = new Date();
+                        // 수업 날짜
+                        const classDateTime = new Date(classDate.date);
+                        // 수업이 지났는지 여부 체크
+                        const isPastClass = classDateTime < now;
+
+                        return (
+                          <th
+                            key={classDate.id}
+                            className={`px-3 py-3 text-center text-xs font-medium tracking-wider uppercase ${
+                              isPastClass ? "bg-gray-100 text-gray-600" : "text-gray-500"
+                            }`}>
+                            {format(new Date(classDate.date), "MM.dd", { locale: ko })}
+                            <div className="text-xs font-normal">{classDate.dayOfWeek}요일</div>
+                          </th>
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
@@ -236,8 +249,15 @@ export default function MyCourses() {
                         </td>
                         {classDates.map((classDate) => {
                           const attendance = student.attendance.find((a) => a.classDateId === classDate.id);
+                          // 현재 날짜와 시간
+                          const now = new Date();
+                          // 수업 날짜
+                          const classDateTime = new Date(classDate.date);
+                          // 수업이 지났는지 여부 체크
+                          const isPastClass = classDateTime < now;
+
                           return (
-                            <td key={`${student.id}-${classDate.id}`} className="px-3 py-4 text-center">
+                            <td key={`${student.id}-${classDate.id}`} className={`px-3 py-4 text-center ${isPastClass ? "bg-gray-50" : ""}`}>
                               <span
                                 className={`inline-block h-3 w-3 rounded-full ${
                                   attendance?.isAttended ? "bg-green-500" : attendance ? "bg-red-500" : "bg-gray-300"
@@ -262,6 +282,10 @@ export default function MyCourses() {
                   <div className="flex items-center">
                     <span className="mr-2 inline-block h-3 w-3 rounded-full bg-gray-300"></span>
                     <span>미체크</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2 inline-block h-3 w-3 border border-gray-200 bg-gray-50"></span>
+                    <span>지난 수업</span>
                   </div>
                 </div>
               </div>
