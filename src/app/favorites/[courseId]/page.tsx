@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Heart, Bookmark, Trash2 } from "lucide-react";
+import { Heart, Bookmark, Trash2, ArrowDownAZ, ArrowUpZA } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { motion } from "framer-motion";
@@ -38,6 +38,8 @@ export default function FavoriteSentencesPage({ params }: Props) {
   const [isDeleting, setIsDeleting] = useState(false);
   // 현재 재생 중인 오디오의 문장 번호를 저장하는 상태 추가
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
+  // 정렬 방향 상태 추가 (true: 오름차순, false: 내림차순)
+  const [sortAscending, setSortAscending] = useState<boolean>(true);
   const recordNativeAudioAttemptMutation = useNativeAudioAttempt();
 
   // 인증 확인
@@ -107,6 +109,18 @@ export default function FavoriteSentencesPage({ params }: Props) {
     audio.play();
   };
 
+  // ✅ 정렬 방향 전환 함수
+  const toggleSortDirection = () => {
+    setSortAscending(!sortAscending);
+  };
+
+  // ✅ 문장 번호순으로 정렬된 데이터
+  const sortedSentences = favoriteSentences
+    ? [...favoriteSentences].sort((a, b) => {
+        return sortAscending ? a.sentenceNo - b.sentenceNo : b.sentenceNo - a.sentenceNo;
+      })
+    : [];
+
   if (status === "loading" || isLoading) {
     return <LoadingPageSkeleton />;
   }
@@ -121,11 +135,28 @@ export default function FavoriteSentencesPage({ params }: Props) {
 
   return (
     <div className="container mx-auto w-full max-w-md px-4 py-8">
-      <h1 className="mb-6 flex items-center justify-center text-2xl font-bold">
+      <h1 className="mb-4 flex items-center justify-center text-2xl font-bold">
         <Heart className="mr-2 text-red-500" size={24} />내 즐겨찾기 문장 목록
       </h1>
 
-      {favoriteSentences?.map((item, index) => (
+      {/* 정렬 버튼 추가 */}
+      <div className="mb-4 flex justify-end">
+        <button
+          onClick={toggleSortDirection}
+          className="flex items-center rounded-md bg-indigo-100 px-3 py-2 text-sm font-medium text-indigo-700 transition-colors hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-200 dark:hover:bg-indigo-800">
+          {sortAscending ? (
+            <>
+              <ArrowDownAZ className="mr-1" size={16} /> 번호 오름차순
+            </>
+          ) : (
+            <>
+              <ArrowUpZA className="mr-1" size={16} /> 번호 내림차순
+            </>
+          )}
+        </button>
+      </div>
+
+      {sortedSentences.map((item, index) => (
         <motion.div
           key={item.id || index}
           initial={{ opacity: 0, y: 20 }}
