@@ -30,6 +30,13 @@ interface CourseScheduleProps {
   location: string | null;
 }
 
+// 타입 정의 부분에 출석 관련 인터페이스 추가
+interface AttendanceInfo {
+  classDateId: string;
+  date: string;
+  isAttended: boolean;
+}
+
 // 강좌 색상 팔레트 정의
 const courseColorPalette = [
   { bg: "bg-blue-100", text: "text-blue-800", border: "border-blue-200" },
@@ -50,11 +57,13 @@ function MobileSchedule({
   setCurrentDate,
   setViewMode,
   classDates,
+  courseId,
 }: {
   currentDate: Date;
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
   setViewMode: React.Dispatch<React.SetStateAction<"day" | "week" | "month">>;
   classDates: ClassDate[] | undefined;
+  courseId: string;
 }) {
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -63,13 +72,45 @@ function MobileSchedule({
 
   const days = eachDayOfInterval({ start: startDate, end: endDate });
 
+  // 출석 정보 조회
+  const { data: attendanceData } = useQuery({
+    queryKey: ["userAttendance", courseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/user/attendance?courseId=${courseId}`);
+      return res.data as AttendanceInfo[];
+    },
+    enabled: !!courseId,
+  });
+
+  // 날짜별 수업 및 출석 정보 매핑
   const classDateMap = useMemo(() => {
-    const map = new Set<string>();
+    const map = new Map<string, { hasClass: boolean; classDates: ClassDate[]; hasAttendance: boolean }>();
+
+    // 모든 수업 날짜 정보 매핑
     classDates?.forEach((cd) => {
-      map.add(format(new Date(cd.date), "yyyy-MM-dd"));
+      const dateKey = format(new Date(cd.date), "yyyy-MM-dd");
+      if (!map.has(dateKey)) {
+        map.set(dateKey, { hasClass: true, classDates: [cd], hasAttendance: false });
+      } else {
+        const entry = map.get(dateKey)!;
+        entry.classDates.push(cd);
+      }
     });
+
+    // 출석 정보 매핑
+    attendanceData?.forEach((attendance) => {
+      const dateKey = format(new Date(attendance.date), "yyyy-MM-dd");
+      if (map.has(dateKey)) {
+        const entry = map.get(dateKey)!;
+        entry.hasAttendance = true;
+      }
+    });
+
     return map;
-  }, [classDates]);
+  }, [classDates, attendanceData]);
+
+  // 현재 날짜와 시간
+  const now = new Date();
 
   return (
     <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm sm:hidden">
@@ -86,10 +127,30 @@ function MobileSchedule({
       <div className="mt-1 grid grid-cols-7 gap-1">
         {days.map((day, idx) => {
           const dateStr = format(day, "yyyy-MM-dd");
-          const hasClass = classDateMap.has(dateStr);
+          const dayInfo = classDateMap.get(dateStr);
+          const hasClass = !!dayInfo?.hasClass;
           const isToday = isSameDay(day, new Date());
           const isCurrentMonth = day.getMonth() === currentDate.getMonth();
           const isHoliday = koreanHolidays.includes(dateStr);
+
+          // 수업이 있는 날짜에 대해 수업 종료 시간이 지났는지 확인
+          let isClassEnded = false;
+          let showAttendanceStatus = false;
+
+          if (hasClass && isCurrentMonth) {
+            const classDatesForDay = dayInfo.classDates;
+            // 오늘 날짜의 모든 수업이 끝났는지 확인
+            isClassEnded = classDatesForDay.every((cd) => {
+              if (!cd.endTime) return false;
+              const endTimeDate = new Date(cd.date);
+              const [hours, minutes] = cd.endTime.split(":").map(Number);
+              endTimeDate.setHours(hours, minutes, 0, 0);
+              return now > endTimeDate;
+            });
+
+            // 수업이 끝났을 때만 출석 상태 표시
+            showAttendanceStatus = isClassEnded;
+          }
 
           return (
             <div
@@ -101,14 +162,29 @@ function MobileSchedule({
               className={clsx(
                 "flex aspect-square cursor-pointer flex-col items-center justify-between gap-1.5 rounded-md p-1 text-sm",
                 isToday && "animate-pulse border-2 bg-blue-100 font-bold",
-                hasClass && "bg-green-100",
+                hasClass && !showAttendanceStatus && "bg-green-100",
                 !isCurrentMonth && "text-gray-400",
                 isHoliday && "font-semibold text-red-500",
                 day.getDay() === 0 && isCurrentMonth && "text-red-500",
                 day.getDay() === 6 && "text-blue-500", // 토요일만 파란색
+                // 출석 상태에 따른 스타일
+                showAttendanceStatus && dayInfo?.hasAttendance && "bg-green-100 ring-2 ring-green-500 ring-offset-1",
+                showAttendanceStatus && !dayInfo?.hasAttendance && "bg-red-100 ring-2 ring-red-500 ring-offset-1",
               )}>
               <div>{format(day, "d")}</div>
-              <div className="h-1.5">{hasClass && <div className="h-1.5 w-1.5 rounded-full bg-green-500" />}</div>
+
+              {/* 출석 상태 표시 */}
+              <div className="flex h-1.5 items-center justify-center">
+                {showAttendanceStatus ? (
+                  dayInfo?.hasAttendance ? (
+                    <div className="h-3 w-3 rounded-full border-2 border-green-500" />
+                  ) : (
+                    <div className="text-xs font-bold text-red-500">X</div>
+                  )
+                ) : (
+                  hasClass && <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                )}
+              </div>
             </div>
           );
         })}
@@ -607,7 +683,13 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
 
       {/* ✅ 모바일 월간 보기: 월간 보기 상태일 때만 보임 */}
       {viewMode === "month" && (
-        <MobileSchedule currentDate={currentDate} setCurrentDate={setCurrentDate} setViewMode={setViewMode} classDates={classDates} />
+        <MobileSchedule
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
+          setViewMode={setViewMode}
+          classDates={classDates}
+          courseId={courseId}
+        />
       )}
 
       {/* ✅ 일간 보기: 모바일 + PC 공통 */}

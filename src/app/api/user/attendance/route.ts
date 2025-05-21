@@ -27,9 +27,18 @@ export async function GET(request: NextRequest) {
         userId: session.user.id,
         courseId: courseId,
       },
+      include: {
+        classDate: true, // ClassDate 정보 포함
+      },
     });
 
-    return NextResponse.json(attendance);
+    // 응답 형식 변환
+    const formattedAttendance = attendance.map((att) => ({
+      ...att,
+      date: att.classDate.date, // ClassDate의 날짜 정보 사용
+    }));
+
+    return NextResponse.json(formattedAttendance);
   } catch (error) {
     console.error("출석 상태 조회 실패:", error);
     return NextResponse.json({ message: "서버 오류가 발생했습니다." }, { status: 500 });
