@@ -118,7 +118,7 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
   });
 
-  // ! *✅ 다음 학습일(nextDay) 계산 부분을 src/app/learn/[day]/page.tsx 페이지로 이동
+  // * ✅ 다음 학습일(nextDay) 계산 부분을 src/app/learn/[day]/page.tsx 페이지로 이동
 
   // ✅ 학습 완료된 문장 갯수 산출
   useEffect(() => {
@@ -213,7 +213,7 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // ! ✅ 출석 정보 조회
+  // ✅ 출석 정보 조회
   const { data: attendanceData } = useQuery({
     queryKey: ["attendance", session?.user?.id, selectedCourseId],
     queryFn: async () => {
