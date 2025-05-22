@@ -297,7 +297,7 @@ export default function Dashboard({ params }: Props) {
 
   // ✅ 팀 전체 포인트 정보 불러오기
   const { data: teamPointsData, isLoading: isTeamPointsLoading } = useQuery({
-    queryKey: ["teamPoints", session?.user?.id, selectedCourseId, totalPoints],
+    queryKey: ["teamPoints", session?.user?.id, selectedCourseId, totalPoints, savedPoints],
     queryFn: async () => {
       const res = await axios.get(`/api/course-points/team?courseId=${selectedCourseId}`);
       return res.data;
@@ -331,7 +331,7 @@ export default function Dashboard({ params }: Props) {
 
   // ✅ 전체 학생 수와 현재 사용자의 순위 조회
   const { data: rankData, isLoading: isRankLoading } = useQuery({
-    queryKey: ["userRank", session?.user?.id, selectedCourseId],
+    queryKey: ["userRank", session?.user?.id, selectedCourseId, savedPoints, totalPoints],
     queryFn: async () => {
       const res = await axios.get(`/api/course-points/rank?courseId=${selectedCourseId}`);
       return res.data;
