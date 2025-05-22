@@ -158,7 +158,7 @@ export default function MyCourses() {
                       )}
                     </div>
 
-                    <div className="mt-8 flex justify-around">
+                    <div className="mt-8 flex flex-col justify-around gap-2 md:flex-row">
                       <button
                         className="min-w-[150px] rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
                         onClick={(e) => handleScheduleClick(e, course.id, course.title)}>
