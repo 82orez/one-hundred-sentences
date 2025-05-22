@@ -677,7 +677,7 @@ export default function Dashboard({ params }: Props) {
       <AnimatePresence>
         {isQuizModalOpen && (
           <motion.div
-            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-200"
+            className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-300/60"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -694,6 +694,7 @@ export default function Dashboard({ params }: Props) {
               </button>
               <h2 className="mb-4 text-center text-xl font-semibold">퀴즈 유형 선택</h2>
               <div className="flex flex-col gap-4">
+                {/* Speaking */}
                 <button
                   className="relative w-full rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:brightness-110"
                   onClick={() => router.push(`/quiz/speaking/${selectedCourseId}`)}>
@@ -704,8 +705,10 @@ export default function Dashboard({ params }: Props) {
                   </div>
                   <span className="absolute -top-2 -left-3 rounded-full bg-red-600 px-2 py-1 text-xs text-white shadow-md">Premium ⭐️</span>
                 </button>
+
+                {/* dictation */}
                 <button
-                  className="w-full rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-green-600"
+                  className="hidden w-full rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-green-600"
                   onClick={() => router.push("/quiz/dictation")}>
                   Dictation - 받아쓰기
                 </button>
