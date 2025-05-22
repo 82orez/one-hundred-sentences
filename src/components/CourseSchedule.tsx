@@ -168,8 +168,8 @@ function MobileSchedule({
                 day.getDay() === 0 && isCurrentMonth && "text-red-500",
                 day.getDay() === 6 && "text-blue-500", // 토요일만 파란색
                 // 출석 상태에 따른 스타일
-                showAttendanceStatus && dayInfo?.hasAttendance && "bg-green-100 ring-2 ring-green-500 ring-offset-1",
-                showAttendanceStatus && !dayInfo?.hasAttendance && "bg-red-100 ring-2 ring-red-500 ring-offset-1",
+                showAttendanceStatus && dayInfo?.hasAttendance && "border-2 border-green-500 bg-green-100",
+                showAttendanceStatus && !dayInfo?.hasAttendance && "border-2 border-red-500 bg-red-100",
               )}>
               <div>{format(day, "d")}</div>
 
