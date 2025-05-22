@@ -628,9 +628,9 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
                       let statusText = null;
                       if (isClassEnded) {
                         if (hasAttendance && isAttended) {
-                          statusText = "출석 완료";
+                          statusText = "출석 완료 ✅";
                         } else if (!hasAttendance || !isAttended) {
-                          statusText = "결석";
+                          statusText = "결석 ❌";
                         }
                       }
 
@@ -639,10 +639,10 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
                           key={classDate.id}
                           className={clsx(
                             "truncate rounded-sm px-1 py-0.5 text-xs",
-                            statusText === "출석 완료"
-                              ? "bg-green-200 text-green-800"
-                              : statusText === "결석"
-                                ? "bg-red-200 text-red-800"
+                            statusText === "출석 완료 ✅"
+                              ? "border border-green-400 bg-green-200 text-[1rem] text-green-800"
+                              : statusText === "결석 ❌"
+                                ? "border border-red-400 bg-red-200 text-[1rem] text-red-800"
                                 : `${courseColor.bg} ${courseColor.text}`,
                           )}>
                           {statusText || `${classDate.startTime} ${classDate.course.title}`}
