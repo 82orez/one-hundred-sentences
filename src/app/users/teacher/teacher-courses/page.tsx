@@ -126,9 +126,17 @@ export default function MyCourses() {
 
                     <div className="mt-4 space-y-2 text-sm">
                       {course.teacher && (
-                        <p>
-                          <span className="font-medium">교사:</span> {course.teacher.user?.realName || "미정"}
-                        </p>
+                        <>
+                          <p>
+                            <span className="font-medium">교사:</span> {course.teacher.user?.realName || "미정"}
+                          </p>
+                          <p className={"hidden"}>
+                            <span className="font-medium">zoom:</span> {course.teacher.user?.zoomInviteUrl || "미정"}
+                          </p>
+                          <p>
+                            <span className="font-medium">수업 방식:</span> {course.location || "미정"}
+                          </p>
+                        </>
                       )}
 
                       <p>
@@ -150,17 +158,17 @@ export default function MyCourses() {
                       )}
                     </div>
 
-                    <div className="mt-8 flex space-x-2">
+                    <div className="mt-8 flex justify-around">
                       <button
-                        className="rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+                        className="min-w-[150px] rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
                         onClick={(e) => handleScheduleClick(e, course.id, course.title)}>
-                        수업 일정 보기
+                        수업 일정 및 진행
                       </button>
 
                       <button
-                        className="rounded-md bg-green-500 px-4 py-2 text-white transition-colors hover:bg-green-600"
+                        className="min-w-[150px] rounded-md bg-green-500 px-4 py-2 text-white transition-colors hover:bg-green-600"
                         onClick={(e) => handleAttendanceClick(e, course.id, course.title)}>
-                        출석부
+                        수강생 출석부
                       </button>
                     </div>
                   </div>
@@ -189,7 +197,11 @@ export default function MyCourses() {
               <X size={24} />
             </button>
             <h2 className="mb-4 text-xl font-semibold">{selectedCourseTitle}</h2>
-            <CourseSchedule courseId={selectedCourseId} zoomInviteUrl={null} location={null} />
+            <CourseSchedule
+              courseId={selectedCourseId}
+              zoomInviteUrl={courses.find((enrollment) => enrollment.id === selectedCourseId)?.teacher?.user?.zoomInviteUrl}
+              location={courses.find((enrollment) => enrollment.id === selectedCourseId)?.location}
+            />
           </div>
         </div>
       )}
