@@ -9,6 +9,7 @@ import { ko } from "date-fns/locale";
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { koreanHolidays } from "@/lib/koreanHolidays";
+import { useSession } from "next-auth/react";
 
 // 타입 정의
 interface ClassDate {
@@ -194,6 +195,9 @@ function MobileSchedule({
 }
 
 export default function CourseSchedule({ courseId, zoomInviteUrl, location }: CourseScheduleProps) {
+  const { status, data } = useSession();
+  console.log("Role:", data?.user?.role);
+
   const [viewMode, setViewMode] = useState<"day" | "week" | "month">("month");
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
