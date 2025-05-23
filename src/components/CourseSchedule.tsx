@@ -113,7 +113,7 @@ function MobileSchedule({
   const now = new Date();
 
   return (
-    <div className="mt-4 rounded-lg border bg-white p-4 shadow-sm sm:hidden">
+    <div className="mt-4 rounded-lg border bg-white px-2 py-4 shadow-sm sm:hidden">
       <h3 className="mb-4 text-center text-lg font-semibold">{format(currentDate, "yyyy년 MM월", { locale: ko })}</h3>
 
       <div className="grid grid-cols-7 gap-1 text-center text-sm font-medium">
@@ -124,7 +124,7 @@ function MobileSchedule({
         ))}
       </div>
 
-      <div className="mt-1 grid grid-cols-7 gap-1">
+      <div className="mt-1 grid grid-cols-7 gap-2">
         {days.map((day, idx) => {
           const dateStr = format(day, "yyyy-MM-dd");
           const dayInfo = classDateMap.get(dateStr);
