@@ -162,6 +162,7 @@ model CompletedSentence {
 
   // 관계 설정
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 
   @@unique([userId, courseId, sentenceNo]) // 동일 강좌 내에서만 중복 제한
@@ -176,6 +177,7 @@ model favoriteSentence {
 
   // 관계 설정
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 }
 
@@ -192,6 +194,7 @@ model QuizAttempt {
 
   // 관계 설정
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 }
 
@@ -205,6 +208,7 @@ model NativeAudioAttempt {
 
   // 관계 설정
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 }
 
@@ -219,6 +223,7 @@ model Recordings {
   updatedAt    DateTime @updatedAt
 
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 
   @@unique([userId, courseId, sentenceNo]) // 각 강좌에서 각 문장을 한 번만 등록 가능
@@ -235,6 +240,7 @@ model YouTubeViewAttempt {
 
   // 관계 설정
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
 
   @@index([userId, sentenceNo])
@@ -247,7 +253,8 @@ model UserNextDay {
   userNextDay    Int
   totalCompleted Boolean @default(false)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 /// 구매 내역 모델
@@ -304,14 +311,21 @@ model Course {
   updatedAt DateTime @updatedAt
 
   // 관계 설정
-  generator        User               @relation(fields: [generatorId], references: [id])
-  teacher          Teachers?          @relation(fields: [teacherId], references: [id])
-  lessons          Lesson[]
-  enrollments      Enrollment[]
-  assignments      Assignment[]
-  classDates       ClassDate[] // 관계 추가
-  Attendance       Attendance[]
-  UserCoursePoints UserCoursePoints[]
+  generator          User                 @relation(fields: [generatorId], references: [id])
+  teacher            Teachers?            @relation(fields: [teacherId], references: [id])
+  lessons            Lesson[]
+  enrollments        Enrollment[]
+  assignments        Assignment[]
+  classDates         ClassDate[] // 관계 추가
+  Attendance         Attendance[]
+  UserCoursePoints   UserCoursePoints[]
+  UserNextDay        UserNextDay[]
+  YouTubeViewAttempt YouTubeViewAttempt[]
+  Recordings         Recordings[]
+  NativeAudioAttempt NativeAudioAttempt[]
+  QuizAttempt        QuizAttempt[]
+  favoriteSentence   favoriteSentence[]
+  CompletedSentence  CompletedSentence[]
 }
 
 // 수업 일자 모델

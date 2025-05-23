@@ -256,6 +256,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "CompletedSentence_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "CompletedSentence_sentenceNo_fkey"
             columns: ["sentenceNo"]
             isOneToOne: false
@@ -469,6 +476,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "favoriteSentence_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "favoriteSentence_sentenceNo_fkey"
             columns: ["sentenceNo"]
             isOneToOne: false
@@ -548,6 +562,13 @@ export type Database = {
           userId?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "NativeAudioAttempt_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "NativeAudioAttempt_sentenceNo_fkey"
             columns: ["sentenceNo"]
@@ -691,6 +712,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "QuizAttempt_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "QuizAttempt_sentenceNo_fkey"
             columns: ["sentenceNo"]
             isOneToOne: false
@@ -738,6 +766,13 @@ export type Database = {
           userId?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "Recordings_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "Recordings_sentenceNo_fkey"
             columns: ["sentenceNo"]
@@ -1093,6 +1128,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "UserNextDay_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "UserNextDay_userId_fkey"
             columns: ["userId"]
             isOneToOne: false
@@ -1145,6 +1187,13 @@ export type Database = {
           viewedAt?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "YouTubeViewAttempt_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "YouTubeViewAttempt_sentenceNo_fkey"
             columns: ["sentenceNo"]
