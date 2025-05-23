@@ -981,29 +981,29 @@ export type Database = {
           },
         ]
       }
-      unitSubject: {
+      UnitSubject: {
         Row: {
           contents: Database["public"]["Enums"]["Contents"]
           id: string
           subjectEn: string | null
-          subjectKo: string | null
-          unitNumber: number | null
+          subjectKo: string
+          unitNumber: number
           unitUtubeUrl: string | null
         }
         Insert: {
           contents: Database["public"]["Enums"]["Contents"]
           id: string
           subjectEn?: string | null
-          subjectKo?: string | null
-          unitNumber?: number | null
+          subjectKo: string
+          unitNumber: number
           unitUtubeUrl?: string | null
         }
         Update: {
           contents?: Database["public"]["Enums"]["Contents"]
           id?: string
           subjectEn?: string | null
-          subjectKo?: string | null
-          unitNumber?: number | null
+          subjectKo?: string
+          unitNumber?: number
           unitUtubeUrl?: string | null
         }
         Relationships: []

@@ -125,11 +125,11 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 }
 
-model unitSubject {
+model UnitSubject {
   id           String   @id @default(cuid())
   contents     Contents
-  unitNumber   Int?
-  subjectKo    String?
+  unitNumber   Int
+  subjectKo    String
   subjectEn    String?
   unitUtubeUrl String?
 }
