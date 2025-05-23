@@ -452,7 +452,7 @@ export type Database = {
           },
         ]
       }
-      favoriteSentence: {
+      FavoriteSentence: {
         Row: {
           courseId: string
           createdAt: string
@@ -476,21 +476,21 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "favoriteSentence_courseId_fkey"
+            foreignKeyName: "FavoriteSentence_courseId_fkey"
             columns: ["courseId"]
             isOneToOne: false
             referencedRelation: "Course"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "favoriteSentence_sentenceNo_fkey"
+            foreignKeyName: "FavoriteSentence_sentenceNo_fkey"
             columns: ["sentenceNo"]
             isOneToOne: false
             referencedRelation: "Sentence"
             referencedColumns: ["no"]
           },
           {
-            foreignKeyName: "favoriteSentence_userId_fkey"
+            foreignKeyName: "FavoriteSentence_userId_fkey"
             columns: ["userId"]
             isOneToOne: false
             referencedRelation: "User"

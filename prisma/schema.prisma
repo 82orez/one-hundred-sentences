@@ -54,7 +54,7 @@ model User {
   Submission         Submission[]
   UserNextDay        UserNextDay[]
   YouTubeViewAttempt YouTubeViewAttempt[]
-  favoriteSentence   favoriteSentence[]
+  FavoriteSentence   FavoriteSentence[]
   NativeAudioAttempt NativeAudioAttempt[]
   Teachers           Teachers?
   Selected           Selected[]
@@ -147,7 +147,7 @@ model Sentence {
   QuizAttempt        QuizAttempt[]
   Recordings         Recordings[]
   YouTubeViewAttempt YouTubeViewAttempt[]
-  favoriteSentence   favoriteSentence[]
+  FavoriteSentence   FavoriteSentence[]
   NativeAudioAttempt NativeAudioAttempt[]
 }
 
@@ -168,7 +168,7 @@ model CompletedSentence {
   @@unique([userId, courseId, sentenceNo]) // 동일 강좌 내에서만 중복 제한
 }
 
-model favoriteSentence {
+model FavoriteSentence {
   id         String   @id @default(cuid())
   courseId   String
   userId     String
@@ -324,7 +324,7 @@ model Course {
   Recordings         Recordings[]
   NativeAudioAttempt NativeAudioAttempt[]
   QuizAttempt        QuizAttempt[]
-  favoriteSentence   favoriteSentence[]
+  FavoriteSentence   FavoriteSentence[]
   CompletedSentence  CompletedSentence[]
 }
 
