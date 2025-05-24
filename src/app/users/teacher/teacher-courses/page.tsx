@@ -174,7 +174,12 @@ export default function MyCourses() {
                   </div>
 
                   <div className="bg-gray-50 px-4 py-3 text-right">
-                    <span className="text-sm font-medium text-blue-600">자세히 보기 →</span>
+                    <Link
+                      href={`/user-course-points/${course.id}`}
+                      className="text-sm font-medium text-blue-600"
+                      onClick={(e) => e.stopPropagation()}>
+                      자세히 보기 →
+                    </Link>
                   </div>
                 </div>
               );
