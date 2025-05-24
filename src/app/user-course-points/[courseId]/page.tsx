@@ -4,6 +4,8 @@ import { use, useState } from "react";
 import axios from "axios";
 import { ArrowUpDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
+import Link from "next/link";
 
 type UserPointsData = {
   id: string;
@@ -74,7 +76,7 @@ export default function UserCoursePointsPage({ params }: Props) {
       <div className="overflow-x-auto rounded-lg border shadow">
         <table className="w-full table-auto">
           <thead>
-            <tr className="border-b bg-gray-100">
+            <tr className="border-b bg-green-100">
               <th className="p-3 text-left">순위</th>
               <th className="p-3 text-left">이름</th>
               <th className="p-3 text-left">이메일</th>
@@ -108,6 +110,10 @@ export default function UserCoursePointsPage({ params }: Props) {
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": userPointsIsLoading })}>
+        <Link href={`/users/teacher/teacher-courses`}>Back to Teacher's Dashboard</Link>
       </div>
     </div>
   );
