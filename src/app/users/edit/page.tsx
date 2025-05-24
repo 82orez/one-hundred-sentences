@@ -51,6 +51,7 @@ const EditProfilePage = () => {
 
   const [realName, setRealName] = useState("");
   const [phone, setPhone] = useState("");
+  const [classNickName, setClassNickName] = useState("");
   const [isApplyForTeacher, setIsApplyForTeacher] = useState(false);
   const [role, setRole] = useState<string | null>(null);
   const [isApplyVisible, setIsApplyVisible] = useState(false);
@@ -75,6 +76,7 @@ const EditProfilePage = () => {
       setIsApplyForTeacher(userInfo.isApplyForTeacher || false);
       setRole(userInfo.role || null);
       setZoomInviteUrl(userInfo.zoomInviteUrl || "");
+      setClassNickName(userInfo.classNickName || "");
     }
   }, [userInfo]);
 
@@ -120,6 +122,7 @@ const EditProfilePage = () => {
       return axios.post("/api/user/update", {
         realName,
         phone,
+        classNickName,
         isApplyForTeacher,
         ...(role === "teacher" ? { zoomInviteUrl } : {}),
       });
@@ -246,6 +249,24 @@ const EditProfilePage = () => {
                     maxLength={13}
                   />
                 </div>
+              </div>
+
+              <div>
+                <label htmlFor="classNickName" className="text-lg font-semibold text-gray-700">
+                  닉네임
+                </label>
+                <div className="relative mt-2">
+                  <User className="absolute top-3 left-5 text-gray-500" size={24} />
+                  <input
+                    id="classNickName"
+                    type="text"
+                    value={classNickName}
+                    onChange={(e) => setClassNickName(e.target.value)}
+                    className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-gray-400"
+                    placeholder="수업에서 사용할 닉네임을 입력해 주세요."
+                  />
+                </div>
+                <p className="mt-1 text-sm text-gray-500">수업 중 사용할 닉네임을 입력하세요. 입력하지 않으면 실제 이름이 사용됩니다.</p>
               </div>
 
               {/* 강사인 경우에만 Zoom 초대 링크 입력 필드 표시 */}

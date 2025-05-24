@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+// /api/user/update/route.ts 파일 수정
+
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.id) {
@@ -10,7 +12,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { realName, phone, isApplyForTeacher, zoomInviteUrl } = await req.json();
+    const { realName, phone, classNickName, isApplyForTeacher, zoomInviteUrl } = await req.json();
 
     // 필수 정보 유효성 검사
     if (!realName || !phone) {
@@ -68,6 +70,7 @@ export async function POST(req: NextRequest) {
       data: {
         realName,
         phone,
+        classNickName, // 닉네임 필드 추가
         isApplyForTeacher: isApplyForTeacher !== undefined ? isApplyForTeacher : undefined,
         zoomInviteUrl: validatedZoomUrl !== undefined ? validatedZoomUrl : undefined,
       },

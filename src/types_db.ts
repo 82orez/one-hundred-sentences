@@ -1010,6 +1010,7 @@ export type Database = {
       }
       User: {
         Row: {
+          classNickName: string | null
           createdAt: string
           credentials: boolean
           customImageUrl: string | null
@@ -1027,6 +1028,7 @@ export type Database = {
           zoomInviteUrl: string | null
         }
         Insert: {
+          classNickName?: string | null
           createdAt?: string
           credentials?: boolean
           customImageUrl?: string | null
@@ -1044,6 +1046,7 @@ export type Database = {
           zoomInviteUrl?: string | null
         }
         Update: {
+          classNickName?: string | null
           createdAt?: string
           credentials?: boolean
           customImageUrl?: string | null
