@@ -18,13 +18,14 @@ export async function GET(req: NextRequest) {
         user: {
           select: {
             id: true,
-            name: true,
+            // name: true,
             email: true,
             Enrollment: {
               where: {
                 courseId: courseId,
               },
               select: {
+                studentName: true,
                 centerName: true,
                 localName: true,
               },
@@ -40,8 +41,9 @@ export async function GET(req: NextRequest) {
       userId: point.userId,
       courseId: point.courseId,
       points: point.points,
-      userName: point.user.name || "이름 없음",
+      // userName: point.user.name || "이름 없음",
       userEmail: point.user.email,
+      userName: point.user.Enrollment[0]?.studentName || null,
       centerName: point.user.Enrollment[0]?.centerName || null,
       localName: point.user.Enrollment[0]?.localName || null,
     }));
