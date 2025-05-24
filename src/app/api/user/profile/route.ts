@@ -12,7 +12,7 @@ export async function GET() {
   try {
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { realName: true, phone: true, role: true, isApplyForTeacher: true, customImageUrl: true, zoomInviteUrl: true },
+      select: { realName: true, phone: true, role: true, isApplyForTeacher: true, customImageUrl: true, zoomInviteUrl: true, classNickName: true },
     });
 
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
