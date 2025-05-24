@@ -135,13 +135,22 @@ const EditProfilePage = () => {
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response) {
+        const errorMessage = error.response.data?.error;
+
         if (error.response.status === 409) {
-          // 중복된 전화번호 오류 처리
-          setError("이미 가입된 전화번호입니다.");
-          showToast("❌ 이미 가입된 전화번호입니다.", "error");
-        } else if (error.response.data?.error) {
-          setError(error.response.data.error);
-          showToast(`❌ ${error.response.data.error}`, "error");
+          if (errorMessage?.includes("전화번호")) {
+            setError("이미 가입된 전화번호입니다.");
+            showToast("❌ 이미 가입된 전화번호입니다.", "error");
+          } else if (errorMessage?.includes("닉네임")) {
+            setError("이미 사용 중인 닉네임입니다.");
+            showToast("❌ 이미 사용 중인 닉네임입니다.", "error");
+          } else {
+            setError(errorMessage || "중복된 정보가 있습니다.");
+            showToast(`❌ ${errorMessage || "중복된 정보가 있습니다."}`, "error");
+          }
+        } else if (errorMessage) {
+          setError(errorMessage);
+          showToast(`❌ ${errorMessage}`, "error");
         } else {
           setError("업데이트 중 오류가 발생했습니다.");
           showToast("❌ 업데이트 중 오류가 발생했습니다.", "error");
