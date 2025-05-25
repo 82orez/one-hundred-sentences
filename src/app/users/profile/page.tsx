@@ -186,9 +186,14 @@ const ProfilePage = () => {
               <RxAvatar size={22} className="text-gray-500" />
               <span className="text-lg">{userInfo?.classNickName || "등록되지 않음"}</span>
             </div>
-            <div className="flex items-center gap-4 px-2">
-              <LuMessageSquareText size={22} className="text-gray-500" />
-              <span className="text-lg">{userInfo?.message || "등록되지 않음"}</span>
+            <div className="flex items-start gap-4 px-2">
+              <LuMessageSquareText size={22} className="mt-1 text-gray-500" />
+              <textarea
+                readOnly
+                value={userInfo?.message || "등록되지 않음"}
+                className="w-full resize-none rounded-lg border border-gray-300 bg-gray-100 p-3 text-lg text-gray-700 shadow-sm focus:outline-none"
+                rows={3}
+              />
             </div>
 
             {session?.user.role !== "student" && (
