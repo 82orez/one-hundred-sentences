@@ -71,7 +71,7 @@ export default function UserCoursePointsPage({ params }: Props) {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="mb-6 text-2xl font-bold">강좌 포인트 랭킹</h1>
+      <h1 className="mb-6 text-2xl font-bold">수강생 List 및 포인트 랭킹</h1>
 
       <div className="overflow-x-auto rounded-lg border shadow">
         <table className="w-full table-auto">
@@ -134,7 +134,7 @@ export default function UserCoursePointsPage({ params }: Props) {
       </div>
 
       <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": userPointsIsLoading })}>
-        <Link href={`/users/teacher/teacher-courses`}>Back to Teacher's Dashboard</Link>
+        <Link href={`/users/teacher/teacher-courses`}>내 강좌 보기</Link>
       </div>
     </div>
   );

@@ -178,7 +178,7 @@ export default function MyCourses() {
                       href={`/user-course-points/${course.id}`}
                       className="text-sm font-medium text-blue-600"
                       onClick={(e) => e.stopPropagation()}>
-                      자세히 보기 →
+                      수강생 List 보기 →
                     </Link>
                   </div>
                 </div>
