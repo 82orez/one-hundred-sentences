@@ -6,6 +6,7 @@ import { ArrowUpDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import Link from "next/link";
+import Image from "next/image";
 
 type UserPointsData = {
   id: string;
@@ -14,6 +15,8 @@ type UserPointsData = {
   points: number;
   userName: string;
   userEmail: string;
+  userImage: string | null;
+  userClassNickName: string;
   centerName: string | null;
   localName: string | null;
 };
@@ -24,9 +27,6 @@ type Props = {
 
 export default function UserCoursePointsPage({ params }: Props) {
   const { courseId } = use(params);
-  // const [userPoints, setUserPoints] = useState<UserPointsData[]>([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const {
@@ -95,7 +95,24 @@ export default function UserCoursePointsPage({ params }: Props) {
             {sortedUserPoints.map((user, index) => (
               <tr key={user.id} className="border-b hover:bg-gray-50">
                 <td className="p-3">{index + 1}</td>
-                <td className="p-3">{user.userName}</td>
+                <td className="p-3">
+                  <div className="flex items-center gap-2">
+                    {user.userImage ? (
+                      <Image
+                        src={user.userImage}
+                        alt={`${user.userName || "사용자"} 프로필`}
+                        width={32}
+                        height={32}
+                        className="rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-500">
+                        {user.userName?.charAt(0) || "?"}
+                      </div>
+                    )}
+                    <span>{user.userName}</span>
+                  </div>
+                </td>
                 <td className="p-3">{user.userClassNickName}</td>
                 <td className="p-3">{user.userEmail}</td>
                 <td className="p-3">{user.centerName || "-"}</td>
@@ -105,7 +122,7 @@ export default function UserCoursePointsPage({ params }: Props) {
             ))}
             {userPoints.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-3 text-center text-gray-500">
+                <td colSpan={7} className="p-3 text-center text-gray-500">
                   등록된 포인트 데이터가 없습니다.
                 </td>
               </tr>

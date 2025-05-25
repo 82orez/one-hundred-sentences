@@ -21,6 +21,8 @@ export async function GET(req: NextRequest) {
             // name: true,
             classNickName: true,
             email: true,
+            image: true,
+            customImageUrl: true,
             Enrollment: {
               where: {
                 courseId: courseId,
@@ -45,6 +47,7 @@ export async function GET(req: NextRequest) {
       // userName: point.user.name || "이름 없음",
       userClassNickName: point.user.classNickName || "-",
       userEmail: point.user.email,
+      userImage: point.user.customImageUrl || point.user.image, // customImageUrl 우선, 없으면 image 사용
       userName: point.user.Enrollment[0]?.studentName || null,
       centerName: point.user.Enrollment[0]?.centerName || null,
       localName: point.user.Enrollment[0]?.localName || null,
