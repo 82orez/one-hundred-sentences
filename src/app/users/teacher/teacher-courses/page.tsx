@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import CourseSchedule from "@/components/CourseSchedule";
+import Image from "next/image";
 
 export default function MyCourses() {
   const [courses, setCourses] = useState([]);
@@ -259,6 +260,19 @@ export default function MyCourses() {
                       <tr key={student.id}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center space-x-1 text-sm font-medium text-gray-900">
+                            {student.image ? (
+                              <div className="h-8 w-8 overflow-hidden rounded-full">
+                                <Image
+                                  src={student.image}
+                                  alt={`${student.image || "사용자"} 프로필`}
+                                  width={32}
+                                  height={32}
+                                  className="h-full w-full object-cover object-center"
+                                />
+                              </div>
+                            ) : (
+                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-500">?</div>
+                            )}
                             <span>{student.nickName || student.name}</span>
                             <span className={clsx({ hidden: !student.nickName })}>({student.name})</span>
                           </div>
