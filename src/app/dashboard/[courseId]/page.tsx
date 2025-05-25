@@ -590,7 +590,7 @@ export default function Dashboard({ params }: Props) {
               <div className="rounded-lg bg-blue-50 p-4">
                 <p className="font-medium">우리 Class의 팀원들을 만나보세요.</p>
                 <p className="mt-2 text-sm text-gray-600">우리 Class의 팀원들을 만나보세요.</p>
-                <Link href={``} className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800">
+                <Link href={`/class-students-list/${selectedCourseId}`} className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800">
                   우리 팀원들 보기 <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </div>
