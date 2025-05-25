@@ -554,7 +554,7 @@ const LearnPage = ({ params }: Props) => {
         </button>
 
         <div className="flex flex-col items-center gap-1 md:gap-2">
-          <h1 className="text-2xl font-bold md:text-3xl">학습 {day}일차</h1>
+          <h1 className="text-2xl font-bold md:text-3xl">Unit {day}</h1>
           <h1 className="text-xl font-semibold md:text-2xl">{isUnitSubjectAndUtubeUrlLoading ? "Loading" : unitSubjectAndUtubeUrl?.subjectKo}</h1>
         </div>
 

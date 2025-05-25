@@ -525,7 +525,7 @@ export default function Dashboard({ params }: Props) {
                     <button
                       key={day}
                       className={clsx(
-                        "min-w-[60px] rounded-lg p-3 font-semibold transition md:min-w-[100px]",
+                        "flex min-w-[60px] items-center justify-center gap-2 rounded-lg p-3 font-semibold transition md:min-w-[100px]",
                         isCompleted
                           ? "cursor-pointer bg-indigo-600 text-white hover:bg-indigo-500"
                           : isInProgress
@@ -539,8 +539,8 @@ export default function Dashboard({ params }: Props) {
                           setSelectedDay(day);
                         }
                       }}>
-                      {day}
-                      <span className="hidden md:inline">일차</span>
+                      <div className="hidden md:inline">Unit</div>
+                      <div>{day}</div>
                     </button>
                   );
                 })}
@@ -577,9 +577,9 @@ export default function Dashboard({ params }: Props) {
           </div>
         </div>
 
-        {/* 다음 학습일 */}
+        {/* Team */}
         <div className="rounded-lg bg-white p-6 shadow-md">
-          <h2 className="mb-4 text-xl font-semibold">다음 학습일</h2>
+          <h2 className="mb-4 text-xl font-semibold">Team</h2>
           {completedDays?.length === 20 ? (
             <div className="py-8 text-center">
               <p className="text-lg font-medium">모든 학습일을 완료했습니다!</p>
@@ -588,10 +588,10 @@ export default function Dashboard({ params }: Props) {
           ) : (
             <div>
               <div className="rounded-lg bg-blue-50 p-4">
-                <p className="font-medium">학습 {nextDay} 일차</p>
-                <p className="mt-2 text-sm text-gray-600">체계적인 학습을 위해 {nextDay}일차 학습을 진행해보세요.</p>
-                <Link href={`/learn/${nextDay}`} className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800">
-                  지금 학습하기 <ArrowRight className="ml-1 h-4 w-4" />
+                <p className="font-medium">현재 학습 {nextDay} 일차</p>
+                <p className="mt-2 text-sm text-gray-600">우리 Class의 팀원들을 만나보세요.</p>
+                <Link href={``} className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800">
+                  우리 팀원들 보기 <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </div>
 
@@ -647,7 +647,7 @@ export default function Dashboard({ params }: Props) {
                 ×
               </button>
 
-              <h2 className="mb-4 text-2xl font-semibold">Day {selectedDay} 학습 내용</h2>
+              <h2 className="mb-4 text-center text-2xl font-semibold">"Unit {selectedDay}"에서 학습할 내용</h2>
 
               {isFetching ? (
                 <LoadingPageSkeleton />
