@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-
 export async function GET(request, { params }) {
   try {
     const session = await getServerSession(authOptions);
@@ -17,7 +16,7 @@ export async function GET(request, { params }) {
     // 해당 강좌의 수업 일정 조회
     const classDates = await prisma.classDate.findMany({
       where: { courseId },
-      orderBy: { date: 'asc' },
+      orderBy: { date: "asc" },
     });
 
     // 등록된 학생 목록 조회
@@ -35,6 +34,9 @@ export async function GET(request, { params }) {
             name: true,
             email: true,
             realName: true,
+            classNickName: true,
+            image: true,
+            customImageUrl: true,
           },
         },
       },
@@ -56,15 +58,16 @@ export async function GET(request, { params }) {
 
         return {
           id: enrollment.studentId,
-          name: enrollment.student?.realName || enrollment.student?.name,
+          name: enrollment.student?.classNickName || enrollment.student?.realName || enrollment.student?.name,
           email: enrollment.student?.email,
+          image: enrollment.student?.customImageUrl || enrollment.student?.image,
           attendance: attendance,
         };
-      })
+      }),
     );
 
     // null 값 제거 (studentId가 없는 등록 정보 제외)
-    const filteredStudents = studentsWithAttendance.filter(student => student !== null);
+    const filteredStudents = studentsWithAttendance.filter((student) => student !== null);
 
     return NextResponse.json({
       students: filteredStudents,
