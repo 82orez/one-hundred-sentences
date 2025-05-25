@@ -98,13 +98,15 @@ export default function UserCoursePointsPage({ params }: Props) {
                 <td className="p-3">
                   <div className="flex items-center gap-2">
                     {user.userImage ? (
-                      <Image
-                        src={user.userImage}
-                        alt={`${user.userName || "사용자"} 프로필`}
-                        width={32}
-                        height={32}
-                        className="rounded-full object-cover"
-                      />
+                      <div className="h-8 w-8 overflow-hidden rounded-full">
+                        <Image
+                          src={user.userImage}
+                          alt={`${user.userName || "사용자"} 프로필`}
+                          width={32}
+                          height={32}
+                          className="h-full w-full object-cover object-center"
+                        />
+                      </div>
                     ) : (
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-500">
                         {user.userName?.charAt(0) || "?"}
