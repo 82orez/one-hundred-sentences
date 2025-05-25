@@ -11,6 +11,7 @@ import { useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { queryClient } from "@/app/providers";
 import { RxAvatar } from "react-icons/rx";
+import { LuMessageSquareText } from "react-icons/lu";
 
 const ProfilePage = () => {
   const { data: session, update } = useSession();
@@ -184,6 +185,10 @@ const ProfilePage = () => {
             <div className="flex items-center gap-4 px-2">
               <RxAvatar size={22} className="text-gray-500" />
               <span className="text-lg">{userInfo?.classNickName || "등록되지 않음"}</span>
+            </div>
+            <div className="flex items-center gap-4 px-2">
+              <LuMessageSquareText size={22} className="text-gray-500" />
+              <span className="text-lg">{userInfo?.message || "등록되지 않음"}</span>
             </div>
 
             {session?.user.role !== "student" && (

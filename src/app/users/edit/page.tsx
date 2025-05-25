@@ -11,6 +11,8 @@ import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { queryClient } from "@/app/providers";
 import Link from "next/link";
 import clsx from "clsx";
+import { LuMessageSquareText } from "react-icons/lu";
+import { RxAvatar } from "react-icons/rx";
 
 // * DaisyUI Toast 를 위한 함수
 const showToast = (message: string, type: "success" | "error" = "success") => {
@@ -52,6 +54,8 @@ const EditProfilePage = () => {
   const [realName, setRealName] = useState("");
   const [phone, setPhone] = useState("");
   const [classNickName, setClassNickName] = useState("");
+  const [bio, setBio] = useState(""); // 자기소개 상태 추가
+  const [message, setMessage] = useState("");
   const [isApplyForTeacher, setIsApplyForTeacher] = useState(false);
   const [role, setRole] = useState<string | null>(null);
   const [isApplyVisible, setIsApplyVisible] = useState(false);
@@ -77,6 +81,7 @@ const EditProfilePage = () => {
       setRole(userInfo.role || null);
       setZoomInviteUrl(userInfo.zoomInviteUrl || "");
       setClassNickName(userInfo.classNickName || "");
+      setBio(userInfo.bio || ""); // 자기소개 상태 설정
     }
   }, [userInfo]);
 
@@ -124,6 +129,7 @@ const EditProfilePage = () => {
         phone,
         classNickName,
         isApplyForTeacher,
+        bio, // 자기소개 추가
         ...(role === "teacher" ? { zoomInviteUrl } : {}),
       });
     },
@@ -265,7 +271,7 @@ const EditProfilePage = () => {
                   닉네임
                 </label>
                 <div className="relative mt-2">
-                  <User className="absolute top-3 left-5 text-gray-500" size={24} />
+                  <RxAvatar className="absolute top-3 left-5 text-gray-500" size={24} />
                   <input
                     id="classNickName"
                     type="text"
@@ -276,6 +282,26 @@ const EditProfilePage = () => {
                   />
                 </div>
                 <p className="mt-1 text-sm text-gray-500">수업 중 사용할 닉네임을 입력하세요. 입력하지 않으면 실제 이름이 사용됩니다.</p>
+              </div>
+
+              {/* 자기소개 입력 필드 */}
+              <div>
+                <label htmlFor="bio" className="text-lg font-semibold text-gray-700">
+                  자기소개
+                </label>
+                <div className="relative mt-2">
+                  <LuMessageSquareText className="absolute top-3 left-5 text-gray-500" size={24} />
+                  <textarea
+                    id="bio"
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    className="w-full rounded-lg border border-gray-400 pt-3 pl-14 text-lg shadow-md focus:ring-2 focus:ring-gray-400"
+                    placeholder="자신을 소개해 주세요."
+                    rows={4}
+                    maxLength={500}
+                  />
+                </div>
+                <p className="mt-1 text-sm text-gray-500">간단한 자기소개를 500자 이내로 작성해주세요. (선택사항, {bio.length}/500자)</p>
               </div>
 
               {/* 강사인 경우에만 Zoom 초대 링크 입력 필드 표시 */}
