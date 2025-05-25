@@ -78,7 +78,7 @@ export default function UserCoursePointsPage({ params }: Props) {
           <thead>
             <tr className="border-b bg-green-100">
               <th className="p-3 text-center align-middle">순위</th>
-              <th className="p-3 text-center align-middle">이름 (실명)</th>
+              <th className="p-3 text-center align-middle">닉네임 (실명)</th>
               {/*<th className="p-3 text-center align-middle">닉네임</th>*/}
               <th className="p-3 text-center align-middle">센터명</th>
               <th className="p-3 text-center align-middle">지역명</th>
