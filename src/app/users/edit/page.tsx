@@ -55,6 +55,7 @@ const EditProfilePage = () => {
   const [phone, setPhone] = useState("");
   const [classNickName, setClassNickName] = useState("");
   const [message, setMessage] = useState("");
+  const [isImagePublicOpen, setIsImagePublicOpen] = useState(false);
   const [isApplyForTeacher, setIsApplyForTeacher] = useState(false);
   const [role, setRole] = useState<string | null>(null);
   const [isApplyVisible, setIsApplyVisible] = useState(false);
@@ -80,7 +81,8 @@ const EditProfilePage = () => {
       setRole(userInfo.role || null);
       setZoomInviteUrl(userInfo.zoomInviteUrl || "");
       setClassNickName(userInfo.classNickName || "");
-      setMessage(userInfo.message || ""); // 자기소개 상태 설정
+      setMessage(userInfo.message || "");
+      setIsImagePublicOpen(userInfo.isImagePublicOpen !== undefined ? userInfo.isImagePublicOpen : false);
     }
   }, [userInfo]);
 
@@ -127,6 +129,7 @@ const EditProfilePage = () => {
         realName,
         phone,
         classNickName,
+        isImagePublicOpen,
         isApplyForTeacher,
         message, // 자기소개 추가
         ...(role === "teacher" ? { zoomInviteUrl } : {}),
@@ -281,6 +284,33 @@ const EditProfilePage = () => {
                   />
                 </div>
                 <p className="mt-1 text-sm text-gray-500">수업 중 사용할 닉네임을 입력하세요. 입력하지 않으면 실제 이름이 사용됩니다.</p>
+              </div>
+
+              <div className="">
+                <label className="text-lg font-semibold text-gray-700">프로필 사진 공개 여부</label>
+                <div className="mt-2 flex items-center gap-6">
+                  <label className="flex cursor-pointer items-center gap-2">
+                    <input
+                      type="radio"
+                      name="isImagePublicOpen"
+                      className="radio radio-primary"
+                      checked={isImagePublicOpen}
+                      onChange={() => setIsImagePublicOpen(true)}
+                    />
+                    <span className="text-lg">예</span>
+                  </label>
+                  <label className="flex cursor-pointer items-center gap-2">
+                    <input
+                      type="radio"
+                      name="isImagePublicOpen"
+                      className="radio radio-primary"
+                      checked={!isImagePublicOpen}
+                      onChange={() => setIsImagePublicOpen(false)}
+                    />
+                    <span className="text-lg">아니오</span>
+                  </label>
+                </div>
+                <p className="mt-1 text-sm text-gray-500">'예'를 선택하면 다른 사용자에게 프로필 사진이 공개됩니다.</p>
               </div>
 
               {/* 자기소개 입력 필드 */}

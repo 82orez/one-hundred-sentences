@@ -18,6 +18,7 @@ export async function GET() {
         role: true,
         isApplyForTeacher: true,
         customImageUrl: true,
+        isImagePublicOpen: true,
         zoomInviteUrl: true,
         classNickName: true,
         message: true,

@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { realName, phone, classNickName, message, isApplyForTeacher, zoomInviteUrl } = await req.json();
+    const { realName, phone, classNickName, message, isImagePublicOpen, isApplyForTeacher, zoomInviteUrl } = await req.json();
 
     // 필수 정보 유효성 검사
     if (!realName || !phone) {
@@ -80,6 +80,7 @@ export async function POST(req: NextRequest) {
         phone,
         classNickName,
         message,
+        isImagePublicOpen: isImagePublicOpen !== undefined ? isImagePublicOpen : undefined,
         isApplyForTeacher: isApplyForTeacher !== undefined ? isApplyForTeacher : undefined,
         zoomInviteUrl: validatedZoomUrl !== undefined ? validatedZoomUrl : undefined,
       },
