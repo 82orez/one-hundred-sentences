@@ -58,7 +58,8 @@ export async function GET(request, { params }) {
 
         return {
           id: enrollment.studentId,
-          name: enrollment.student?.classNickName || enrollment.student?.realName || enrollment.student?.name,
+          name: enrollment.student?.realName || enrollment.student?.name,
+          nickName: enrollment.student?.classNickName,
           email: enrollment.student?.email,
           image: enrollment.student?.customImageUrl || enrollment.student?.image,
           attendance: attendance,

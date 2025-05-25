@@ -174,10 +174,7 @@ export default function MyCourses() {
                   </div>
 
                   <div className="bg-gray-50 px-4 py-3 text-right">
-                    <Link
-                      href={`/user-course-points/${course.id}`}
-                      className="text-sm font-medium text-blue-600"
-                      onClick={(e) => e.stopPropagation()}>
+                    <Link href={`/user-course-points/${course.id}`} className="font-medium text-blue-600" onClick={(e) => e.stopPropagation()}>
                       수강생 List 보기 →
                     </Link>
                   </div>
@@ -235,7 +232,7 @@ export default function MyCourses() {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">학생</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">학생 이름</th>
                       {classDates.map((classDate) => {
                         // 현재 날짜와 시간
                         const now = new Date();
@@ -261,7 +258,10 @@ export default function MyCourses() {
                     {attendanceData.map((student) => (
                       <tr key={student.id}>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{student.name || student.email}</div>
+                          <div className="flex items-center space-x-1 text-sm font-medium text-gray-900">
+                            <span>{student.nickName || student.name}</span>
+                            <span className={clsx({ hidden: !student.nickName })}>({student.name})</span>
+                          </div>
                         </td>
                         {classDates.map((classDate) => {
                           const attendance = student.attendance.find((a) => a.classDateId === classDate.id);
