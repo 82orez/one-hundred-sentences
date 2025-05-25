@@ -77,26 +77,26 @@ export default function UserCoursePointsPage({ params }: Props) {
         <table className="w-full table-auto">
           <thead>
             <tr className="border-b bg-green-100">
-              <th className="p-3 text-left">순위</th>
-              <th className="p-3 text-left">이름</th>
-              <th className="p-3 text-left">닉네임</th>
-              {/*<th className="p-3 text-left">이메일</th>*/}
-              <th className="p-3 text-left">센터명</th>
-              <th className="p-3 text-left">지역명</th>
-              <th className="cursor-pointer p-3 text-left" onClick={toggleSortOrder}>
-                <div className="flex items-center">
+              <th className="p-3 text-center align-middle">순위</th>
+              <th className="p-3 text-center align-middle">이름</th>
+              <th className="p-3 text-center align-middle">닉네임</th>
+              <th className="p-3 text-center align-middle">센터명</th>
+              <th className="p-3 text-center align-middle">지역명</th>
+              <th className="cursor-pointer p-3 text-center align-middle" onClick={toggleSortOrder}>
+                <div className="flex items-center justify-center">
                   포인트
                   <ArrowUpDown className="ml-1 h-4 w-4" />
                 </div>
               </th>
             </tr>
           </thead>
+
           <tbody>
             {sortedUserPoints.map((user, index) => (
-              <tr key={user.id} className="border-b hover:bg-gray-50">
-                <td className="p-3">{index + 1}</td>
-                <td className="p-3">
-                  <div className="flex items-center gap-2">
+              <tr key={user.id} className="border-b border-gray-300 hover:bg-gray-50">
+                <td className="p-3 text-center align-middle">{index + 1}</td>
+                <td className="p-3 text-center align-middle">
+                  <div className="flex items-center justify-center gap-3">
                     {user.userImage ? (
                       <div className="h-8 w-8 overflow-hidden rounded-full">
                         <Image
@@ -115,16 +115,15 @@ export default function UserCoursePointsPage({ params }: Props) {
                     <span>{user.userName}</span>
                   </div>
                 </td>
-                <td className="p-3">{user.userClassNickName || "-"}</td>
-                {/*<td className="p-3">{user.userEmail}</td>*/}
-                <td className="p-3">{user.centerName || "-"}</td>
-                <td className="p-3">{user.localName || "-"}</td>
-                <td className="p-3 font-semibold">{user.points}</td>
+                <td className="p-3 text-center align-middle">{user.userClassNickName || "-"}</td>
+                <td className="p-3 text-center align-middle">{user.centerName || "-"}</td>
+                <td className="p-3 text-center align-middle">{user.localName || "-"}</td>
+                <td className="p-3 text-center align-middle font-semibold">{user.points}</td>
               </tr>
             ))}
             {userPoints.length === 0 && (
               <tr>
-                <td colSpan={7} className="p-3 text-center text-gray-500">
+                <td colSpan={7} className="p-3 text-center align-middle text-gray-500">
                   등록된 포인트 데이터가 없습니다.
                 </td>
               </tr>
