@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
           select: {
             id: true,
             // name: true,
+            classNickName: true,
             email: true,
             Enrollment: {
               where: {
@@ -42,6 +43,7 @@ export async function GET(req: NextRequest) {
       courseId: point.courseId,
       points: point.points,
       // userName: point.user.name || "이름 없음",
+      userClassNickName: point.user.classNickName || "-",
       userEmail: point.user.email,
       userName: point.user.Enrollment[0]?.studentName || null,
       centerName: point.user.Enrollment[0]?.centerName || null,

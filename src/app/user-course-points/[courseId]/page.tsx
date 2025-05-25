@@ -79,6 +79,7 @@ export default function UserCoursePointsPage({ params }: Props) {
             <tr className="border-b bg-green-100">
               <th className="p-3 text-left">순위</th>
               <th className="p-3 text-left">이름</th>
+              <th className="p-3 text-left">닉네임</th>
               <th className="p-3 text-left">이메일</th>
               <th className="p-3 text-left">센터명</th>
               <th className="p-3 text-left">지역명</th>
@@ -95,6 +96,7 @@ export default function UserCoursePointsPage({ params }: Props) {
               <tr key={user.id} className="border-b hover:bg-gray-50">
                 <td className="p-3">{index + 1}</td>
                 <td className="p-3">{user.userName}</td>
+                <td className="p-3">{user.userClassNickName}</td>
                 <td className="p-3">{user.userEmail}</td>
                 <td className="p-3">{user.centerName || "-"}</td>
                 <td className="p-3">{user.localName || "-"}</td>
