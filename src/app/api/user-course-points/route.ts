@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
       courseId: point.courseId,
       points: point.points,
       // userName: point.user.name || "이름 없음",
-      userClassNickName: point.user.classNickName || "-",
+      userClassNickName: point.user.classNickName,
       userEmail: point.user.email,
       userImage: point.user.customImageUrl || point.user.image, // customImageUrl 우선, 없으면 image 사용
       userName: point.user.Enrollment[0]?.studentName || null,

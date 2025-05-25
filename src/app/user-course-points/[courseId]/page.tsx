@@ -80,7 +80,7 @@ export default function UserCoursePointsPage({ params }: Props) {
               <th className="p-3 text-left">순위</th>
               <th className="p-3 text-left">이름</th>
               <th className="p-3 text-left">닉네임</th>
-              <th className="p-3 text-left">이메일</th>
+              {/*<th className="p-3 text-left">이메일</th>*/}
               <th className="p-3 text-left">센터명</th>
               <th className="p-3 text-left">지역명</th>
               <th className="cursor-pointer p-3 text-left" onClick={toggleSortOrder}>
@@ -115,8 +115,8 @@ export default function UserCoursePointsPage({ params }: Props) {
                     <span>{user.userName}</span>
                   </div>
                 </td>
-                <td className="p-3">{user.userClassNickName}</td>
-                <td className="p-3">{user.userEmail}</td>
+                <td className="p-3">{user.userClassNickName || "-"}</td>
+                {/*<td className="p-3">{user.userEmail}</td>*/}
                 <td className="p-3">{user.centerName || "-"}</td>
                 <td className="p-3">{user.localName || "-"}</td>
                 <td className="p-3 font-semibold">{user.points}</td>
