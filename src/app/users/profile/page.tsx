@@ -128,14 +128,20 @@ const ProfilePage = () => {
   const profileImageUrl = userInfo?.customImageUrl || session?.user?.image || "/images/anon-user-1.jpg";
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-blue-200 p-4 md:justify-between md:p-12">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-blue-200 p-4 md:justify-between md:p-8">
       <div className="w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 px-2 py-8 shadow-xl backdrop-blur-lg md:px-8">
         <div className="flex flex-col items-center justify-center text-center">
-          <div className={"flex items-center justify-center"}>
+          <div className={"hidden items-center justify-center"}>
             <h2 className="text-3xl font-bold text-gray-800">My Profile</h2>
           </div>
 
-          <h3 className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</h3>
+          {/*<h3 className="mt-4 text-xl font-semibold text-gray-800">{userInfo?.realName || "등록되지 않음"}</h3>*/}
+          {/*<h3 className="mt-4 text-2xl font-semibold text-gray-800">{userInfo?.realName}님, 환영합니다.</h3>*/}
+          {userInfo?.realName ? (
+            <h3 className="mt-4 text-2xl font-semibold text-gray-800">{userInfo?.realName}님, 환영합니다.</h3>
+          ) : (
+            <h3>이름을 등록해 주세요.</h3>
+          )}
 
           {/* 프로필 이미지 */}
           <div className="relative mt-4">
@@ -169,14 +175,10 @@ const ProfilePage = () => {
             </button>
           </div>
 
-          <div className="mt-8 w-full space-y-4 overflow-auto text-gray-700">
+          <div className="mt-8 w-full space-y-3 overflow-auto text-gray-700">
             <div className="flex items-center gap-4 px-2">
               <User size={22} className="text-gray-500" />
               <span className="text-lg">{userInfo?.realName || "등록되지 않음"}</span>
-            </div>
-            <div className="flex items-center gap-4 px-2">
-              <Mail size={22} className="text-gray-500" />
-              <span className="text-sm md:text-lg">{session?.user?.email || "등록되지 않음"}</span>
             </div>
             <div className="flex items-center gap-4 px-2">
               <MdOutlinePhoneAndroid size={22} className="text-gray-500" />
@@ -186,12 +188,19 @@ const ProfilePage = () => {
               <RxAvatar size={22} className="text-gray-500" />
               <span className="text-lg">{userInfo?.classNickName || "등록되지 않음"}</span>
             </div>
-            <div className="flex items-start gap-4 px-2">
-              <LuMessageSquareText size={22} className="mt-1 text-gray-500" />
+            <div className="flex items-center gap-4 px-2">
+              <Mail size={22} className="text-gray-500" />
+              <span className="text-sm md:text-lg">{session?.user?.email || "등록되지 않음"}</span>
+            </div>
+            <div className="flex flex-col items-start gap-1 px-2">
+              <div className={"flex items-center gap-2"}>
+                <LuMessageSquareText size={22} className="mt-1 text-gray-500" />
+                <div>자기 소개</div>
+              </div>
               <textarea
                 readOnly
-                value={userInfo?.message || "등록되지 않음"}
-                className="w-full resize-none rounded-lg border border-gray-300 bg-gray-100 p-3 text-lg text-gray-700 shadow-sm focus:outline-none"
+                value={userInfo?.message || "자기 소개 없음"}
+                className="w-full resize-none rounded-lg border border-gray-300 bg-gray-100 p-3 text-gray-700 shadow-sm focus:outline-none"
                 rows={3}
               />
             </div>
