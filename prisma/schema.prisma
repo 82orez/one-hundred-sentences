@@ -37,6 +37,7 @@ model User {
   emailVerified     DateTime?
   image             String?
   customImageUrl    String? // 사용자 지정 이미지 URL
+  isImageOpen       String? // 사용자 이미지 공개 여부
   message           String? // 자기 소개
   accounts          Account[]
   sessions          Session[]

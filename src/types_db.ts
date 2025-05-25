@@ -1019,6 +1019,7 @@ export type Database = {
           id: string
           image: string | null
           isApplyForTeacher: boolean
+          isImageOpen: string | null
           message: string | null
           name: string | null
           password: string | null
@@ -1038,6 +1039,7 @@ export type Database = {
           id: string
           image?: string | null
           isApplyForTeacher?: boolean
+          isImageOpen?: string | null
           message?: string | null
           name?: string | null
           password?: string | null
@@ -1057,6 +1059,7 @@ export type Database = {
           id?: string
           image?: string | null
           isApplyForTeacher?: boolean
+          isImageOpen?: string | null
           message?: string | null
           name?: string | null
           password?: string | null
