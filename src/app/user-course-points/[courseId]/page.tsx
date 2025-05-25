@@ -70,8 +70,8 @@ export default function UserCoursePointsPage({ params }: Props) {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="mb-6 text-2xl font-bold">수강생 List 및 포인트 랭킹</h1>
+    <div className="container mx-auto p-4 md:p-8">
+      <h1 className="mb-4 text-2xl font-bold">수강생 List 및 포인트 랭킹</h1>
 
       <div className="overflow-x-auto rounded-lg border shadow">
         <table className="w-full table-auto">
@@ -83,8 +83,8 @@ export default function UserCoursePointsPage({ params }: Props) {
               <th className="p-3 text-center align-middle">센터명</th>
               <th className="p-3 text-center align-middle">지역명</th>
               <th className="cursor-pointer p-3 text-center align-middle" onClick={toggleSortOrder}>
-                <div className="flex items-center justify-center">
-                  포인트
+                <div className="flex items-center justify-center gap-1">
+                  <div>포인트</div>
                   <ArrowUpDown className="ml-1 h-4 w-4" />
                 </div>
               </th>
