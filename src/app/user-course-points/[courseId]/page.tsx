@@ -48,6 +48,19 @@ export default function UserCoursePointsPage({ params }: Props) {
 
   const sortedUserPoints = (userPoints ?? []).sort((a, b) => (sortOrder === "desc" ? b.points - a.points : a.points - b.points));
 
+  const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openMessageModal = (message: string) => {
+    setSelectedMessage(message);
+    setIsModalOpen(true);
+  };
+
+  const closeMessageModal = () => {
+    setIsModalOpen(false);
+    setSelectedMessage(null);
+  };
+
   if (userPointsIsLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -124,7 +137,18 @@ export default function UserCoursePointsPage({ params }: Props) {
                   </div>
                 </td>
                 {/*<td className="p-3 text-center align-middle">{user.userClassNickName || "-"}</td>*/}
-                <td className="p-3 text-center align-middle">{user.userMessage || "-"}</td>
+                <td className="p-3 text-center align-middle">
+                  {user.userMessage ? (
+                    <button
+                      onClick={() => openMessageModal(user.userMessage!)}
+                      className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">
+                      보기
+                    </button>
+                  ) : (
+                    "-"
+                  )}
+                </td>
+
                 <td className="p-3 text-center align-middle">{user.centerName || "-"}</td>
                 <td className="p-3 text-center align-middle">{user.localName || "-"}</td>
                 <td className="p-3 text-center align-middle font-semibold">{user.points}</td>
@@ -144,6 +168,20 @@ export default function UserCoursePointsPage({ params }: Props) {
       <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": userPointsIsLoading })}>
         <Link href={`/users/teacher/teacher-courses`}>내 강좌 보기</Link>
       </div>
+
+      {isModalOpen && (
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="w-11/12 max-w-md rounded-lg bg-white p-6 shadow-lg">
+            <h2 className="mb-4 text-xl font-semibold">자기 소개</h2>
+            <p className="mb-6 whitespace-pre-wrap text-gray-800">{selectedMessage}</p>
+            <div className="text-right">
+              <button onClick={closeMessageModal} className="rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600">
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
