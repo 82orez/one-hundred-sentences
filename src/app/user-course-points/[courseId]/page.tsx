@@ -78,8 +78,8 @@ export default function UserCoursePointsPage({ params }: Props) {
           <thead>
             <tr className="border-b bg-green-100">
               <th className="p-3 text-center align-middle">순위</th>
-              <th className="p-3 text-center align-middle">이름</th>
-              <th className="p-3 text-center align-middle">닉네임</th>
+              <th className="p-3 text-center align-middle">이름 (실명)</th>
+              {/*<th className="p-3 text-center align-middle">닉네임</th>*/}
               <th className="p-3 text-center align-middle">센터명</th>
               <th className="p-3 text-center align-middle">지역명</th>
               <th className="cursor-pointer p-3 text-center align-middle" onClick={toggleSortOrder}>
@@ -112,10 +112,17 @@ export default function UserCoursePointsPage({ params }: Props) {
                         {user.userName?.charAt(0) || "?"}
                       </div>
                     )}
-                    <span>{user.userName}</span>
+                    {user.userClassNickName ? (
+                      <div className={"flex items-center gap-1"}>
+                        <span>{user.userClassNickName}</span>
+                        <span>({user.userName})</span>
+                      </div>
+                    ) : (
+                      <span>{user.userName}</span>
+                    )}
                   </div>
                 </td>
-                <td className="p-3 text-center align-middle">{user.userClassNickName || "-"}</td>
+                {/*<td className="p-3 text-center align-middle">{user.userClassNickName || "-"}</td>*/}
                 <td className="p-3 text-center align-middle">{user.centerName || "-"}</td>
                 <td className="p-3 text-center align-middle">{user.localName || "-"}</td>
                 <td className="p-3 text-center align-middle font-semibold">{user.points}</td>
