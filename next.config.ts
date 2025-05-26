@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         port: "",
         search: "",
       },
+      {
+        protocol: "https",
+        hostname: "krgsfzhqitjtaasgupsv.supabase.co",
+        port: "",
+        search: "",
+      },
     ],
   },
 };
