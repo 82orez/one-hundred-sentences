@@ -111,7 +111,7 @@ export default function UserCoursePointsPage({ params }: Props) {
                 <td className="p-3 text-center align-middle">{index + 1}</td>
                 <td className="p-3 text-center align-middle">
                   <div className="flex items-center justify-center gap-3">
-                    {user.userImage ? (
+                    {user.userImage && user.userIsImagePublicOpen ? (
                       <div className="h-8 w-8 overflow-hidden rounded-full">
                         <Image
                           src={user.userImage}
