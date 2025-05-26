@@ -194,6 +194,7 @@ const EditProfilePage = () => {
 
     const trimmedRealName = realName.replace(/\s+/g, ""); // 중간 공백까지 모두 제거
     const trimmedPhone = phone.trim();
+    const trimmedClassNickName = classNickName.trim();
     const trimmedZoomUrl = zoomInviteUrl.trim();
 
     if (!trimmedRealName || !trimmedPhone) {
@@ -215,6 +216,7 @@ const EditProfilePage = () => {
     // 상태 반영
     setRealName(trimmedRealName);
     setPhone(trimmedPhone);
+    setClassNickName(trimmedClassNickName);
     setZoomInviteUrl(trimmedZoomUrl);
 
     updateProfileMutation.mutate();
