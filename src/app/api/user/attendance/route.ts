@@ -109,10 +109,14 @@ export async function POST(request: NextRequest) {
     let attendance;
 
     if (existingAttendance) {
-      // 이미 기록이 있으면 업데이트 (실제로는 이미 체크된 경우 프론트에서 막아야 함)
+      // 이미 기록이 있으면 업데이트
+      // 출석이 인정된 경우에만 isAttended를 true로 설정
       attendance = await prisma.attendance.update({
         where: { id: existingAttendance.id },
-        data: { isAttended },
+        data: {
+          // 출석이 인정된 경우에만 true로 업데이트, 아니면 기존 값 유지
+          isAttended: isAttended ? true : existingAttendance.isAttended,
+        },
       });
     } else {
       // 새 출석 기록 생성
@@ -121,7 +125,8 @@ export async function POST(request: NextRequest) {
           courseId,
           userId: session.user.id,
           classDateId: classDateId,
-          isAttended,
+          // 출석이 인정된 경우에만 true 저장
+          isAttended: isAttended,
         },
       });
     }
