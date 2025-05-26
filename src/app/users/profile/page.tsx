@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { queryClient } from "@/app/providers";
 import { RxAvatar } from "react-icons/rx";
 import { LuMessageSquareText } from "react-icons/lu";
+import { FaExchangeAlt } from "react-icons/fa";
 
 const ProfilePage = () => {
   const { data: session, update } = useSession();
@@ -161,7 +162,10 @@ const ProfilePage = () => {
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
           </div>
 
-          <div className={"mt-2"}>{userInfo?.isImagePublicOpen ? <p>공개 중</p> : <p>비공개 상태</p>}</div>
+          <div className={"mt-2 flex cursor-pointer items-center justify-center gap-2"}>
+            <div className={""}>{userInfo?.isImagePublicOpen ? <p>공개 중</p> : <p>비공개 상태</p>}</div>
+            <FaExchangeAlt size={22} className="text-gray-500" />
+          </div>
 
           {/* ✅ 추가된 버튼 그룹 */}
           <div className="mt-2 flex w-full max-w-xs justify-center gap-6 text-sm md:flex-row">
@@ -171,7 +175,12 @@ const ProfilePage = () => {
               Change
             </button>
             <button
-              onClick={handleResetImage}
+              onClick={() => {
+                const confirmed = window.confirm("정말로 리셋하시겠습니까?");
+                if (confirmed) {
+                  handleResetImage();
+                }
+              }}
               className="inline-flex w-20 items-center justify-center rounded-lg border border-gray-400 bg-white px-3 py-2 text-gray-800 hover:bg-gray-100">
               Reset
             </button>
