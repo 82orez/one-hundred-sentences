@@ -37,6 +37,7 @@ export async function GET(request, { params }) {
             classNickName: true,
             image: true,
             customImageUrl: true,
+            isImagePublicOpen: true,
           },
         },
       },
@@ -62,6 +63,7 @@ export async function GET(request, { params }) {
           nickName: enrollment.student?.classNickName,
           email: enrollment.student?.email,
           image: enrollment.student?.customImageUrl || enrollment.student?.image,
+          isImagePublicOpen: enrollment.student?.isImagePublicOpen,
           attendance: attendance,
         };
       }),
