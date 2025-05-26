@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { X, Eye, User } from "lucide-react";
+import { X, Eye, User, ChevronUp, ChevronDown } from "lucide-react";
 import Image from "next/image";
 
 interface ClassMember {
@@ -81,7 +81,17 @@ export default function ClassMembersModal({ isOpen, onClose, courseId, courseTit
                       <button
                         onClick={() => toggleIntroduction(member.id)}
                         className="mt-1 inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
-                        자기소개 {expandedMemberId === member.id ? "접기" : "보기"} <Eye className="ml-1 h-3 w-3" />
+                        {expandedMemberId === member.id ? (
+                          <>
+                            <span>자기소개 접기</span>
+                            <ChevronUp className="ml-2" size={18} />
+                          </>
+                        ) : (
+                          <>
+                            <span>자기소개 보기</span>
+                            <ChevronDown className="ml-2" size={18} />
+                          </>
+                        )}{" "}
                       </button>
                     )}
                   </div>
