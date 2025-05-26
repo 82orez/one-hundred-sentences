@@ -591,28 +591,10 @@ export default function Dashboard({ params }: Props) {
             <div>
               <div className="rounded-lg bg-blue-50 p-4">
                 <p className="font-medium">우리 Class의 팀 동지들을 만나보세요.</p>
-                <p className="mt-2 text-sm text-gray-600">All for One, One for All.</p>
+                {/*<p className="mt-2 text-sm text-gray-600">All for One, One for All.</p>*/}
                 <button className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800" onClick={() => setClassMembersModalOpen(true)}>
                   우리 팀원들 보기 <ArrowRight className="ml-1 h-4 w-4" />
                 </button>
-              </div>
-
-              <div className="mt-6">
-                <h3 className="mb-3 text-lg font-medium">최근 복습</h3>
-                {completedDays?.length > 0 ? (
-                  <div className="space-y-2">
-                    {completedDays
-                      .slice(-3)
-                      .reverse()
-                      .map((day) => (
-                        <Link key={day} href={`/review/${day}`} className="block rounded bg-gray-50 p-3 transition-colors hover:bg-gray-100">
-                          {day}일차 복습하기
-                        </Link>
-                      ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-500">아직 완료한 학습일이 없습니다.</p>
-                )}
               </div>
             </div>
           )}
