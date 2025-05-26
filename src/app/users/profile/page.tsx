@@ -162,13 +162,13 @@ const ProfilePage = () => {
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
           </div>
 
-          <div className={"mt-2 flex cursor-pointer items-center justify-center gap-2"}>
+          <div className={"mt-2 flex items-center justify-center gap-2"}>
             <div className={""}>{userInfo?.isImagePublicOpen ? <p>공개 중</p> : <p>비공개 상태</p>}</div>
-            <FaExchangeAlt size={22} className="text-gray-500" />
+            <FaExchangeAlt size={22} className="cursor-pointer text-gray-500" />
           </div>
 
           {/* ✅ 추가된 버튼 그룹 */}
-          <div className="mt-2 flex w-full max-w-xs justify-center gap-6 text-sm md:flex-row">
+          <div className="mt-3 flex w-full max-w-xs justify-center gap-6 text-sm md:flex-row">
             <button
               onClick={handleImageClick}
               className="inline-flex w-20 items-center justify-center rounded-lg bg-blue-500 px-3 py-2 text-white hover:bg-blue-600">
