@@ -15,6 +15,7 @@ import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { HiOutlineSparkles } from "react-icons/hi2";
 import FlipCounter from "@/components/FlipCounterAnimation";
+import ClassMembersModal from "@/components/ClassMembersModal";
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -29,6 +30,7 @@ export default function Dashboard({ params }: Props) {
   // const { completedSentencesStore, setCompletedSentencesStore, nextDay, setNextDay, initializeNextDay, updateNextDayInDB } = useLearningStore();
   const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
+  const [isClassMembersModalOpen, setClassMembersModalOpen] = useState(false);
   // const [isNavigating, setIsNavigating] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -579,7 +581,7 @@ export default function Dashboard({ params }: Props) {
 
         {/* Team */}
         <div className="rounded-lg bg-white p-6 shadow-md">
-          <h2 className="mb-4 text-xl font-semibold">Team</h2>
+          <h2 className="mb-4 text-xl font-semibold">우리는 One Team</h2>
           {completedDays?.length === 20 ? (
             <div className="py-8 text-center">
               <p className="text-lg font-medium">모든 학습일을 완료했습니다!</p>
@@ -588,11 +590,11 @@ export default function Dashboard({ params }: Props) {
           ) : (
             <div>
               <div className="rounded-lg bg-blue-50 p-4">
-                <p className="font-medium">우리 Class의 팀원들을 만나보세요.</p>
-                <p className="mt-2 text-sm text-gray-600">우리 Class의 팀원들을 만나보세요.</p>
-                <Link href={`/class-students-list/${selectedCourseId}`} className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800">
+                <p className="font-medium">우리 Class의 팀 동지들을 만나보세요.</p>
+                {/*<p className="mt-2 text-sm text-gray-600">우리 Class의 팀원들을 만나보세요.</p>*/}
+                <button className="mt-4 inline-flex items-center text-blue-600 hover:text-blue-800" onClick={() => setClassMembersModalOpen(true)}>
                   우리 팀원들 보기 <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
+                </button>
               </div>
 
               <div className="mt-6">
@@ -717,6 +719,16 @@ export default function Dashboard({ params }: Props) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ✅ 팀원 보기 모달 */}
+      {selectedCourseId && (
+        <ClassMembersModal
+          isOpen={isClassMembersModalOpen}
+          onClose={() => setClassMembersModalOpen(false)}
+          courseId={selectedCourseId}
+          courseTitle={selectedCourseTitle}
+        />
+      )}
     </div>
   );
 }
