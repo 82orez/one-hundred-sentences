@@ -161,8 +161,10 @@ const ProfilePage = () => {
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
           </div>
 
+          <div className={"mt-2"}>{userInfo?.classNickName ? <p>공개 중</p> : <p>비공개 상태</p>}</div>
+
           {/* ✅ 추가된 버튼 그룹 */}
-          <div className="mt-4 flex w-full max-w-xs justify-center gap-6 text-sm md:flex-row">
+          <div className="mt-2 flex w-full max-w-xs justify-center gap-6 text-sm md:flex-row">
             <button
               onClick={handleImageClick}
               className="inline-flex w-20 items-center justify-center rounded-lg bg-blue-500 px-3 py-2 text-white hover:bg-blue-600">
