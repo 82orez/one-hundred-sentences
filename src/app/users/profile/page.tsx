@@ -33,6 +33,23 @@ const ProfilePage = () => {
     enabled: !!session?.user?.id, // 여기서 조건부 실행 제어
   });
 
+  // 이미지 공개 여부 토글 mutation
+  const toggleImagePublicMutation = useMutation({
+    mutationFn: async () => {
+      return await axios.post("/api/user/toggle-image-public");
+    },
+    onSuccess: () => {
+      // 캐시 무효화
+      queryClient.invalidateQueries({
+        queryKey: ["userProfile", session?.user?.id],
+      });
+      toast.success(userInfo?.isImagePublicOpen ? "프로필 이미지가 비공개로 설정되었습니다." : "프로필 이미지가 공개로 설정되었습니다.");
+    },
+    onError: () => {
+      toast.error("이미지 공개 상태 변경 중 오류가 발생했습니다.");
+    },
+  });
+
   // 이미지 업로드 mutation
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
@@ -110,6 +127,10 @@ const ProfilePage = () => {
     resetImageMutation.mutate();
   };
 
+  const handleToggleImagePublic = () => {
+    toggleImagePublicMutation.mutate();
+  };
+
   if (isLoading) return <LoadingPageSkeleton />;
 
   if (error) {
@@ -130,7 +151,7 @@ const ProfilePage = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-blue-200 p-4 md:justify-between md:p-8">
-      <div className="w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 px-2 py-8 shadow-xl backdrop-blur-lg md:px-8">
+      <div className="w-full max-w-md rounded-3xl border border-gray-300/50 bg-white/80 px-2 py-4 shadow-xl backdrop-blur-lg md:px-8">
         <div className="flex flex-col items-center justify-center text-center">
           <div className={"hidden items-center justify-center"}>
             <h2 className="text-3xl font-bold text-gray-800">My Profile</h2>
@@ -163,8 +184,15 @@ const ProfilePage = () => {
           </div>
 
           <div className={"mt-2 flex items-center justify-center gap-2"}>
-            <div className={""}>{userInfo?.isImagePublicOpen ? <p>공개 중</p> : <p>비공개 상태</p>}</div>
-            <FaExchangeAlt size={22} className="cursor-pointer text-gray-500" />
+            <div className={`rounded-lg px-2 py-2 ${userInfo?.isImagePublicOpen ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}>
+              {userInfo?.isImagePublicOpen ? "공개 중" : "비공개 상태"}
+            </div>
+            <FaExchangeAlt
+              size={22}
+              className="cursor-pointer text-gray-500 transition-colors hover:text-blue-600"
+              onClick={handleToggleImagePublic}
+              title={userInfo?.isImagePublicOpen ? "비공개로 전환" : "공개로 전환"}
+            />
           </div>
 
           {/* ✅ 추가된 버튼 그룹 */}
