@@ -110,7 +110,7 @@ export default function UserCoursePointsPage({ params }: Props) {
               <tr key={user.id} className="border-b border-gray-300 hover:bg-gray-50">
                 <td className="p-3 text-center align-middle">{index + 1}</td>
                 <td className="p-3 text-center align-middle">
-                  <div className="flex items-center justify-center gap-3">
+                  <div className="flex items-center justify-start gap-3">
                     {user.userImage && user.userIsImagePublicOpen ? (
                       <div className="h-8 w-8 overflow-hidden rounded-full">
                         <Image
