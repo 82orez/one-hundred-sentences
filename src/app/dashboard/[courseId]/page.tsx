@@ -16,6 +16,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { HiOutlineSparkles } from "react-icons/hi2";
 import FlipCounter from "@/components/FlipCounterAnimation";
 import ClassMembersModal from "@/components/ClassMembersModal";
+import CoursePointsRankingModal from "@/components/CoursePointsRankingModal";
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -31,6 +32,7 @@ export default function Dashboard({ params }: Props) {
   const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const [isClassMembersModalOpen, setClassMembersModalOpen] = useState(false);
+  const [isCoursePointsRankingModalOpen, setIsCoursePointsRankingModalOpen] = useState(false);
   // const [isNavigating, setIsNavigating] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -473,7 +475,9 @@ export default function Dashboard({ params }: Props) {
               {/*</div>*/}
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-700">나의 순위</h3>
-                <div className="text-2xl font-bold text-indigo-600">
+                <div
+                  className="cursor-pointer text-2xl font-bold text-indigo-600 hover:text-indigo-800"
+                  onClick={() => setIsCoursePointsRankingModalOpen(true)}>
                   {totalPoints ? (
                     <div className="flex items-center">
                       <FlipCounter value={userRank} className={""} />
@@ -604,6 +608,16 @@ export default function Dashboard({ params }: Props) {
       <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": isLoading })}>
         <Link href={"/users/my-courses"}>내 강의 보기</Link>
       </div>
+
+      {/* CoursePointsRanking 모달 */}
+      {isCoursePointsRankingModalOpen && (
+        <CoursePointsRankingModal
+          isOpen={isCoursePointsRankingModalOpen}
+          onClose={() => setIsCoursePointsRankingModalOpen(false)}
+          courseId={selectedCourseId}
+          courseTitle={selectedCourseTitle}
+        />
+      )}
 
       {/* ✅ 복습 모달 (framer-motion 적용) */}
       <AnimatePresence>
