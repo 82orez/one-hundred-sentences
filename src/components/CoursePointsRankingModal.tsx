@@ -85,7 +85,7 @@ export default function CoursePointsRankingModal({ isOpen, onClose, courseId, co
                   user.isCurrentUser ? "border-indigo-300 bg-indigo-50" : "border-gray-200"
                 }`}>
                 <div className="grid grid-cols-12 items-center gap-2">
-                  <div className="col-span-1 text-center text-lg font-bold text-indigo-600">{index + 1}</div>
+                  <div className="col-span-2 text-center text-lg font-bold text-indigo-600 md:col-span-1">{index + 1}</div>
                   <div className="col-span-2 flex justify-center">
                     <div className="col-span-2 flex justify-center">
                       <div className="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
@@ -103,7 +103,7 @@ export default function CoursePointsRankingModal({ isOpen, onClose, courseId, co
                       </div>
                     </div>
                   </div>
-                  <div className={`col-span-6 font-medium ${!user.isCurrentUser ? "blur-sm" : ""}`}>{user.displayName}</div>
+                  <div className={`col-span-5 truncate font-medium md:col-span-6 ${!user.isCurrentUser ? "blur-sm" : ""}`}>{user.displayName}</div>
                   <div className="col-span-3 text-right font-bold text-indigo-700">{user.points.toLocaleString()} </div>
                 </div>
               </div>
