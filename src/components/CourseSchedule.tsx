@@ -415,17 +415,14 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
                           .then((response) => {
                             if (response.data.isAttended) {
                               window.alert("출석이 완료되었습니다.");
-                              // 출석이 인정된 경우에만 Zoom URL 열기
                               window.open(zoomInviteUrl, "_blank");
                             } else {
                               window.alert("출석 체크는 되었지만, 출석 인정 시간이 아닙니다.");
-                              // 출석이 인정되지 않으면 Zoom URL 열지 않음
                             }
                           })
                           .catch((error) => {
-                            console.error("출석 체크 실패:", error);
-                            window.alert("출석 체크에 실패했습니다.");
-                            // 오류가 발생해도 수업에는 참여할 수 없도록 수정
+                            console.error("출석 체크 실패:", error.response?.data || error.message);
+                            window.alert(`출석 체크에 실패했습니다: ${error.response?.data?.error || error.message}`);
                           });
                       }
                     }}

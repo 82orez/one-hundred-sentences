@@ -1,3 +1,4 @@
+// app/api/user/attendance/route.ts
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -94,5 +95,44 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("출석 기록 중 오류 발생:", error);
     return NextResponse.json({ error: "서버 오류가 발생했습니다.", isAttended: false }, { status: 500 });
+  }
+}
+
+export async function GET(request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "인증되지 않은 요청입니다." }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const courseId = searchParams.get("courseId");
+
+    if (!courseId) {
+      return NextResponse.json({ error: "courseId가 필요합니다." }, { status: 400 });
+    }
+
+    // 해당 사용자의 특정 강좌 출석 정보 조회
+    const attendances = await prisma.attendance.findMany({
+      where: {
+        userId: session.user.id,
+        courseId: courseId,
+      },
+      include: {
+        classDate: true,
+      },
+    });
+
+    // 클라이언트에서 사용하기 쉬운 형태로 데이터 변환
+    const attendanceInfo = attendances.map((attendance) => ({
+      classDateId: attendance.classDateId,
+      date: attendance.classDate.date,
+      isAttended: attendance.isAttended,
+    }));
+
+    return NextResponse.json(attendanceInfo);
+  } catch (error) {
+    console.error("출석 정보 조회 중 오류 발생:", error);
+    return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
   }
 }
