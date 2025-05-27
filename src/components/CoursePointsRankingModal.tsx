@@ -36,7 +36,7 @@ export default function CoursePointsRankingModal({ isOpen, onClose, courseId, co
       const pointsWithUserInfo = response.data.map((item: any) => ({
         userId: item.userId,
         displayName: item.user?.classNickName || item.user?.realName || "알 수 없음",
-        profileImage: item.user?.customImageUrl || item.user?.image,
+        profileImage: item.user?.customImageUrl || item.user?.image || "/images/anon-user-1.jpg",
         points: item.points,
         isCurrentUser: item.userId === session?.user?.id,
       }));
