@@ -19,6 +19,11 @@ export default function FlipCounter({ value, className = "" }: FlipCounterProps)
     setDisplayValue(isNaN(value) ? 0 : value);
   }, [value]);
 
+  // 숫자를 1000단위마다 쉼표로 구분하는 함수
+  const formatNumber = (num: number): string => {
+    return num.toLocaleString("ko-KR");
+  };
+
   return (
     <div className={`relative overflow-hidden ${className}`}>
       <motion.div
@@ -32,8 +37,8 @@ export default function FlipCounter({ value, className = "" }: FlipCounterProps)
           ease: "easeInOut",
         }}
         className="inline-block">
-        {/* NaN이 발생할 경우 문자열로 변환하거나 기본값 표시 */}
-        {String(displayValue)}
+        {/* 1000단위마다 쉼표로 구분하여 표시 */}
+        {formatNumber(displayValue)}
       </motion.div>
     </div>
   );
