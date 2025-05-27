@@ -586,24 +586,17 @@ export default function Dashboard({ params }: Props) {
         {/* Team */}
         <div className="rounded-lg bg-white p-6 shadow-md">
           <h2 className="mb-4 text-xl font-semibold">우리는 One Team</h2>
-          {completedDays?.length === 20 ? (
-            <div className="py-8 text-center">
-              <p className="text-lg font-medium">모든 학습일을 완료했습니다!</p>
-              <p className="mt-2 text-gray-500">축하합니다. 복습을 통해 실력을 다져보세요.</p>
+          <div>
+            <div className="rounded-lg bg-blue-50 p-4">
+              <p className="font-medium">우리 Class의 팀 동지들을 만나보세요.</p>
+              {/*<p className="mt-2 text-sm text-gray-600">All for One, One for All.</p>*/}
+              <button
+                className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
+                onClick={() => setClassMembersModalOpen(true)}>
+                우리 팀원들 보기 <ArrowRight className="ml-1 h-4 w-4" />
+              </button>
             </div>
-          ) : (
-            <div>
-              <div className="rounded-lg bg-blue-50 p-4">
-                <p className="font-medium">우리 Class의 팀 동지들을 만나보세요.</p>
-                {/*<p className="mt-2 text-sm text-gray-600">All for One, One for All.</p>*/}
-                <button
-                  className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
-                  onClick={() => setClassMembersModalOpen(true)}>
-                  우리 팀원들 보기 <ArrowRight className="ml-1 h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       </div>
 
