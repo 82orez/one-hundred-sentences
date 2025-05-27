@@ -35,7 +35,7 @@ export default function CoursePointsRankingModal({ isOpen, onClose, courseId, co
       // 사용자 정보와 포인트를 함께 가공
       const pointsWithUserInfo = response.data.map((item: any) => ({
         userId: item.userId,
-        displayName: item.user?.name || item.user?.classNickName || "알 수 없음",
+        displayName: item.user?.classNickName || item.user?.realName || "알 수 없음",
         profileImage: item.user?.customImageUrl || item.user?.image,
         points: item.points,
         isCurrentUser: item.userId === session?.user?.id,
