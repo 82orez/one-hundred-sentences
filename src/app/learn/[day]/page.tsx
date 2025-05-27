@@ -717,7 +717,7 @@ const LearnPage = ({ params }: Props) => {
             </button>
 
             {/* ✅ 해당 문장 연습 횟수 */}
-            <span className="text-md text-gray-500">
+            <span className="text-md hidden text-gray-500">
               {recordingCounts && recordingCounts[sentence.no] && (
                 <FlipCounter value={recordingCounts[sentence.no]} className="text-md text-gray-500" />
               )}
