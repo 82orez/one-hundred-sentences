@@ -51,12 +51,12 @@ export default function CoursePointsRankingModal({ isOpen, onClose, courseId, co
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-3xl rounded-lg bg-white p-6 shadow-lg">
+      <div className="relative w-full max-w-3xl rounded-lg bg-white p-6 shadow-lg">
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-semibold">
+          <h2 className="mt-4 text-xl font-semibold">
             우리 강좌 기여도 랭킹 <span className="text-gray-500">(총 {data?.length || 0}명)</span>
           </h2>
-          <button onClick={onClose} className="rounded-full p-1 hover:bg-gray-100">
+          <button onClick={onClose} className="absolute top-4 right-3 rounded-full p-1 hover:bg-gray-100 md:right-5">
             <X className="h-5 w-5" />
           </button>
         </div>
