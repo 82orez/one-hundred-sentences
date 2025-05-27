@@ -385,6 +385,10 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
                       // 현재 시간 가져오기
                       const currentTime = new Date();
 
+                      console.log("현재 시간:", currentTime);
+                      console.log("수업 시작 시간:", classDate_obj);
+                      console.log("수업 종료 시간:", classEndDate_obj);
+
                       // 수업 종료 시간이 지났는지 확인
                       if (currentTime > classEndDate_obj) {
                         // 수업 시간이 지났음
@@ -421,7 +425,13 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
                             }
                           })
                           .catch((error) => {
-                            console.error("출석 체크 실패:", error.response?.data || error.message);
+                            console.error("출석 체크 실패:", error);
+                            console.error("상세 오류 정보:", {
+                              message: error.message,
+                              status: error.response?.status,
+                              responseData: error.response?.data,
+                              stack: error.stack,
+                            });
                             window.alert(`출석 체크에 실패했습니다: ${error.response?.data?.error || error.message}`);
                           });
                       }
