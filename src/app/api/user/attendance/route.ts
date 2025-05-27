@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { differenceInMinutes } from "date-fns";
 
 // 유저의 출석 상태 조회
 export async function GET(request: NextRequest) {
@@ -71,32 +70,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "해당 수업 일정을 찾을 수 없습니다." }, { status: 404 });
     }
 
-    // 현재 시간
-    const now = new Date();
-    const classDateObj = new Date(classDate.date);
-
-    // 수업 시작 및 종료 시간 설정
-    const classStartTimeArr = classDate.startTime?.split(":").map(Number) || [0, 0];
-    const classEndTimeArr = classDate.endTime?.split(":").map(Number) || [0, 0];
-
-    const classStartTime = new Date(classDateObj);
-    classStartTime.setHours(classStartTimeArr[0], classStartTimeArr[1], 0);
-
-    const classEndTime = new Date(classDateObj);
-    classEndTime.setHours(classEndTimeArr[0], classEndTimeArr[1], 0);
-
-    // 출석 가능 시작 시간 (수업 시작 15분 전)
-    const attendanceStartTime = new Date(classStartTime);
-    attendanceStartTime.setMinutes(attendanceStartTime.getMinutes() - 15);
-
-    // 출석 상태 결정
-    let isAttended = false;
-
-    // 시간 조건 체크: 수업 시작 15분 전부터 수업 종료 시간까지
-    if (now >= attendanceStartTime && now <= classEndTime) {
-      isAttended = true;
-    }
-
     // 이미 출석 기록이 있는지 확인
     const existingAttendance = await prisma.attendance.findFirst({
       where: {
@@ -109,13 +82,11 @@ export async function POST(request: NextRequest) {
     let attendance;
 
     if (existingAttendance) {
-      // 이미 기록이 있으면 업데이트
-      // 출석이 인정된 경우에만 isAttended를 true로 설정
+      // 이미 기록이 있으면 isAttended를 true로 업데이트
       attendance = await prisma.attendance.update({
         where: { id: existingAttendance.id },
         data: {
-          // 출석이 인정된 경우에만 true로 업데이트, 아니면 기존 값 유지
-          isAttended: isAttended ? true : existingAttendance.isAttended,
+          isAttended: true,
         },
       });
     } else {
@@ -125,8 +96,7 @@ export async function POST(request: NextRequest) {
           courseId,
           userId: session.user.id,
           classDateId: classDateId,
-          // 출석이 인정된 경우에만 true 저장
-          isAttended: isAttended,
+          isAttended: true,
         },
       });
     }
