@@ -61,7 +61,7 @@ export default function CoursePointsRankingModal({ isOpen, onClose, courseId, co
           </button>
         </div>
 
-        <h3 className="mb-4 font-medium text-gray-700">강좌: {courseTitle}</h3>
+        <h3 className="font-medium text-gray-700 md:mb-4">강좌명: {courseTitle}</h3>
 
         {isLoading ? (
           <div className="flex h-40 items-center justify-center">
@@ -69,7 +69,7 @@ export default function CoursePointsRankingModal({ isOpen, onClose, courseId, co
           </div>
         ) : (
           <div className="max-h-[60vh] overflow-y-auto">
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <div className="hidden rounded-lg border border-gray-200 bg-gray-50 p-4 md:block">
               <div className="grid grid-cols-12 gap-2 font-semibold text-gray-700">
                 <div className="col-span-1 text-center">순위</div>
                 <div className="col-span-2 text-center">프로필</div>
@@ -104,7 +104,7 @@ export default function CoursePointsRankingModal({ isOpen, onClose, courseId, co
                     </div>
                   </div>
                   <div className={`col-span-6 font-medium ${!user.isCurrentUser ? "blur-sm" : ""}`}>{user.displayName}</div>
-                  <div className="col-span-3 text-right font-bold text-indigo-700">{user.points.toLocaleString()} 포인트</div>
+                  <div className="col-span-3 text-right font-bold text-indigo-700">{user.points.toLocaleString()} </div>
                 </div>
               </div>
             ))}
