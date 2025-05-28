@@ -101,11 +101,22 @@ export default function Navbar() {
             )}
 
             {isTeacher && (
+              <>
+                <Link
+                  href="/users/teacher"
+                  className={clsx("hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block", {})}
+                  onClick={() => setMenuOpen(false)}>
+                  강사 페이지
+                </Link>
+              </>
+            )}
+
+            {!isTeacher && (
               <Link
-                href="/users/teacher"
-                className={clsx("hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block", {})}
+                href="/dashboard/free-course-tour"
+                className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
                 onClick={() => setMenuOpen(false)}>
-                강사 페이지
+                무료 체험판
               </Link>
             )}
 
@@ -189,6 +200,13 @@ export default function Navbar() {
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setMenuOpen(false)}>
                         내 강의 보기
+                      </Link>
+
+                      <Link
+                        href="/dashboard/free-course-tour"
+                        className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
+                        onClick={() => setMenuOpen(false)}>
+                        무료 체험판
                       </Link>
 
                       {/*<Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>*/}
