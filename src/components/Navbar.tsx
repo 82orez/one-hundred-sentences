@@ -90,6 +90,13 @@ export default function Navbar() {
                   onClick={() => setMenuOpen(false)}>
                   강사 관리
                 </Link>
+
+                <Link
+                  href="/purchase"
+                  className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
+                  onClick={() => setMenuOpen(false)}>
+                  Purchase
+                </Link>
               </>
             )}
 
@@ -146,6 +153,13 @@ export default function Navbar() {
 
                       <Link href="/learn" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
                         기존 Learn
+                      </Link>
+
+                      <Link
+                        href="/purchase"
+                        className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
+                        onClick={() => setMenuOpen(false)}>
+                        Purchase
                       </Link>
                     </>
                   )}
