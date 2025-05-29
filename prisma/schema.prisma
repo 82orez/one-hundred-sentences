@@ -297,7 +297,7 @@ model Course {
   price             Int       @default(0)
   description       String?
   generatorId       String
-  teacherId         String
+  teacherId         String?
   scheduleMonday    Boolean   @default(false)
   scheduleTuesday   Boolean   @default(false)
   scheduleWednesday Boolean   @default(false)
@@ -310,7 +310,7 @@ model Course {
   startTime         String? // 시작 시간을 "HH:MM" 형식의 문자열로 저장
   duration          String? // 수업 진행 시간 (예: "1시간 30분")
   endTime           String? // 수업 종료 시간 (자동 계산)
-  classCount        Int?      @default(1) // 수업 횟수
+  classCount        Int?      @default(0) // 수업 횟수
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

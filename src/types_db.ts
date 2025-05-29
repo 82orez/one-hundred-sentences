@@ -300,7 +300,7 @@ export type Database = {
           scheduleWednesday: boolean
           startDate: string | null
           startTime: string | null
-          teacherId: string
+          teacherId: string | null
           title: string
           updatedAt: string
         }
@@ -325,7 +325,7 @@ export type Database = {
           scheduleWednesday?: boolean
           startDate?: string | null
           startTime?: string | null
-          teacherId: string
+          teacherId?: string | null
           title: string
           updatedAt: string
         }
@@ -350,7 +350,7 @@ export type Database = {
           scheduleWednesday?: boolean
           startDate?: string | null
           startTime?: string | null
-          teacherId?: string
+          teacherId?: string | null
           title?: string
           updatedAt?: string
         }
