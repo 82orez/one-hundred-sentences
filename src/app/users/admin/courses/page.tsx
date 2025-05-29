@@ -865,6 +865,7 @@ export default function CoursePage() {
                     <option value="">-</option>
                     <option value="online">온라인</option>
                     <option value="offline">오프라인</option>
+                    <option value="onlyApp">Only-App</option>
                     <option value="hybrid">하이브리드</option>
                   </select>
                 </div>
