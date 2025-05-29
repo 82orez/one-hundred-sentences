@@ -188,35 +188,44 @@ export default function MyCoursesPage() {
                         수강중
                       </span>
                     </div>
-                    <p className="mb-1 text-gray-600">강사: {enrollment.course.teacher?.user.realName || "-"}</p>
-                    <p className="mb-4 text-sm text-gray-600">이메일: {enrollment.course.teacher?.user.email || "-"}</p>
-                    {/*<p className="mb-4 text-sm text-gray-600">Zoom: {enrollment.course.teacher.user.zoomInviteUrl}</p>*/}
 
-                    {/*<p className="mb-4 text-gray-600">전화번호: {enrollment.course.teacher.user.phone}</p>*/}
+                    {enrollment.course.id === "freecoursetour" ? (
+                      <div className={"flex items-center justify-center md:h-60"}>
+                        <div className={""}>수업 정보 없음</div>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="mb-1 text-gray-600">강사: {enrollment.course.teacher?.user.realName || "-"}</p>
+                        {/*<p className="mb-4 text-sm text-gray-600">이메일: {enrollment.course.teacher?.user.email || "-"}</p>*/}
+                        {/*<p className="mb-4 text-sm text-gray-600">Zoom: {enrollment.course.teacher.user.zoomInviteUrl}</p>*/}
 
-                    <p className="mb-4 text-gray-600">
-                      <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)} ({enrollment.course.duration},{" "}
-                      {enrollment.course.classCount}회)
-                    </p>
-                    <p className="mb-4 text-gray-600">
-                      시작 시간:{" "}
-                      {enrollment.course.startTime
-                        ? format(new Date(`2000-01-01T${enrollment.course.startTime}`), "a h시 mm분")
-                            .replace("AM", "오전")
-                            .replace("PM", "오후")
-                            .replace(":00분", "시")
-                        : "시간 정보 없음"}
-                    </p>
-                    {/*<p className="mb-4 text-gray-600">수업 시간: {enrollment.course.duration}</p>*/}
+                        {/*<p className="mb-4 text-gray-600">전화번호: {enrollment.course.teacher.user.phone}</p>*/}
 
-                    <p className="mb-4 text-gray-500">개강일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
-                    <p className="mb-4 text-gray-500">종강일: {format(new Date(enrollment.course.endDate), "yyyy년 MM월 dd일")}</p>
+                        <p className="mt-4 mb-4 text-gray-600">
+                          <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)} ({enrollment.course.duration},{" "}
+                          {enrollment.course.classCount}회)
+                        </p>
+                        <p className="mb-4 text-gray-600">
+                          시작 시간:{" "}
+                          {enrollment.course.startTime
+                            ? format(new Date(`2000-01-01T${enrollment.course.startTime}`), "a h시 mm분")
+                                .replace("AM", "오전")
+                                .replace("PM", "오후")
+                                .replace(":00분", "시")
+                            : "시간 정보 없음"}
+                        </p>
+                        {/*<p className="mb-4 text-gray-600">수업 시간: {enrollment.course.duration}</p>*/}
 
-                    <button
-                      onClick={() => openScheduleModal(enrollment.course.id)}
-                      className="mt-0 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
-                      수업 일정 보기
-                    </button>
+                        <p className="mb-4 text-gray-500">개강일: {format(new Date(enrollment.course.startDate), "yyyy년 MM월 dd일")}</p>
+                        <p className="mb-4 text-gray-500">종강일: {format(new Date(enrollment.course.endDate), "yyyy년 MM월 dd일")}</p>
+
+                        <button
+                          onClick={() => openScheduleModal(enrollment.course.id)}
+                          className="mt-0 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
+                          수업 일정 보기
+                        </button>
+                      </div>
+                    )}
 
                     <Link
                       href={`/dashboard/${enrollment.course.id}`}
