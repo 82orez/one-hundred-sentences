@@ -296,7 +296,7 @@ model Course {
   contents          Contents
   price             Int       @default(0)
   description       String?
-  generatorId       String
+  generatorId       String?
   teacherId         String?
   scheduleMonday    Boolean   @default(false)
   scheduleTuesday   Boolean   @default(false)
@@ -316,7 +316,7 @@ model Course {
   updatedAt DateTime @updatedAt
 
   // 관계 설정
-  generator          User                 @relation(fields: [generatorId], references: [id])
+  generator          User?                @relation(fields: [generatorId], references: [id])
   teacher            Teachers?            @relation(fields: [teacherId], references: [id])
   lessons            Lesson[]
   enrollments        Enrollment[]

@@ -287,7 +287,7 @@ export type Database = {
           duration: string | null
           endDate: string | null
           endTime: string | null
-          generatorId: string
+          generatorId: string | null
           id: string
           location: Database["public"]["Enums"]["Location"]
           price: number
@@ -312,7 +312,7 @@ export type Database = {
           duration?: string | null
           endDate?: string | null
           endTime?: string | null
-          generatorId: string
+          generatorId?: string | null
           id: string
           location: Database["public"]["Enums"]["Location"]
           price?: number
@@ -337,7 +337,7 @@ export type Database = {
           duration?: string | null
           endDate?: string | null
           endTime?: string | null
-          generatorId?: string
+          generatorId?: string | null
           id?: string
           location?: Database["public"]["Enums"]["Location"]
           price?: number
