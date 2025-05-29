@@ -290,6 +290,7 @@ export type Database = {
           generatorId: string
           id: string
           location: Database["public"]["Enums"]["Location"]
+          price: number
           scheduleFriday: boolean
           scheduleMonday: boolean
           scheduleSaturday: boolean
@@ -314,6 +315,7 @@ export type Database = {
           generatorId: string
           id: string
           location: Database["public"]["Enums"]["Location"]
+          price?: number
           scheduleFriday?: boolean
           scheduleMonday?: boolean
           scheduleSaturday?: boolean
@@ -338,6 +340,7 @@ export type Database = {
           generatorId?: string
           id?: string
           location?: Database["public"]["Enums"]["Location"]
+          price?: number
           scheduleFriday?: boolean
           scheduleMonday?: boolean
           scheduleSaturday?: boolean
@@ -1229,7 +1232,7 @@ export type Database = {
     Enums: {
       Contents: "tour100" | "basic100" | "wh100"
       EnrollmentStatus: "pending" | "active" | "completed" | "dropped"
-      Location: "online" | "offline" | "hybrid"
+      Location: "online" | "offline" | "hybrid" | "onlyApp"
       Nation: "KR" | "PH"
       Role: "admin" | "semiAdmin" | "teacher" | "student"
       Subject: "en" | "ja" | "ko" | "zh"
@@ -1350,7 +1353,7 @@ export const Constants = {
     Enums: {
       Contents: ["tour100", "basic100", "wh100"],
       EnrollmentStatus: ["pending", "active", "completed", "dropped"],
-      Location: ["online", "offline", "hybrid"],
+      Location: ["online", "offline", "hybrid", "onlyApp"],
       Nation: ["KR", "PH"],
       Role: ["admin", "semiAdmin", "teacher", "student"],
       Subject: ["en", "ja", "ko", "zh"],

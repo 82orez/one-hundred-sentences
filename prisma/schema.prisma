@@ -285,14 +285,16 @@ enum Contents {
 enum Location {
   online
   offline
+  onlyApp
   hybrid
 }
 
 model Course {
   id                String    @id @default(cuid())
   title             String
-  location          Location // 추가
-  contents          Contents // 추가
+  location          Location
+  contents          Contents
+  price             Int       @default(0)
   description       String?
   generatorId       String
   teacherId         String
