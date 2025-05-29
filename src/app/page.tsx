@@ -1,10 +1,10 @@
 "use server";
 
-import { Button } from "@/components/Button";
 import { Card, CardContent } from "@/components/Card";
+import { Button } from "@/components/Button/Button";
+import { CultureMemberButton } from "@/components/Button/CultureMemberButton";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
-import { CultureMemberButton } from "@/components/CultureMemberButton";
 
 export default async function LandingPage() {
   return (
