@@ -43,18 +43,26 @@ export default async function LandingPage() {
             <p className="mb-4 text-gray-600">반복 학습과 체계적인 암기법을 통해 누구나 쉽게 영어 실력을 높일 수 있습니다.</p>
 
             {/* pc 모드 */}
-            <div className={"flex justify-center md:gap-6"}>
-              <CultureMemberButton className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700 md:flex md:min-w-[150px] md:gap-0">
-                <div className={"flex flex-col items-center"}>
-                  <span>문화센터</span>
-                  <span>등록 회원</span>
-                </div>
-                <FaArrowRight className="ml-2" />
-              </CultureMemberButton>
+            <div className={"hidden md:flex md:w-full md:flex-col md:items-center"}>
+              <div className={"hidden md:flex md:max-w-[350px] md:flex-col md:items-center md:justify-between md:gap-4"}>
+                <div className={"flex justify-center md:w-full md:justify-between md:gap-6"}>
+                  <CultureMemberButton className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700 md:flex md:min-w-[150px] md:gap-0">
+                    <div className={"flex flex-col items-center"}>
+                      <span>문화센터</span>
+                      <span>등록 회원</span>
+                    </div>
+                    <FaArrowRight className="ml-2" />
+                  </CultureMemberButton>
 
-              <Button className="pointer-events-none hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:min-w-[150px]">
-                개인 회원 <FaArrowRight className="ml-2" />
-              </Button>
+                  <Button className="pointer-events-none hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:min-w-[150px]">
+                    개인 회원 <FaArrowRight className="ml-2" />
+                  </Button>
+                </div>
+
+                <Button className="pointer-events-none hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:w-full md:min-w-[150px] md:justify-center">
+                  무료 체험 신청하기 <FaArrowRight className="ml-2" />
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
