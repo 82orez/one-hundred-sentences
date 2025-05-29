@@ -225,19 +225,32 @@ export async function PUT(request: Request) {
 
     // 트랜잭션으로 업데이트 처리
     const result = await prisma.$transaction(async (prisma) => {
-      // 기존 수업 날짜 모두 삭제
-      await prisma.classDate.deleteMany({
-        where: { courseId: id },
-      });
+      // 1. 기존 수업 날짜와 새로운 수업 날짜 비교
+      const existingClassDateIds = existingCourse.classDates.map((date) => date.id);
 
-      // 강좌 정보 업데이트
+      // 2. 출석 기록이 없는 수업 날짜만 삭제 (안전하게 하나씩 확인)
+      for (const classDateId of existingClassDateIds) {
+        // 해당 수업 날짜에 연결된 출석 기록이 있는지 확인
+        const attendanceCount = await prisma.attendance.count({
+          where: { classDateId },
+        });
+
+        // 출석 기록이 없는 경우에만 삭제
+        if (attendanceCount === 0) {
+          await prisma.classDate.delete({
+            where: { id: classDateId },
+          });
+        }
+      }
+
+      // 3. 강좌 정보 업데이트
       const updatedCourse = await prisma.course.update({
         where: { id },
         data: {
           title: data.title,
           description: data.description,
-          location: data.location, // Location enum 값 추가
-          contents: data.contents, // Contents enum 값 추가
+          location: data.location,
+          contents: data.contents,
           teacherId: data.teacherId,
           scheduleMonday: data.scheduleMonday,
           scheduleTuesday: data.scheduleTuesday,
@@ -255,21 +268,26 @@ export async function PUT(request: Request) {
         },
       });
 
-      // 새 수업 날짜 추가 (startTime과 endTime 추가)
+      // 4. 새 수업 날짜 추가 (기존에 없던 날짜만)
       if (classDatesData.length > 0) {
-        await Promise.all(
-          classDatesData.map((dateItem: any) =>
-            prisma.classDate.create({
+        const existingDates = new Set(existingCourse.classDates.map((date) => new Date(date.date).toISOString().split("T")[0]));
+
+        for (const dateItem of classDatesData) {
+          const dateStr = new Date(dateItem.date).toISOString().split("T")[0];
+
+          // 기존에 없는 날짜만 추가
+          if (!existingDates.has(dateStr)) {
+            await prisma.classDate.create({
               data: {
                 courseId: id,
                 date: new Date(dateItem.date),
                 dayOfWeek: dateItem.dayOfWeek,
-                startTime: data.startTime || null, // 강좌의 시작 시간 사용
-                endTime: data.endTime || null, // 강좌의 종료 시간 사용
+                startTime: data.startTime || null,
+                endTime: data.endTime || null,
               },
-            }),
-          ),
-        );
+            });
+          }
+        }
       }
 
       return updatedCourse;
