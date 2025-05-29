@@ -151,6 +151,7 @@ export async function POST(request: Request) {
         duration: data.duration || "25분",
         endTime: data.endTime || null,
         classCount: data.classCount || 1,
+        price: data.price || 0,
       },
     });
 
@@ -265,6 +266,7 @@ export async function PUT(request: Request) {
           duration: data.duration || existingCourse.duration,
           endTime: data.endTime || existingCourse.endTime,
           classCount: data.classCount || existingCourse.classCount,
+          price: data.price,
         },
       });
 

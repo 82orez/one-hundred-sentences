@@ -886,6 +886,30 @@ export default function CoursePage() {
                 </div>
               </div>
 
+              {/* 수강료 입력 */}
+              <div className="mb-4">
+                <label htmlFor="price" className="mb-2 block text-sm font-medium text-gray-700">
+                  수강료 (원)
+                </label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  min="0"
+                  step="1000"
+                  value={formData.price}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      price: parseInt(e.target.value) || 0,
+                    })
+                  }
+                  className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
+                  placeholder="수강료를 입력하세요"
+                />
+                <p className="mt-1 text-sm text-gray-500">무료 강좌의 경우 0으로 입력하세요.</p>
+              </div>
+
               {/* 강좌 설명 */}
               <div className="form-control md:col-span-2">
                 <label className="label">
