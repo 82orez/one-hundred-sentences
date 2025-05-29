@@ -11,7 +11,7 @@ export default async function LandingPage() {
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-br from-blue-600 to-indigo-400 text-white">
       {/* 헤더 영역 */}
       <header className="mb-8 px-4 pt-10 text-center md:mb-12 md:pt-16">
-        <h1 className="mb-3 text-2xl font-bold drop-shadow-lg md:mb-8 md:text-5xl">한 달만에 끝내는 "여행영어 100문장 사관학교"</h1>
+        <h1 className="mb-3 text-2xl font-bold drop-shadow-lg md:mb-8 md:text-5xl">세 달만에 끝내는 "여행영어 100문장"</h1>
         <p className="mx-auto max-w-2xl text-lg text-gray-200 md:mb-2 md:text-xl">효과적인 영어 학습을 위한 최고의 플랫폼!</p>
         <p className="mx-auto max-w-2xl text-lg text-gray-200 md:text-xl">100문장을 단기간에 암기하고 영어 실력을 향상하세요.</p>
       </header>
