@@ -786,8 +786,9 @@ export default function CoursePage() {
                         course.status === "대기 중" && "bg-blue-100 text-blue-800",
                         course.status === "진행 중" && "bg-green-100 text-green-800",
                         course.status === "완료" && "bg-gray-100 text-gray-800",
+                        course.title === "무료 체험반" && "bg-green-100 text-green-800",
                       )}>
-                      {course.status}
+                      {course.title === "무료 체험반" ? "상시" : course.status}
                     </span>
                   </td>
                   <td className="flex gap-2">
