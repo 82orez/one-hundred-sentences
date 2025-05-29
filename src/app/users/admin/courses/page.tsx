@@ -51,6 +51,7 @@ interface Course {
   classCount: number;
   classDates: ClassDate[]; // 문자열 대신 객체 배열로 변경
   status: "대기 중" | "진행 중" | "완료"; // 상태 필드 추가
+  price: number;
 
   createdAt: string;
   updatedAt: string;
@@ -91,7 +92,8 @@ export default function CoursePage() {
     startTime: "",
     durationHours: "0",
     durationMinutes: "25",
-    classCount: 1, // 수업 횟수 추가
+    classCount: 1,
+    price: 0,
   });
 
   // 수업 종료 시간 계산
@@ -472,6 +474,7 @@ export default function CoursePage() {
       durationHours: "0",
       durationMinutes: "25",
       classCount: 1,
+      price: 0,
     });
     setClassDates([]);
   };
@@ -532,6 +535,7 @@ export default function CoursePage() {
       durationHours,
       durationMinutes,
       classCount: course.classCount || 1,
+      price: course.price || 0,
     });
 
     setEndTime(course.endTime || "");
@@ -748,6 +752,7 @@ export default function CoursePage() {
                 <th>수업 시작</th>
                 <th>진행 시간</th>
                 <th>종료일</th>
+                <th>수강료</th>
                 <th>수강생 관리</th>
                 <th>상태</th>
                 <th>관리</th>
@@ -765,6 +770,7 @@ export default function CoursePage() {
                   <td>{course.startTime || "-"}</td>
                   <td>{course.duration || "-"}</td>
                   <td>{formatDate(course.endDate)}</td>
+                  <td>{course.price || 0}</td>
                   <td className="flex gap-2">
                     <button onClick={() => handleEnrollmentClick(course)} className="rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">
                       등록
