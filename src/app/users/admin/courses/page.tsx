@@ -898,6 +898,7 @@ export default function CoursePage() {
                   min="0"
                   step="1000"
                   value={formData.price}
+                  onDoubleClick={(e) => e.currentTarget.select()}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
