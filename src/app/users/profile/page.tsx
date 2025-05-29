@@ -162,7 +162,7 @@ const ProfilePage = () => {
           {userInfo?.realName ? (
             <h3 className="mt-4 text-2xl font-semibold text-gray-800">{userInfo?.realName}님, 환영합니다.</h3>
           ) : (
-            <h3>이름을 등록해 주세요.</h3>
+            <h3 className="mt-4 text-2xl font-semibold text-gray-800">이름을 등록해 주세요.</h3>
           )}
 
           {/* 프로필 이미지 */}
