@@ -111,18 +111,13 @@ export default function LandingPage() {
 
             {/* Feature 2 */}
             <div className="transform rounded-xl bg-white/90 p-6 text-center shadow-lg transition-transform hover:scale-105">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-blue-600">사용자 맞춤</h3>
-              <p className="mt-2 text-gray-600">개인별 학습 데이터를 기반으로 한 복습 추천 시스템.</p>
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">📱</div>
+              <h3 className="text-xl font-semibold text-blue-600">성장형 학습 어플 + AI</h3>
+              <ul className="mt-2 list-outside list-disc pl-4 text-left text-gray-700">
+                <li>100문장 핵심 동영상 강의</li>
+                <li>원어민 음성 듣기 + 말하기 반복 훈련</li>
+                <li>AI를 이용한 스피킹 퀴즈로 실력 체크</li>
+              </ul>
             </div>
 
             {/* Feature 3 */}
@@ -163,13 +158,13 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/*<div className={"flex items-center justify-center"}>*/}
-            {/*  <Link href="/users/edit" className={"mx-auto text-gray-500 hover:underline"}>*/}
-            {/*    회원 정보 등록*/}
-            {/*  </Link>*/}
-            {/*</div>*/}
+            <div className={"flex items-center justify-center"}>
+              <Link href="/users/edit" className={"mx-auto text-gray-500 underline"}>
+                회원 정보 등록
+              </Link>
+            </div>
 
-            <div className="mt-4 flex justify-center">
+            <div className="mt-6 flex justify-center">
               <button onClick={closeModal} className="rounded-lg bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400">
                 닫기
               </button>
