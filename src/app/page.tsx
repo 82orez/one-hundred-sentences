@@ -32,10 +32,10 @@ export default async function LandingPage() {
               <FaArrowRight className="ml-2" />
             </Button>
 
-            <Button className="pointer-events-none mb-4 flex min-w-[220px] cursor-pointer items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white opacity-50 hover:bg-indigo-700 md:hidden">
-              <span>무료 체험하기</span>
-              <FaArrowRight className="ml-2" />
-            </Button>
+            {/*<Button className="pointer-events-none mb-4 flex min-w-[220px] cursor-pointer items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white opacity-50 hover:bg-indigo-700 md:hidden">*/}
+            {/*  <span>무료 체험하기</span>*/}
+            {/*  <FaArrowRight className="ml-2" />*/}
+            {/*</Button>*/}
           </div>
 
           <CardContent className="text-center md:text-left">
@@ -59,9 +59,9 @@ export default async function LandingPage() {
                   </Button>
                 </div>
 
-                <Button className="pointer-events-none hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-6 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:w-full md:min-w-[150px] md:justify-center">
-                  무료 체험 신청하기 <FaArrowRight className="ml-2" />
-                </Button>
+                {/*<Button className="pointer-events-none hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-6 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:w-full md:min-w-[150px] md:justify-center">*/}
+                {/*  무료 체험 신청하기 <FaArrowRight className="ml-2" />*/}
+                {/*</Button>*/}
               </div>
             </div>
           </CardContent>
