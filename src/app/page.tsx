@@ -1,12 +1,23 @@
-"use server";
+"use client";
 
 import { Card, CardContent } from "@/components/Card";
 import { Button } from "@/components/Button/Button";
 import { CultureMemberButton } from "@/components/Button/CultureMemberButton";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
+import { useState } from "react";
 
-export default async function LandingPage() {
+export default function LandingPage() {
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-br from-blue-600 to-indigo-400 text-white">
       {/* 헤더 영역 */}
@@ -32,10 +43,13 @@ export default async function LandingPage() {
               <FaArrowRight className="ml-2" />
             </Button>
 
-            {/*<Button className="pointer-events-none mb-4 flex min-w-[220px] cursor-pointer items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white opacity-50 hover:bg-indigo-700 md:hidden">*/}
-            {/*  <span>무료 체험하기</span>*/}
-            {/*  <FaArrowRight className="ml-2" />*/}
-            {/*</Button>*/}
+            {/* 무료 체험 안내 */}
+            <button
+              onClick={openModal}
+              className="mb-4 flex min-w-[220px] cursor-pointer items-center justify-center rounded-xl bg-green-600 px-6 py-3 text-lg text-white hover:bg-green-700 md:hidden">
+              <span>무료 체험 안내</span>
+              <FaArrowRight className="ml-2" />
+            </button>
           </div>
 
           <CardContent className="text-center md:text-left">
@@ -59,9 +73,12 @@ export default async function LandingPage() {
                   </Button>
                 </div>
 
-                {/*<Button className="pointer-events-none hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-6 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:w-full md:min-w-[150px] md:justify-center">*/}
-                {/*  무료 체험 신청하기 <FaArrowRight className="ml-2" />*/}
-                {/*</Button>*/}
+                {/* 무료 체험 안내 */}
+                <button
+                  onClick={openModal}
+                  className="hidden cursor-pointer items-center rounded-xl bg-green-600 px-6 py-4 text-lg text-white hover:bg-green-700 md:flex md:w-full md:min-w-[150px] md:justify-center">
+                  무료 체험 안내 <FaArrowRight className="ml-2" />
+                </button>
               </div>
             </div>
           </CardContent>
@@ -125,6 +142,43 @@ export default async function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* 무료 체험 모달 */}
+      {showModal && (
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="w-11/12 max-w-md rounded-lg bg-white p-6 shadow-lg md:p-8">
+            <h2 className="mb-4 text-center text-2xl font-bold text-gray-800">무료 체험 안내</h2>
+            <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-indigo-600"></div>
+
+            <div className="text-gray-700">
+              <div className="mb-4 flex items-start">
+                <div className="mt-1 mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-800">1</div>
+                <p>회원 가입 및 로그인 후 회원 정보에서 본인의 이름과 전화번호를 등록하세요.</p>
+              </div>
+
+              <div className="mb-6 flex items-start">
+                <div className="mt-1 mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-800">2</div>
+                <p>이후, 내 강의 보기에 '무료 체험반'이 자동 생성됩니다.</p>
+              </div>
+            </div>
+
+            <div className="flex justify-center space-x-4">
+              <button onClick={closeModal} className="rounded-lg bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400">
+                닫기
+              </button>
+              <button
+                className="hidden rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+                onClick={() => {
+                  closeModal();
+                  // 여기에 회원 가입 페이지로 이동하는 로직 추가
+                  // 예: router.push('/register');
+                }}>
+                회원가입
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
