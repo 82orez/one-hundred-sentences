@@ -116,24 +116,19 @@ export default function LandingPage() {
               <ul className="mt-2 list-outside list-disc pl-4 text-left text-gray-700">
                 <li>100문장 핵심 동영상 강의</li>
                 <li>원어민 음성 듣기 + 말하기 반복 훈련</li>
-                <li>AI를 이용한 스피킹 퀴즈로 실력 체크</li>
+                <li>AI를 활용한 스피킹 퀴즈로 실력 체크</li>
               </ul>
             </div>
 
             {/* Feature 3 */}
             <div className="transform rounded-xl bg-white/90 p-6 text-center shadow-lg transition-transform hover:scale-105">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-blue-600">모바일 최적화</h3>
-              <p className="mt-2 text-gray-600">어디서나 복습 가능하도록 모바일에서 완벽히 작동합니다.</p>
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">🌐</div>
+              <h3 className="text-xl font-semibold text-blue-600">온라인 공동 클래스</h3>
+              <ul className="mt-2 list-outside list-disc pl-4 text-left text-gray-700">
+                <li>zoom을 이용한 1:N 실시간 강의</li>
+                <li>문장 말하기 녹음 후 피드백 제공</li>
+                <li>팀원들이 함께 성장하는 온라인 스터디</li>
+              </ul>
             </div>
           </div>
         </div>
