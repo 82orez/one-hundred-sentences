@@ -23,9 +23,11 @@ export default function LandingPage() {
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-br from-blue-600 to-indigo-400 text-white">
       {/* 헤더 영역 */}
       <header className="mb-8 px-4 pt-10 text-center md:mb-12 md:pt-16">
-        <h1 className="mb-3 text-2xl font-bold drop-shadow-lg md:mb-8 md:text-5xl">세 달만에 끝내는 "여행영어 100문장"</h1>
-        <p className="mx-auto max-w-2xl text-lg text-gray-200 md:mb-2 md:text-xl">효과적인 영어 학습을 위한 최고의 플랫폼!</p>
-        <p className="mx-auto max-w-2xl text-lg text-gray-200 md:text-xl">100문장을 단기간에 암기하고 영어 실력을 향상하세요.</p>
+        <h1 className="mb-3 text-xl font-bold drop-shadow-lg md:mb-8 md:text-5xl">Friending Makes EngPossible!</h1>
+        <h1 className="mb-1 text-xl font-semibold drop-shadow-lg md:mb-4 md:text-4xl">프렌딩 잉파서블!</h1>
+        <h1 className="mb-3 text-xl font-semibold drop-shadow-lg md:mb-8 md:text-4xl">‘함께하면’ 영어가 가능해집니다.</h1>
+        <p className="mx-auto max-w-2xl text-lg text-gray-200 md:mb-2 md:text-xl">혼자서는 어려웠던 영어, 이젠 프렌딩에서 함께 배워요.</p>
+        <p className="mx-auto max-w-2xl text-lg text-gray-200 md:text-xl">공동체에 참여하고, 재미있게, 빠르게!</p>
       </header>
 
       {/* 메인 카드 영역 */}
