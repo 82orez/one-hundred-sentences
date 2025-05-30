@@ -588,7 +588,7 @@ export default function Dashboard({ params }: Props) {
           <h2 className="mb-4 text-xl font-semibold">우리는 One Team</h2>
           <div>
             <div className="rounded-lg bg-blue-50 p-4">
-              <p className="font-medium">우리 Class의 팀 동지들을 만나보세요.</p>
+              <p className="font-medium">우리 Class의 팀원들을 만나보세요.</p>
               {/*<p className="mt-2 text-sm text-gray-600">All for One, One for All.</p>*/}
               <button
                 className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"

@@ -6,6 +6,7 @@ import { CultureMemberButton } from "@/components/Button/CultureMemberButton";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function LandingPage() {
   const [showModal, setShowModal] = useState(false);
@@ -162,7 +163,13 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="flex justify-center space-x-4">
+            {/*<div className={"flex items-center justify-center"}>*/}
+            {/*  <Link href="/users/edit" className={"mx-auto text-gray-500 hover:underline"}>*/}
+            {/*    회원 정보 등록*/}
+            {/*  </Link>*/}
+            {/*</div>*/}
+
+            <div className="mt-4 flex justify-center">
               <button onClick={closeModal} className="rounded-lg bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400">
                 닫기
               </button>
