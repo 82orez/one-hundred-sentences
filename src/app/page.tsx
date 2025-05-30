@@ -27,7 +27,7 @@ export default function LandingPage() {
         <h1 className="mb-1 text-xl font-semibold drop-shadow-lg md:mb-4 md:text-4xl">프렌딩 잉파서블!</h1>
         <h1 className="mb-3 text-xl font-semibold drop-shadow-lg md:mb-8 md:text-4xl">‘함께하면’ 영어가 가능해집니다.</h1>
         <p className="mx-auto max-w-2xl text-lg text-gray-200 md:mb-2 md:text-xl">혼자서는 어려웠던 영어, 이젠 프렌딩에서 함께 배워요.</p>
-        <p className="mx-auto max-w-2xl text-lg text-gray-200 md:text-xl">공동체에 참여하고, 재미있게, 빠르게!</p>
+        <p className="mx-auto max-w-2xl text-lg text-gray-200 md:text-xl">공동체에 참여하고, 재미있고 빠르게!</p>
       </header>
 
       {/* 메인 카드 영역 */}
@@ -56,8 +56,10 @@ export default function LandingPage() {
           </div>
 
           <CardContent className="text-center md:text-left">
-            <h2 className="mb-1 text-xl font-semibold md:mb-3 md:text-2xl">영어 100문장으로 영어의 기초를 완성하세요.</h2>
-            <p className="mb-4 text-gray-600">반복 학습과 체계적인 암기법을 통해 누구나 쉽게 영어 실력을 높일 수 있습니다.</p>
+            <h2 className="mb-1 text-xl font-semibold md:mb-3 md:text-2xl">공항, 호텔, 길 찾기... 말 한마디가 어려우셨다면?</h2>
+            <p className="mb-1 text-gray-600">같이 배우고, 같이 말해보는 여행영어 공동체에 참여해보세요!</p>
+            <p className="mb-4 text-gray-600">세 달 만에 여행 100문장을 '함께' 완성하여 영어의 기초를 완성하세요.</p>
+            {/*<p className="mb-1 text-gray-600">공항, 호텔, 길 찾기... 말 한마디가 어려우셨다면?</p>*/}
 
             {/* pc 모드 */}
             <div className={"hidden md:flex md:w-full md:flex-col md:items-center"}>
