@@ -282,10 +282,10 @@ const EditProfilePage = () => {
                     value={classNickName}
                     onChange={(e) => setClassNickName(e.target.value)}
                     className="h-12 w-full rounded-lg border border-gray-400 pl-14 text-lg shadow-md focus:ring-2 focus:ring-gray-400"
-                    placeholder="수업에서 사용할 닉네임을 입력해 주세요."
+                    placeholder="수업 또는 웹앱에서 사용할 닉네임을 입력해 주세요."
                   />
                 </div>
-                <p className="mt-1 text-sm text-gray-500">수업 중 사용할 닉네임을 입력하세요. 입력하지 않으면 실제 이름이 사용됩니다.</p>
+                <p className="mt-1 text-sm text-gray-500">수업 또는 웹앱에서 사용할 닉네임을 입력하세요. 입력하지 않으면 실제 이름이 사용됩니다.</p>
               </div>
 
               <div className="">

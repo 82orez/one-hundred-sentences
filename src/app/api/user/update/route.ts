@@ -86,6 +86,28 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // 사용자가 실제 이름과 전화번호를 등록했다면 무료 체험반에 자동 등록
+    const existingEnrollment = await prisma.enrollment.findFirst({
+      where: {
+        studentId: session.user.id,
+        courseId: "freecoursetour",
+      },
+    });
+
+    // 이미 무료 체험반에 등록되어 있지 않은 경우에만 등록
+    if (!existingEnrollment && realName && phone) {
+      await prisma.enrollment.create({
+        data: {
+          courseId: "freecoursetour",
+          courseTitle: "무료 체험반",
+          studentId: session.user.id,
+          studentName: realName,
+          studentPhone: phone,
+          status: "active",
+        },
+      });
+    }
+
     return NextResponse.json({ message: "Profile updated successfully" });
   } catch (error) {
     console.error("Error updating profile:", error);
