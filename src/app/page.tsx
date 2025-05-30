@@ -40,7 +40,7 @@ export default function LandingPage() {
             </CultureMemberButton>
 
             <Button className="pointer-events-none mb-4 flex min-w-[220px] cursor-pointer items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white opacity-50 hover:bg-indigo-700 md:hidden">
-              <span>개인 회원</span>
+              <span>개인 회원(준비 중)</span>
               <FaArrowRight className="ml-2" />
             </Button>
 
@@ -70,7 +70,12 @@ export default function LandingPage() {
                   </CultureMemberButton>
 
                   <Button className="pointer-events-none hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:min-w-[150px]">
-                    개인 회원 <FaArrowRight className="ml-2" />
+                    {/*개인 회원 <FaArrowRight className="ml-2" />*/}
+                    <div className={"flex flex-col items-center"}>
+                      <span>개인 회원</span>
+                      <span>(준비 중)</span>
+                    </div>
+                    <FaArrowRight className="ml-2" />
                   </Button>
                 </div>
 
@@ -97,7 +102,11 @@ export default function LandingPage() {
             <div className="transform rounded-xl bg-white/90 p-6 text-center shadow-lg transition-transform hover:scale-105">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">🏆</div>
               <h3 className="text-xl font-semibold text-blue-600">목표와 보상</h3>
-              <p className="mt-2 text-gray-600">하루하루 학습 진도를 추적하여 너무 오래된 내용을 복습하는 데 도움을 줍니다.</p>
+              <ul className="mt-2 list-outside list-disc pl-4 text-left text-gray-700">
+                <li>100문장 공동 목표에 도전</li>
+                <li>개인/팀 학습 수치화로 동기 부여</li>
+                <li>공동 목표 달성 시 팀 구성원 전체에게 보상 제공</li>
+              </ul>
             </div>
 
             {/* Feature 2 */}
