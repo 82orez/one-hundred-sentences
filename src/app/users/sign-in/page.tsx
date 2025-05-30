@@ -93,7 +93,7 @@ export default function SignIn() {
         </div>
       )}
 
-      <h1 className="mb-10 text-xl font-semibold">로그인 하기</h1>
+      <h1 className="mb-10 text-center text-xl font-semibold">회원가입 및 로그인 하기</h1>
 
       <div className="relative">
         <button
