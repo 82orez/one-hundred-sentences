@@ -89,23 +89,14 @@ export default function LandingPage() {
       {/* Features Section - 명확하게 구분되도록 디자인 개선 */}
       <section className="bg-opacity-60 mt-16 w-full bg-gradient-to-br from-indigo-900 to-indigo-300 py-16 backdrop-blur-sm">
         <div className="mx-auto max-w-5xl px-4">
-          <h2 className="mb-2 text-center text-3xl font-bold">주요 기능</h2>
+          <h2 className="mb-2 text-center text-3xl font-bold">프렌딩 공동체, 이렇게 다릅니다.</h2>
           <div className="mx-auto mb-10 h-1 w-20 rounded-full bg-white"></div>
 
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
             {/* Feature 1 */}
             <div className="transform rounded-xl bg-white/90 p-6 text-center shadow-lg transition-transform hover:scale-105">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-blue-600">학습 진도 추적</h3>
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">🏆</div>
+              <h3 className="text-xl font-semibold text-blue-600">목표와 보상</h3>
               <p className="mt-2 text-gray-600">하루하루 학습 진도를 추적하여 너무 오래된 내용을 복습하는 데 도움을 줍니다.</p>
             </div>
 
