@@ -212,7 +212,10 @@ const ProfilePage = () => {
                   handleResetImage();
                 }
               }}
-              className="inline-flex w-20 items-center justify-center rounded-lg border border-gray-400 bg-white px-3 py-2 text-gray-800 hover:bg-gray-100">
+              className={clsx(
+                "inline-flex w-20 items-center justify-center rounded-lg border border-gray-400 bg-white px-3 py-2 text-gray-800 hover:bg-gray-100",
+                { "pointer-events-none": profileImageUrl === "/images/anon-user-1.jpg" },
+              )}>
               Reset
             </button>
           </div>
