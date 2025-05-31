@@ -123,6 +123,10 @@ export const checkAnswer = (
         .replace(/\bcan i cash\b/g, "can i catch")
         .replace(/\bthe taurus\b/g, "the tour")
         .replace(/\bmy postcard\b/g, "my bus card")
+        .replace(/\ba feeding room\b/g, "the fitting room")
+        .replace(/\bon my love\b/g, "on my left")
+        .replace(/\bis there a guy\b/g, "is there a guide")
+        .replace(/\bare you from Korean\b/g, "i am from korea")
 
         .replace(/\bi'll\b/g, "i will")
         .replace(/\bi've\b/g, "i have")
