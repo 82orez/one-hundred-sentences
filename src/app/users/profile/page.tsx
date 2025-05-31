@@ -13,6 +13,7 @@ import { queryClient } from "@/app/providers";
 import { RxAvatar } from "react-icons/rx";
 import { LuMessageSquareText } from "react-icons/lu";
 import { FaExchangeAlt } from "react-icons/fa";
+import clsx from "clsx";
 
 const ProfilePage = () => {
   const { data: session, update } = useSession();
@@ -185,11 +186,13 @@ const ProfilePage = () => {
 
           <div className={"mt-2 flex items-center justify-center gap-2"}>
             <div className={`rounded-lg px-2 py-2 ${userInfo?.isImagePublicOpen ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}>
-              {userInfo?.isImagePublicOpen ? "공개 중" : "비공개 상태"}
+              {profileImageUrl === "/images/anon-user-1.jpg" ? "이미지 없음" : userInfo?.isImagePublicOpen ? "공개 중" : "비공개 상태"}
             </div>
             <FaExchangeAlt
               size={22}
-              className="cursor-pointer text-gray-500 transition-colors hover:text-blue-600"
+              className={clsx("cursor-pointer text-gray-500 transition-colors hover:text-blue-600", {
+                hidden: profileImageUrl === "/images/anon-user-1.jpg",
+              })}
               onClick={handleToggleImagePublic}
               title={userInfo?.isImagePublicOpen ? "비공개로 전환" : "공개로 전환"}
             />
