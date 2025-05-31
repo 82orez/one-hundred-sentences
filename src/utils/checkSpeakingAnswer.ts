@@ -132,6 +132,8 @@ export const checkAnswer = (
         .replace(/\byou've had to check my suitcase again\b/g, "you've had to check my suitcase again")
         .replace(/\bis it okay if I touch your dog\b/g, "is it okay if I pet your dog")
         .replace(/\bis it okay if I patch your dog\b/g, "is it okay if I pet your dog")
+        .replace(/\bwhy is there not allowed\b/g, "why they are not allowed")
+        .replace(/\bto fish\b/g, "to visit")
 
         .replace(/\bi'll\b/g, "i will")
         .replace(/\bi've\b/g, "i have")
