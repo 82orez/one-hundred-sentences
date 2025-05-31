@@ -106,7 +106,7 @@ export const checkAnswer = (
         .replace(/\bself-checking\b/g, "self check in")
         .replace(/\bself checking\b/g, "self check in")
         .replace(/\bself check-in\b/g, "self check in")
-        // .replace(/\bon food\b/g, "on foot")
+        .replace(/\bon food\b/g, "on foot")
         .replace(/\bhuman i can\b/g, "you mean i can")
         .replace(/\bis there a dog\b/g, "is your dog")
         .replace(/\bi don't have a pizza\b/g, "i will have a pizza")
@@ -120,6 +120,7 @@ export const checkAnswer = (
         .replace(/\bthe helper bus\b/g, "the airport bus")
         .replace(/\bthe upper bus\b/g, "the airport bus")
         .replace(/\bthe amber bus\b/g, "the airport bus")
+        .replace(/\bcan i cash\b/g, "can i catch")
 
         .replace(/\bi'll\b/g, "i will")
         .replace(/\bi've\b/g, "i have")
