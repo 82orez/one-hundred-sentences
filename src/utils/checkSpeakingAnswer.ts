@@ -121,6 +121,8 @@ export const checkAnswer = (
         .replace(/\bthe upper bus\b/g, "the airport bus")
         .replace(/\bthe amber bus\b/g, "the airport bus")
         .replace(/\bcan i cash\b/g, "can i catch")
+        .replace(/\bthe taurus\b/g, "the tour")
+        .replace(/\bmy postcard\b/g, "my bus card")
 
         .replace(/\bi'll\b/g, "i will")
         .replace(/\bi've\b/g, "i have")
