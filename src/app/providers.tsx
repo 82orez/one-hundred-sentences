@@ -38,7 +38,7 @@ export const NextLayout = ({ children }: Props) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <DevelopingNotion />
+      {/*<DevelopingNotion />*/}
       {/*<AnnouncementModalForOneDay />*/}
       {/*<AnnouncementModal />*/}
       <Navbar />

@@ -222,7 +222,7 @@ export default function MyCoursesPage() {
                         <button
                           onClick={() => openScheduleModal(enrollment.course.id)}
                           className="mt-0 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
-                          수업 일정 보기
+                          수업 일정 및 수업 참여
                         </button>
                       </div>
                     )}
@@ -244,7 +244,7 @@ export default function MyCoursesPage() {
                       }}
                       className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-center font-semibold text-gray-700 hover:bg-gray-200">
                       <Play className="mr-1 h-4 w-4" />
-                      <div>학습 시작하기</div>
+                      <div>학습 어플 시작하기</div>
                     </Link>
                   </div>
                 ))}
