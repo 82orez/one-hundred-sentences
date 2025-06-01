@@ -541,7 +541,7 @@ const LearnPage = ({ params }: Props) => {
   return (
     <div className="relative mx-auto max-w-xl p-4">
       {/* 페이지 네비게이션 버튼 */}
-      <div className="mt-2 flex items-center justify-between px-0 md:mt-4">
+      <div className="mt-2 flex items-center justify-between gap-2 px-0 md:mt-4">
         <button
           onClick={handlePreviousDay}
           disabled={nextDay === 1}
@@ -555,7 +555,9 @@ const LearnPage = ({ params }: Props) => {
 
         <div className="flex flex-col items-center gap-1 md:gap-2">
           <h1 className="text-2xl font-bold md:text-3xl">Unit {day}</h1>
-          <h1 className="text-xl font-semibold md:text-2xl">{isUnitSubjectAndUtubeUrlLoading ? "Loading" : unitSubjectAndUtubeUrl?.subjectKo}</h1>
+          <h1 className="text-center text-xl font-semibold md:text-2xl">
+            {isUnitSubjectAndUtubeUrlLoading ? "Loading" : unitSubjectAndUtubeUrl?.subjectKo}
+          </h1>
         </div>
 
         <button

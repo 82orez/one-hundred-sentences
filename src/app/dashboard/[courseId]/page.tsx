@@ -640,7 +640,7 @@ export default function Dashboard({ params }: Props) {
                 ×
               </button>
 
-              <h2 className="mb-4 text-center text-2xl font-semibold">"Unit {selectedDay}"에서 학습할 내용</h2>
+              <h2 className="mb-4 text-center text-2xl font-semibold">"Unit {selectedDay}" 학습 내용</h2>
 
               {isFetching ? (
                 <LoadingPageSkeleton />
