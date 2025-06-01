@@ -172,7 +172,7 @@ const ProfilePage = () => {
               className="relative h-36 w-36 cursor-pointer overflow-hidden rounded-full shadow-md ring-2 ring-blue-300 md:h-44 md:w-44"
               onClick={handleImageClick}>
               <img src={profileImageUrl} alt="Profile Image" className="h-full w-full object-cover object-center" />
-              {isUploading && (
+              {(isUploading || resetImageMutation.isPending) && (
                 <div className="bg-opacity-50 absolute inset-0 flex items-center justify-center bg-black">
                   <div className="h-10 w-10 animate-spin rounded-full border-t-2 border-b-2 border-white"></div>
                 </div>
