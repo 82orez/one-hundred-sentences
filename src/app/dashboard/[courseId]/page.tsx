@@ -640,7 +640,7 @@ export default function Dashboard({ params }: Props) {
                 ×
               </button>
 
-              <h2 className="mb-4 text-center text-2xl font-semibold">"Unit {selectedDay}" 학습 내용</h2>
+              <h2 className="mb-4 text-center text-2xl font-semibold">Unit {selectedDay} 학습 내용</h2>
 
               {isFetching ? (
                 <LoadingPageSkeleton />
@@ -659,7 +659,7 @@ export default function Dashboard({ params }: Props) {
               <button
                 className="mt-6 w-full rounded-lg bg-blue-500 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-blue-600"
                 onClick={() => router.push(`/learn/${selectedDay}`)}>
-                {selectedDay}일차 학습 시작 🚀
+                Unit {selectedDay} 학습 시작 🚀
               </button>
             </motion.div>
           </motion.div>
