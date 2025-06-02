@@ -98,7 +98,7 @@ export default function LandingPage() {
       {/* Features Section - 명확하게 구분되도록 디자인 개선 */}
       <section className="bg-opacity-60 mt-16 w-full bg-gradient-to-br from-indigo-900 to-indigo-300 py-16 backdrop-blur-sm">
         <div className="mx-auto max-w-5xl px-4">
-          <h2 className="mb-2 text-center text-3xl font-bold">프렌딩 공동체, 이렇게 다릅니다.</h2>
+          <h2 className="mb-2 text-center text-3xl font-semibold">프렌딩 공동체, 이렇게 다릅니다.</h2>
           <div className="mx-auto mb-10 h-1 w-20 rounded-full bg-white"></div>
 
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -142,7 +142,7 @@ export default function LandingPage() {
       {showModal && (
         <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
           <div className="w-11/12 max-w-md rounded-lg bg-white p-6 shadow-lg md:p-8">
-            <h2 className="mb-4 text-center text-2xl font-bold text-gray-800">무료 체험 안내</h2>
+            <h2 className="mb-4 text-center text-2xl font-semibold text-gray-800">무료 체험 안내</h2>
             <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-indigo-600"></div>
 
             <div className="text-gray-700">
