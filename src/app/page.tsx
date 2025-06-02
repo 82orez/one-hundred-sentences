@@ -96,12 +96,12 @@ export default function LandingPage() {
       </div>
 
       {/* Features Section - 명확하게 구분되도록 디자인 개선 */}
-      <section className="bg-opacity-60 mt-12 w-full bg-gradient-to-br from-indigo-900 to-indigo-300 py-16 backdrop-blur-sm md:mt-16">
+      <section className="bg-opacity-60 mt-12 w-full bg-gradient-to-br from-indigo-900 to-indigo-300 py-10 backdrop-blur-sm md:mt-16 md:py-12">
         <div className="mx-auto max-w-5xl px-4">
-          <h2 className="mb-2 text-center text-3xl font-semibold">프렌딩 공동체, 이렇게 다릅니다.</h2>
-          <div className="mx-auto mb-10 h-1 w-20 rounded-full bg-white"></div>
+          <h2 className="mb-4 text-center text-3xl font-semibold">프렌딩 공동체, 이렇게 다릅니다.</h2>
+          <div className="mx-auto h-1 w-1/2 rounded-full bg-white"></div>
 
-          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 gap-6 md:mt-8 md:grid-cols-3">
             {/* Feature 1 */}
             <div className="transform rounded-xl bg-white/90 p-6 text-center shadow-lg transition-transform hover:scale-105">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">🏆</div>
