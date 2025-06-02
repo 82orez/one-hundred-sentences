@@ -33,7 +33,7 @@ export default function MyCourses() {
       try {
         const response = await axios.get("/api/my-courses");
         setCourses(response.data.courses);
-        console.log(response.data.courses);
+        console.log("myCourses: ", response.data.courses);
         return response.data.courses;
       } catch (error) {
         console.error("강좌 조회 실패:", error);
@@ -129,7 +129,7 @@ export default function MyCourses() {
                       {course.teacher && (
                         <>
                           <p>
-                            <span className="font-medium">교사:</span> {course.teacher.user?.realName || "미정"}
+                            <span className="font-medium">강사명:</span> {course.teacher.user?.realName || "미정"}
                           </p>
                           <p className={"hidden"}>
                             <span className="font-medium">zoom:</span> {course.teacher.user?.zoomInviteUrl || "미정"}
@@ -176,7 +176,7 @@ export default function MyCourses() {
 
                   <div className="bg-gray-50 px-4 py-3 text-right">
                     <Link href={`/user-course-points/${course.id}`} className="font-medium text-blue-600" onClick={(e) => e.stopPropagation()}>
-                      수강생 List 보기 →
+                      포인트 랭킹 보기 →
                     </Link>
                   </div>
                 </div>
