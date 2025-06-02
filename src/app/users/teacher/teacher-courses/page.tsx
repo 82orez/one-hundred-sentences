@@ -117,10 +117,7 @@ export default function MyCourses() {
               const course = item.course || item;
 
               return (
-                <div
-                  key={course.id}
-                  className="cursor-pointer overflow-hidden rounded-lg border transition-shadow hover:shadow-lg"
-                  onClick={() => router.push(`/dashboard/courses/${course.id}`)}>
+                <div key={course.id} className="overflow-hidden rounded-lg border transition-shadow hover:shadow-lg">
                   <div className="p-4">
                     <h2 className="text-xl font-semibold">{course.title}</h2>
                     <p className="mt-2 line-clamp-2 text-gray-600">{course.description || "설명 없음"}</p>
