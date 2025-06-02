@@ -22,7 +22,7 @@ export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-br from-blue-600 to-indigo-400 text-white">
       {/* 헤더 영역 */}
-      <header className="mb-8 px-4 pt-10 text-center md:mb-12 md:pt-16">
+      <header className="mb-8 px-4 pt-8 text-center md:mb-12 md:pt-12">
         <h1 className="mb-3 text-xl font-bold drop-shadow-lg md:mb-8 md:text-5xl">Friending Makes EngPossible!</h1>
         {/*<h1 className="mb-1 text-xl font-semibold drop-shadow-lg md:mb-4 md:text-4xl">프렌딩 잉파서블!</h1>*/}
         <h1 className="mb-3 text-xl font-semibold drop-shadow-lg md:mb-8 md:text-4xl">‘함께하면’ 영어가 가능해집니다.</h1>
@@ -58,7 +58,7 @@ export default function LandingPage() {
           <CardContent className="text-center md:text-left">
             <h2 className="mb-1 text-xl font-semibold md:mb-3 md:text-2xl">공항, 호텔, 길 찾기... 말 한마디가 어려우셨다면?</h2>
             <p className="mb-1 text-gray-600">같이 배우고, 같이 말해보는 여행영어 공동체에 참여해보세요!</p>
-            <p className="mb-4 text-gray-600">세 달 만에 여행 100문장을 '함께' 완성하여 영어의 기초를 완성하세요.</p>
+            <p className="text-gray-600 md:mb-6">세 달 만에 여행 100문장을 '함께' 완성하여 영어의 기초를 완성하세요.</p>
             {/*<p className="mb-1 text-gray-600">공항, 호텔, 길 찾기... 말 한마디가 어려우셨다면?</p>*/}
 
             {/* pc 모드 */}
