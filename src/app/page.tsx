@@ -96,7 +96,7 @@ export default function LandingPage() {
       </div>
 
       {/* Features Section - 명확하게 구분되도록 디자인 개선 */}
-      <section className="bg-opacity-60 mt-16 w-full bg-gradient-to-br from-indigo-900 to-indigo-300 py-16 backdrop-blur-sm">
+      <section className="bg-opacity-60 mt-12 w-full bg-gradient-to-br from-indigo-900 to-indigo-300 py-16 backdrop-blur-sm md:mt-16">
         <div className="mx-auto max-w-5xl px-4">
           <h2 className="mb-2 text-center text-3xl font-semibold">프렌딩 공동체, 이렇게 다릅니다.</h2>
           <div className="mx-auto mb-10 h-1 w-20 rounded-full bg-white"></div>
