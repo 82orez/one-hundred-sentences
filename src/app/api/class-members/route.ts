@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
         student: {
           select: {
             id: true,
+            role: true,
             name: true,
             realName: true,
             classNickName: true,
@@ -50,6 +51,7 @@ export async function GET(req: NextRequest) {
 
       return {
         id: student?.id,
+        role: student?.role,
         displayName,
         profileImage,
         hasIntroduction: !!student?.message,

@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { X, Eye, User, ChevronUp, ChevronDown } from "lucide-react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import clsx from "clsx";
 
 interface ClassMember {
   id: string;
@@ -13,6 +15,7 @@ interface ClassMember {
   profileImage: string | null;
   hasIntroduction: boolean;
   message: string | null;
+  role?: string; // role 속성 추가
 }
 
 interface ClassMembersModalProps {
@@ -25,11 +28,14 @@ interface ClassMembersModalProps {
 export default function ClassMembersModal({ isOpen, onClose, courseId, courseTitle }: ClassMembersModalProps) {
   const [expandedMemberId, setExpandedMemberId] = useState<string | null>(null);
 
+  // const { status, data } = useSession();
+
   // 강좌 멤버 목록 조회 쿼리
-  const { data, isLoading } = useQuery({
+  const { data: membersData, isLoading } = useQuery({
     queryKey: ["classMembers", courseId],
     queryFn: async () => {
       const response = await axios.get(`/api/class-members?courseId=${courseId}`);
+      console.log("members: ", response.data.members);
       return response.data.members as ClassMember[];
     },
     enabled: isOpen, // 모달이 열려있을 때만 쿼리 실행
@@ -45,12 +51,22 @@ export default function ClassMembersModal({ isOpen, onClose, courseId, courseTit
     }
   };
 
+  // courseId가 'freecoursetour' 가 아닌 경우, admin 역할의 멤버를 필터링
+  // const filteredMembers = membersData?.filter((member) => {
+  //   // freecoursetour인 경우 모든 멤버 표시
+  //   if (courseId === "freecoursetour") {
+  //     return true;
+  //   }
+  //   // 그 외의 경우 admin이 아닌 멤버만 표시
+  //   return member.role !== "admin";
+  // });
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="w-full max-w-3xl rounded-lg bg-white p-6 shadow-lg">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold">
-            우리 팀원들 <span className="text-gray-500">(총 {data?.length || 0}명)</span>
+            우리 팀원들 <span className="text-gray-500">(총 {membersData?.length || 0}명)</span>
           </h2>
           <button onClick={onClose} className="rounded-full p-1 hover:bg-gray-100">
             <X className="h-5 w-5" />
@@ -65,7 +81,7 @@ export default function ClassMembersModal({ isOpen, onClose, courseId, courseTit
           </div>
         ) : (
           <div className="grid max-h-[60vh] grid-cols-1 gap-4 overflow-y-auto md:grid-cols-2">
-            {data?.map((member) => (
+            {membersData?.map((member) => (
               <div key={member.id} className="rounded-lg border border-gray-200 p-4 transition hover:shadow-md">
                 <div className="flex items-center gap-4">
                   <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gray-200">
