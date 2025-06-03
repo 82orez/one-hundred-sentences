@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     // 관리자 권한 확인
-    if (!session || session.user.role !== "admin") {
+    if (!session || (session.user.role !== "admin" && session.user.role !== "teacher")) {
       return NextResponse.json({ message: "권한이 없습니다." }, { status: 403 });
     }
 

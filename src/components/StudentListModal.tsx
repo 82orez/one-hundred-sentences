@@ -38,6 +38,7 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
     queryKey: ["enrollments", courseId],
     queryFn: async () => {
       const response = await axios.get(`/api/admin/enrollments?courseId=${courseId}`);
+      console.log("enrollments: ", response.data.enrollments);
       return response.data.enrollments as Enrollment[];
     },
     enabled: isOpen, // 모달이 열려있을 때만 쿼리 실행
