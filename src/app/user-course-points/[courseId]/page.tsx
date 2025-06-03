@@ -165,8 +165,10 @@ export default function UserCoursePointsPage({ params }: Props) {
         </table>
       </div>
 
-      <div className={clsx("mt-10 flex justify-center hover:underline", { "pointer-events-none": userPointsIsLoading })}>
-        <Link href={`/users/teacher/teacher-courses`}>내 강좌 보기</Link>
+      <div className={clsx("mt-10 flex justify-center", { "pointer-events-none": userPointsIsLoading })}>
+        <Link href={`/users/teacher/teacher-courses`} className={"hover:underline"}>
+          내 강좌 보기
+        </Link>
       </div>
 
       {isModalOpen && (
