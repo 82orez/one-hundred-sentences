@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/app/providers";
 import axios from "axios";
 import { format, addDays, getDay, isValid } from "date-fns";
 import { Calendar, CheckSquare, Edit, Trash2, Plus, X, Clock } from "lucide-react";
@@ -71,7 +72,6 @@ interface ClassDate {
 }
 
 export default function CoursePage() {
-  const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [formData, setFormData] = useState({
@@ -786,7 +786,7 @@ export default function CoursePage() {
                         course.status === "대기 중" && "bg-blue-100 text-blue-800",
                         course.status === "진행 중" && "bg-green-100 text-green-800",
                         course.status === "완료" && "bg-gray-100 text-gray-800",
-                        course.title === "무료 체험반" && "bg-green-100 text-green-800",
+                        course.title === "무료 체험반" && "bg-red-100 text-gray-600",
                       )}>
                       {course.title === "무료 체험반" ? "상시" : course.status}
                     </span>
