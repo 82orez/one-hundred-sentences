@@ -185,7 +185,7 @@ export default function MyCourses() {
                   </div>
 
                   <div className="flex items-center justify-between bg-gray-50 px-4 py-3 text-right">
-                    <button className="font-medium text-blue-600" onClick={(e) => handleStudentListClick(e, course.id, course.title)}>
+                    <button className="cursor-pointer font-medium text-blue-600" onClick={(e) => handleStudentListClick(e, course.id, course.title)}>
                       수강생 List 보기 →
                     </button>
 
@@ -198,8 +198,10 @@ export default function MyCourses() {
             })}
           </div>
 
-          <div className={clsx("mt-4 flex justify-center hover:underline md:mt-10", { "pointer-events-none": loading })}>
-            <Link href={"/users/teacher"}>Back to Teacher Dashboard</Link>
+          <div className={clsx("mt-4 flex justify-center md:mt-10", { "pointer-events-none": loading })}>
+            <Link href={"/users/teacher"} className={"hover:underline"}>
+              Back to Teacher Dashboard
+            </Link>
           </div>
         </>
       )}
