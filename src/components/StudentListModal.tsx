@@ -1,11 +1,14 @@
 // components/StudentListModal.tsx
 "use client";
 
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/app/providers";
 import axios from "axios";
 import { X, Trash2, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import clsx from "clsx";
 
 interface Enrollment {
   id: string;
@@ -28,9 +31,9 @@ interface StudentListModalProps {
 }
 
 export default function StudentListModal({ isOpen, onClose, courseId, courseTitle }: StudentListModalProps) {
-  const queryClient = useQueryClient();
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const { status, data } = useSession();
 
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
   // 수강생 목록 조회 쿼리
@@ -123,13 +126,13 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
                 <tr>
                   <th className="px-6 py-3 text-left">순</th>
                   <th className="px-6 py-3 text-left">이름</th>
-                  <th className="px-6 py-3 text-left">전화번호</th>
+                  <th className={clsx("px-6 py-3 text-left", { hidden: data?.user.role !== "admin" })}>전화번호</th>
                   <th className="px-6 py-3 text-left">상태</th>
                   <th className="px-6 py-3 text-left">센터명</th>
                   <th className="px-6 py-3 text-left">지점명</th>
                   <th className="px-6 py-3 text-left">비고</th>
                   <th className="px-6 py-3 text-left">등록일</th>
-                  <th className="px-6 py-3 text-center">관리</th>
+                  <th className={clsx("px-6 py-3 text-center", { hidden: data?.user.role !== "admin" })}>관리</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -137,7 +140,9 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
                   <tr key={enrollment.id} className="bg-white hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{index + 1}</td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{enrollment.studentName}</td>
-                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{enrollment.studentPhone}</td>
+                    <td className={clsx("px-6 py-4 text-sm whitespace-nowrap text-gray-900", { hidden: data?.user.role !== "admin" })}>
+                      {enrollment.studentPhone}
+                    </td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
                       {enrollment.status === "pending" ? "대기중" : enrollment.status}
                     </td>
@@ -145,7 +150,7 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{enrollment.localName || "-"}</td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{enrollment.description || "-"}</td>
                     <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">{new Date(enrollment.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 text-center text-sm whitespace-nowrap">
+                    <td className={clsx("px-6 py-4 text-center text-sm whitespace-nowrap", { hidden: data?.user.role !== "admin" })}>
                       {deleteConfirmId === enrollment.id ? (
                         <div className="flex items-center justify-center gap-2">
                           <button
