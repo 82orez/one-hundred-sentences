@@ -499,8 +499,8 @@ model UserCoursePoints {
   userId    String
   courseId  String
   points    Int      @default(0)
-  updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -508,4 +508,13 @@ model UserCoursePoints {
   @@unique([userId, courseId])
   @@index([userId])
   @@index([courseId])
+}
+
+model Configuration {
+  id         String   @id @default(cuid())
+  siteName   String
+  adminEmail String
+  adminId    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

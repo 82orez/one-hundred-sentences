@@ -278,6 +278,33 @@ export type Database = {
           },
         ]
       }
+      Configuration: {
+        Row: {
+          adminEmail: string
+          adminId: string
+          createdAt: string
+          id: string
+          siteName: string
+          updatedAt: string
+        }
+        Insert: {
+          adminEmail: string
+          adminId: string
+          createdAt?: string
+          id: string
+          siteName: string
+          updatedAt: string
+        }
+        Update: {
+          adminEmail?: string
+          adminId?: string
+          createdAt?: string
+          id?: string
+          siteName?: string
+          updatedAt?: string
+        }
+        Relationships: []
+      }
       Course: {
         Row: {
           classCount: number | null

@@ -406,6 +406,16 @@ export default function AdminPage() {
                     />
                   </div>
 
+                  {/* 관리자 id 입력 부분 */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">관리자 ID</label>
+                    <input
+                      type="text"
+                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                      placeholder="관리자 ID"
+                    />
+                  </div>
+
                   <div className="flex items-center">
                     <input
                       id="maintenance-mode"
