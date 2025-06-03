@@ -10,8 +10,9 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
-import CourseSchedule from "@/components/CourseSchedule";
 import Image from "next/image";
+import CourseSchedule from "@/components/CourseSchedule";
+import StudentListModal from "@/components/StudentListModal";
 
 export default function MyCourses() {
   const [courses, setCourses] = useState([]);
@@ -26,6 +27,9 @@ export default function MyCourses() {
   const [attendanceData, setAttendanceData] = useState([]);
   const [classDates, setClassDates] = useState([]);
   const [isAttendanceLoading, setIsAttendanceLoading] = useState(false);
+
+  // 수강생 목록 모달 상태 관리
+  const [isStudentListModalOpen, setIsStudentListModalOpen] = useState(false);
 
   const { isPending: loading } = useQuery({
     queryKey: ["myCourses"],
@@ -96,6 +100,19 @@ export default function MyCourses() {
     setIsAttendanceModalOpen(false);
     setAttendanceData([]);
     setClassDates([]);
+  };
+
+  // 수강생 목록 버튼 클릭 핸들러
+  const handleStudentListClick = (e, courseId, courseTitle) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
+    setSelectedCourseId(courseId);
+    setSelectedCourseTitle(courseTitle);
+    setIsStudentListModalOpen(true);
+  };
+
+  // 수강생 목록 모달 닫기 핸들러
+  const handleCloseStudentListModal = () => {
+    setIsStudentListModalOpen(false);
   };
 
   return (
@@ -171,7 +188,11 @@ export default function MyCourses() {
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 px-4 py-3 text-right">
+                  <div className="flex items-center justify-between bg-gray-50 px-4 py-3 text-right">
+                    <button className="font-medium text-blue-600" onClick={(e) => handleStudentListClick(e, course.id, course.title)}>
+                      수강생 List 보기 →
+                    </button>
+
                     <Link href={`/user-course-points/${course.id}`} className="font-medium text-blue-600" onClick={(e) => e.stopPropagation()}>
                       포인트 랭킹 보기 →
                     </Link>
@@ -330,6 +351,16 @@ export default function MyCourses() {
             )}
           </div>
         </div>
+      )}
+
+      {/* 수강생 목록 모달 */}
+      {isStudentListModalOpen && (
+        <StudentListModal
+          isOpen={isStudentListModalOpen}
+          onClose={handleCloseStudentListModal}
+          courseId={selectedCourseId}
+          courseTitle={selectedCourseTitle}
+        />
       )}
     </div>
   );
