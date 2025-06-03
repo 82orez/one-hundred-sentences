@@ -1,4 +1,4 @@
-// src/app/api/class-members/route.ts
+// app/api/class-members/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
@@ -19,13 +19,10 @@ export async function GET(req: NextRequest) {
     }
 
     // 해당 강좌를 수강 중인 사용자 목록 조회
-    // status가 pending 또는 active인 수강생만 필터링
     const members = await prisma.enrollment.findMany({
       where: {
         courseId: courseId,
-        status: {
-          in: ["pending", "active"],
-        },
+        status: "active", // 활성 상태인 수강생만
       },
       include: {
         student: {
