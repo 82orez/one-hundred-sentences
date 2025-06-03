@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { User, Users, BarChart3, Settings, Home, BookOpen, Menu, X, GraduationCap } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/app/providers";
 import axios from "axios";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 // Chart 등록
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -33,6 +35,83 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [users, setUsers] = useState(MOCK_USERS);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // 설정 폼 상태 관리
+  const [configForm, setConfigForm] = useState({
+    siteName: "",
+    adminEmail: "",
+    adminId: "",
+    maintenanceMode: false,
+  });
+
+  // 설정 데이터 가져오기
+  const { data: configData, isLoading: isLoadingConfig } = useQuery({
+    queryKey: ["configuration"],
+    queryFn: async () => {
+      const res = await axios.get("/api/admin/configuration");
+      return res.data;
+    },
+  });
+
+  // 설정 데이터가 로드되면 폼 상태 업데이트
+  useEffect(() => {
+    if (configData) {
+      setConfigForm({
+        siteName: configData.siteName || "",
+        adminEmail: configData.adminEmail || "",
+        adminId: configData.adminId || "",
+        maintenanceMode: false, // API 에서 이 필드를 관리하지 않으므로 기본값 사용
+      });
+    }
+  }, [configData]);
+
+  // 폼 입력값 변경 핸들러
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setConfigForm({
+      ...configForm,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
+  // 설정 저장 뮤테이션
+  const saveConfigMutation = useMutation<
+    any, // 반환 데이터 타입
+    Error, // 오류 타입
+    { siteName: string; adminEmail: string; adminId: string } // 입력 데이터 타입
+  >({
+    mutationFn: async (configData) => {
+      const response = await axios.post("/api/admin/configuration", configData);
+      return response.data;
+    },
+    onSuccess: () => {
+      // 성공 시 캐시 업데이트 및 토스트 메시지 표시
+      queryClient.invalidateQueries({ queryKey: ["configuration"] });
+      toast.success("설정이 성공적으로 저장되었습니다.");
+    },
+    onError: (error) => {
+      console.error("설정 저장 중 오류 발생:", error);
+      toast.error("설정 저장 중 오류가 발생했습니다.");
+    },
+  });
+
+  // 설정 저장 핸들러
+  const handleSaveConfig = () => {
+    const { siteName, adminEmail, adminId } = configForm;
+
+    // 유효성 검사
+    if (!siteName || !adminEmail || !adminId) {
+      toast.error("모든 필드를 입력해주세요.");
+      return;
+    }
+
+    // 뮤테이션 실행
+    saveConfigMutation.mutate({
+      siteName,
+      adminEmail,
+      adminId,
+    });
+  };
 
   // 가상 통계 데이터
   const chartData = {
@@ -84,28 +163,6 @@ export default function AdminPage() {
       setSidebarOpen(false);
     }
   };
-
-  // recordings 버킷의 모든 파일 삭제하기
-  // const deleteAllRecordings = async () => {
-  //   try {
-  //     const response = await fetch("/api/admin/delete-recordings", {
-  //       method: "DELETE",
-  //     });
-  //
-  //     const data = await response.json();
-  //
-  //     if (response.ok) {
-  //       console.log("모든 녹음 파일이 삭제되었습니다:", data);
-  //       // 성공 처리 로직 (예: 토스트 메시지 표시)
-  //     } else {
-  //       console.error("파일 삭제 오류:", data.error);
-  //       // 오류 처리 로직
-  //     }
-  //   } catch (error) {
-  //     console.error("요청 처리 중 오류 발생:", error);
-  //     // 예외 처리 로직
-  //   }
-  // };
 
   return (
     <div className="relative flex h-screen flex-col bg-gray-100 md:flex-row">
@@ -385,71 +442,82 @@ export default function AdminPage() {
               <h2 className="mb-6 text-2xl font-bold">설정</h2>
               <div className="rounded-lg bg-white p-6 shadow-md">
                 <h3 className="mb-4 text-lg font-semibold">일반 설정</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">사이트 이름</label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                      placeholder="사이트 이름"
-                      defaultValue="One Hundred Sentences"
-                    />
-                  </div>
+                {isLoadingConfig ? (
+                  <p className="text-gray-500">설정 정보를 불러오는 중...</p>
+                ) : (
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="siteName" className="block text-sm font-medium text-gray-700">
+                        사이트 이름
+                      </label>
+                      <input
+                        id="siteName"
+                        name="siteName"
+                        type="text"
+                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                        placeholder="사이트 이름"
+                        value={configForm.siteName}
+                        onChange={handleInputChange}
+                      />
+                    </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">관리자 이메일</label>
-                    <input
-                      type="email"
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                      placeholder="관리자 이메일"
-                      defaultValue="admin@example.com"
-                    />
-                  </div>
+                    <div>
+                      <label htmlFor="adminEmail" className="block text-sm font-medium text-gray-700">
+                        관리자 이메일
+                      </label>
+                      <input
+                        id="adminEmail"
+                        name="adminEmail"
+                        type="email"
+                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                        placeholder="관리자 이메일"
+                        value={configForm.adminEmail}
+                        onChange={handleInputChange}
+                      />
+                    </div>
 
-                  {/* 관리자 id 입력 부분 */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">관리자 ID</label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
-                      placeholder="관리자 ID"
-                    />
-                  </div>
+                    {/* 관리자 id 입력 부분 */}
+                    <div>
+                      <label htmlFor="adminId" className="block text-sm font-medium text-gray-700">
+                        관리자 ID
+                      </label>
+                      <input
+                        id="adminId"
+                        name="adminId"
+                        type="text"
+                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
+                        placeholder="관리자 ID"
+                        value={configForm.adminId}
+                        onChange={handleInputChange}
+                      />
+                    </div>
 
-                  <div className="flex items-center">
-                    <input
-                      id="maintenance-mode"
-                      name="maintenance-mode"
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <label htmlFor="maintenance-mode" className="ml-2 block text-sm text-gray-900">
-                      유지보수 모드 활성화
-                    </label>
+                    <div className="flex items-center">
+                      <input
+                        id="maintenanceMode"
+                        name="maintenanceMode"
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        checked={configForm.maintenanceMode}
+                        onChange={handleInputChange}
+                      />
+                      <label htmlFor="maintenanceMode" className="ml-2 block text-sm text-gray-900">
+                        유지보수 모드 활성화
+                      </label>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="mt-6">
                   <button
                     type="button"
-                    className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">
-                    설정 저장
+                    onClick={handleSaveConfig}
+                    disabled={saveConfigMutation.isPending}
+                    className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:bg-blue-300">
+                    {saveConfigMutation.isPending ? "저장 중..." : "설정 저장"}
                   </button>
                 </div>
               </div>
-
-              {/*<div className="mt-6 flex items-center justify-between rounded-lg bg-white p-6 shadow-md">*/}
-              {/*  <div className={"text-lg font-semibold"}>모든 레코딩 파일 삭제하기</div>*/}
-              {/*  <button*/}
-              {/*    className={"rounded-md bg-red-400 p-2 text-white"}*/}
-              {/*    onClick={() => {*/}
-              {/*      if (window.confirm("정말로 모든 녹음 파일을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {*/}
-              {/*        deleteAllRecordings();*/}
-              {/*      }*/}
-              {/*    }}>*/}
-              {/*    삭제*/}
-              {/*  </button>*/}
-              {/*</div>*/}
             </div>
           )}
         </div>
