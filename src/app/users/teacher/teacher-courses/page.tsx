@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import clsx from "clsx";
 import Link from "next/link";
@@ -15,8 +14,6 @@ import CourseSchedule from "@/components/CourseSchedule";
 import StudentListModal from "@/components/StudentListModal";
 
 export default function MyCourses() {
-  const [courses, setCourses] = useState([]);
-  const router = useRouter();
   // 모달 상태와 선택된 강좌 ID를 관리할 state
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
@@ -31,12 +28,11 @@ export default function MyCourses() {
   // 수강생 목록 모달 상태 관리
   const [isStudentListModalOpen, setIsStudentListModalOpen] = useState(false);
 
-  const { isPending: loading } = useQuery({
+  const { data: myCourses, isPending: loading } = useQuery({
     queryKey: ["myCourses"],
     queryFn: async () => {
       try {
         const response = await axios.get("/api/my-courses");
-        setCourses(response.data.courses);
         console.log("myCourses: ", response.data.courses);
         return response.data.courses;
       } catch (error) {
@@ -122,14 +118,14 @@ export default function MyCourses() {
         <div className="py-10 text-center">
           <p>강좌 정보를 불러오고 있습니다...</p>
         </div>
-      ) : courses.length === 0 ? (
+      ) : myCourses.length === 0 ? (
         <div className="rounded-lg bg-gray-50 py-10 text-center">
           <p className="text-gray-600">현재 등록된 강좌가 없습니다.</p>
         </div>
       ) : (
         <>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {courses.map((item) => {
+            {myCourses.map((item) => {
               // Enrollment 또는 Course 구조에 따라 데이터 추출
               const course = item.course || item;
 
@@ -220,8 +216,8 @@ export default function MyCourses() {
             <h2 className="mb-4 text-xl font-semibold">{selectedCourseTitle}</h2>
             <CourseSchedule
               courseId={selectedCourseId}
-              zoomInviteUrl={courses.find((enrollment) => enrollment.id === selectedCourseId)?.teacher?.user?.zoomInviteUrl}
-              location={courses.find((enrollment) => enrollment.id === selectedCourseId)?.location}
+              zoomInviteUrl={myCourses.find((enrollment) => enrollment.id === selectedCourseId)?.teacher?.user?.zoomInviteUrl}
+              location={myCourses.find((enrollment) => enrollment.id === selectedCourseId)?.location}
             />
           </div>
         </div>
