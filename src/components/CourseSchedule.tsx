@@ -200,6 +200,7 @@ function MobileSchedule({
 
 export default function CourseSchedule({ courseId, zoomInviteUrl, location }: CourseScheduleProps) {
   const { status, data } = useSession();
+  const isTeacher = data?.user?.role === "teacher";
   console.log("Role:", data?.user?.role);
 
   const [viewMode, setViewMode] = useState<"day" | "week" | "month">("month");
@@ -217,9 +218,10 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
 
   // 출석 정보 조회
   const { data: attendanceData } = useQuery({
-    queryKey: ["userAttendance", courseId],
+    queryKey: [isTeacher ? "teacherAttendance" : "userAttendance", courseId],
     queryFn: async () => {
-      const res = await axios.get(`/api/user/attendance?courseId=${courseId}`);
+      const endpoint = isTeacher ? `/api/teacher-attendance?courseId=${courseId}` : `/api/user/attendance?courseId=${courseId}`;
+      const res = await axios.get(endpoint);
       return res.data as AttendanceInfo[];
     },
     enabled: !!courseId,
