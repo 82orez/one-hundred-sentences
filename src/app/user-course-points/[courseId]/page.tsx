@@ -64,9 +64,9 @@ export default function UserCoursePointsPage({ params }: Props) {
   if (userPointsIsLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
+        <div className="flex items-center justify-center gap-4 text-center">
           <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
-          <p className="mt-2">데이터를 불러오는 중...</p>
+          <p className="">데이터를 불러오는 중...</p>
         </div>
       </div>
     );
