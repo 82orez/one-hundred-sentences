@@ -63,6 +63,7 @@ model User {
   Selected           Selected[]
   Attendance         Attendance[]
   UserCoursePoints   UserCoursePoints[]
+  TeacherAttendance  TeacherAttendance[]
 }
 
 model Account {
@@ -331,6 +332,7 @@ model Course {
   QuizAttempt        QuizAttempt[]
   FavoriteSentence   FavoriteSentence[]
   CompletedSentence  CompletedSentence[]
+  TeacherAttendance  TeacherAttendance[]
 }
 
 // 수업 일자 모델
@@ -345,8 +347,9 @@ model ClassDate {
   updatedAt DateTime @updatedAt
 
   // 관계 설정
-  course     Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  Attendance Attendance[]
+  course            Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  Attendance        Attendance[]
+  TeacherAttendance TeacherAttendance[]
 
   @@index([courseId])
 }
@@ -420,6 +423,23 @@ model Attendance {
   @@index([userId])
   @@index([courseId])
   @@index([classDateId])
+}
+
+model TeacherAttendance {
+  id          String   @id @default(cuid())
+  courseId    String
+  teacherId   String
+  classDateId String
+  isAttended  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 관계 설정
+  teacher   User      @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  course    Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  classDate ClassDate @relation(fields: [classDateId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, courseId, classDateId])
 }
 
 model Assignment {

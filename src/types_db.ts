@@ -964,6 +964,58 @@ export type Database = {
           },
         ]
       }
+      TeacherAttendance: {
+        Row: {
+          classDateId: string
+          courseId: string
+          createdAt: string
+          id: string
+          isAttended: boolean
+          teacherId: string
+          updatedAt: string
+        }
+        Insert: {
+          classDateId: string
+          courseId: string
+          createdAt?: string
+          id: string
+          isAttended?: boolean
+          teacherId: string
+          updatedAt: string
+        }
+        Update: {
+          classDateId?: string
+          courseId?: string
+          createdAt?: string
+          id?: string
+          isAttended?: boolean
+          teacherId?: string
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "TeacherAttendance_classDateId_fkey"
+            columns: ["classDateId"]
+            isOneToOne: false
+            referencedRelation: "ClassDate"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "TeacherAttendance_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "TeacherAttendance_teacherId_fkey"
+            columns: ["teacherId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Teachers: {
         Row: {
           createdAt: string
