@@ -406,27 +406,53 @@ export default function CourseSchedule({ courseId, zoomInviteUrl, location }: Co
                       // 수업 참여 가능
                       const confirmed = window.confirm("수업에 참여하시겠습니까?");
                       if (confirmed) {
-                        // 출석 체크 API 호출
-                        axios
-                          .post("/api/user/attendance", {
-                            classDateId: classDate.id,
-                            courseId: classDate.course.id,
-                          })
-                          .then((response) => {
-                            if (response.data.isAttended) {
-                              window.alert("출석이 완료되었습니다.");
-                              // 출석이 인정된 경우에만 Zoom URL 열기
-                              window.open(zoomInviteUrl, "_blank");
-                            } else {
-                              window.alert("출석 체크는 되었지만, 출석 인정 시간이 아닙니다.");
-                              // 출석이 인정되지 않으면 Zoom URL 열지 않음
-                            }
-                          })
-                          .catch((error) => {
-                            console.error("출석 체크 실패:", error);
-                            window.alert("출석 체크에 실패했습니다.");
-                            // 오류가 발생해도 수업에는 참여할 수 없도록 수정
-                          });
+                        // 사용자 역할 확인
+                        const userRole = data?.user?.role;
+
+                        // 강사인 경우와 학생인 경우를 구분하여 처리
+                        if (userRole === "teacher") {
+                          // 강사인 경우 TeacherAttendance 모델에 출석 기록
+                          axios
+                            .post("/api/teacher-attendance", {
+                              classDateId: classDate.id,
+                              courseId: classDate.course.id,
+                            })
+                            .then((response) => {
+                              if (response.data.isAttended) {
+                                window.alert("강사 출석이 완료되었습니다.");
+                                // 출석이 인정된 경우에만 Zoom URL 열기
+                                window.open(zoomInviteUrl, "_blank");
+                              } else {
+                                window.alert("출석 체크는 되었지만, 출석 인정 시간이 아닙니다.");
+                              }
+                            })
+                            .catch((error) => {
+                              console.error("강사 출석 체크 실패:", error);
+                              window.alert("출석 체크에 실패했습니다.");
+                            });
+                        } else {
+                          // 학생인 경우 기존 로직 유지
+                          axios
+                            .post("/api/user/attendance", {
+                              classDateId: classDate.id,
+                              courseId: classDate.course.id,
+                            })
+                            .then((response) => {
+                              if (response.data.isAttended) {
+                                window.alert("출석이 완료되었습니다.");
+                                // 출석이 인정된 경우에만 Zoom URL 열기
+                                window.open(zoomInviteUrl, "_blank");
+                              } else {
+                                window.alert("출석 체크는 되었지만, 출석 인정 시간이 아닙니다.");
+                                // 출석이 인정되지 않으면 Zoom URL 열지 않음
+                              }
+                            })
+                            .catch((error) => {
+                              console.error("출석 체크 실패:", error);
+                              window.alert("출석 체크에 실패했습니다.");
+                              // 오류가 발생해도 수업에는 참여할 수 없도록 수정
+                            });
+                        }
                       }
                     }}
                     style={{
