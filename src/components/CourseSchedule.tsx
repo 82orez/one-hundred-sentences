@@ -52,7 +52,7 @@ const courseColorPalette = [
   { bg: "bg-cyan-100", text: "text-cyan-800", border: "border-cyan-200" },
 ];
 
-// 하단에 추가
+// 모바일 월간 보기
 function MobileSchedule({
   currentDate,
   setCurrentDate,
@@ -66,6 +66,9 @@ function MobileSchedule({
   classDates: ClassDate[] | undefined;
   courseId: string;
 }) {
+  const { data: session } = useSession();
+  const isTeacher = session?.user?.role === "teacher";
+
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
   const startDate = startOfWeek(monthStart, { weekStartsOn: 0 });
@@ -73,11 +76,12 @@ function MobileSchedule({
 
   const days = eachDayOfInterval({ start: startDate, end: endDate });
 
-  // 출석 정보 조회
+  // 출석 정보 조회 - 역할에 따라 다른 API 호출
   const { data: attendanceData } = useQuery({
-    queryKey: ["userAttendance", courseId],
+    queryKey: [isTeacher ? "teacherAttendance" : "userAttendance", courseId],
     queryFn: async () => {
-      const res = await axios.get(`/api/user/attendance?courseId=${courseId}`);
+      const endpoint = isTeacher ? `/api/teacher-attendance?courseId=${courseId}` : `/api/user/attendance?courseId=${courseId}`;
+      const res = await axios.get(endpoint);
       return res.data as AttendanceInfo[];
     },
     enabled: !!courseId,
