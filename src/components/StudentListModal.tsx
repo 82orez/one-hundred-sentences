@@ -84,7 +84,7 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-5xl rounded-lg bg-white p-6 shadow-lg">
+      <div className="max-h-[80%] w-full max-w-5xl rounded-lg bg-white p-6 shadow-lg">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold">
             수강생 목록 <span className="text-gray-500">(총 {filteredEnrollments.length}명)</span>
@@ -120,9 +120,9 @@ export default function StudentListModal({ isOpen, onClose, courseId, courseTitl
             <p>등록된 수강생이 없습니다.</p>
           </div>
         ) : (
-          <div className="max-h-[80%] overflow-y-auto">
+          <div className="max-h-[calc(80vh-200px)] overflow-y-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 text-xs text-gray-700 uppercase">
+              <thead className="sticky top-0 z-10 bg-gray-50 text-xs text-gray-700 uppercase">
                 <tr>
                   <th className="px-6 py-3 text-left">순</th>
                   <th className="px-6 py-3 text-left">이름</th>
