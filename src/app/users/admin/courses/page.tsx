@@ -16,6 +16,7 @@ import DatePickerCalendarAddOrRemove from "@/components/DatePickerCalendarAddOrR
 import TeacherSelector from "@/components/TeacherSelector";
 import EnrollmentModal from "@/components/EnrollmentModal";
 import StudentListModal from "@/components/StudentListModal";
+import TeacherAttendanceModal from "@/components/TeacherAttendanceModal";
 
 // 타입 정의 확장
 interface Teacher {
@@ -125,6 +126,27 @@ export default function CoursePage() {
   // 버튼 부분 수정 (해당 페이지 컴포넌트 내에서)
   const [isStudentListModalOpen, setIsStudentListModalOpen] = useState(false);
   const [selectedCourseForStudents, setSelectedCourseForStudents] = useState<Course | null>(null);
+
+  const [isTeacherAttendanceModalOpen, setIsTeacherAttendanceModalOpen] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState<{
+    id: string;
+    name: string;
+    courseId: string;
+    courseTitle: string;
+  } | null>(null);
+
+  // 강사 출석 정보 모달 열기 핸들러
+  const handleTeacherAttendanceClick = (course: Course) => {
+    if (!course.teacher) return;
+
+    setSelectedTeacher({
+      id: course.teacherId,
+      name: course.teacher?.user.realName || "미지정",
+      courseId: course.id,
+      courseTitle: course.title,
+    });
+    setIsTeacherAttendanceModalOpen(true);
+  };
 
   // 수강생 관리 버튼 클릭 핸들러
   const handleManageStudentsClick = (course: Course) => {
@@ -763,7 +785,15 @@ export default function CoursePage() {
                 <tr key={course.id}>
                   <td className="font-medium">{course.title}</td>
                   <td>{course.location}</td>
-                  <td>{course.teacher?.user.realName || "미지정"}</td>
+                  <td>
+                    {course.teacher?.user.realName ? (
+                      <button onClick={() => handleTeacherAttendanceClick(course)} className="text-blue-600 hover:underline focus:outline-none">
+                        {course.teacher.user.realName}
+                      </button>
+                    ) : (
+                      "미지정"
+                    )}
+                  </td>
                   <td>{course.contents}</td>
                   <td>{formatSchedule(course)}</td>
                   <td>{formatDate(course.startDate)}</td>
@@ -1338,6 +1368,18 @@ export default function CoursePage() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* 강사 출석 모달 */}
+      {selectedTeacher && (
+        <TeacherAttendanceModal
+          isOpen={isTeacherAttendanceModalOpen}
+          onClose={() => setIsTeacherAttendanceModalOpen(false)}
+          courseTitle={selectedTeacher.courseTitle}
+          teacherId={selectedTeacher.id}
+          courseId={selectedTeacher.courseId}
+          teacherName={selectedTeacher.name}
+        />
       )}
     </div>
   );
