@@ -1,4 +1,3 @@
-// src/components/TeacherAttendanceModal.tsx
 import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -11,6 +10,7 @@ type ClassDate = {
   date: string;
   dayOfWeek: string;
   endTime?: string;
+  startTime?: string; // 시작 시간 필드 추가
 };
 
 type TeacherAttendance = {
@@ -89,10 +89,19 @@ const TeacherAttendanceModal: React.FC<TeacherAttendanceModalProps> = ({ isOpen,
                 {classDates.map((classDate) => {
                   // 현재 날짜와 시간
                   const now = new Date();
+
                   // 수업 날짜
-                  const classDateTime = new Date(classDate.date);
-                  // 수업이 지났는지 여부 체크
-                  const isPastClass = classDateTime < now;
+                  const classDateObj = new Date(classDate.date);
+
+                  // 수업 시작 시간이 있는 경우 날짜와 시간 조합
+                  let classStartDateTime = new Date(classDate.date);
+                  if (classDate.startTime) {
+                    const [hours, minutes] = classDate.startTime.split(":").map(Number);
+                    classStartDateTime.setHours(hours, minutes, 0, 0);
+                  }
+
+                  // 수업이 시작됐는지 여부 체크 (수업 시작 시간이 지났는지)
+                  const isClassStarted = now >= classStartDateTime;
 
                   // 해당 수업 날짜에 대한 출석 정보 찾기
                   const attendance = attendanceData.find((a) => a.classDateId === classDate.id);
@@ -104,8 +113,8 @@ const TeacherAttendanceModal: React.FC<TeacherAttendanceModalProps> = ({ isOpen,
                     <tr key={classDate.id}>
                       <td className="px-6 py-4 whitespace-nowrap">{format(new Date(classDate.date), "yyyy년 MM월 dd일", { locale: ko })}</td>
                       <td className="px-6 py-4 whitespace-nowrap">{classDate.dayOfWeek}요일</td>
-                      <td className={`px-6 py-4 text-center whitespace-nowrap ${isPastClass ? "bg-gray-50" : ""}`}>
-                        {isPastClass ? (
+                      <td className={`px-6 py-4 text-center whitespace-nowrap ${isClassStarted ? "bg-gray-50" : ""}`}>
+                        {isClassStarted ? (
                           <span
                             className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${
                               isAttended ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
