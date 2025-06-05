@@ -22,6 +22,7 @@ import TeacherAttendanceModal from "@/components/TeacherAttendanceModal";
 interface Teacher {
   id: string;
   isActive: boolean;
+  userId: string; // userId 속성 추가
   // User 모델에서 가져오는 정보
   user: {
     email: string;
@@ -130,6 +131,7 @@ export default function CoursePage() {
   const [isTeacherAttendanceModalOpen, setIsTeacherAttendanceModalOpen] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<{
     id: string;
+    userId: string; // userId 속성 추가
     name: string;
     courseId: string;
     courseTitle: string;
@@ -140,7 +142,8 @@ export default function CoursePage() {
     if (!course.teacher) return;
 
     setSelectedTeacher({
-      id: course.teacherId,
+      id: course.teacher.id, // Teacher 모델의 id
+      userId: course.teacher.userId, // User 모델의 id (추가)
       name: course.teacher?.user.realName || "미지정",
       courseId: course.id,
       courseTitle: course.title,
@@ -1376,7 +1379,7 @@ export default function CoursePage() {
           isOpen={isTeacherAttendanceModalOpen}
           onClose={() => setIsTeacherAttendanceModalOpen(false)}
           courseTitle={selectedTeacher.courseTitle}
-          teacherId={selectedTeacher.id}
+          teacherId={selectedTeacher.userId}
           courseId={selectedTeacher.courseId}
           teacherName={selectedTeacher.name}
         />
