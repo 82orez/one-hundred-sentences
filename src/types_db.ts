@@ -566,6 +566,58 @@ export type Database = {
           },
         ]
       }
+      MyVoiceOpenList: {
+        Row: {
+          courseId: string
+          createdAt: string
+          id: string
+          myVoiceUrl: string
+          sentenceEn: string
+          sentenceNo: number
+          userId: string
+        }
+        Insert: {
+          courseId: string
+          createdAt?: string
+          id: string
+          myVoiceUrl: string
+          sentenceEn: string
+          sentenceNo: number
+          userId: string
+        }
+        Update: {
+          courseId?: string
+          createdAt?: string
+          id?: string
+          myVoiceUrl?: string
+          sentenceEn?: string
+          sentenceNo?: number
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "MyVoiceOpenList_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "MyVoiceOpenList_sentenceNo_fkey"
+            columns: ["sentenceNo"]
+            isOneToOne: false
+            referencedRelation: "Sentence"
+            referencedColumns: ["no"]
+          },
+          {
+            foreignKeyName: "MyVoiceOpenList_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       NativeAudioAttempt: {
         Row: {
           attemptNativeAudio: number | null

@@ -64,6 +64,7 @@ model User {
   Attendance         Attendance[]
   UserCoursePoints   UserCoursePoints[]
   TeacherAttendance  TeacherAttendance[]
+  MyVoiceOpenList    MyVoiceOpenList[]
 }
 
 model Account {
@@ -153,6 +154,7 @@ model Sentence {
   YouTubeViewAttempt YouTubeViewAttempt[]
   FavoriteSentence   FavoriteSentence[]
   NativeAudioAttempt NativeAudioAttempt[]
+  MyVoiceOpenList    MyVoiceOpenList[]
 }
 
 /// 완료된 학습 문장 모델
@@ -177,6 +179,21 @@ model FavoriteSentence {
   courseId   String
   userId     String
   sentenceNo Int
+  createdAt  DateTime @default(now()) // 학습 완료 날짜
+
+  // 관계 설정
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
+}
+
+model MyVoiceOpenList {
+  id         String   @id @default(cuid())
+  courseId   String
+  userId     String
+  sentenceNo Int
+  sentenceEn String
+  myVoiceUrl String
   createdAt  DateTime @default(now()) // 학습 완료 날짜
 
   // 관계 설정
@@ -333,6 +350,7 @@ model Course {
   FavoriteSentence   FavoriteSentence[]
   CompletedSentence  CompletedSentence[]
   TeacherAttendance  TeacherAttendance[]
+  MyVoiceOpenList    MyVoiceOpenList[]
 }
 
 // 수업 일자 모델

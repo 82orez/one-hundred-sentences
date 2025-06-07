@@ -9,7 +9,7 @@ import Link from "next/link";
 import { FaCheck, FaChevronLeft, FaChevronRight, FaPlay } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import { useSession } from "next-auth/react";
-import { FaA, FaMicrophone } from "react-icons/fa6";
+import { FaA, FaLock, FaLockOpen, FaMicrophone } from "react-icons/fa6";
 import { TbAlphabetKorean } from "react-icons/tb";
 import AudioRecorder from "@/components/Recoder";
 import { RiCloseLargeFill, RiSpeakLine } from "react-icons/ri";
@@ -613,6 +613,17 @@ const LearnPage = ({ params }: Props) => {
             {/*  className="rounded-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">*/}
             {/*  <RiSpeakLine size={40} className={"cursor-pointer rounded-md p-1 hover:bg-gray-200"} />*/}
             {/*</button>*/}
+
+            {/* 내 목소리 공개 여부 버튼 */}
+            <button
+              className={clsx("", {
+                hidden: !completedSentences?.includes(sentence.no),
+              })}>
+              <div className={"flex cursor-pointer items-center gap-1"}>
+                <FaLock size={25} />
+                <FaLockOpen size={25} />
+              </div>
+            </button>
 
             {/* 즐겨찾기 버튼 */}
             <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentence.no)}>

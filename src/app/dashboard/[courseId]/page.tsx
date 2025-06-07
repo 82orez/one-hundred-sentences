@@ -596,6 +596,16 @@ export default function Dashboard({ params }: Props) {
                 우리 팀원들 보기 <ArrowRight className="ml-1 h-4 w-4" />
               </button>
             </div>
+
+            <div className="mt-6 rounded-lg bg-blue-50 p-4">
+              <p className="font-medium">우리 팀원들의 발음을 들어 보세요.</p>
+              {/*<p className="mt-2 text-sm text-gray-600">All for One, One for All.</p>*/}
+              <button
+                className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
+                onClick={() => setClassMembersModalOpen(true)}>
+                팀원들의 발음 들어 보기 <ArrowRight className="ml-1 h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
