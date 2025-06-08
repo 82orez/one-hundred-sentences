@@ -65,6 +65,7 @@ model User {
   UserCoursePoints   UserCoursePoints[]
   TeacherAttendance  TeacherAttendance[]
   MyVoiceOpenList    MyVoiceOpenList[]
+  VoiceLike          VoiceLike[]
 }
 
 model Account {
@@ -191,15 +192,32 @@ model MyVoiceOpenList {
   id         String   @id @default(cuid())
   courseId   String
   userId     String
+  sentenceId String?
   sentenceNo Int
   sentenceEn String
   myVoiceUrl String
-  createdAt  DateTime @default(now()) // 학습 완료 날짜
+  likeCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  // 관계 설정
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  sentence Sentence @relation(fields: [sentenceNo], references: [no], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id])
+  Sentence   Sentence?   @relation(fields: [sentenceId], references: [id])
+  Course     Course      @relation(fields: [courseId], references: [id])
+  voiceLikes VoiceLike[]
+}
+
+model VoiceLike {
+  id                String   @id @default(cuid())
+  userId            String
+  myVoiceOpenListId String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  myVoiceOpenList MyVoiceOpenList @relation(fields: [myVoiceOpenListId], references: [id], onDelete: Cascade)
+
+  // 중복 좋아요 방지를 위한 유니크 제약조건
+  @@unique([userId, myVoiceOpenListId])
 }
 
 /// 퀴즈 기록 모델

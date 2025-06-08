@@ -1,4 +1,3 @@
-// components/ClassVoiceModal.tsx
 import { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
@@ -6,13 +5,15 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { createPortal } from "react-dom";
 import { ImSpinner9 } from "react-icons/im";
+import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 
 type VoiceItem = {
   id: string;
-  sentenceNo: number; // int를 number로 수정했습니다
+  sentenceNo: number;
   sentenceEn: string;
   myVoiceUrl: string;
   userId: string;
+  likeCount: number; // 좋아요 개수 필드 추가
   user: {
     name: string;
     classNickName: string;
@@ -24,6 +25,8 @@ type VoiceItem = {
 export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOpen: boolean; closeModal: () => void; courseId: string }) {
   const [voiceList, setVoiceList] = useState<VoiceItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userLikes, setUserLikes] = useState<Record<string, boolean>>({});
+  const [likePending, setLikePending] = useState<Record<string, boolean>>({});
   const { data: session } = useSession();
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -60,10 +63,75 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     try {
       const response = await axios.get(`/api/voice/open-list?courseId=${courseId}`);
       setVoiceList(response.data);
+
+      // 로그인 상태인 경우 좋아요 상태 가져오기
+      if (session?.user) {
+        fetchUserLikes(response.data);
+      }
     } catch (error) {
       console.error("음성 파일 목록을 가져오는데 실패했습니다:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // 사용자의 좋아요 상태 가져오기
+  const fetchUserLikes = async (voices: VoiceItem[]) => {
+    try {
+      const likes: Record<string, boolean> = {};
+
+      // 각 음성 파일에 대한 좋아요 상태 확인
+      await Promise.all(
+        voices.map(async (voice) => {
+          const response = await axios.get(`/api/voice/like?voiceId=${voice.id}`);
+          likes[voice.id] = response.data.liked;
+        }),
+      );
+
+      setUserLikes(likes);
+    } catch (error) {
+      console.error("좋아요 상태를 가져오는데 실패했습니다:", error);
+    }
+  };
+
+  // 좋아요 토글 처리
+  const handleLikeToggle = async (voiceId: string) => {
+    // 로그인 확인
+    if (!session?.user) {
+      alert("로그인 후 이용해주세요.");
+      return;
+    }
+
+    // 중복 요청 방지
+    if (likePending[voiceId]) return;
+
+    try {
+      setLikePending((prev) => ({ ...prev, [voiceId]: true }));
+
+      const response = await axios.post("/api/voice/like", { voiceId });
+
+      // 좋아요 상태 업데이트
+      setUserLikes((prev) => ({
+        ...prev,
+        [voiceId]: response.data.liked,
+      }));
+
+      // 좋아요 카운트 업데이트
+      setVoiceList((prev) =>
+        prev.map((item) => {
+          if (item.id === voiceId) {
+            return {
+              ...item,
+              likeCount: response.data.liked ? item.likeCount + 1 : item.likeCount - 1,
+            };
+          }
+          return item;
+        }),
+      );
+    } catch (error) {
+      console.error("좋아요 처리 중 오류가 발생했습니다:", error);
+    } finally {
+      setLikePending((prev) => ({ ...prev, [voiceId]: false }));
     }
   };
 
@@ -139,6 +207,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                   <th className="px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">영어 문장</th>
                   <th className="w-14 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">팀원명</th>
                   <th className="w-20 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">듣기</th>
+                  <th className="w-20 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">좋아요</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
@@ -167,6 +236,23 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                         className="flex items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
                         {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶"}
                       </button>
+                    </td>
+                    <td className="px-2 py-3 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <button
+                          onClick={() => handleLikeToggle(item.id)}
+                          disabled={likePending[item.id]}
+                          className="flex items-center justify-center text-blue-500 hover:text-blue-700">
+                          {likePending[item.id] ? (
+                            <ImSpinner9 className="h-5 w-5 animate-spin" />
+                          ) : userLikes[item.id] ? (
+                            <FaThumbsUp className="h-5 w-5" />
+                          ) : (
+                            <FaRegThumbsUp className="h-5 w-5" />
+                          )}
+                        </button>
+                        <span className="ml-2 text-sm text-gray-600">{item.likeCount || 0}</span>
+                      </div>
                     </td>
                   </tr>
                 ))}

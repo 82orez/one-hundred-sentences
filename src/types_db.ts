@@ -571,27 +571,36 @@ export type Database = {
           courseId: string
           createdAt: string
           id: string
+          likeCount: number
           myVoiceUrl: string
           sentenceEn: string
+          sentenceId: string | null
           sentenceNo: number
+          updatedAt: string
           userId: string
         }
         Insert: {
           courseId: string
           createdAt?: string
           id: string
+          likeCount?: number
           myVoiceUrl: string
           sentenceEn: string
+          sentenceId?: string | null
           sentenceNo: number
+          updatedAt: string
           userId: string
         }
         Update: {
           courseId?: string
           createdAt?: string
           id?: string
+          likeCount?: number
           myVoiceUrl?: string
           sentenceEn?: string
+          sentenceId?: string | null
           sentenceNo?: number
+          updatedAt?: string
           userId?: string
         }
         Relationships: [
@@ -603,11 +612,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "MyVoiceOpenList_sentenceNo_fkey"
-            columns: ["sentenceNo"]
+            foreignKeyName: "MyVoiceOpenList_sentenceId_fkey"
+            columns: ["sentenceId"]
             isOneToOne: false
             referencedRelation: "Sentence"
-            referencedColumns: ["no"]
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "MyVoiceOpenList_userId_fkey"
@@ -1303,6 +1312,45 @@ export type Database = {
           token?: string
         }
         Relationships: []
+      }
+      VoiceLike: {
+        Row: {
+          createdAt: string
+          id: string
+          myVoiceOpenListId: string
+          updatedAt: string
+          userId: string
+        }
+        Insert: {
+          createdAt?: string
+          id: string
+          myVoiceOpenListId: string
+          updatedAt: string
+          userId: string
+        }
+        Update: {
+          createdAt?: string
+          id?: string
+          myVoiceOpenListId?: string
+          updatedAt?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "VoiceLike_myVoiceOpenListId_fkey"
+            columns: ["myVoiceOpenListId"]
+            isOneToOne: false
+            referencedRelation: "MyVoiceOpenList"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "VoiceLike_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       YouTubeViewAttempt: {
         Row: {
