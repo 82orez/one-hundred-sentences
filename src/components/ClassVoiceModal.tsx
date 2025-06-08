@@ -26,6 +26,9 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
   const { data: session } = useSession();
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [currentAudioUrl, setCurrentAudioUrl] = useState<string | null>(null);
+
   useEffect(() => {
     if (isOpen && courseId) {
       fetchVoiceList();
@@ -75,6 +78,21 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     return user.classNickName || user.name || "익명";
   };
 
+  const handlePlay = (url: string) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+
+    const audio = new Audio(url);
+    audioRef.current = audio;
+    setCurrentAudioUrl(url);
+
+    audio.play().catch((err) => {
+      console.error("오디오 재생 실패:", err);
+    });
+  };
+
   if (!isOpen) return null;
 
   // createPortal을 사용하여 모달을 body에 직접 렌더링
@@ -112,7 +130,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                 <tr>
                   <th className="w-12 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">번호</th>
                   <th className="px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">영어 문장</th>
-                  <th className="w-14 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">사용자</th>
+                  <th className="w-14 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">팀원명</th>
                   <th className="w-20 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">듣기</th>
                 </tr>
               </thead>
@@ -136,7 +154,11 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                       </div>
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap">
-                      <audio src={item.myVoiceUrl} controls className="h-8 w-full" />
+                      <button
+                        onClick={() => handlePlay(item.myVoiceUrl)}
+                        className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600">
+                        ▶
+                      </button>
                     </td>
                   </tr>
                 ))}
