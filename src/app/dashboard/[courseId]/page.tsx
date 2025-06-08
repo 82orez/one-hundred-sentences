@@ -17,6 +17,7 @@ import { HiOutlineSparkles } from "react-icons/hi2";
 import FlipCounter from "@/components/FlipCounterAnimation";
 import ClassMembersModal from "@/components/ClassMembersModal";
 import CoursePointsRankingModal from "@/components/CoursePointsRankingModal";
+import ClassVoiceModal from "@/components/ClassVoiceModal";
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -36,6 +37,7 @@ export default function Dashboard({ params }: Props) {
   // const [isNavigating, setIsNavigating] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
 
   // ✅ 로그인한 사용자의 Selected 정보 가져오기
   const { data: selectedData } = useQuery({
@@ -602,8 +604,8 @@ export default function Dashboard({ params }: Props) {
               {/*<p className="mt-2 text-sm text-gray-600">All for One, One for All.</p>*/}
               <button
                 className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
-                onClick={() => setClassMembersModalOpen(true)}>
-                팀원들의 발음 들어 보기 <ArrowRight className="ml-1 h-4 w-4" />
+                onClick={() => setIsVoiceModalOpen(true)}>
+                발음 들어 보기 <ArrowRight className="ml-1 h-4 w-4" />
               </button>
             </div>
           </div>
@@ -730,6 +732,9 @@ export default function Dashboard({ params }: Props) {
           courseTitle={selectedCourseTitle}
         />
       )}
+
+      {/* ✅ 음성 모달 추가 */}
+      <ClassVoiceModal isOpen={isVoiceModalOpen} closeModal={() => setIsVoiceModalOpen(false)} courseId={selectedCourseId} />
     </div>
   );
 }
