@@ -235,7 +235,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                         <button
                           onClick={() => handlePlay(item.myVoiceUrl)}
                           disabled={currentAudioUrl === item.myVoiceUrl}
-                          className="flex items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
+                          className="flex h-[28px] items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
                           {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶"}
                         </button>
                       </td>
@@ -282,8 +282,8 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                     <button
                       onClick={() => handlePlay(item.myVoiceUrl)}
                       disabled={currentAudioUrl === item.myVoiceUrl}
-                      className="flex items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
-                      {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶ 듣기"}
+                      className="flex h-8 w-[68px] items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
+                      {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : <div>▶ 듣기</div>}
                     </button>
                     <div className="flex items-center">
                       <button onClick={() => handleLikeToggle(item.id)} disabled={likePending[item.id]} className="text-blue-500 hover:text-blue-700">
