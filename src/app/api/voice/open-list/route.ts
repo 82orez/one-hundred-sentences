@@ -38,7 +38,8 @@ export async function GET(request: Request) {
         },
       },
       orderBy: {
-        sentenceNo: "asc",
+        createdAt: "desc", // 생성일 기준 내림차순 정렬 (최신순)
+        // sentenceNo: "asc",
       },
     });
 
