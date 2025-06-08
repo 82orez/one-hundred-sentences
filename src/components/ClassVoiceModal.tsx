@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { createPortal } from "react-dom";
 import { ImSpinner9 } from "react-icons/im";
 import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
+import { queryClient } from "@/app/providers";
 
 type VoiceItem = {
   id: string;
@@ -128,6 +129,8 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
           return item;
         }),
       );
+
+      queryClient.invalidateQueries({ queryKey: ["voiceLikes"] });
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다:", error);
     } finally {

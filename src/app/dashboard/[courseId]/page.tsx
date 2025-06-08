@@ -355,6 +355,26 @@ export default function Dashboard({ params }: Props) {
     }
   }, [rankData]);
 
+  // 좋아요 개수 조회 useQuery 추가
+  const { data: voiceLikesData } = useQuery({
+    queryKey: ["voiceLikes", session?.user?.id, selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/voice/like/total?courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
+  });
+
+  // 좋아요 개수를 상태로 관리
+  const [totalVoiceLikes, setTotalVoiceLikes] = useState(0);
+
+  // 좋아요 데이터가 변경될 때 상태 업데이트
+  useEffect(() => {
+    if (voiceLikesData) {
+      setTotalVoiceLikes(voiceLikesData.totalLikes || 0);
+    }
+  }, [voiceLikesData]);
+
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
     console.log(getSentenceCount.error.message);
@@ -412,6 +432,11 @@ export default function Dashboard({ params }: Props) {
             <div className="font-semibold text-blue-600">
               ({quizStats?.totalCorrect || 0}) {quizStats?.totalAttempts || 0}회
             </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>내 발음 좋아요</div>
+            <div className="font-semibold text-blue-600">{totalVoiceLikes}회</div>
           </div>
 
           <div className="flex items-center justify-between">
