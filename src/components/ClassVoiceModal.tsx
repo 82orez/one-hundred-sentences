@@ -142,7 +142,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
   const getUserImage = (user: VoiceItem["user"]) => {
     if (user.customImageUrl) return user.customImageUrl;
     if (user.image) return user.image;
-    return "/images/default-avatar.png"; // 기본 이미지
+    return "/images/anon-user-1.jpg"; // 기본 이미지
   };
 
   // 사용자 표시 이름 가져오기
