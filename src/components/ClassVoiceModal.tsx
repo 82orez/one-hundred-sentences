@@ -205,11 +205,11 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-gray-50">
                   <tr>
-                    <th className="w-12 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">번호</th>
-                    <th className="px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">영어 문장</th>
-                    <th className="w-14 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">팀원명</th>
-                    <th className="w-20 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">듣기</th>
-                    <th className="w-20 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">좋아요</th>
+                    <th className="w-12 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">번호</th>
+                    <th className="px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">영어 문장</th>
+                    <th className="w-14 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">팀원명</th>
+                    <th className="w-20 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">듣기</th>
+                    <th className="w-20 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">좋아요</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
@@ -228,7 +228,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                               className="h-full w-full object-cover"
                             />
                           </div>
-                          <div className="ml-2 text-xs">{getUserDisplayName(item.user)}</div>
+                          <div className="ml-2 text-sm">{getUserDisplayName(item.user)}</div>
                         </div>
                       </td>
                       <td className="px-2 py-3 whitespace-nowrap">
