@@ -571,7 +571,6 @@ export type Database = {
           courseId: string
           createdAt: string
           id: string
-          isGood: number
           myVoiceUrl: string
           sentenceEn: string
           sentenceNo: number
@@ -581,7 +580,6 @@ export type Database = {
           courseId: string
           createdAt?: string
           id: string
-          isGood?: number
           myVoiceUrl: string
           sentenceEn: string
           sentenceNo: number
@@ -591,7 +589,6 @@ export type Database = {
           courseId?: string
           createdAt?: string
           id?: string
-          isGood?: number
           myVoiceUrl?: string
           sentenceEn?: string
           sentenceNo?: number
