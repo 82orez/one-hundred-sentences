@@ -199,66 +199,109 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
         ) : voiceList.length === 0 ? (
           <div className="py-8 text-center text-gray-500">공개된 녹음 파일이 없습니다.</div>
         ) : (
-          <div className="max-h-[70vh] overflow-y-auto pr-2">
-            <table className="w-full">
-              <thead className="sticky top-0 bg-gray-50">
-                <tr>
-                  <th className="w-12 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">번호</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">영어 문장</th>
-                  <th className="w-14 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">팀원명</th>
-                  <th className="w-20 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">듣기</th>
-                  <th className="w-20 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">좋아요</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {voiceList.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50">
-                    <td className="px-2 py-3 text-sm whitespace-nowrap text-gray-500">{item.sentenceNo}</td>
-                    <td className="px-2 py-3 text-sm">{item.sentenceEn}</td>
-                    <td className="px-2 py-3 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
-                          <Image
-                            src={getUserImage(item.user)}
-                            alt={getUserDisplayName(item.user)}
-                            width={32}
-                            height={32}
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                        <div className="ml-2 text-xs">{getUserDisplayName(item.user)}</div>
-                      </div>
-                    </td>
-                    <td className="px-2 py-3 whitespace-nowrap">
-                      <button
-                        onClick={() => handlePlay(item.myVoiceUrl)}
-                        disabled={currentAudioUrl === item.myVoiceUrl} // 같은 파일 중복 재생 방지
-                        className="flex items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
-                        {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶"}
-                      </button>
-                    </td>
-                    <td className="px-2 py-3 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <button
-                          onClick={() => handleLikeToggle(item.id)}
-                          disabled={likePending[item.id]}
-                          className="flex items-center justify-center text-blue-500 hover:text-blue-700">
-                          {likePending[item.id] ? (
-                            <ImSpinner9 className="h-5 w-5 animate-spin" />
-                          ) : userLikes[item.id] ? (
-                            <FaThumbsUp className="h-5 w-5" />
-                          ) : (
-                            <FaRegThumbsUp className="h-5 w-5" />
-                          )}
-                        </button>
-                        <span className="ml-2 text-sm text-gray-600">{item.likeCount || 0}</span>
-                      </div>
-                    </td>
+          <>
+            {/* ✅ 데스크탑 전용 테이블 */}
+            <div className="hidden max-h-[70vh] overflow-y-auto pr-2 md:block">
+              <table className="w-full text-sm">
+                <thead className="sticky top-0 bg-gray-50">
+                  <tr>
+                    <th className="w-12 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">번호</th>
+                    <th className="px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">영어 문장</th>
+                    <th className="w-14 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">팀원명</th>
+                    <th className="w-20 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">듣기</th>
+                    <th className="w-20 px-2 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">좋아요</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {voiceList.map((item) => (
+                    <tr key={item.id} className="hover:bg-gray-50">
+                      <td className="px-2 py-3 text-sm whitespace-nowrap text-gray-500">{item.sentenceNo}</td>
+                      <td className="px-2 py-3 text-sm">{item.sentenceEn}</td>
+                      <td className="px-2 py-3 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
+                            <Image
+                              src={getUserImage(item.user)}
+                              alt={getUserDisplayName(item.user)}
+                              width={32}
+                              height={32}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                          <div className="ml-2 text-xs">{getUserDisplayName(item.user)}</div>
+                        </div>
+                      </td>
+                      <td className="px-2 py-3 whitespace-nowrap">
+                        <button
+                          onClick={() => handlePlay(item.myVoiceUrl)}
+                          disabled={currentAudioUrl === item.myVoiceUrl}
+                          className="flex items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
+                          {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶"}
+                        </button>
+                      </td>
+                      <td className="px-2 py-3 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <button
+                            onClick={() => handleLikeToggle(item.id)}
+                            disabled={likePending[item.id]}
+                            className="text-blue-500 hover:text-blue-700">
+                            {likePending[item.id] ? (
+                              <ImSpinner9 className="h-5 w-5 animate-spin" />
+                            ) : userLikes[item.id] ? (
+                              <FaThumbsUp className="h-5 w-5" />
+                            ) : (
+                              <FaRegThumbsUp className="h-5 w-5" />
+                            )}
+                          </button>
+                          <span className="ml-2 text-sm text-gray-600">{item.likeCount || 0}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* ✅ 모바일 전용 카드형 */}
+            <div className="block max-h-[70vh] space-y-4 overflow-y-auto pr-1 md:hidden">
+              {voiceList.map((item) => (
+                <div key={item.id} className="rounded-lg border bg-white p-4 shadow-sm">
+                  <div className="mb-1 text-xs text-gray-500">문장 번호: {item.sentenceNo}</div>
+                  <div className="mb-2 font-semibold text-gray-800">{item.sentenceEn}</div>
+                  <div className="mb-2 flex items-center gap-2">
+                    <Image
+                      src={getUserImage(item.user)}
+                      alt={getUserDisplayName(item.user)}
+                      width={32}
+                      height={32}
+                      className="h-8 w-8 rounded-full object-cover"
+                    />
+                    <span className="text-sm">{getUserDisplayName(item.user)}</span>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between">
+                    <button
+                      onClick={() => handlePlay(item.myVoiceUrl)}
+                      disabled={currentAudioUrl === item.myVoiceUrl}
+                      className="flex items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
+                      {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶ 듣기"}
+                    </button>
+                    <div className="flex items-center">
+                      <button onClick={() => handleLikeToggle(item.id)} disabled={likePending[item.id]} className="text-blue-500 hover:text-blue-700">
+                        {likePending[item.id] ? (
+                          <ImSpinner9 className="h-5 w-5 animate-spin" />
+                        ) : userLikes[item.id] ? (
+                          <FaThumbsUp className="h-5 w-5" />
+                        ) : (
+                          <FaRegThumbsUp className="h-5 w-5" />
+                        )}
+                      </button>
+                      <span className="ml-2 text-sm text-gray-600">{item.likeCount || 0}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>,
