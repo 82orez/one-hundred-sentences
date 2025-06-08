@@ -106,33 +106,90 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     // 중복 요청 방지
     if (likePending[voiceId]) return;
 
+    // 해당 음성의 작성자 ID 찾기
+    const voiceItem = voiceList.find((item) => item.id === voiceId);
+    if (!voiceItem) return;
+
+    // 자신의 음성인지 확인
+    const isOwnVoice = voiceItem.userId === session.user.id;
+
+    // 자신의 음성에 좋아요를 시도할 경우 알림 (선택적)
+    if (isOwnVoice) {
+      alert("자신의 음성에는 좋아요를 누를 수 없습니다.");
+      return;
+    }
+
     try {
       setLikePending((prev) => ({ ...prev, [voiceId]: true }));
 
-      const response = await axios.post("/api/voice/like", { voiceId });
+      // 낙관적 UI 업데이트 - 서버 응답 전에 먼저 UI 업데이트
+      const currentLiked = userLikes[voiceId] || false;
 
-      // 좋아요 상태 업데이트
+      // 즉시 UI 업데이트
       setUserLikes((prev) => ({
         ...prev,
-        [voiceId]: response.data.liked,
+        [voiceId]: !currentLiked,
       }));
 
-      // 좋아요 카운트 업데이트
+      // 좋아요 카운트도 즉시 업데이트
       setVoiceList((prev) =>
         prev.map((item) => {
           if (item.id === voiceId) {
             return {
               ...item,
-              likeCount: response.data.liked ? item.likeCount + 1 : item.likeCount - 1,
+              likeCount: !currentLiked ? item.likeCount + 1 : item.likeCount - 1,
             };
           }
           return item;
         }),
       );
 
+      // 서버에 API 요청
+      const response = await axios.post("/api/voice/like", { voiceId });
+
+      // 서버 응답과 예상 결과가 다르면 롤백 (드물게 발생)
+      if (response.data.liked !== !currentLiked) {
+        // 상태 롤백
+        setUserLikes((prev) => ({
+          ...prev,
+          [voiceId]: response.data.liked,
+        }));
+
+        setVoiceList((prev) =>
+          prev.map((item) => {
+            if (item.id === voiceId) {
+              return {
+                ...item,
+                likeCount: response.data.liked ? item.likeCount + 1 : item.likeCount - 1,
+              };
+            }
+            return item;
+          }),
+        );
+      }
+
       queryClient.invalidateQueries({ queryKey: ["voiceLikes"] });
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다:", error);
+      // 오류 발생 시 원래 상태로 복원
+      setUserLikes((prev) => ({
+        ...prev,
+        [voiceId]: userLikes[voiceId] || false,
+      }));
+
+      // 좋아요 카운트도 복원
+      setVoiceList((prev) =>
+        prev.map((item) => {
+          if (item.id === voiceId) {
+            const originalLiked = userLikes[voiceId] || false;
+            return {
+              ...item,
+              likeCount: originalLiked ? item.likeCount : item.likeCount,
+            };
+          }
+          return item;
+        }),
+      );
     } finally {
       setLikePending((prev) => ({ ...prev, [voiceId]: false }));
     }
