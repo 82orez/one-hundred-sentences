@@ -229,6 +229,26 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
   });
 
+  // 사용자가 다른 수강생의 음성 파일에 좋아요 클릭한 횟수 조회를 위한 useQuery 추가
+  const { data: userLikesData } = useQuery({
+    queryKey: ["userVoiceLikes", session?.user?.id, selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/voice/like/user-likes?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
+  });
+
+  // 사용자 좋아요 클릭 횟수 상태 관리
+  const [userTotalLikes, setUserTotalLikes] = useState(0);
+
+  // 사용자 좋아요 데이터가 변경될 때 상태 업데이트
+  useEffect(() => {
+    if (userLikesData) {
+      setUserTotalLikes(userLikesData.totalUserLikes || 0);
+    }
+  }, [userLikesData]);
+
   // 좋아요 개수 조회 useQuery 추가
   const { data: voiceLikesData } = useQuery({
     queryKey: ["voiceLikes", session?.user?.id, selectedCourseId],
@@ -437,6 +457,11 @@ export default function Dashboard({ params }: Props) {
             <div className="font-semibold text-blue-600">
               ({quizStats?.totalCorrect || 0}) {quizStats?.totalAttempts || 0}회
             </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>좋아요 클릭</div>
+            <div className="font-semibold text-blue-600">{userTotalLikes}회</div>
           </div>
 
           <div className="flex items-center justify-between">

@@ -170,6 +170,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
       }
 
       queryClient.invalidateQueries({ queryKey: ["voiceLikes"] });
+      queryClient.invalidateQueries({ queryKey: ["userVoiceLikes"] });
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다:", error);
       // 오류 발생 시 원래 상태로 복원
