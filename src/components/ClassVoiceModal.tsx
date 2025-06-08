@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { ImSpinner9 } from "react-icons/im";
 import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
+import toast from "react-hot-toast";
 
 type VoiceItem = {
   id: string;
@@ -115,7 +116,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
 
     // 자신의 음성에 좋아요를 시도할 경우 알림 (선택적)
     if (isOwnVoice) {
-      alert("자신의 음성에는 좋아요를 누를 수 없습니다.");
+      toast.error("자신의 음성에는 좋아요를 누를 수 없습니다.");
       return;
     }
 
