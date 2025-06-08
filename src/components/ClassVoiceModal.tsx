@@ -5,6 +5,7 @@ import Image from "next/image";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { createPortal } from "react-dom";
+import { ImSpinner9 } from "react-icons/im";
 
 type VoiceItem = {
   id: string;
@@ -88,8 +89,14 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     audioRef.current = audio;
     setCurrentAudioUrl(url);
 
+    // ✅ 재생이 끝나면 상태 초기화
+    audio.onended = () => {
+      setCurrentAudioUrl(null);
+    };
+
     audio.play().catch((err) => {
       console.error("오디오 재생 실패:", err);
+      setCurrentAudioUrl(null); // 재생 실패 시에도 상태 초기화
     });
   };
 
@@ -156,8 +163,9 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                     <td className="px-2 py-3 whitespace-nowrap">
                       <button
                         onClick={() => handlePlay(item.myVoiceUrl)}
-                        className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600">
-                        ▶
+                        disabled={currentAudioUrl === item.myVoiceUrl} // 같은 파일 중복 재생 방지
+                        className="flex items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
+                        {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶"}
                       </button>
                     </td>
                   </tr>
