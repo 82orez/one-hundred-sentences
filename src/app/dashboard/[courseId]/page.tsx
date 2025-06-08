@@ -625,18 +625,18 @@ export default function Dashboard({ params }: Props) {
               <button
                 className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
                 onClick={() => setClassMembersModalOpen(true)}>
-                우리 팀원들 보기 <ArrowRight className="ml-1 h-4 w-4" />
+                👀우리 팀원들 보기 <ArrowRight className="ml-1 h-4 w-4" />
               </button>
             </div>
 
             <h2 className="mt-8 mb-4 text-xl font-semibold">팀원들의 발음 마당</h2>
             <div className="rounded-lg bg-blue-50 p-4">
-              <p className="font-medium">팀원들이 공개한 발음을 들어보고 '좋아요'를 눌러 주세요.</p>
+              <p className="font-medium">팀원들이 공개한 발음을 들어보고 '👍좋아요'를 눌러 주세요.</p>
               {/*<p className="mt-2 text-sm text-gray-600">All for One, One for All.</p>*/}
               <button
                 className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
                 onClick={() => setIsVoiceModalOpen(true)}>
-                발음 들어 보기 <ArrowRight className="ml-1 h-4 w-4" />
+                👂발음 들어 보기 <ArrowRight className="ml-1 h-4 w-4" />
               </button>
             </div>
           </div>

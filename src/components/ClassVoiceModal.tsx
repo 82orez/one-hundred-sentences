@@ -266,7 +266,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-gray-50">
                   <tr>
-                    <th className="w-12 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">번호</th>
+                    <th className="w-12 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">No.</th>
                     <th className="px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">영어 문장</th>
                     <th className="w-14 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">팀원명</th>
                     <th className="w-20 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">듣기</th>
@@ -296,7 +296,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                         <button
                           onClick={() => handlePlay(item.myVoiceUrl)}
                           disabled={currentAudioUrl === item.myVoiceUrl}
-                          className="flex h-[28px] items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
+                          className="flex h-[28px] cursor-pointer items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
                           {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶"}
                         </button>
                       </td>
@@ -305,7 +305,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                           <button
                             onClick={() => handleLikeToggle(item.id)}
                             disabled={likePending[item.id]}
-                            className="text-blue-500 hover:text-blue-700">
+                            className="cursor-pointer text-blue-500 hover:text-blue-700">
                             {likePending[item.id] ? (
                               <ImSpinner9 className="h-5 w-5 animate-spin" />
                             ) : userLikes[item.id] ? (
