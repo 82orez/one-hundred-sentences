@@ -535,6 +535,71 @@ const LearnPage = ({ params }: Props) => {
     toggleFavoriteMutation.mutate(sentenceNo);
   };
 
+  // 내 목소리 공개 여부 상태 관리
+  const [isVoicePublic, setIsVoicePublic] = useState<{ [key: number]: boolean }>({});
+
+  // 사용자의 목소리 공개 상태 가져오기
+  const { data: voiceVisibilityData } = useQuery({
+    queryKey: ["voiceVisibility", session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return {};
+      const res = await axios.get(`/api/my-voice-open?userId=${session.user.id}&courseId=${selectedData.selectedCourseId}`);
+      // 결과를 sentenceNo를 키로 하는 객체로 변환
+      return res.data.reduce((acc: { [key: number]: boolean }, item: { sentenceNo: number }) => {
+        acc[item.sentenceNo] = true;
+        return acc;
+      }, {});
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedData?.selectedCourseId,
+  });
+
+  // 데이터 로드 시 상태 업데이트
+  useEffect(() => {
+    if (voiceVisibilityData) {
+      setIsVoicePublic(voiceVisibilityData);
+    }
+  }, [voiceVisibilityData]);
+
+  // 토글 뮤테이션 구현
+  const toggleVoiceVisibilityMutation = useMutation({
+    mutationFn: async (params: { sentenceNo: number; isPublic: boolean }) => {
+      if (params.isPublic) {
+        // 공개 상태로 변경 (MyVoiceOpenList에 추가)
+        const res = await axios.post("/api/my-voice-open", {
+          sentenceNo: params.sentenceNo,
+          courseId: selectedData.selectedCourseId,
+        });
+        return res.data;
+      } else {
+        // 비공개 상태로 변경 (MyVoiceOpenList 에서 삭제)
+        const res = await axios.delete(`/api/my-voice-open?sentenceNo=${params.sentenceNo}&courseId=${selectedData.selectedCourseId}`);
+        return res.data;
+      }
+    },
+    onSuccess: () => {
+      // 데이터 갱신
+      queryClient.invalidateQueries({ queryKey: ["voiceVisibility"] });
+    },
+  });
+
+  // 토글 핸들러 함수
+  const handleToggleVoiceVisibility = (sentenceNo: number) => {
+    // 현재 상태의 반대로 토글
+    const newState = !isVoicePublic[sentenceNo];
+
+    // 상태 미리 업데이트 (낙관적 업데이트)
+    setIsVoicePublic((prev) => ({
+      ...prev,
+      [sentenceNo]: newState,
+    }));
+
+    // 서버에 반영
+    toggleVoiceVisibilityMutation.mutate({
+      sentenceNo,
+      isPublic: newState,
+    });
+  };
+
   if (isLoading) return <LoadingPageSkeleton />;
   if (error) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
@@ -616,12 +681,12 @@ const LearnPage = ({ params }: Props) => {
 
             {/* 내 목소리 공개 여부 버튼 */}
             <button
+              onClick={() => handleToggleVoiceVisibility(sentence.no)}
               className={clsx("", {
                 hidden: !completedSentences?.includes(sentence.no),
               })}>
               <div className={"flex cursor-pointer items-center gap-1"}>
-                <FaLock size={25} />
-                <FaLockOpen size={25} />
+                {isVoicePublic[sentence.no] ? <FaLockOpen size={25} className="text-green-500" /> : <FaLock size={25} className="text-gray-500" />}
               </div>
             </button>
 
