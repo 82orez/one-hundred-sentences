@@ -194,6 +194,7 @@ model MyVoiceOpenList {
   sentenceNo Int
   sentenceEn String
   myVoiceUrl String
+  isGood     Int      @default(0)
   createdAt  DateTime @default(now()) // 학습 완료 날짜
 
   // 관계 설정
