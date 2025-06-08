@@ -229,6 +229,26 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
   });
 
+  // 좋아요 개수 조회 useQuery 추가
+  const { data: voiceLikesData } = useQuery({
+    queryKey: ["voiceLikes", session?.user?.id, selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/voice/like/total?courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
+  });
+
+  // 좋아요 개수를 상태로 관리
+  const [totalVoiceLikes, setTotalVoiceLikes] = useState(0);
+
+  // 좋아요 데이터가 변경될 때 상태 업데이트
+  useEffect(() => {
+    if (voiceLikesData) {
+      setTotalVoiceLikes(voiceLikesData.totalLikes || 0);
+    }
+  }, [voiceLikesData]);
+
   // ✅ userCoursePoints 에 있는 개별 total 포인트 정보 불러오기
   const { data: savedPoints } = useQuery({
     queryKey: ["coursePoints", session?.user?.id, selectedCourseId],
@@ -253,6 +273,7 @@ export default function Dashboard({ params }: Props) {
     const QUIZ_ATTEMPT_POINT = 3;
     const QUIZ_CORRECT_POINT = 3;
     const ATTENDANCE_POINT = 50;
+    const VOICE_LIKE_POINT = 100;
 
     const videoPoints = totalVideoDuration * VIDEO_POINT_PER_SECOND;
     const audioPoints = (nativeAudioData?.totalAttempts || 0) * AUDIO_POINT_PER_ATTEMPT;
@@ -260,11 +281,14 @@ export default function Dashboard({ params }: Props) {
     const quizAttemptPoints = (quizStats?.totalAttempts || 0) * QUIZ_ATTEMPT_POINT;
     const quizCorrectPoints = (quizStats?.totalCorrect || 0) * QUIZ_CORRECT_POINT;
     const attendancePoints = (attendanceData?.attendedClassDates || 0) * ATTENDANCE_POINT;
+    const voiceLikePoints = (voiceLikesData?.totalLikes || 0) * VOICE_LIKE_POINT;
 
-    const total = Math.round(videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints);
+    const total = Math.round(
+      videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints + voiceLikePoints,
+    );
 
     // 계산된 총 포인트가 기존 저장된 포인트와 다를 때만 상태 업데이트
-    if (savedPoints?.points < total) {
+    if (savedPoints?.points !== total) {
       setTotalPoints(total);
 
       // 포인트가 다른 경우에만 서버에 저장
@@ -294,6 +318,7 @@ export default function Dashboard({ params }: Props) {
     quizStats?.totalAttempts,
     quizStats?.totalCorrect,
     attendanceData?.attendedClassDates,
+    voiceLikesData?.totalLikes,
     isQuizStatsLoading,
     isVideoDurationLoading,
     session?.user?.id,
@@ -354,26 +379,6 @@ export default function Dashboard({ params }: Props) {
       // setTotalStudents(rankData.totalStudents);
     }
   }, [rankData]);
-
-  // 좋아요 개수 조회 useQuery 추가
-  const { data: voiceLikesData } = useQuery({
-    queryKey: ["voiceLikes", session?.user?.id, selectedCourseId],
-    queryFn: async () => {
-      const res = await axios.get(`/api/voice/like/total?courseId=${selectedCourseId}`);
-      return res.data;
-    },
-    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
-  });
-
-  // 좋아요 개수를 상태로 관리
-  const [totalVoiceLikes, setTotalVoiceLikes] = useState(0);
-
-  // 좋아요 데이터가 변경될 때 상태 업데이트
-  useEffect(() => {
-    if (voiceLikesData) {
-      setTotalVoiceLikes(voiceLikesData.totalLikes || 0);
-    }
-  }, [voiceLikesData]);
 
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
