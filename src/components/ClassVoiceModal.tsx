@@ -266,7 +266,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
             <div className="block max-h-[70vh] space-y-4 overflow-y-auto pr-1 md:hidden">
               {voiceList.map((item) => (
                 <div key={item.id} className="rounded-lg border bg-white p-4 shadow-sm">
-                  <div className="mb-1 text-xs text-gray-500">문장 번호: {item.sentenceNo}</div>
+                  <div className="mb-1 text-sm text-gray-500">문장 번호: {item.sentenceNo}</div>
                   <div className="mb-2 font-semibold text-gray-800">{item.sentenceEn}</div>
                   <div className="mb-2 flex items-center gap-2">
                     <Image
