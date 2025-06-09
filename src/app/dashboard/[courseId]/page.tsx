@@ -18,6 +18,10 @@ import FlipCounter from "@/components/FlipCounterAnimation";
 import ClassMembersModal from "@/components/ClassMembersModal";
 import CoursePointsRankingModal from "@/components/CoursePointsRankingModal";
 import ClassVoiceModal from "@/components/ClassVoiceModal";
+import { createClient } from "@supabase/supabase-js";
+
+import { Bell } from "lucide-react"; // 알림 아이콘 추가
+import toast from "react-hot-toast"; // 토스트 알림을 위해 추가
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -36,6 +40,9 @@ export default function Dashboard({ params }: Props) {
   const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
+
+  const [unreadVoiceCount, setUnreadVoiceCount] = useState(0);
+  const [lastCheckedVoiceTime, setLastCheckedVoiceTime] = useState<string | null>(null);
 
   // ✅ 로그인한 사용자의 Selected 정보 가져오기
   const { data: selectedData } = useQuery({
@@ -397,6 +404,78 @@ export default function Dashboard({ params }: Props) {
     }
   }, [rankData]);
 
+  // Supabase 클라이언트 초기화
+  useEffect(() => {
+    if (status === "authenticated" && selectedCourseId) {
+      // 사용자의 마지막 확인 시간 로드 (localStorage 에서)
+      const savedTime = localStorage.getItem(`lastCheckedVoice_${selectedCourseId}`);
+      if (savedTime) {
+        setLastCheckedVoiceTime(savedTime);
+      }
+
+      // 초기 미확인 음성 파일 개수 로드
+      const loadUnreadVoiceCount = async () => {
+        try {
+          const response = await axios.get(`/api/voice/unread?courseId=${selectedCourseId}&lastChecked=${lastCheckedVoiceTime || ""}`);
+          setUnreadVoiceCount(response.data.count || 0);
+        } catch (error) {
+          console.error("미확인 음성 파일 개수 로드 실패:", error);
+        }
+      };
+
+      loadUnreadVoiceCount();
+    }
+  }, [status, selectedCourseId, lastCheckedVoiceTime]);
+
+  // Supabase 클라이언트 생성
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  // Supabase Realtime 구독 설정
+  useEffect(() => {
+    if (!selectedCourseId || status !== "authenticated") return;
+
+    // MyVoiceOpenList 테이블 변경 구독
+    const channel = supabase
+      .channel("voice-open-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "MyVoiceOpenList",
+          // filter: `courseId=eq.${selectedCourseId}`,
+        },
+        (payload) => {
+          // 자기 자신이 업로드한 것이 아닌 경우에만 카운트 증가 및 알림
+          if (payload.new.userId !== session?.user?.id) {
+            setUnreadVoiceCount((prev) => prev + 1);
+            toast.success("새로운 녹음 파일이 공개되었습니다!", {
+              icon: "🎤",
+              duration: 5000,
+            });
+          }
+        },
+      )
+      .subscribe();
+
+    // 정리 함수
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [selectedCourseId, status, session?.user?.id]);
+
+  // 음성 모달 열 때 마지막 확인 시간 업데이트
+  const handleVoiceModalOpen = () => {
+    setIsVoiceModalOpen(true);
+    // 현재 시간을 마지막 확인 시간으로 저장
+    const now = new Date().toISOString();
+    setLastCheckedVoiceTime(now);
+    localStorage.setItem(`lastCheckedVoice_${selectedCourseId}`, now);
+    setUnreadVoiceCount(0); // 카운트 초기화
+  };
+
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
     console.log(getSentenceCount.error.message);
@@ -630,15 +709,29 @@ export default function Dashboard({ params }: Props) {
               </button>
             </div>
 
+            {/* 팀원들의 발음 마당 섹션 */}
             <h2 className="mt-8 mb-4 text-xl font-semibold">팀원들의 발음 마당</h2>
-            <h6 className={"mb-4 text-sm"}>아직 듣지 않은 녹음 파일</h6>
+            <div className="flex items-center justify-between">
+              <h6 className={"mb-4 text-sm"}>아직 듣지 않은 녹음 파일</h6>
+              {unreadVoiceCount > 0 && (
+                <div className="ml-2 flex items-center">
+                  <Bell className="h-4 w-4 text-red-500" />
+                  <span className="ml-1 rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">{unreadVoiceCount}</span>
+                </div>
+              )}
+            </div>
             <div className="rounded-lg bg-blue-50 p-4">
               <p className="font-medium">팀원들이 공개한 발음을 들어보고 '👍좋아요'를 눌러 주세요.</p>
               {/*<p className="mt-2 text-sm text-gray-600">All for One, One for All.</p>*/}
               <button
                 className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
-                onClick={() => setIsVoiceModalOpen(true)}>
+                onClick={handleVoiceModalOpen}>
                 👂발음 들어 보기 <ArrowRight className="ml-1 h-4 w-4" />
+                {unreadVoiceCount > 0 && (
+                  <span className="ml-2 animate-pulse rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">
+                    새 음성 {unreadVoiceCount}개
+                  </span>
+                )}
               </button>
             </div>
           </div>
