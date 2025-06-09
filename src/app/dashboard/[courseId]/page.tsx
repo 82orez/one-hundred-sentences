@@ -29,12 +29,10 @@ type Props = {
 export default function Dashboard({ params }: Props) {
   // const { courseId } = use(params);
   const { data: session, status } = useSession();
-  // const { completedSentencesStore, setCompletedSentencesStore, nextDay, setNextDay, initializeNextDay, updateNextDayInDB } = useLearningStore();
   const [progress, setProgress] = useState(0); // 완료된 문장 갯수: completedSentences 배열의 길이
   const [isQuizModalOpen, setQuizModalOpen] = useState(false);
   const [isClassMembersModalOpen, setClassMembersModalOpen] = useState(false);
   const [isCoursePointsRankingModalOpen, setIsCoursePointsRankingModalOpen] = useState(false);
-  // const [isNavigating, setIsNavigating] = useState(false);
   const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
@@ -53,10 +51,6 @@ export default function Dashboard({ params }: Props) {
   const selectedCourseId = selectedData?.selectedCourseId || "";
   const selectedCourseContents = selectedData?.selectedCourseContents || "";
   const selectedCourseTitle = selectedData?.selectedCourseTitle || "";
-
-  // console.log("selectedCourseId: ", selectedCourseId);
-  // console.log("selectedCourseContents: ", selectedCourseContents);
-  // console.log("selectedCourseTitle: ", selectedCourseTitle);
 
   const router = useRouter();
   // console.log("courseId: ", courseId);
@@ -303,7 +297,7 @@ export default function Dashboard({ params }: Props) {
     const quizCorrectPoints = (quizStats?.totalCorrect || 0) * QUIZ_CORRECT_POINT;
     const attendancePoints = (attendanceData?.attendedClassDates || 0) * ATTENDANCE_POINT;
     const voiceLikePoints = (voiceLikesData?.totalLikes || 0) * VOICE_LIKE_POINT;
-    const userVoiceLikePoints = (userLikesData.totalUserLikes || 0) * USER_VOICE_LIKE_POINT;
+    const userVoiceLikePoints = (userLikesData?.totalUserLikes || 0) * USER_VOICE_LIKE_POINT;
 
     const total = Math.round(
       videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints + voiceLikePoints + userVoiceLikePoints,
@@ -529,10 +523,6 @@ export default function Dashboard({ params }: Props) {
                   <span className="ml-1">%</span>
                 </div>
               </div>
-              {/*<div className="flex items-center justify-between">*/}
-              {/*  <h3 className="text-lg font-semibold text-gray-700">총 수강생</h3>*/}
-              {/*  <span className="text-2xl font-bold text-indigo-600">{totalStudents}명</span>*/}
-              {/*</div>*/}
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-700">나의 순위</h3>
                 <div
@@ -550,23 +540,6 @@ export default function Dashboard({ params }: Props) {
               </div>
               <p className="mt-1 text-sm text-gray-500">(현재 이 강좌에 등록된 활성 수강생 수 {totalStudents}명)</p>
             </div>
-
-            {/*{progress < 5 ? (*/}
-            {/*  <>*/}
-            {/*    <p className="text-xl font-medium">초보 학습자</p>*/}
-            {/*    <p className="mt-2 text-gray-500">5일 이상 완료하면 중급 학습자로 승급!</p>*/}
-            {/*  </>*/}
-            {/*) : progress < 15 ? (*/}
-            {/*  <>*/}
-            {/*    <p className="text-xl font-medium">중급 학습자</p>*/}
-            {/*    <p className="mt-2 text-gray-500">15일 이상 완료하면 고급 학습자로 승급!</p>*/}
-            {/*  </>*/}
-            {/*) : (*/}
-            {/*  <>*/}
-            {/*    <p className="text-xl font-medium">고급 학습자</p>*/}
-            {/*    <p className="mt-2 text-gray-500">축하합니다! 최고 레벨에 도달했습니다.</p>*/}
-            {/*  </>*/}
-            {/*)}*/}
           </div>
         </div>
       </div>
