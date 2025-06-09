@@ -168,9 +168,6 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
           }),
         );
       }
-
-      queryClient.invalidateQueries({ queryKey: ["voiceLikes"] });
-      queryClient.invalidateQueries({ queryKey: ["userVoiceLikes"] });
     } catch (error) {
       console.error("좋아요 처리 중 오류가 발생했습니다:", error);
       // 오류 발생 시 원래 상태로 복원
@@ -195,6 +192,14 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     } finally {
       setLikePending((prev) => ({ ...prev, [voiceId]: false }));
     }
+  };
+
+  // closeModal 이벤트 핸들러에 쿼리 무효화 추가
+  const handleCloseModal = () => {
+    // 모달 닫을 때 쿼리 무효화
+    queryClient.invalidateQueries({ queryKey: ["voiceLikes"] });
+    queryClient.invalidateQueries({ queryKey: ["userVoiceLikes"] });
+    closeModal();
   };
 
   // 사용자 프로필 이미지 URL 가져오기
@@ -249,7 +254,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
           <h2 id="modal-title" className="text-lg font-medium">
             우리 팀원들의 발음 듣기
           </h2>
-          <button onClick={closeModal} className="rounded-full p-1 transition-colors hover:bg-gray-200" aria-label="닫기">
+          <button onClick={handleCloseModal} className="rounded-full p-1 transition-colors hover:bg-gray-200" aria-label="닫기">
             <X className="h-5 w-5" />
           </button>
         </div>
