@@ -294,6 +294,7 @@ export default function Dashboard({ params }: Props) {
     const QUIZ_CORRECT_POINT = 3;
     const ATTENDANCE_POINT = 50;
     const VOICE_LIKE_POINT = 100;
+    const USER_VOICE_LIKE_POINT = 20;
 
     const videoPoints = totalVideoDuration * VIDEO_POINT_PER_SECOND;
     const audioPoints = (nativeAudioData?.totalAttempts || 0) * AUDIO_POINT_PER_ATTEMPT;
@@ -302,9 +303,10 @@ export default function Dashboard({ params }: Props) {
     const quizCorrectPoints = (quizStats?.totalCorrect || 0) * QUIZ_CORRECT_POINT;
     const attendancePoints = (attendanceData?.attendedClassDates || 0) * ATTENDANCE_POINT;
     const voiceLikePoints = (voiceLikesData?.totalLikes || 0) * VOICE_LIKE_POINT;
+    const userVoiceLikePoints = (userLikesData.totalUserLikes || 0) * USER_VOICE_LIKE_POINT;
 
     const total = Math.round(
-      videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints + voiceLikePoints,
+      videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints + voiceLikePoints + userVoiceLikePoints,
     );
 
     // 계산된 총 포인트가 기존 저장된 포인트와 다를 때만 상태 업데이트
@@ -339,6 +341,7 @@ export default function Dashboard({ params }: Props) {
     quizStats?.totalCorrect,
     attendanceData?.attendedClassDates,
     voiceLikesData?.totalLikes,
+    userLikesData?.totalUserLikes,
     isQuizStatsLoading,
     isVideoDurationLoading,
     session?.user?.id,
