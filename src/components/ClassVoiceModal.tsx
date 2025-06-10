@@ -207,6 +207,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     queryClient.invalidateQueries({ queryKey: ["voiceLikes"] });
     queryClient.invalidateQueries({ queryKey: ["userVoiceLikes"] });
     queryClient.invalidateQueries({ queryKey: ["voiceListened"] });
+    queryClient.invalidateQueries({ queryKey: ["unlistenedVoice"] });
     closeModal();
   };
 
