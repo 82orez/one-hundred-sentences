@@ -214,7 +214,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     return user.classNickName || user.name || "익명";
   };
 
-  const handlePlay = (url: string) => {
+  const handlePlay = async (url: string, voiceId: string) => {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -224,7 +224,16 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     audioRef.current = audio;
     setCurrentAudioUrl(url);
 
-    // ✅ 재생이 끝나면 상태 초기화
+    // 음성 파일 재생 시 청취 기록 저장
+    if (session?.user) {
+      try {
+        await axios.post("/api/voice/listened", { voiceId });
+      } catch (error) {
+        console.error("음성 파일 청취 기록 저장 실패:", error);
+      }
+    }
+
+    // 재생이 끝나면 상태 초기화
     audio.onended = () => {
       setCurrentAudioUrl(null);
     };
@@ -300,7 +309,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                       </td>
                       <td className="px-2 py-3 whitespace-nowrap">
                         <button
-                          onClick={() => handlePlay(item.myVoiceUrl)}
+                          onClick={() => handlePlay(item.myVoiceUrl, item.id)}
                           disabled={currentAudioUrl === item.myVoiceUrl}
                           className="flex h-[28px] cursor-pointer items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
                           {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶"}
@@ -347,7 +356,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                   </div>
                   <div className="mt-4 flex items-center justify-between">
                     <button
-                      onClick={() => handlePlay(item.myVoiceUrl)}
+                      onClick={() => handlePlay(item.myVoiceUrl, item.id)}
                       disabled={currentAudioUrl === item.myVoiceUrl}
                       className="flex h-8 w-[68px] items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
                       {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : <div>▶ 듣기</div>}
