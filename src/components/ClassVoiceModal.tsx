@@ -8,6 +8,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import toast from "react-hot-toast";
+import { useVoiceListenedStatus } from "@/hooks/useVoiceListenedStatus";
 
 type VoiceItem = {
   id: string;
@@ -15,7 +16,7 @@ type VoiceItem = {
   sentenceEn: string;
   myVoiceUrl: string;
   userId: string;
-  likeCount: number; // 좋아요 개수 필드 추가
+  likeCount: number;
   user: {
     name: string;
     classNickName: string;
@@ -35,29 +36,35 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [currentAudioUrl, setCurrentAudioUrl] = useState<string | null>(null);
 
+  // 음성 파일 ID 목록 추출
+  const voiceIds = voiceList.map((item) => item.id);
+
+  // 음성 파일 청취 상태 훅 사용
+  const { listenedStatus, markAsListened } = useVoiceListenedStatus(voiceIds);
+
   useEffect(() => {
     if (isOpen && courseId) {
       fetchVoiceList();
     }
 
     // 모달 외부 클릭 시 닫기 기능
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        closeModal();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleOutsideClick);
-      // 모달 열릴 때 스크롤 방지
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-      // 모달 닫힐 때 스크롤 복원
-      document.body.style.overflow = "";
-    };
+    // const handleOutsideClick = (e: MouseEvent) => {
+    //   if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+    //     closeModal();
+    //   }
+    // };
+    //
+    // if (isOpen) {
+    //   document.addEventListener("mousedown", handleOutsideClick);
+    //   // 모달 열릴 때 스크롤 방지
+    //   document.body.style.overflow = "hidden";
+    // }
+    //
+    // return () => {
+    //   document.removeEventListener("mousedown", handleOutsideClick);
+    //   // 모달 닫힐 때 스크롤 복원
+    //   document.body.style.overflow = "";
+    // };
   }, [isOpen, courseId, closeModal]);
 
   const fetchVoiceList = async () => {
@@ -199,6 +206,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     // 모달 닫을 때 쿼리 무효화
     queryClient.invalidateQueries({ queryKey: ["voiceLikes"] });
     queryClient.invalidateQueries({ queryKey: ["userVoiceLikes"] });
+    queryClient.invalidateQueries({ queryKey: ["voiceListened"] });
     closeModal();
   };
 
@@ -226,11 +234,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
 
     // 음성 파일 재생 시 청취 기록 저장
     if (session?.user) {
-      try {
-        await axios.post("/api/voice/listened", { voiceId });
-      } catch (error) {
-        console.error("음성 파일 청취 기록 저장 실패:", error);
-      }
+      markAsListened(voiceId);
     }
 
     // 재생이 끝나면 상태 초기화
@@ -242,6 +246,17 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
       console.error("오디오 재생 실패:", err);
       setCurrentAudioUrl(null); // 재생 실패 시에도 상태 초기화
     });
+  };
+
+  // 청취 상태 표시 렌더링 함수
+  const renderListenedStatus = (voiceId: string) => {
+    if (!session?.user) return null;
+
+    return (
+      <div className="ml-2 flex items-center justify-center text-sm text-gray-500">
+        {listenedStatus[voiceId] ? <span className="font-bold text-green-500">🗸</span> : <span>-</span>}
+      </div>
+    );
   };
 
   if (!isOpen) return null;
@@ -284,7 +299,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                     <th className="w-12 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">No.</th>
                     <th className="px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">영어 문장</th>
                     <th className="w-14 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">팀원명</th>
-                    <th className="w-20 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">듣기</th>
+                    <th className="w-28 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">듣기</th>
                     <th className="w-20 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">좋아요</th>
                   </tr>
                 </thead>
@@ -308,12 +323,15 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                         </div>
                       </td>
                       <td className="px-2 py-3 whitespace-nowrap">
-                        <button
-                          onClick={() => handlePlay(item.myVoiceUrl, item.id)}
-                          disabled={currentAudioUrl === item.myVoiceUrl}
-                          className="flex h-[28px] cursor-pointer items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
-                          {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶"}
-                        </button>
+                        <div className="flex items-center">
+                          <button
+                            onClick={() => handlePlay(item.myVoiceUrl, item.id)}
+                            disabled={currentAudioUrl === item.myVoiceUrl}
+                            className="flex h-[28px] cursor-pointer items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
+                            {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : "▶"}
+                          </button>
+                          {renderListenedStatus(item.id)}
+                        </div>
                       </td>
                       <td className="px-2 py-3 whitespace-nowrap">
                         <div className="flex items-center">
@@ -355,12 +373,15 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                     <span className="text-sm">{getUserDisplayName(item.user)}</span>
                   </div>
                   <div className="mt-4 flex items-center justify-between">
-                    <button
-                      onClick={() => handlePlay(item.myVoiceUrl, item.id)}
-                      disabled={currentAudioUrl === item.myVoiceUrl}
-                      className="flex h-8 w-[68px] items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
-                      {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : <div>▶ 듣기</div>}
-                    </button>
+                    <div className="flex items-center">
+                      <button
+                        onClick={() => handlePlay(item.myVoiceUrl, item.id)}
+                        disabled={currentAudioUrl === item.myVoiceUrl}
+                        className="flex h-8 w-[68px] items-center justify-center rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60">
+                        {currentAudioUrl === item.myVoiceUrl ? <ImSpinner9 className="animate-spin" /> : <div>▶ 듣기</div>}
+                      </button>
+                      {renderListenedStatus(item.id)}
+                    </div>
                     <div className="flex items-center">
                       <button onClick={() => handleLikeToggle(item.id)} disabled={likePending[item.id]} className="text-blue-500 hover:text-blue-700">
                         {likePending[item.id] ? (
