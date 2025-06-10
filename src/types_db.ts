@@ -1352,6 +1352,45 @@ export type Database = {
           },
         ]
       }
+      VoiceListened: {
+        Row: {
+          createdAt: string
+          id: string
+          myVoiceOpenListId: string
+          updatedAt: string
+          userId: string
+        }
+        Insert: {
+          createdAt?: string
+          id: string
+          myVoiceOpenListId: string
+          updatedAt: string
+          userId: string
+        }
+        Update: {
+          createdAt?: string
+          id?: string
+          myVoiceOpenListId?: string
+          updatedAt?: string
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "VoiceListened_myVoiceOpenListId_fkey"
+            columns: ["myVoiceOpenListId"]
+            isOneToOne: false
+            referencedRelation: "MyVoiceOpenList"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "VoiceListened_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "User"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       YouTubeViewAttempt: {
         Row: {
           courseId: string

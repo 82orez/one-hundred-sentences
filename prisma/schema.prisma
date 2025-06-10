@@ -66,6 +66,7 @@ model User {
   TeacherAttendance  TeacherAttendance[]
   MyVoiceOpenList    MyVoiceOpenList[]
   VoiceLike          VoiceLike[]
+  VoiceListened      VoiceListened[]
 }
 
 model Account {
@@ -200,10 +201,11 @@ model MyVoiceOpenList {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  user       User        @relation(fields: [userId], references: [id])
-  Sentence   Sentence?   @relation(fields: [sentenceId], references: [id])
-  Course     Course      @relation(fields: [courseId], references: [id])
-  voiceLikes VoiceLike[]
+  user          User            @relation(fields: [userId], references: [id])
+  Sentence      Sentence?       @relation(fields: [sentenceId], references: [id])
+  Course        Course          @relation(fields: [courseId], references: [id])
+  voiceLikes    VoiceLike[]
+  VoiceListened VoiceListened[]
 }
 
 model VoiceLike {
@@ -217,6 +219,20 @@ model VoiceLike {
   myVoiceOpenList MyVoiceOpenList @relation(fields: [myVoiceOpenListId], references: [id], onDelete: Cascade)
 
   // 중복 좋아요 방지를 위한 유니크 제약조건
+  @@unique([userId, myVoiceOpenListId])
+}
+
+model VoiceListened {
+  id                String   @id @default(cuid())
+  userId            String
+  myVoiceOpenListId String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  myVoiceOpenList MyVoiceOpenList @relation(fields: [myVoiceOpenListId], references: [id], onDelete: Cascade)
+
+  // 사용자당 각 음성 파일에 대해 한 번만 등록되도록 제한
   @@unique([userId, myVoiceOpenListId])
 }
 
