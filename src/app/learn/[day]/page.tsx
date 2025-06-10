@@ -673,7 +673,7 @@ const LearnPage = ({ params }: Props) => {
             </div>
 
             {/* 내 목소리 공개 여부 버튼 */}
-            {selectedData?.selectedCourseId !== "freecoursetour" && (
+            {selectedData?.selectedCourseId === "cmbixlon20001fttm50qfctrw" && (
               <button
                 onClick={() => handleToggleVoiceVisibility(sentence.no)}
                 className={clsx("", {
