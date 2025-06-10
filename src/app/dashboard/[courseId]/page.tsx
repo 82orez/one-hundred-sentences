@@ -660,30 +660,34 @@ export default function Dashboard({ params }: Props) {
               </button>
             </div>
 
-            <h2 className="mt-8 mb-4 text-xl font-semibold">팀원들의 발음 게시판</h2>
-            {unlistenedVoiceCount > 0 && (
-              <div className="mb-2 flex items-center justify-between">
-                <h6 className={"text-sm"}>아직 듣지 않은 녹음 파일 갯수</h6>
-                <span
-                  className="inline-flex cursor-pointer items-center justify-center rounded-full bg-red-600 px-2 py-1 text-xs leading-none font-bold text-red-100"
-                  onClick={() => setIsVoiceModalOpen(true)}>
-                  {unlistenedVoiceCount}
-                </span>
-              </div>
-            )}
+            {selectedCourseId !== "freecoursetour" && (
+              <>
+                <h2 className="mt-8 mb-4 text-xl font-semibold">팀원들의 발음 게시판</h2>
+                {unlistenedVoiceCount > 0 && (
+                  <div className="mb-2 flex items-center justify-between">
+                    <h6 className={"text-sm"}>아직 듣지 않은 녹음 파일 갯수</h6>
+                    <span
+                      className="inline-flex cursor-pointer items-center justify-center rounded-full bg-red-600 px-2 py-1 text-xs leading-none font-bold text-red-100"
+                      onClick={() => setIsVoiceModalOpen(true)}>
+                      {unlistenedVoiceCount}
+                    </span>
+                  </div>
+                )}
 
-            <div className="rounded-lg bg-blue-50 p-4">
-              <p className="font-medium">팀원들이 공개한 발음을 들어보고 '👍좋아요'를 눌러 주세요.</p>
-              {totalVoiceFiles ? (
-                <button
-                  className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
-                  onClick={() => setIsVoiceModalOpen(true)}>
-                  👂발음 들어 보기 ({totalVoiceFiles}) <ArrowRight className="ml-1 h-4 w-4" />
-                </button>
-              ) : (
-                <div className={"mt-2 text-gray-500"}>아직 등록된 음성 파일이 없습니다.</div>
-              )}
-            </div>
+                <div className="rounded-lg bg-blue-50 p-4">
+                  <p className="font-medium">팀원들이 공개한 발음을 들어보고 '👍좋아요'를 눌러 주세요.</p>
+                  {totalVoiceFiles ? (
+                    <button
+                      className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
+                      onClick={() => setIsVoiceModalOpen(true)}>
+                      👂발음 들어 보기 ({totalVoiceFiles}) <ArrowRight className="ml-1 h-4 w-4" />
+                    </button>
+                  ) : (
+                    <div className={"mt-2 text-gray-500"}>아직 등록된 음성 파일이 없습니다.</div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

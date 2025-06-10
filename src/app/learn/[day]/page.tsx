@@ -672,23 +672,18 @@ const LearnPage = ({ params }: Props) => {
               {sentence.no}번 <span className={"hidden md:inline"}>문장</span>
             </div>
 
-            {/* 문장별 스피킹 퀴즈 버튼 */}
-            {/*<button*/}
-            {/*  onClick={() => openQuizModal(sentence.no)}*/}
-            {/*  className="rounded-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none">*/}
-            {/*  <RiSpeakLine size={40} className={"cursor-pointer rounded-md p-1 hover:bg-gray-200"} />*/}
-            {/*</button>*/}
-
             {/* 내 목소리 공개 여부 버튼 */}
-            <button
-              onClick={() => handleToggleVoiceVisibility(sentence.no)}
-              className={clsx("", {
-                hidden: !completedSentences?.includes(sentence.no),
-              })}>
-              <div className={"flex cursor-pointer items-center gap-1"}>
-                {isVoicePublic[sentence.no] ? <FaLockOpen size={25} className="text-green-500" /> : <FaLock size={25} className="text-gray-500" />}
-              </div>
-            </button>
+            {selectedData?.selectedCourseId !== "freecoursetour" && (
+              <button
+                onClick={() => handleToggleVoiceVisibility(sentence.no)}
+                className={clsx("", {
+                  hidden: !completedSentences?.includes(sentence.no),
+                })}>
+                <div className={"flex cursor-pointer items-center gap-1"}>
+                  {isVoicePublic[sentence.no] ? <FaLockOpen size={25} className="text-green-500" /> : <FaLock size={25} className="text-gray-500" />}
+                </div>
+              </button>
+            )}
 
             {/* 즐겨찾기 버튼 */}
             <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentence.no)}>
