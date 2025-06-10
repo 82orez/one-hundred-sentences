@@ -397,7 +397,7 @@ export default function Dashboard({ params }: Props) {
     }
   }, [rankData]);
 
-  // ! 아직 듣지 않은 음성 파일 개수 가져오기
+  // ! ✅ 아직 듣지 않은 음성 파일 개수 가져오기
   const { data: unlistenedVoiceCount } = useQuery({
     queryKey: ["unlistenedVoice", session?.user?.id, selectedCourseId],
     queryFn: async () => {
@@ -406,6 +406,26 @@ export default function Dashboard({ params }: Props) {
     },
     enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
   });
+
+  // ✅ 해당 강좌에 등록된 공개 음성 파일의 전체 갯수 조회
+  const { data: voiceFilesData } = useQuery({
+    queryKey: ["courseVoiceFiles", selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/voice/count?courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!selectedCourseId,
+  });
+
+  // 음성 파일 갯수를 상태로 관리
+  const [totalVoiceFiles, setTotalVoiceFiles] = useState(0);
+
+  // 데이터가 변경될 때 상태 업데이트
+  useEffect(() => {
+    if (voiceFilesData) {
+      setTotalVoiceFiles(voiceFilesData.totalFiles || 0);
+    }
+  }, [voiceFilesData]);
 
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
@@ -654,12 +674,15 @@ export default function Dashboard({ params }: Props) {
 
             <div className="rounded-lg bg-blue-50 p-4">
               <p className="font-medium">팀원들이 공개한 발음을 들어보고 '👍좋아요'를 눌러 주세요.</p>
-              {/*<p className="mt-2 text-sm text-gray-600">All for One, One for All.</p>*/}
-              <button
-                className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
-                onClick={() => setIsVoiceModalOpen(true)}>
-                👂발음 들어 보기 <ArrowRight className="ml-1 h-4 w-4" />
-              </button>
+              {totalVoiceFiles ? (
+                <button
+                  className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
+                  onClick={() => setIsVoiceModalOpen(true)}>
+                  👂발음 들어 보기 ({totalVoiceFiles}) <ArrowRight className="ml-1 h-4 w-4" />
+                </button>
+              ) : (
+                <div className={"mt-2 text-gray-500"}>아직 등록된 음성 파일이 없습니다.</div>
+              )}
             </div>
           </div>
         </div>
