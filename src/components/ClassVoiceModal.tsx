@@ -31,6 +31,8 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
   const [isLoading, setIsLoading] = useState(true);
   const [userLikes, setUserLikes] = useState<Record<string, boolean>>({});
   const [likePending, setLikePending] = useState<Record<string, boolean>>({});
+  const [searchTerm, setSearchTerm] = useState("");
+
   const { data: session } = useSession();
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -215,6 +217,9 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     queryClient.invalidateQueries({ queryKey: ["userVoiceLikes"] });
     queryClient.invalidateQueries({ queryKey: ["voiceListened"] });
     queryClient.invalidateQueries({ queryKey: ["unlistenedVoice"] });
+
+    setSearchTerm("");
+
     closeModal();
   };
 
@@ -284,6 +289,15 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     return voice.userId !== session.user.id && !listenedStatus[voice.id];
   };
 
+  const filteredVoiceList = voiceList.filter((item) => {
+    const no = item.sentenceNo.toString();
+    const sentence = item.sentenceEn.toLowerCase();
+    const nickname = getUserDisplayName(item.user).toLowerCase();
+    const term = searchTerm.toLowerCase();
+
+    return no.includes(term) || sentence.includes(term) || nickname.includes(term);
+  });
+
   if (!isOpen) return null;
 
   // createPortal을 사용하여 모달을 body에 직접 렌더링
@@ -308,6 +322,16 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
           </button>
         </div>
 
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="문장 번호, 영어 문장, 팀원명 검색"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
         {isLoading ? (
           <div className="flex justify-center py-8">
             <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-700"></div>
@@ -329,7 +353,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {voiceList.map((item) => (
+                  {filteredVoiceList.map((item) => (
                     <tr
                       key={item.id}
                       className={clsx("hover:bg-gray-50", isUnlistenedAndNotMine(item) && "font-bold", {
@@ -387,7 +411,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
 
             {/* ✅ 모바일 전용 카드형 */}
             <div className="block max-h-[70vh] space-y-4 overflow-y-auto pr-1 md:hidden">
-              {voiceList.map((item) => (
+              {filteredVoiceList.map((item) => (
                 <div
                   key={item.id}
                   className={clsx(
