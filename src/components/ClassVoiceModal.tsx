@@ -9,6 +9,7 @@ import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import toast from "react-hot-toast";
 import { useVoiceListenedStatus } from "@/hooks/useVoiceListenedStatus";
+import clsx from "clsx";
 
 type VoiceItem = {
   id: string;
@@ -272,6 +273,11 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     );
   };
 
+  const isUnlistenedAndNotMine = (voice: VoiceItem) => {
+    if (!session?.user) return false;
+    return voice.userId !== session.user.id && !listenedStatus[voice.id];
+  };
+
   if (!isOpen) return null;
 
   // createPortal을 사용하여 모달을 body에 직접 렌더링
@@ -318,7 +324,11 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {voiceList.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50">
+                    <tr
+                      key={item.id}
+                      className={clsx("hover:bg-gray-50", isUnlistenedAndNotMine(item) && "font-bold", {
+                        "bg-green-100 hover:bg-green-200": isUnlistenedAndNotMine(item),
+                      })}>
                       <td className="px-2 py-3 text-sm whitespace-nowrap text-gray-500">{item.sentenceNo}</td>
                       <td className="px-2 py-3 text-sm">{item.sentenceEn}</td>
                       <td className="px-2 py-3 whitespace-nowrap">
@@ -372,7 +382,14 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
             {/* ✅ 모바일 전용 카드형 */}
             <div className="block max-h-[70vh] space-y-4 overflow-y-auto pr-1 md:hidden">
               {voiceList.map((item) => (
-                <div key={item.id} className="rounded-lg border bg-white p-4 shadow-sm">
+                <div
+                  key={item.id}
+                  className={clsx(
+                    "rounded-lg border p-4 shadow-sm",
+                    isUnlistenedAndNotMine(item) && "font-bold",
+
+                    { "bg-green-100": isUnlistenedAndNotMine(item) },
+                  )}>
                   <div className="mb-1 text-sm text-gray-500">문장 번호: {item.sentenceNo}</div>
                   <div className="mb-2 font-semibold text-gray-800">{item.sentenceEn}</div>
                   <div className="mb-2 flex items-center gap-2">
