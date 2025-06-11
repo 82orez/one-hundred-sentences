@@ -128,6 +128,12 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
       return;
     }
 
+    // 청취하지 않은 음성일 경우 금지
+    if (!listenedStatus[voiceId]) {
+      toast.error("먼저 음성을 들어야 좋아요를 누를 수 있습니다.");
+      return;
+    }
+
     try {
       setLikePending((prev) => ({ ...prev, [voiceId]: true }));
 
