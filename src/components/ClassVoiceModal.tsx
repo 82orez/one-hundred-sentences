@@ -253,6 +253,18 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
   const renderListenedStatus = (voiceId: string) => {
     if (!session?.user) return null;
 
+    const voiceItem = voiceList.find((item) => item.id === voiceId);
+    if (!voiceItem) return null;
+
+    // 자신의 음성인 경우 무조건 체크 표시
+    if (voiceItem.userId === session.user.id) {
+      return (
+        <div className="ml-2 flex items-center justify-center text-sm text-gray-500">
+          <span className="font-bold text-gray-500">🗸</span>
+        </div>
+      );
+    }
+
     return (
       <div className="ml-2 flex items-center justify-center text-sm text-gray-500">
         {listenedStatus[voiceId] ? <span className="font-bold text-green-500">🗸</span> : <span>-</span>}
