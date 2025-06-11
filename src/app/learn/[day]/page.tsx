@@ -584,22 +584,29 @@ const LearnPage = ({ params }: Props) => {
 
   // 토글 핸들러 함수
   const handleToggleVoiceVisibility = (sentenceNo: number) => {
-    // 현재 상태의 반대로 토글
+    // 현재 상태의 반대로 토글할 예정
     const newState = !isVoicePublic[sentenceNo];
 
-    // 상태 미리 업데이트 (낙관적 업데이트)
-    setIsVoicePublic((prev) => ({
-      ...prev,
-      [sentenceNo]: newState,
-    }));
+    // 확인 메시지 설정 (현재 상태에 따라 다른 메시지 표시)
+    const confirmMessage = newState ? "내 목소리를 다른 사용자에게 공개하시겠습니까?" : "내 목소리를 비공개로 전환하시겠습니까?";
 
-    // 서버에 반영
-    toggleVoiceVisibilityMutation.mutate({
-      sentenceNo,
-      isPublic: newState,
-    });
+    // 사용자에게 확인창 표시
+    if (window.confirm(confirmMessage)) {
+      // 사용자가 확인을 누른 경우만 처리
+      // 상태 미리 업데이트 (낙관적 업데이트)
+      setIsVoicePublic((prev) => ({
+        ...prev,
+        [sentenceNo]: newState,
+      }));
+
+      // 서버에 반영
+      toggleVoiceVisibilityMutation.mutate({
+        sentenceNo,
+        isPublic: newState,
+      });
+    }
+    // 취소를 누른 경우 아무 작업도 하지 않음
   };
-
   if (isLoading) return <LoadingPageSkeleton />;
   if (error) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
