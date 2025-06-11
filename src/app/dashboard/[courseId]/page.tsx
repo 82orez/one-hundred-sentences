@@ -37,6 +37,7 @@ export default function Dashboard({ params }: Props) {
   const [selectedDay, setSelectedDay] = useState<number | null>(null); // 복습하기와 연관
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // ✅ 로그인한 사용자의 Selected 정보 가져오기
   const { data: selectedData } = useQuery({
@@ -436,8 +437,11 @@ export default function Dashboard({ params }: Props) {
 
   // 음성 파일 데이터를 새로고침하는 함수
   const refreshVoiceData = () => {
-    refetchUnlistenedVoiceCount();
-    refetchVoiceFilesData();
+    setIsRefreshing(true);
+
+    Promise.all([refetchUnlistenedVoiceCount(), refetchVoiceFilesData()]).finally(() => {
+      setTimeout(() => setIsRefreshing(false), 500);
+    });
   };
 
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
@@ -692,7 +696,7 @@ export default function Dashboard({ params }: Props) {
                   <button
                     onClick={refreshVoiceData}
                     className="mt-2 flex items-center gap-2 rounded-md bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600">
-                    <FiRefreshCw />
+                    <FiRefreshCw className={isRefreshing ? "animate-spin" : ""} />
                     새로고침
                   </button>
                   {totalVoiceFiles ? (
