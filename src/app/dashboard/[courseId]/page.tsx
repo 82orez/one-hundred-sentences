@@ -18,6 +18,7 @@ import FlipCounter from "@/components/FlipCounterAnimation";
 import ClassMembersModal from "@/components/ClassMembersModal";
 import CoursePointsRankingModal from "@/components/CoursePointsRankingModal";
 import ClassVoiceModal from "@/components/ClassVoiceModal";
+import { FiRefreshCw } from "react-icons/fi";
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -397,8 +398,11 @@ export default function Dashboard({ params }: Props) {
     }
   }, [rankData]);
 
-  // ! ✅ 아직 듣지 않은 음성 파일 개수 가져오기
-  const { data: unlistenedVoiceCount } = useQuery({
+  // ✅ 아직 듣지 않은 음성 파일 개수 가져오기
+  const {
+    data: unlistenedVoiceCount,
+    refetch: refetchUnlistenedVoiceCount, // refetch 함수 추출
+  } = useQuery({
     queryKey: ["unlistenedVoice", session?.user?.id, selectedCourseId],
     queryFn: async () => {
       const res = await axios.get(`/api/voice/unlistened/count?courseId=${selectedCourseId}`);
@@ -408,7 +412,10 @@ export default function Dashboard({ params }: Props) {
   });
 
   // ✅ 해당 강좌에 등록된 공개 음성 파일의 전체 갯수 조회
-  const { data: voiceFilesData } = useQuery({
+  const {
+    data: voiceFilesData,
+    refetch: refetchVoiceFilesData, // refetch 함수 추출
+  } = useQuery({
     queryKey: ["courseVoiceFiles", selectedCourseId],
     queryFn: async () => {
       const res = await axios.get(`/api/voice/count?courseId=${selectedCourseId}`);
@@ -426,6 +433,12 @@ export default function Dashboard({ params }: Props) {
       setTotalVoiceFiles(voiceFilesData.totalFiles || 0);
     }
   }, [voiceFilesData]);
+
+  // 음성 파일 데이터를 새로고침하는 함수
+  const refreshVoiceData = () => {
+    refetchUnlistenedVoiceCount();
+    refetchVoiceFilesData();
+  };
 
   if (getSentenceCount.isLoading) return <LoadingPageSkeleton />;
   if (getSentenceCount.isError) {
@@ -676,6 +689,12 @@ export default function Dashboard({ params }: Props) {
 
                 <div className="rounded-lg bg-blue-50 p-4">
                   <p className="font-medium">팀원들이 공개한 발음을 들어보고 '👍좋아요'를 눌러 주세요.</p>
+                  <button
+                    onClick={refreshVoiceData}
+                    className="mt-2 flex items-center gap-2 rounded-md bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600">
+                    <FiRefreshCw />
+                    새로고침
+                  </button>
                   {totalVoiceFiles ? (
                     <button
                       className="mt-4 inline-flex cursor-pointer items-center text-blue-600 hover:text-blue-800 hover:underline"
