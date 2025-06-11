@@ -89,6 +89,24 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // 녹음 파일 저장 후 추가 작업
+    // 사용자가 이 문장에 대해 목소리를 공개했는지 확인
+    const existingVoicePublic = await prisma.myVoiceOpenList.findFirst({
+      where: {
+        userId: user.id,
+        courseId,
+        sentenceNo: parseInt(sentenceNo, 10),
+      },
+    });
+
+    // 이미 공개 설정된 경우, myVoiceUrl 업데이트
+    if (existingVoicePublic) {
+      await prisma.myVoiceOpenList.update({
+        where: { id: existingVoicePublic.id },
+        data: { myVoiceUrl: fileUrl }, // 새로 녹음된 파일 URL로 업데이트
+      });
+    }
+
     return NextResponse.json({
       message: existingRecording ? "Recording updated successfully" : "New recording created successfully",
       url: fileUrl,

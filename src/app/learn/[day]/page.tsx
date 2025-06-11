@@ -587,26 +587,38 @@ const LearnPage = ({ params }: Props) => {
     // 현재 상태의 반대로 토글할 예정
     const newState = !isVoicePublic[sentenceNo];
 
-    // 확인 메시지 설정 (현재 상태에 따라 다른 메시지 표시)
+    // 확인 메시지 설정
     const confirmMessage = newState ? "내 목소리를 다른 사용자에게 공개하시겠습니까?" : "내 목소리를 비공개로 전환하시겠습니까?";
 
-    // 사용자에게 확인창 표시
     if (window.confirm(confirmMessage)) {
-      // 사용자가 확인을 누른 경우만 처리
-      // 상태 미리 업데이트 (낙관적 업데이트)
+      // UI 상태 먼저 업데이트 (즉각적인 피드백을 위해)
       setIsVoicePublic((prev) => ({
         ...prev,
         [sentenceNo]: newState,
       }));
 
-      // 서버에 반영
-      toggleVoiceVisibilityMutation.mutate({
-        sentenceNo,
-        isPublic: newState,
-      });
+      // 서버에 변경사항 저장
+      toggleVoiceVisibilityMutation.mutate(
+        { sentenceNo, isPublic: newState },
+        {
+          onSuccess: () => {
+            // 성공적으로 처리된 후 관련 쿼리 무효화
+            queryClient.invalidateQueries({ queryKey: ["voiceVisibility"] });
+          },
+          onError: (error) => {
+            // 오류 발생 시 UI 상태 롤백
+            console.error("목소리 공개 상태 변경 실패:", error);
+            setIsVoicePublic((prev) => ({
+              ...prev,
+              [sentenceNo]: !newState, // 이전 상태로 되돌림
+            }));
+            alert("목소리 공개 상태 변경에 실패했습니다.");
+          },
+        },
+      );
     }
-    // 취소를 누른 경우 아무 작업도 하지 않음
   };
+
   if (isLoading) return <LoadingPageSkeleton />;
   if (error) return <p className="text-center text-red-500">데이터를 불러오는 중 오류가 발생했습니다.</p>;
 
