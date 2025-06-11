@@ -32,6 +32,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
   const [userLikes, setUserLikes] = useState<Record<string, boolean>>({});
   const [likePending, setLikePending] = useState<Record<string, boolean>>({});
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchCriterion, setSearchCriterion] = useState<"sentenceNo" | "sentenceEn" | "nickname">("sentenceNo");
 
   const { data: session } = useSession();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -290,12 +291,21 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
   };
 
   const filteredVoiceList = voiceList.filter((item) => {
-    const no = item.sentenceNo.toString();
-    const sentence = item.sentenceEn.toLowerCase();
-    const nickname = getUserDisplayName(item.user).toLowerCase();
     const term = searchTerm.toLowerCase();
 
-    return no.includes(term) || sentence.includes(term) || nickname.includes(term);
+    if (searchCriterion === "sentenceNo") {
+      return item.sentenceNo.toString().includes(term);
+    }
+
+    if (searchCriterion === "sentenceEn") {
+      return item.sentenceEn.toLowerCase().includes(term);
+    }
+
+    if (searchCriterion === "nickname") {
+      return getUserDisplayName(item.user).toLowerCase().includes(term);
+    }
+
+    return true;
   });
 
   if (!isOpen) return null;
@@ -322,13 +332,27 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
           </button>
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-2">
+            <label htmlFor="searchCriterion" className="text-sm text-gray-600">
+              검색 기준:
+            </label>
+            <select
+              id="searchCriterion"
+              value={searchCriterion}
+              onChange={(e) => setSearchCriterion(e.target.value as "sentenceNo" | "sentenceEn" | "nickname")}
+              className="rounded border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+              <option value="sentenceNo">문장 번호</option>
+              <option value="sentenceEn">Script</option>
+              <option value="nickname">팀원명</option>
+            </select>
+          </div>
           <input
             type="text"
-            placeholder="문장 번호, 영어 문장, 팀원명 검색"
+            placeholder="검색어를 입력하세요"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+            className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none md:max-w-sm"
           />
         </div>
 
