@@ -35,6 +35,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
   const [searchCriterion, setSearchCriterion] = useState<"sentenceNo" | "sentenceEn" | "nickname">("sentenceNo");
   const [sortKey, setSortKey] = useState<"sentenceNo" | "nickname" | "listened" | "likes">("sentenceNo");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [showMobileSearchSort, setShowMobileSearchSort] = useState(false);
 
   const { data: session } = useSession();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -357,9 +358,9 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
           </button>
         </div>
 
-        <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div className="mb-4 flex gap-2 md:items-center md:justify-between">
           <div className="flex items-center gap-2">
-            <label htmlFor="searchCriterion" className="text-sm text-gray-600">
+            <label htmlFor="searchCriterion" className="hidden text-sm text-gray-600 md:block">
               검색 기준:
             </label>
             <select
@@ -470,36 +471,47 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
 
             {/* ✅ 모바일 전용 카드형 */}
             <div className="block max-h-[70vh] space-y-4 overflow-y-auto pr-1 md:hidden">
-              <div className="mb-4 flex flex-col gap-2 md:hidden">
-                <div className="flex items-center gap-2">
-                  <label htmlFor="sortKey" className="text-sm text-gray-600">
-                    정렬 기준:
-                  </label>
-                  <select
-                    id="sortKey"
-                    value={sortKey}
-                    onChange={(e) => setSortKey(e.target.value as typeof sortKey)}
-                    className="rounded border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                    <option value="sentenceNo">문장 번호</option>
-                    <option value="nickname">팀원명</option>
-                    <option value="listened">청취 여부</option>
-                    <option value="likes">좋아요</option>
-                  </select>
-                </div>
-                <div className="flex items-center gap-2">
-                  <label htmlFor="sortOrder" className="text-sm text-gray-600">
-                    정렬 방향:
-                  </label>
-                  <select
-                    id="sortOrder"
-                    value={sortOrder}
-                    onChange={(e) => setSortOrder(e.target.value as typeof sortOrder)}
-                    className="rounded border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                    <option value="asc">오름차순 ▲</option>
-                    <option value="desc">내림차순 ▼</option>
-                  </select>
-                </div>
+              {/* 모바일 전용: 검색 및 정렬 토글 버튼 */}
+              <div className="mb-4 block md:hidden">
+                <button
+                  onClick={() => setShowMobileSearchSort((prev) => !prev)}
+                  className="w-full rounded border border-gray-300 px-4 py-2 text-sm font-medium shadow-sm hover:bg-gray-100">
+                  {showMobileSearchSort ? "🔽 검색 및 정렬 숨기기" : "🔍 검색 및 정렬 보기"}
+                </button>
               </div>
+
+              {showMobileSearchSort && (
+                <div className="mb-4 flex flex-col gap-2 md:hidden">
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="sortKey" className="text-sm text-gray-600">
+                      정렬 기준:
+                    </label>
+                    <select
+                      id="sortKey"
+                      value={sortKey}
+                      onChange={(e) => setSortKey(e.target.value as typeof sortKey)}
+                      className="rounded border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                      <option value="sentenceNo">문장 번호</option>
+                      <option value="nickname">팀원명</option>
+                      <option value="listened">청취 여부</option>
+                      <option value="likes">좋아요</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="sortOrder" className="text-sm text-gray-600">
+                      정렬 방향:
+                    </label>
+                    <select
+                      id="sortOrder"
+                      value={sortOrder}
+                      onChange={(e) => setSortOrder(e.target.value as typeof sortOrder)}
+                      className="rounded border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                      <option value="asc">오름차순 ▲</option>
+                      <option value="desc">내림차순 ▼</option>
+                    </select>
+                  </div>
+                </div>
+              )}
 
               {sortedVoiceList.map((item) => (
                 <div
