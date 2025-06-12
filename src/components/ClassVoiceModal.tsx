@@ -302,6 +302,14 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
       return true;
     })
     .sort((a, b) => {
+      // 먼저 듣지 않은 음성 파일을 최상단에 배치
+      const aUnlistened = isUnlistenedAndNotMine(a);
+      const bUnlistened = isUnlistenedAndNotMine(b);
+
+      if (aUnlistened && !bUnlistened) return -1;
+      if (!aUnlistened && bUnlistened) return 1;
+
+      // 그 다음 선택된 정렬 기준에 따라 정렬
       const multiplier = sortOrder === "asc" ? 1 : -1;
 
       if (sortKey === "sentenceNo") {
