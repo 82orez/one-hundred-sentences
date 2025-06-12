@@ -240,6 +240,16 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
   };
 
   const handlePlay = async (url: string, voiceId: string) => {
+    // 이미 재생 중인 경우 다른 파일 재생 금지
+    if (currentAudioUrl && currentAudioUrl !== url) {
+      toast.error("다른 음성이 재생 중입니다. 먼저 재생 중인 음성을 멈춰주세요.");
+      return;
+    }
+
+    // 같은 오디오를 다시 누르면 무시
+    if (currentAudioUrl === url) return;
+
+    // 이전 오디오 정지
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -249,10 +259,8 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     audioRef.current = audio;
     setCurrentAudioUrl(url);
 
-    // 재생이 끝나면 상태 초기화 및 청취 완료 처리
     audio.onended = () => {
       setCurrentAudioUrl(null);
-      // 음성 파일 재생 완료 시 청취 기록 저장
       if (session?.user) {
         markAsListened(voiceId);
       }
@@ -260,7 +268,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
 
     audio.play().catch((err) => {
       console.error("오디오 재생 실패:", err);
-      setCurrentAudioUrl(null); // 재생 실패 시에도 상태 초기화
+      setCurrentAudioUrl(null);
     });
   };
 
