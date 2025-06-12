@@ -270,9 +270,19 @@ export default function Dashboard({ params }: Props) {
   // ! 포인트 계산을 위한 useState 추가
   const [totalPoints, setTotalPoints] = useState(0);
 
-  // ✅ 포인트 계산 로직
-  useEffect(() => {
-    if (isQuizStatsLoading || isVideoDurationLoading) return;
+  const calculateTotalPoints = () => {
+    if (
+      isQuizStatsLoading ||
+      isVideoDurationLoading ||
+      !nativeAudioData ||
+      !voiceLikesData ||
+      !userLikesData ||
+      !attendanceData ||
+      totalRecordingAttempts === undefined ||
+      !quizStats
+    ) {
+      return null;
+    }
 
     // 포인트 계산 로직 (기존과 동일)
     const VIDEO_POINT_PER_SECOND = 0.5;
@@ -293,9 +303,14 @@ export default function Dashboard({ params }: Props) {
     const voiceLikePoints = (voiceLikesData?.totalLikes || 0) * VOICE_LIKE_POINT;
     const userVoiceLikePoints = (userLikesData?.totalUserLikes || 0) * USER_VOICE_LIKE_POINT;
 
-    const total = Math.round(
+    return Math.round(
       videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints + voiceLikePoints + userVoiceLikePoints,
     );
+  };
+
+  useEffect(() => {
+    const total = calculateTotalPoints();
+    if (total === null) return;
 
     setTotalPoints(total);
 
