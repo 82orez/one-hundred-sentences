@@ -17,10 +17,10 @@ export default function ErrorHelpModal({ isOpen, onClose }: { isOpen: boolean; o
     <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-800">오류 대처 방법</h2>
-          <button onClick={onClose}>
-            <X className="text-gray-600 hover:text-gray-900" />
-          </button>
+          <h2 className="text-lg font-semibold text-gray-800">※ 학습 어플 오류 발생 시 대처 방법</h2>
+          {/*<button onClick={onClose}>*/}
+          {/*  <X className="text-gray-600 hover:text-gray-900" />*/}
+          {/*</button>*/}
         </div>
         <ol className="list-decimal space-y-2 pl-5 text-gray-700">
           <li>사용 중인 웹 브라우저를 닫았다가 다시 열기</li>
@@ -30,6 +30,12 @@ export default function ErrorHelpModal({ isOpen, onClose }: { isOpen: boolean; o
             설치 및 사용하기
           </li>
         </ol>
+
+        <div className={"mt-4 flex items-center justify-center"}>
+          <button onClick={onClose} className={"btn bg-gray-200 hover:bg-gray-300"}>
+            닫기
+          </button>
+        </div>
       </div>
     </div>,
     document.body,
