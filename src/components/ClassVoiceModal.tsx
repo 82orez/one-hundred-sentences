@@ -33,6 +33,8 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
   const [likePending, setLikePending] = useState<Record<string, boolean>>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [searchCriterion, setSearchCriterion] = useState<"sentenceNo" | "sentenceEn" | "nickname">("sentenceNo");
+  const [sortKey, setSortKey] = useState<"sentenceNo" | "nickname" | "listened" | "likes">("sentenceNo");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const { data: session } = useSession();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -290,23 +292,46 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     return voice.userId !== session.user.id && !listenedStatus[voice.id];
   };
 
-  const filteredVoiceList = voiceList.filter((item) => {
-    const term = searchTerm.toLowerCase();
+  const sortedVoiceList = [...voiceList]
+    .filter((item) => {
+      const term = searchTerm.toLowerCase();
+      if (searchCriterion === "sentenceNo") return item.sentenceNo.toString().includes(term);
+      if (searchCriterion === "sentenceEn") return item.sentenceEn.toLowerCase().includes(term);
+      if (searchCriterion === "nickname") return getUserDisplayName(item.user).toLowerCase().includes(term);
+      return true;
+    })
+    .sort((a, b) => {
+      const multiplier = sortOrder === "asc" ? 1 : -1;
 
-    if (searchCriterion === "sentenceNo") {
-      return item.sentenceNo.toString().includes(term);
+      if (sortKey === "sentenceNo") {
+        return (a.sentenceNo - b.sentenceNo) * multiplier;
+      }
+
+      if (sortKey === "nickname") {
+        return getUserDisplayName(a.user).localeCompare(getUserDisplayName(b.user)) * multiplier;
+      }
+
+      if (sortKey === "likes") {
+        return (a.likeCount - b.likeCount) * multiplier;
+      }
+
+      if (sortKey === "listened") {
+        const aListened = session?.user?.id === a.userId ? true : listenedStatus[a.id];
+        const bListened = session?.user?.id === b.userId ? true : listenedStatus[b.id];
+        return (Number(aListened) - Number(bListened)) * multiplier;
+      }
+
+      return 0;
+    });
+
+  const handleSort = (key: typeof sortKey) => {
+    if (sortKey === key) {
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortOrder("asc");
     }
-
-    if (searchCriterion === "sentenceEn") {
-      return item.sentenceEn.toLowerCase().includes(term);
-    }
-
-    if (searchCriterion === "nickname") {
-      return getUserDisplayName(item.user).toLowerCase().includes(term);
-    }
-
-    return true;
-  });
+  };
 
   if (!isOpen) return null;
 
@@ -369,15 +394,25 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
               <table className="w-full text-sm">
                 <thead className="sticky top-0 bg-gray-50">
                   <tr>
-                    <th className="w-12 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">No.</th>
-                    <th className="px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">영어 문장</th>
-                    <th className="w-14 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">팀원명</th>
-                    <th className="w-28 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">듣기</th>
-                    <th className="w-20 px-2 py-3 text-left text-sm font-medium tracking-wider text-gray-500 uppercase">좋아요</th>
+                    <th onClick={() => handleSort("sentenceNo")} className="cursor-pointer p-2">
+                      NO. {sortKey === "sentenceNo" && (sortOrder === "asc" ? "▲" : "▼")}
+                    </th>
+                    <th onClick={() => handleSort("sentenceNo")} className="cursor-pointer p-2">
+                      Script
+                    </th>
+                    <th onClick={() => handleSort("nickname")} className="cursor-pointer">
+                      팀원명 {sortKey === "nickname" && (sortOrder === "asc" ? "▲" : "▼")}
+                    </th>
+                    <th onClick={() => handleSort("listened")} className="cursor-pointer">
+                      듣기 {sortKey === "listened" && (sortOrder === "asc" ? "▲" : "▼")}
+                    </th>
+                    <th onClick={() => handleSort("likes")} className="cursor-pointer">
+                      좋아요 {sortKey === "likes" && (sortOrder === "asc" ? "▲" : "▼")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {filteredVoiceList.map((item) => (
+                  {sortedVoiceList.map((item) => (
                     <tr
                       key={item.id}
                       className={clsx("hover:bg-gray-50", isUnlistenedAndNotMine(item) && "font-bold", {
@@ -435,7 +470,38 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
 
             {/* ✅ 모바일 전용 카드형 */}
             <div className="block max-h-[70vh] space-y-4 overflow-y-auto pr-1 md:hidden">
-              {filteredVoiceList.map((item) => (
+              <div className="mb-4 flex flex-col gap-2 md:hidden">
+                <div className="flex items-center gap-2">
+                  <label htmlFor="sortKey" className="text-sm text-gray-600">
+                    정렬 기준:
+                  </label>
+                  <select
+                    id="sortKey"
+                    value={sortKey}
+                    onChange={(e) => setSortKey(e.target.value as typeof sortKey)}
+                    className="rounded border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                    <option value="sentenceNo">문장 번호</option>
+                    <option value="nickname">팀원명</option>
+                    <option value="listened">청취 여부</option>
+                    <option value="likes">좋아요</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <label htmlFor="sortOrder" className="text-sm text-gray-600">
+                    정렬 방향:
+                  </label>
+                  <select
+                    id="sortOrder"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value as typeof sortOrder)}
+                    className="rounded border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                    <option value="asc">오름차순 ▲</option>
+                    <option value="desc">내림차순 ▼</option>
+                  </select>
+                </div>
+              </div>
+
+              {sortedVoiceList.map((item) => (
                 <div
                   key={item.id}
                   className={clsx(
