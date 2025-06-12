@@ -19,6 +19,13 @@ export default function LandingPage() {
     setShowModal(false);
   };
 
+  const [currentSlide, setCurrentSlide] = useState(1);
+
+  // 슬라이드 변경 함수 추가
+  const changeSlide = (slideNumber) => {
+    setCurrentSlide(slideNumber);
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center bg-gradient-to-br from-blue-600 to-indigo-400 text-white">
       {/* 헤더 영역 */}
@@ -101,7 +108,95 @@ export default function LandingPage() {
           <h2 className="mb-4 text-center text-3xl font-semibold">프렌딩 공동체, 이렇게 다릅니다.</h2>
           <div className="mx-auto h-1 w-1/2 rounded-full bg-white"></div>
 
-          <div className="mt-6 grid grid-cols-1 gap-6 md:mt-8 md:grid-cols-3">
+          {/* 모바일에서는 캐러셀로 표시 */}
+          <div className="mt-6 sm:hidden">
+            <div className="carousel relative w-full">
+              {/* Feature 1 */}
+              <div id="feature1" className="carousel-item relative w-full">
+                <div className="mx-auto w-[90%] transform rounded-xl bg-white/90 p-6 text-center shadow-lg transition-transform">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">🏆</div>
+                  <h3 className="text-xl font-semibold text-blue-600">목표와 보상</h3>
+                  <ul className="mt-2 list-outside list-disc pl-4 text-left text-gray-700">
+                    <li>100문장 공동 목표에 도전</li>
+                    <li>개인/팀 학습 수치화로 동기 부여</li>
+                    <li>공동 목표 달성 시 팀 구성원 전체에게 보상 제공</li>
+                  </ul>
+                </div>
+                <div className="absolute top-1/2 right-0 left-0 flex -translate-y-1/2 transform justify-between">
+                  <a href="#feature3" className="btn btn-circle btn-sm border-none bg-white/80" onClick={() => changeSlide(3)}>
+                    ❮
+                  </a>
+                  <a href="#feature2" className="btn btn-circle btn-sm border-none bg-white/80" onClick={() => changeSlide(2)}>
+                    ❯
+                  </a>
+                </div>
+              </div>
+
+              {/* Feature 2 */}
+              <div id="feature2" className="carousel-item relative w-full">
+                <div className="mx-auto w-[90%] transform rounded-xl bg-white/90 p-6 text-center shadow-lg transition-transform">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">📱</div>
+                  <h3 className="text-xl font-semibold text-blue-600">성장형 학습 어플 + AI</h3>
+                  <ul className="mt-2 list-outside list-disc pl-4 text-left text-gray-700">
+                    <li>100문장 핵심 동영상 강의</li>
+                    <li>원어민 음성 듣기 + 말하기 반복 훈련</li>
+                    <li>AI를 활용한 스피킹 퀴즈로 실력 체크</li>
+                  </ul>
+                </div>
+                <div className="absolute top-1/2 right-0 left-0 flex -translate-y-1/2 transform justify-between">
+                  <a href="#feature1" className="btn btn-circle btn-sm border-none bg-white/80" onClick={() => changeSlide(1)}>
+                    ❮
+                  </a>
+                  <a href="#feature3" className="btn btn-circle btn-sm border-none bg-white/80" onClick={() => changeSlide(3)}>
+                    ❯
+                  </a>
+                </div>
+              </div>
+
+              {/* Feature 3 */}
+              <div id="feature3" className="carousel-item relative w-full">
+                <div className="mx-auto w-[90%] transform rounded-xl bg-white/90 p-6 text-center shadow-lg transition-transform">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">🌐</div>
+                  <h3 className="text-xl font-semibold text-blue-600">온라인 공동 클래스</h3>
+                  <ul className="mt-2 list-outside list-disc pl-4 text-left text-gray-700">
+                    <li>zoom을 이용한 1:N 실시간 강의</li>
+                    <li>문장 말하기 녹음 후 피드백 제공</li>
+                    <li>팀원들이 함께 성장하는 온라인 스터디</li>
+                  </ul>
+                </div>
+                <div className="absolute top-1/2 right-0 left-0 flex -translate-y-1/2 transform justify-between">
+                  <a href="#feature2" className="btn btn-circle btn-sm border-none bg-white/80" onClick={() => changeSlide(2)}>
+                    ❮
+                  </a>
+                  <a href="#feature1" className="btn btn-circle btn-sm border-none bg-white/80" onClick={() => changeSlide(1)}>
+                    ❯
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* 캐러셀 인디케이터 - 동그라미 형태로 변경 */}
+            <div className="mt-2 flex w-full justify-center gap-3 py-2">
+              <a
+                href="#feature1"
+                onClick={() => changeSlide(1)}
+                className={`h-3 w-3 rounded-full transition-all ${currentSlide === 1 ? "scale-125 bg-white" : "bg-indigo-300 hover:bg-indigo-200"}`}
+              />
+              <a
+                href="#feature2"
+                onClick={() => changeSlide(2)}
+                className={`h-3 w-3 rounded-full transition-all ${currentSlide === 2 ? "scale-125 bg-white" : "bg-indigo-300 hover:bg-indigo-200"}`}
+              />
+              <a
+                href="#feature3"
+                onClick={() => changeSlide(3)}
+                className={`h-3 w-3 rounded-full transition-all ${currentSlide === 3 ? "scale-125 bg-white" : "bg-indigo-300 hover:bg-indigo-200"}`}
+              />
+            </div>
+          </div>
+
+          {/* 태블릿/데스크탑에서는 그리드로 표시 */}
+          <div className="hidden sm:mt-8 sm:grid sm:grid-cols-3 sm:gap-6">
             {/* Feature 1 */}
             <div className="transform rounded-xl bg-white/90 p-6 text-center shadow-lg transition-transform hover:scale-105">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">🏆</div>
