@@ -476,7 +476,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                 <button
                   onClick={() => setShowMobileSearchSort((prev) => !prev)}
                   className="w-full rounded border border-gray-300 px-4 py-2 text-sm font-medium shadow-sm hover:bg-gray-100">
-                  {showMobileSearchSort ? "🔽 검색 및 정렬 숨기기" : "🔍 검색 및 정렬 보기"}
+                  {showMobileSearchSort ? "🔼 정렬 기능 숨기기" : "🔽 정렬 기능 보기"}
                 </button>
               </div>
 
