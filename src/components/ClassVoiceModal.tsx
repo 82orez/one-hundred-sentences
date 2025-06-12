@@ -249,14 +249,13 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
     audioRef.current = audio;
     setCurrentAudioUrl(url);
 
-    // 음성 파일 재생 시 청취 기록 저장
-    if (session?.user) {
-      markAsListened(voiceId);
-    }
-
-    // 재생이 끝나면 상태 초기화
+    // 재생이 끝나면 상태 초기화 및 청취 완료 처리
     audio.onended = () => {
       setCurrentAudioUrl(null);
+      // 음성 파일 재생 완료 시 청취 기록 저장
+      if (session?.user) {
+        markAsListened(voiceId);
+      }
     };
 
     audio.play().catch((err) => {
