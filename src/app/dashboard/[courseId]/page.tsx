@@ -186,7 +186,7 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
-  // ✅ 시간을 포맷팅하는 함수: 초 단위를 시간:분:초 형식으로 변환
+  // 시간을 포맷팅하는 함수: 초 단위를 시간:분:초 형식으로 변환
   const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -225,7 +225,7 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
   });
 
-  // 사용자가 다른 수강생의 음성 파일에 좋아요 클릭한 횟수 조회를 위한 useQuery 추가
+  // ✅ 사용자가 다른 수강생의 음성 파일에 좋아요 클릭한 횟수 조회를 위한 useQuery 추가
   const { data: userLikesData } = useQuery({
     queryKey: ["userVoiceLikes", session?.user?.id, selectedCourseId],
     queryFn: async () => {
@@ -245,7 +245,7 @@ export default function Dashboard({ params }: Props) {
     }
   }, [userLikesData]);
 
-  // 좋아요 개수 조회 useQuery 추가
+  // ✅ 좋아요 개수 조회 useQuery 추가
   const { data: voiceLikesData } = useQuery({
     queryKey: ["voiceLikes", session?.user?.id, selectedCourseId],
     queryFn: async () => {
