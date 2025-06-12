@@ -164,16 +164,6 @@ export default function Dashboard({ params }: Props) {
     enabled: !!selectedDay,
   });
 
-  // ✅ 원어민 음성 듣기 횟수 조회
-  const { data: nativeAudioData } = useQuery({
-    queryKey: ["nativeAudioCount", session?.user?.id, selectedCourseId],
-    queryFn: async () => {
-      const res = await axios.get(`/api/native-audio/count?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
-      return res.data;
-    },
-    enabled: status === "authenticated" && !!session?.user?.id,
-  });
-
   // ✅ 영상 시청 시간 합계 가져오기
   const { data: totalVideoDuration, isLoading: isVideoDurationLoading } = useQuery({
     queryKey: ["videoDuration", session?.user?.id, selectedCourseId],
@@ -195,6 +185,16 @@ export default function Dashboard({ params }: Props) {
     return `${hours > 0 ? `${hours}시간 ` : ""}${minutes}분 ${remainingSeconds}초`;
   };
 
+  // ✅ 원어민 음성 듣기 횟수 조회
+  const { data: nativeAudioData } = useQuery({
+    queryKey: ["nativeAudioCount", session?.user?.id, selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/native-audio/count?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id,
+  });
+
   // ✅ 숙제 제출 횟수 조회
   const { data: totalRecordingAttempts, isLoading: isRecordingAttemptsLoading } = useQuery({
     queryKey: ["totalRecordingAttempts", session?.user?.id, selectedCourseId],
@@ -213,16 +213,6 @@ export default function Dashboard({ params }: Props) {
       return res.data;
     },
     enabled: status === "authenticated" && !!session?.user?.id,
-  });
-
-  // ✅ 출석 정보 조회
-  const { data: attendanceData } = useQuery({
-    queryKey: ["attendance", session?.user?.id, selectedCourseId],
-    queryFn: async () => {
-      const res = await axios.get(`/api/user/attendance/dashboard?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
-      return res.data;
-    },
-    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
   });
 
   // ✅ 사용자가 다른 수강생의 음성 파일에 좋아요 클릭한 횟수 조회를 위한 useQuery 추가
@@ -265,7 +255,17 @@ export default function Dashboard({ params }: Props) {
     }
   }, [voiceLikesData]);
 
-  // ✅ userCoursePoints 에 있는 개별 total 포인트 정보 불러오기
+  // ✅ 출석 정보 조회
+  const { data: attendanceData } = useQuery({
+    queryKey: ["attendance", session?.user?.id, selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/user/attendance/dashboard?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
+  });
+
+  // ! userCoursePoints 에 있는 개별 total 포인트 정보 불러오기
   const { data: savedPoints } = useQuery({
     queryKey: ["coursePoints", session?.user?.id, selectedCourseId],
     queryFn: async () => {
@@ -345,7 +345,7 @@ export default function Dashboard({ params }: Props) {
     savedPoints,
   ]);
 
-  // ✅ 팀 전체 포인트 정보 불러오기
+  // ! ✅ 팀 전체 포인트 정보 불러오기
   const { data: teamPointsData, isLoading: isTeamPointsLoading } = useQuery({
     queryKey: ["teamPoints", session?.user?.id, selectedCourseId, totalPoints, savedPoints],
     queryFn: async () => {
