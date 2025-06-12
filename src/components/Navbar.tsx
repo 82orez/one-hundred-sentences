@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { usePathname } from "next/navigation";
 import { ChevronDown, ChevronUp, Heart } from "lucide-react";
+import ErrorHelpModal from "@/components/ErrorHelpModal";
 
 export default function Navbar() {
   const router = useRouter();
@@ -19,6 +20,8 @@ export default function Navbar() {
   const isStudent = session?.user?.role === "student";
   // 로딩 상태 추가
   const [isLoading, setIsLoading] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
   // 드롭다운 메뉴 상태 추가
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -208,6 +211,15 @@ export default function Navbar() {
                     회원 정보
                   </Link>
 
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setIsErrorModalOpen(true);
+                    }}
+                    className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
+                    오류 대처 방법
+                  </button>
+
                   <div className="my-1 border-t border-gray-200"></div>
 
                   <button
@@ -234,6 +246,9 @@ export default function Navbar() {
           </>
         )}
       </div>
+
+      {/* 오류 대처 방법 모달 */}
+      <ErrorHelpModal isOpen={isErrorModalOpen} onClose={() => setIsErrorModalOpen(false)} />
     </nav>
   );
 }
