@@ -265,17 +265,9 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
   });
 
-  // ! userCoursePoints 에 있는 개별 total 포인트 정보 불러오기
-  const { data: savedPoints } = useQuery({
-    queryKey: ["coursePoints", session?.user?.id, selectedCourseId],
-    queryFn: async () => {
-      const res = await axios.get(`/api/course-points?courseId=${selectedCourseId}`);
-      return res.data;
-    },
-    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
-  });
+  // ! userCoursePoints 에 있는 개별 total 포인트 정보 불러오기 -> 삭제
 
-  // ✅ 포인트 계산을 위한 useState 추가
+  // ! 포인트 계산을 위한 useState 추가
   const [totalPoints, setTotalPoints] = useState(0);
 
   // ✅ 포인트 계산 로직
@@ -305,29 +297,22 @@ export default function Dashboard({ params }: Props) {
       videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints + voiceLikePoints + userVoiceLikePoints,
     );
 
-    // 계산된 총 포인트가 기존 저장된 포인트와 다를 때만 상태 업데이트
-    if (savedPoints?.points !== total) {
-      setTotalPoints(total);
+    setTotalPoints(total);
 
-      // 포인트가 다른 경우에만 서버에 저장
-      if (selectedCourseId && session?.user?.id) {
-        const savePointsToServer = async () => {
-          try {
-            await axios.post("/api/course-points", {
-              courseId: selectedCourseId,
-              points: total,
-            });
-            console.log("포인트가 서버에 업데이트되었습니다:", total);
-          } catch (error) {
-            console.error("포인트 저장 중 오류 발생:", error);
-          }
-        };
+    if (selectedCourseId && session?.user?.id) {
+      const savePointsToServer = async () => {
+        try {
+          await axios.post("/api/course-points", {
+            courseId: selectedCourseId,
+            points: total,
+          });
+          console.log("포인트가 서버에 업데이트되었습니다:", total);
+        } catch (error) {
+          console.error("포인트 저장 중 오류 발생:", error);
+        }
+      };
 
-        savePointsToServer();
-      }
-    } else {
-      // 이미 저장된 값과 같으면 해당 값 사용
-      setTotalPoints(savedPoints?.points);
+      savePointsToServer();
     }
   }, [
     totalVideoDuration,
@@ -342,12 +327,11 @@ export default function Dashboard({ params }: Props) {
     isVideoDurationLoading,
     session?.user?.id,
     selectedCourseId,
-    savedPoints,
   ]);
 
   // ! ✅ 팀 전체 포인트 정보 불러오기
   const { data: teamPointsData, isLoading: isTeamPointsLoading } = useQuery({
-    queryKey: ["teamPoints", session?.user?.id, selectedCourseId, totalPoints, savedPoints],
+    queryKey: ["teamPoints", session?.user?.id, selectedCourseId, totalPoints],
     queryFn: async () => {
       const res = await axios.get(`/api/course-points/team?courseId=${selectedCourseId}`);
       return res.data;
@@ -381,7 +365,7 @@ export default function Dashboard({ params }: Props) {
 
   // ✅ 전체 학생 수와 현재 사용자의 순위 조회
   const { data: rankData, isLoading: isRankLoading } = useQuery({
-    queryKey: ["userRank", session?.user?.id, selectedCourseId, savedPoints, totalPoints],
+    queryKey: ["userRank", session?.user?.id, selectedCourseId, totalPoints],
     queryFn: async () => {
       const res = await axios.get(`/api/course-points/rank?courseId=${selectedCourseId}`);
       return res.data;
