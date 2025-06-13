@@ -237,26 +237,28 @@ export default function LandingPage() {
       {showModal && (
         <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
           <div className="w-11/12 max-w-md rounded-lg bg-white p-6 shadow-lg md:p-8">
-            <h2 className="mb-4 text-center text-2xl font-semibold text-gray-800">무료 체험 안내</h2>
-            <div className="mx-auto mb-4 h-1 w-16 rounded-full bg-indigo-600"></div>
+            {/*<h2 className="mb-4 text-center text-2xl font-semibold text-gray-800">무료 체험 안내</h2>*/}
+            {/*<div className="mx-auto mb-4 h-1 w-16 rounded-full bg-indigo-600"></div>*/}
 
-            <div className="text-gray-700">
-              <div className="mb-4 flex items-start">
-                <div className="mt-1 mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-800">1</div>
-                <p>회원 가입 및 로그인 후 회원 정보에서 본인의 이름과 전화번호를 등록하세요.</p>
-              </div>
+            {/*<div className="text-gray-700">*/}
+            {/*  <div className="mb-4 flex items-start">*/}
+            {/*    <div className="mt-1 mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-800">1</div>*/}
+            {/*    <p>회원 가입 및 로그인 후 회원 정보에서 본인의 이름과 전화번호를 등록하세요.</p>*/}
+            {/*  </div>*/}
 
-              <div className="mb-6 flex items-start">
-                <div className="mt-1 mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-800">2</div>
-                <p>이후, 내 강의 보기에 '무료 체험반'이 자동 생성됩니다.</p>
-              </div>
-            </div>
+            {/*  <div className="mb-6 flex items-start">*/}
+            {/*    <div className="mt-1 mr-3 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-indigo-100 text-indigo-800">2</div>*/}
+            {/*    <p>이후, 내 강의 보기에 '무료 체험반'이 자동 생성됩니다.</p>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
 
-            <div className={"flex items-center justify-center"}>
-              <Link href="/users/edit" className={"mx-auto text-gray-500 underline"}>
-                회원 정보 등록
-              </Link>
-            </div>
+            {/*<div className={"flex items-center justify-center"}>*/}
+            {/*  <Link href="/users/edit" className={"mx-auto text-gray-500 underline"}>*/}
+            {/*    회원 정보 등록*/}
+            {/*  </Link>*/}
+            {/*</div>*/}
+
+            <div className={"text-gray-500"}>현재 무료 신청자 폭주로 인해 일시적으로 무료 체험 이벤트 중단합니다. 양해 부탁드립니다.</div>
 
             <div className="mt-6 flex justify-center">
               <button onClick={closeModal} className="rounded-lg bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400">
