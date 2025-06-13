@@ -1,63 +1,86 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { calculateStudentDetailPoints } from "@/utils/countTotalEachPoints";
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const courseId = searchParams.get("courseId");
 
-    // UserCoursePoints 데이터를 가져오면서 Enrollment 정보 함께 조회
-    const userPoints = await prisma.userCoursePoints.findMany({
+    if (!courseId) {
+      return NextResponse.json({ error: "강좌 ID가 필요합니다." }, { status: 400 });
+    }
+
+    // 강좌에 등록된 사용자 목록 조회
+    const enrollments = await prisma.enrollment.findMany({
       where: {
         courseId: courseId,
+        status: "active",
       },
-      orderBy: {
-        points: "desc", // 기본적으로 높은 점수 순으로 정렬
-      },
-      include: {
-        user: {
+      select: {
+        studentId: true,
+        student: {
           select: {
             id: true,
-            // name: true,
             classNickName: true,
             email: true,
             image: true,
             customImageUrl: true,
             isImagePublicOpen: true,
             message: true,
-            Enrollment: {
-              where: {
-                courseId: courseId,
-              },
-              select: {
-                studentName: true,
-                centerName: true,
-                localName: true,
-              },
-            },
           },
         },
+        studentName: true,
+        centerName: true,
+        localName: true,
       },
     });
 
-    // 응답 데이터 가공
-    const formattedData = userPoints.map((point) => ({
-      id: point.id,
-      userId: point.userId,
-      courseId: point.courseId,
-      points: point.points,
-      // userName: point.user.name || "이름 없음",
-      userClassNickName: point.user.classNickName,
-      userIsImagePublicOpen: point.user.isImagePublicOpen,
-      userEmail: point.user.email,
-      userImage: point.user.customImageUrl || point.user.image, // customImageUrl 우선, 없으면 image 사용
-      userMessage: point.user.message,
-      userName: point.user.Enrollment[0]?.studentName || null,
-      centerName: point.user.Enrollment[0]?.centerName || null,
-      localName: point.user.Enrollment[0]?.localName || null,
-    }));
+    // 각 학생의 포인트 정보 계산
+    const pointsPromises = enrollments.map(async (enrollment) => {
+      try {
+        const pointsData = await calculateStudentDetailPoints(courseId, enrollment.studentId);
 
-    return NextResponse.json(formattedData);
+        return {
+          id: `${enrollment.studentId}-${courseId}`, // 고유 ID 생성
+          userId: enrollment.studentId,
+          courseId: courseId,
+          points: pointsData.totalPoints,
+          userClassNickName: enrollment.student.classNickName,
+          userIsImagePublicOpen: enrollment.student.isImagePublicOpen,
+          userEmail: enrollment.student.email,
+          userImage: enrollment.student.customImageUrl || enrollment.student.image,
+          userMessage: enrollment.student.message,
+          userName: enrollment.studentName || null,
+          centerName: enrollment.centerName || null,
+          localName: enrollment.localName || null,
+        };
+      } catch (error) {
+        console.error(`학생 ID ${enrollment.studentId}의 포인트 계산 중 오류:`, error);
+        // 오류가 발생해도 기본 정보는 반환
+        return {
+          id: `${enrollment.studentId}-${courseId}`,
+          userId: enrollment.studentId,
+          courseId: courseId,
+          points: 0, // 오류 발생 시 0점 처리
+          userClassNickName: enrollment.student.classNickName,
+          userIsImagePublicOpen: enrollment.student.isImagePublicOpen,
+          userEmail: enrollment.student.email,
+          userImage: enrollment.student.customImageUrl || enrollment.student.image,
+          userMessage: enrollment.student.message,
+          userName: enrollment.studentName || null,
+          centerName: enrollment.centerName || null,
+          localName: enrollment.localName || null,
+        };
+      }
+    });
+
+    const formattedData = await Promise.all(pointsPromises);
+
+    // 포인트 내림차순으로 정렬
+    const sortedData = formattedData.sort((a, b) => b.points - a.points);
+
+    return NextResponse.json(sortedData);
   } catch (error) {
     console.error("포인트 데이터 조회 중 오류 발생:", error);
     return NextResponse.json({ error: "포인트 데이터를 가져오는 중 오류가 발생했습니다." }, { status: 500 });
