@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+import { calculateTotalTeamPoints } from "@/utils/countTotalTeamPoints";
 
 // 특정 코스의 모든 학생 포인트 합계 조회
 export async function GET(req: Request) {
@@ -20,34 +21,14 @@ export async function GET(req: Request) {
   }
 
   try {
-    // 해당 코스의 모든 사용자 포인트 데이터 조회
-    const allCoursePoints = await prisma.userCoursePoints.findMany({
-      where: {
-        courseId: courseId,
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-            email: true,
-            realName: true,
-          },
-        },
-      },
-      orderBy: {
-        points: "desc",
-      },
-    });
-
-    // 총 포인트 계산
-    const totalPoints = allCoursePoints.reduce((sum, record) => sum + record.points, 0);
+    const result = await calculateTotalTeamPoints(courseId);
 
     return NextResponse.json({
-      totalPoints,
-      students: allCoursePoints,
+      totalPoints: result.totalTeamPoints,
+      studentCount: result.studentCount,
     });
   } catch (error) {
     console.error("팀 포인트 조회 중 오류 발생:", error);
-    return NextResponse.json({ error: "서버 오류가 발생했습니다" }, { status: 500 });
+    return NextResponse.json({ message: "팀 포인트 조회 중 오류가 발생했습니다." }, { status: 500 });
   }
 }

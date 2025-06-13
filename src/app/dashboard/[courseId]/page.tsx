@@ -344,7 +344,7 @@ export default function Dashboard({ params }: Props) {
     selectedCourseId,
   ]);
 
-  // ! ✅ 팀 전체 포인트 정보 불러오기
+  // ! ✅ 팀 전체 포인트 정보 불러오기 - calculateTotalTeamPoints 함수 사용
   const { data: teamPointsData, isLoading: isTeamPointsLoading } = useQuery({
     queryKey: ["teamPoints", session?.user?.id, selectedCourseId, totalPoints, voiceLikesData?.totalLikes, userLikesData?.totalUserLikes],
     queryFn: async () => {
