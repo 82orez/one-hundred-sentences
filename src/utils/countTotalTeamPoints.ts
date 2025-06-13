@@ -69,12 +69,16 @@ export async function calculateTotalTeamPoints(courseId: string) {
         const totalRecordingAttempts = recordingsData._sum.attemptCount || 0;
 
         // 퀴즈 관련 데이터 조회
-        const quizAttemptsData = await prisma.quizAttempt.count({
+        const quizAttemptsData = await prisma.quizAttempt.aggregate({
           where: {
             userId: studentId,
             courseId: courseId,
           },
+          _sum: {
+            attemptQuiz: true,
+          },
         });
+        const totalQuizAttempts = quizAttemptsData._sum.attemptQuiz || 0;
 
         const quizCorrectData = await prisma.quizAttempt.aggregate({
           where: {
@@ -128,7 +132,7 @@ export async function calculateTotalTeamPoints(courseId: string) {
         const videoPoints = totalVideoDuration * VIDEO_POINT_PER_SECOND;
         const audioPoints = totalAudioAttempts * AUDIO_POINT_PER_ATTEMPT;
         const recordingPoints = totalRecordingAttempts * RECORDING_POINT_PER_ATTEMPT;
-        const quizAttemptPoints = quizAttemptsData * QUIZ_ATTEMPT_POINT;
+        const quizAttemptPoints = totalQuizAttempts * QUIZ_ATTEMPT_POINT;
         const quizCorrectPoints = totalQuizCorrect * QUIZ_CORRECT_POINT;
         const attendancePoints = attendanceData * ATTENDANCE_POINT;
         const voiceLikePoints = voiceLikesData * VOICE_LIKE_POINT;
