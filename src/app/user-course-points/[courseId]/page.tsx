@@ -366,6 +366,10 @@ export default function UserCoursePointsPage({ params }: Props) {
                   <div className="rounded-lg bg-gray-50 p-4">
                     <h3 className="mb-2 font-medium">음성 좋아요</h3>
                     <p>
+                      내 발음 공개 포인트: {pointsDetail.pointsDetail.myVoiceOpenPoints}점 (받은 좋아요 {pointsDetail.pointsDetail.myVoiceOpenCount}
+                      개)
+                    </p>
+                    <p>
                       받은 좋아요 포인트: {pointsDetail.pointsDetail.voiceLikePoints}점 (받은 좋아요 {pointsDetail.pointsDetail.voiceLikesReceived}개)
                     </p>
                     <p>

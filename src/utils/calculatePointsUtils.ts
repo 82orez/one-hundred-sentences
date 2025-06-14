@@ -147,7 +147,7 @@ export async function calculateUserActivityPoints(userId: string, courseId: stri
       totalQuizAttempts,
       totalQuizCorrect,
       attendanceData,
-      myVoiceOpenPoints,
+      myVoiceOpenData,
       voiceLikesData,
       userLikesData,
     },
