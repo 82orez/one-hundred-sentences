@@ -347,9 +347,17 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "강좌를 찾을 수 없습니다." }, { status: 404 });
     }
 
-    // 강좌 삭제 (ClassDate 모델은 cascade 설정으로 자동 삭제)
-    await prisma.course.delete({
-      where: { id },
+    // 트랜잭션으로 삭제 처리
+    await prisma.$transaction(async (tx) => {
+      // 1. 먼저 해당 강좌와 연결된 MyVoiceOpenList 레코드 삭제
+      await tx.myVoiceOpenList.deleteMany({
+        where: { courseId: id },
+      });
+
+      // 2. 그 다음 강좌 삭제
+      await tx.course.delete({
+        where: { id },
+      });
     });
 
     return NextResponse.json({ success: true });

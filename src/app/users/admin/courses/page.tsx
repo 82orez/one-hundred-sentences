@@ -568,8 +568,8 @@ export default function CoursePage() {
   };
 
   // 강좌 삭제 확인
-  const handleDeleteCourse = (id: string) => {
-    if (window.confirm("정말로 이 강좌를 삭제하시겠습니까?")) {
+  const handleDeleteCourse = (id: string, title: string) => {
+    if (window.confirm(`정말로 '${title}' 강좌를 삭제하시겠습니까?`)) {
       deleteCourseMutation.mutate(id);
     }
   };
@@ -828,7 +828,7 @@ export default function CoursePage() {
                     <button onClick={() => handleEditCourse(course)} className="btn btn-sm btn-ghost" aria-label="수정">
                       <Edit size={16} />
                     </button>
-                    <button onClick={() => handleDeleteCourse(course.id)} className="btn btn-sm btn-ghost text-error" aria-label="삭제">
+                    <button onClick={() => handleDeleteCourse(course.id, course.title)} className="btn btn-sm btn-ghost text-error" aria-label="삭제">
                       <Trash2 size={16} />
                     </button>
                   </td>
