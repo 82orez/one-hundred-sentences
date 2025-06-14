@@ -20,6 +20,7 @@ type VoiceItem = {
   likeCount: number;
   user: {
     name: string;
+    realName: string;
     classNickName: string;
     image: string;
     customImageUrl: string;
@@ -236,7 +237,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
 
   // 사용자 표시 이름 가져오기
   const getUserDisplayName = (user: VoiceItem["user"]) => {
-    return user.classNickName || user.name || "익명";
+    return user.classNickName || user.realName || "익명";
   };
 
   const handlePlay = async (url: string, voiceId: string) => {

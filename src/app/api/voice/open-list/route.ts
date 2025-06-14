@@ -30,6 +30,7 @@ export async function GET(request: Request) {
         user: {
           select: {
             name: true,
+            realName: true,
             classNickName: true,
             image: true,
             customImageUrl: true,
