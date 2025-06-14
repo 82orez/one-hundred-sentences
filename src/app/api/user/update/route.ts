@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 사용자가 실제 이름과 전화번호를 등록했다면 무료 체험반에 자동 등록
+    // * 사용자가 실제 이름과 전화번호를 등록했다면 무료 체험반에 자동 등록
     const existingEnrollment = await prisma.enrollment.findFirst({
       where: {
         studentId: session.user.id,
