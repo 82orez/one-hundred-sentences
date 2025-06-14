@@ -61,6 +61,12 @@ type PointsDetailResponse = {
   pointsRate: PointsRate;
 };
 
+// 팀 포인트 응답 타입 정의
+type TeamPointsResponse = {
+  totalPoints: number;
+  studentCount: number;
+};
+
 type Props = {
   params: Promise<{ courseId: string }>;
 };
@@ -83,6 +89,20 @@ export default function UserCoursePointsPage({ params }: Props) {
     queryFn: async () => {
       const response = await axios.get(`/api/user-course-points?courseId=${courseId}`);
       return response.data;
+    },
+    enabled: !!courseId, // courseId가 있을 때만 요청 수행
+  });
+
+  // 팀 전체 포인트 정보를 가져오는 쿼리 추가
+  const {
+    data: teamPoints,
+    isLoading: teamPointsIsLoading,
+    error: teamPointsError,
+  } = useQuery({
+    queryKey: ["team-course-points", courseId],
+    queryFn: async () => {
+      const response = await axios.get(`/api/course-points/team?courseId=${courseId}`);
+      return response.data as TeamPointsResponse;
     },
     enabled: !!courseId, // courseId가 있을 때만 요청 수행
   });
@@ -241,6 +261,25 @@ export default function UserCoursePointsPage({ params }: Props) {
               </tr>
             )}
           </tbody>
+          {/* 팀 전체 포인트 표시 */}
+          <tfoot>
+            <tr className="border-t-2 border-green-200 bg-green-50 font-bold">
+              <td colSpan={5} className="p-3 text-right align-middle">
+                팀 전체 포인트 (수강생 {teamPointsIsLoading ? "-" : teamPoints?.studentCount || 0}명):
+              </td>
+              <td className="p-3 text-center align-middle">
+                {teamPointsIsLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent"></div>
+                  </div>
+                ) : teamPointsError ? (
+                  <span className="text-red-500">오류 발생</span>
+                ) : (
+                  <span className="text-xl font-bold text-green-700">{teamPoints?.totalPoints.toLocaleString() || 0}</span>
+                )}
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </div>
 
