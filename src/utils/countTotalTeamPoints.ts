@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { calculateUserActivityPoints } from "./calculatePointsUtils";
 
 const prisma = new PrismaClient();
 
@@ -31,125 +32,11 @@ export async function calculateTotalTeamPoints(courseId: string) {
       return { totalTeamPoints: 0, studentCount: 0 };
     }
 
-    // 2. 각 학생의 포인트 데이터 조회
+    // 2. 각 학생의 포인트 데이터 조회 및 계산
     const pointsData = await Promise.all(
       studentIds.map(async (studentId) => {
-        // 영상 시청 시간 조회
-        const videoData = await prisma.youTubeViewAttempt.aggregate({
-          where: {
-            userId: studentId,
-            courseId: courseId,
-          },
-          _sum: {
-            duration: true,
-          },
-        });
-        const totalVideoDuration = videoData._sum.duration || 0;
-
-        // 원어민 음성 듣기 횟수 조회
-        const audioData = await prisma.nativeAudioAttempt.aggregate({
-          where: {
-            userId: studentId,
-            courseId: courseId,
-          },
-          _count: true,
-        });
-        const totalAudioAttempts = audioData._count;
-
-        // 녹음 제출 횟수 조회
-        const recordingsData = await prisma.recordings.aggregate({
-          where: {
-            userId: studentId,
-            courseId: courseId,
-          },
-          _sum: {
-            attemptCount: true,
-          },
-        });
-        const totalRecordingAttempts = recordingsData._sum.attemptCount || 0;
-
-        // 퀴즈 관련 데이터 조회
-        const quizAttemptsData = await prisma.quizAttempt.aggregate({
-          where: {
-            userId: studentId,
-            courseId: courseId,
-          },
-          _sum: {
-            attemptQuiz: true,
-          },
-        });
-        const totalQuizAttempts = quizAttemptsData._sum.attemptQuiz || 0;
-
-        const quizCorrectData = await prisma.quizAttempt.aggregate({
-          where: {
-            userId: studentId,
-            courseId: courseId,
-          },
-          _sum: {
-            correctCount: true,
-          },
-        });
-        const totalQuizCorrect = quizCorrectData._sum.correctCount || 0;
-
-        // 출석 정보 조회
-        const attendanceData = await prisma.attendance.count({
-          where: {
-            userId: studentId,
-            courseId: courseId,
-          },
-        });
-
-        // 음성 좋아요 받은 수 조회
-        const voiceLikesData = await prisma.voiceLike.count({
-          where: {
-            myVoiceOpenList: {
-              userId: studentId,
-              courseId: courseId,
-            },
-          },
-        });
-
-        // 다른 학생 음성에 좋아요 누른 수 조회
-        const userLikesData = await prisma.voiceLike.count({
-          where: {
-            userId: studentId,
-            myVoiceOpenList: {
-              courseId: courseId,
-            },
-          },
-        });
-
-        // 포인트 계산 로직
-        const VIDEO_POINT_PER_SECOND = 0.5;
-        const AUDIO_POINT_PER_ATTEMPT = 1;
-        const RECORDING_POINT_PER_ATTEMPT = 20;
-        const QUIZ_ATTEMPT_POINT = 3;
-        const QUIZ_CORRECT_POINT = 3;
-        const ATTENDANCE_POINT = 50;
-        const VOICE_LIKE_POINT = 100;
-        const USER_VOICE_LIKE_POINT = 20;
-
-        const videoPoints = totalVideoDuration * VIDEO_POINT_PER_SECOND;
-        const audioPoints = totalAudioAttempts * AUDIO_POINT_PER_ATTEMPT;
-        const recordingPoints = totalRecordingAttempts * RECORDING_POINT_PER_ATTEMPT;
-        const quizAttemptPoints = totalQuizAttempts * QUIZ_ATTEMPT_POINT;
-        const quizCorrectPoints = totalQuizCorrect * QUIZ_CORRECT_POINT;
-        const attendancePoints = attendanceData * ATTENDANCE_POINT;
-        const voiceLikePoints = voiceLikesData * VOICE_LIKE_POINT;
-        const userVoiceLikePoints = userLikesData * USER_VOICE_LIKE_POINT;
-
-        const totalPoints = Math.round(
-          videoPoints +
-            audioPoints +
-            recordingPoints +
-            quizAttemptPoints +
-            quizCorrectPoints +
-            attendancePoints +
-            voiceLikePoints +
-            userVoiceLikePoints,
-        );
-
-        return totalPoints;
+        const { points } = await calculateUserActivityPoints(studentId, courseId);
+        return points.totalPoints;
       }),
     );
 
