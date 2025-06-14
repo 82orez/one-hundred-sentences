@@ -215,6 +215,26 @@ export default function Dashboard({ params }: Props) {
     enabled: status === "authenticated" && !!session?.user?.id,
   });
 
+  // 사용자의 공개 음성 파일 수 조회 useQuery 추가
+  const { data: myVoiceOpenData } = useQuery({
+    queryKey: ["myVoiceOpenCount", session?.user?.id, selectedCourseId],
+    queryFn: async () => {
+      const res = await axios.get(`/api/voice/my-open-count?userId=${session?.user?.id}&courseId=${selectedCourseId}`);
+      return res.data;
+    },
+    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
+  });
+
+  // 공개 음성 파일 수를 상태로 관리
+  const [myVoiceOpenCount, setMyVoiceOpenCount] = useState(0);
+
+  // 공개 음성 파일 데이터가 변경될 때 상태 업데이트
+  useEffect(() => {
+    if (myVoiceOpenData) {
+      setMyVoiceOpenCount(myVoiceOpenData.count || 0);
+    }
+  }, [myVoiceOpenData]);
+
   // ✅ 사용자가 다른 수강생의 음성 파일에 좋아요 클릭한 횟수 조회를 위한 useQuery 추가
   const { data: userLikesData } = useQuery({
     queryKey: ["userVoiceLikes", session?.user?.id, selectedCourseId],
@@ -279,7 +299,8 @@ export default function Dashboard({ params }: Props) {
       !userLikesData ||
       !attendanceData ||
       totalRecordingAttempts === undefined ||
-      !quizStats
+      !quizStats ||
+      !myVoiceOpenData
     ) {
       return null;
     }
@@ -293,6 +314,7 @@ export default function Dashboard({ params }: Props) {
     const ATTENDANCE_POINT = 50;
     const VOICE_LIKE_POINT = 100;
     const USER_VOICE_LIKE_POINT = 20;
+    const MY_VOICE_OPEN_POINT = 100; // 내 발음 공개 포인트 가중치
 
     const videoPoints = totalVideoDuration * VIDEO_POINT_PER_SECOND;
     const audioPoints = (nativeAudioData?.totalAttempts || 0) * AUDIO_POINT_PER_ATTEMPT;
@@ -302,9 +324,18 @@ export default function Dashboard({ params }: Props) {
     const attendancePoints = (attendanceData?.attendedClassDates || 0) * ATTENDANCE_POINT;
     const voiceLikePoints = (voiceLikesData?.totalLikes || 0) * VOICE_LIKE_POINT;
     const userVoiceLikePoints = (userLikesData?.totalUserLikes || 0) * USER_VOICE_LIKE_POINT;
+    const myVoiceOpenPoints = (myVoiceOpenData?.count || 0) * MY_VOICE_OPEN_POINT; // 내 발음 공개 포인트
 
     return Math.round(
-      videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints + voiceLikePoints + userVoiceLikePoints,
+      videoPoints +
+        audioPoints +
+        recordingPoints +
+        quizAttemptPoints +
+        quizCorrectPoints +
+        attendancePoints +
+        voiceLikePoints +
+        userVoiceLikePoints +
+        myVoiceOpenPoints,
     );
   };
 
@@ -336,6 +367,7 @@ export default function Dashboard({ params }: Props) {
     quizStats?.totalAttempts,
     quizStats?.totalCorrect,
     attendanceData?.attendedClassDates,
+    myVoiceOpenData,
     voiceLikesData?.totalLikes,
     userLikesData?.totalUserLikes,
     isQuizStatsLoading,
@@ -500,6 +532,11 @@ export default function Dashboard({ params }: Props) {
             <div className="font-semibold text-blue-600">
               ({quizStats?.totalCorrect || 0}) {quizStats?.totalAttempts || 0}회
             </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>내 발음 공개</div>
+            <div className="font-semibold text-blue-600">{myVoiceOpenCount}회</div>
           </div>
 
           <div className="flex items-center justify-between">

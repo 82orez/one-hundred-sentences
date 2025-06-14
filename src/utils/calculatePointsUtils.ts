@@ -10,6 +10,7 @@ export const POINT_CONSTANTS = {
   QUIZ_ATTEMPT_POINT: 3,
   QUIZ_CORRECT_POINT: 3,
   ATTENDANCE_POINT: 50,
+  MY_VOICE_OPEN_POINT: 100,
   VOICE_LIKE_POINT: 100,
   USER_VOICE_LIKE_POINT: 20,
 };
@@ -86,6 +87,14 @@ export async function calculateUserActivityPoints(userId: string, courseId: stri
     },
   });
 
+  // !  사용자가 공개한 음성 파일 갯수 조회
+  const myVoiceOpenData = await prisma.myVoiceOpenList.count({
+    where: {
+      userId: userId,
+      courseId: courseId,
+    },
+  });
+
   // 음성 좋아요 받은 수 조회
   const voiceLikesData = await prisma.voiceLike.count({
     where: {
@@ -113,12 +122,21 @@ export async function calculateUserActivityPoints(userId: string, courseId: stri
   const quizAttemptPoints = totalQuizAttempts * POINT_CONSTANTS.QUIZ_ATTEMPT_POINT;
   const quizCorrectPoints = totalQuizCorrect * POINT_CONSTANTS.QUIZ_CORRECT_POINT;
   const attendancePoints = attendanceData * POINT_CONSTANTS.ATTENDANCE_POINT;
+  const myVoiceOpenPoints = myVoiceOpenData * POINT_CONSTANTS.MY_VOICE_OPEN_POINT;
   const voiceLikePoints = voiceLikesData * POINT_CONSTANTS.VOICE_LIKE_POINT;
   const userVoiceLikePoints = userLikesData * POINT_CONSTANTS.USER_VOICE_LIKE_POINT;
 
   // 총 포인트 계산
   const totalPoints = Math.round(
-    videoPoints + audioPoints + recordingPoints + quizAttemptPoints + quizCorrectPoints + attendancePoints + voiceLikePoints + userVoiceLikePoints,
+    videoPoints +
+      audioPoints +
+      recordingPoints +
+      quizAttemptPoints +
+      quizCorrectPoints +
+      attendancePoints +
+      myVoiceOpenPoints +
+      voiceLikePoints +
+      userVoiceLikePoints,
   );
 
   return {
@@ -129,6 +147,7 @@ export async function calculateUserActivityPoints(userId: string, courseId: stri
       totalQuizAttempts,
       totalQuizCorrect,
       attendanceData,
+      myVoiceOpenPoints,
       voiceLikesData,
       userLikesData,
     },
@@ -139,6 +158,7 @@ export async function calculateUserActivityPoints(userId: string, courseId: stri
       quizAttemptPoints,
       quizCorrectPoints,
       attendancePoints,
+      myVoiceOpenPoints,
       voiceLikePoints,
       userVoiceLikePoints,
       totalPoints,
