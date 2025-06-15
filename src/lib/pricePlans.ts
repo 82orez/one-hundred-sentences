@@ -1,19 +1,19 @@
 export const pricePlans = [
   {
-    id: "free",
-    name: "Free Plan",
+    id: "testfreecourse2506",
+    title: "6월 무료 체험반",
     price: 0,
-    description: "월 $0 - 제한된 기본 기능",
+    description: "매주 일요일 오후 8시 무료 특강(15분) + 학습 어플",
   },
   {
     id: "basic",
-    name: "Basic Plan",
+    title: "Basic Plan",
     price: 1100,
     description: "월 $10 - 주요 기능 포함",
   },
   {
     id: "pro",
-    name: "Pro Plan",
+    title: "Pro Plan",
     price: 2200,
     description: "월 $30 - 모든 기능 + 추가 옵션!",
   },

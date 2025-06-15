@@ -4,20 +4,20 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { IoMdCheckboxOutline } from "react-icons/io";
 import { pricePlans } from "@/lib/pricePlans";
+import { PurchaseButton } from "@/components/PurchaseButton";
 import { useSession } from "next-auth/react";
-import { PurchaseButton } from "@/components/Button/PurchaseButtonNew";
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("free");
   const router = useRouter();
   const { status } = useSession();
 
-  // useEffect(() => {
-  //   // 로그인 상태가 'unauthenticated' 인 경우 로그인 페이지로 리다이렉트
-  //   if (status === "unauthenticated") {
-  //     router.push("/users/sign-in");
-  //   }
-  // }, [status, router]);
+  useEffect(() => {
+    // 로그인 상태가 'unauthenticated' 인 경우 로그인 페이지로 리다이렉트
+    if (status === "unauthenticated") {
+      router.push("/users/sign-in");
+    }
+  }, [status, router]);
 
   // 로딩 상태 처리
   if (status === "loading") {
@@ -26,6 +26,10 @@ const PurchasePage = () => {
 
   const selectedPlanInfo = pricePlans.find((plan) => plan.id === selectedPlan);
   console.log(`selectedPlanInfo: `, selectedPlanInfo);
+
+  const handlePurchase = () => {
+    alert(`You selected the ${selectedPlanInfo?.name}! 결제 연동은 추후 구현됩니다.`);
+  };
 
   // 인증되지 않은 상태라면 페이지 내용을 렌더링하지 않음
   if (status === "unauthenticated") return null;
@@ -58,13 +62,20 @@ const PurchasePage = () => {
                     <IoMdCheckboxOutline size={24} />
                   </div>
                 )}
-                <h3 className={`text-xl font-bold ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>{plan.title}</h3>
+                <h3 className={`text-xl font-bold ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>{plan.name}</h3>
                 <p className="mt-4 text-sm text-gray-600">{plan.description}</p>
               </div>
             ))}
           </div>
 
-          <PurchaseButton id={selectedPlanInfo?.id} title={selectedPlanInfo?.title} price={selectedPlanInfo?.price} />
+          {/* Purchase Button */}
+          {/*<button*/}
+          {/*  onClick={handlePurchase}*/}
+          {/*  className="mt-6 w-full min-w-52 rounded-lg bg-blue-600 px-6 py-3 text-lg font-bold text-white shadow-lg hover:bg-blue-700 md:mt-12 md:w-auto">*/}
+          {/*  {selectedPlanInfo?.price} 결제 하기*/}
+          {/*</button>*/}
+
+          <PurchaseButton id={selectedPlanInfo?.id} price={selectedPlanInfo?.price} />
         </div>
       </section>
     </div>
