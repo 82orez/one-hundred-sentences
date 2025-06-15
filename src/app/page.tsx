@@ -258,7 +258,7 @@ export default function LandingPage() {
             {/*  </Link>*/}
             {/*</div>*/}
 
-            <div className={"text-gray-500"}>현재 웹싸이트 업데이트 진행 중으로 인해 일시적으로 무료 체험 이벤트 중단합니다. 양해 부탁드립니다.</div>
+            <div className={"text-gray-500"}>안녕하세요. 현재 웹싸이트 업데이트 진행 중으로 인해 일시적으로 무료 체험 이벤트 중단합니다. 양해 부탁드립니다.</div>
 
             <div className="mt-6 flex justify-center">
               <button onClick={closeModal} className="rounded-lg bg-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-400">
