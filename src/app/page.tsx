@@ -60,6 +60,14 @@ export default function LandingPage() {
               <span>무료 체험 안내</span>
               <FaArrowRight className="ml-2" />
             </button>
+
+            {/* 무료 체험 신청 안내 */}
+            <Link
+              href={"/purchase"}
+              className="mb-4 flex min-w-[220px] cursor-pointer items-center justify-center rounded-xl bg-green-600 px-6 py-3 text-lg text-white hover:bg-green-700 md:hidden">
+              <span>무료 체험 안내</span>
+              <FaArrowRight className="ml-2" />
+            </Link>
           </div>
 
           <CardContent className="text-center md:text-left">
