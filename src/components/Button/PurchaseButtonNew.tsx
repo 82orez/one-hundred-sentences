@@ -25,6 +25,17 @@ export function PurchaseButton({ id, title, price, onValidationError }: Purchase
       return;
     }
 
+    const response = await fetch("/api/payment/check-user-info");
+    const data = await response.json();
+
+    if (!data.isProfileComplete) {
+      if (confirm("아직 실제 이름과 전화 번호가 등록되지 않았습니다. 회원 정보 수정창으로 이동하시겠습니까?")) {
+        router.push("/users/edit");
+        return;
+      }
+      return;
+    }
+
     try {
       setIsPurchasing(true);
 
