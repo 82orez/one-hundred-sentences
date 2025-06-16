@@ -1,9 +1,11 @@
+// components/Button/PurchaseButtonNew.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import * as PortOne from "@portone/browser-sdk/v2";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useFreeEnrollment } from "@/hooks/useFreeEnrollment";
 
 interface Props {
   id: string;
@@ -14,19 +16,22 @@ interface Props {
 export function PurchaseButton({ id, title, price }: Props) {
   const [isPurchasing, setIsPurchasing] = useState(false);
   const router = useRouter();
+  const enrollMutation = useFreeEnrollment();
 
   const handlePurchase = async () => {
     try {
       setIsPurchasing(true);
 
-      // free plan 인 경우 /dashboard 페이지로 라우팅
+      // 무료 체험반인 경우 수강 신청 처리
       if (id === "testfreecourse2506") {
-        router.push("/dashboard");
+        await enrollMutation.mutateAsync({
+          courseId: id,
+          courseTitle: title,
+        });
         return;
       }
 
-      // 무료 플랜이 아닌 경우에만 결제 진행
-      // 결제 요청
+      // 유료 강좌 결제 처리 로직...
       const response = await PortOne.requestPayment({
         // Store ID 설정
         storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID,

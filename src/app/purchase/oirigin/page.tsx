@@ -28,7 +28,7 @@ const PurchasePage = () => {
   console.log(`selectedPlanInfo: `, selectedPlanInfo);
 
   const handlePurchase = () => {
-    alert(`You selected the ${selectedPlanInfo?.name}! 결제 연동은 추후 구현됩니다.`);
+    alert(`You selected the ${selectedPlanInfo?.title}! 결제 연동은 추후 구현됩니다.`);
   };
 
   // 인증되지 않은 상태라면 페이지 내용을 렌더링하지 않음
@@ -62,7 +62,7 @@ const PurchasePage = () => {
                     <IoMdCheckboxOutline size={24} />
                   </div>
                 )}
-                <h3 className={`text-xl font-bold ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>{plan.name}</h3>
+                <h3 className={`text-xl font-bold ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>{plan.title}</h3>
                 <p className="mt-4 text-sm text-gray-600">{plan.description}</p>
               </div>
             ))}
