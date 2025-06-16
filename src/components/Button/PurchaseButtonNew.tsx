@@ -7,20 +7,20 @@ import * as PortOne from "@portone/browser-sdk/v2";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useFreeEnrollment } from "@/hooks/useFreeEnrollment";
 
-interface Props {
-  id: string;
-  title: string;
-  price: number;
+interface PurchaseButtonProps {
+  id?: string;
+  title?: string;
+  price?: number;
   onValidationError: () => void;
 }
 
-export function PurchaseButton({ id, title, price, onValidationError }: Props) {
+export function PurchaseButton({ id, title, price, onValidationError }: PurchaseButtonProps) {
   const [isPurchasing, setIsPurchasing] = useState(false);
   const router = useRouter();
   const enrollMutation = useFreeEnrollment();
 
   const handlePurchase = async () => {
-    if (!id || !title || !price) {
+    if (!id || !title) {
       onValidationError();
       return;
     }
