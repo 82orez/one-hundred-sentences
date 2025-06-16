@@ -6,6 +6,7 @@ import { IoMdCheckboxOutline } from "react-icons/io";
 import { pricePlans } from "@/lib/pricePlans";
 import { useSession } from "next-auth/react";
 import { PurchaseButton } from "@/components/Button/PurchaseButtonNew";
+import toast from "react-hot-toast";
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("free");
@@ -64,7 +65,12 @@ const PurchasePage = () => {
             ))}
           </div>
 
-          <PurchaseButton id={selectedPlanInfo?.id} title={selectedPlanInfo?.title} price={selectedPlanInfo?.price} />
+          <PurchaseButton
+            id={selectedPlanInfo?.id}
+            title={selectedPlanInfo?.title}
+            price={selectedPlanInfo?.price}
+            onValidationError={() => toast.error("강좌를 선택해 주세요.")}
+          />
         </div>
       </section>
     </div>

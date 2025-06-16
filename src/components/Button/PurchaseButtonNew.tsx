@@ -11,14 +11,20 @@ interface Props {
   id: string;
   title: string;
   price: number;
+  onValidationError: () => void;
 }
 
-export function PurchaseButton({ id, title, price }: Props) {
+export function PurchaseButton({ id, title, price, onValidationError }: Props) {
   const [isPurchasing, setIsPurchasing] = useState(false);
   const router = useRouter();
   const enrollMutation = useFreeEnrollment();
 
   const handlePurchase = async () => {
+    if (!id || !title || !price) {
+      onValidationError();
+      return;
+    }
+
     try {
       setIsPurchasing(true);
 
