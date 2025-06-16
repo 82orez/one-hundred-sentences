@@ -713,7 +713,7 @@ export default function Dashboard({ params }: Props) {
               </button>
             </div>
 
-            {selectedCourseId === "cmbvjzcqp0005ftv0qs2x5fwg" && (
+            {selectedCourseId && (
               <>
                 <h2 className="mt-8 mb-4 text-xl font-semibold">팀원들의 발음 게시판</h2>
                 {unlistenedVoiceCount > 0 && (
