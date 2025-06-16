@@ -69,7 +69,7 @@ const PurchasePage = () => {
             id={selectedPlanInfo?.id}
             title={selectedPlanInfo?.title}
             price={selectedPlanInfo?.price}
-            onValidationError={() => toast.error("강좌를 선택해 주세요.")}
+            onValidationErrorAction={() => toast.error("강좌를 선택해 주세요.")}
           />
         </div>
       </section>

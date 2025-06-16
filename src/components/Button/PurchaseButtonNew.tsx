@@ -11,17 +11,17 @@ interface PurchaseButtonProps {
   id?: string;
   title?: string;
   price?: number;
-  onValidationError: () => void;
+  onValidationErrorAction: () => void;
 }
 
-export function PurchaseButton({ id, title, price, onValidationError }: PurchaseButtonProps) {
+export function PurchaseButton({ id, title, price, onValidationErrorAction }: PurchaseButtonProps) {
   const [isPurchasing, setIsPurchasing] = useState(false);
   const router = useRouter();
   const enrollMutation = useFreeEnrollment();
 
   const handlePurchase = async () => {
     if (!id || !title) {
-      onValidationError();
+      onValidationErrorAction();
       return;
     }
 
