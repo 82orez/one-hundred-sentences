@@ -36,6 +36,14 @@ export function PurchaseButton({ id, title, price, onValidationError }: Purchase
       return;
     }
 
+    const enrollmentCheck = await fetch(`/api/payment/check-already-enrolled?courseId=${id}`);
+    const enrollmentData = await enrollmentCheck.json();
+
+    if (enrollmentData.exists) {
+      alert("이미 수강 신청한 강좌입니다.");
+      return;
+    }
+
     try {
       setIsPurchasing(true);
 
