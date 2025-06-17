@@ -63,7 +63,7 @@ const PurchasePage = () => {
                   </div>
                 )}
                 <h3 className={`text-xl font-bold ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>{plan.title}</h3>
-                <p className="mt-4 text-sm text-gray-600">{plan.description}</p>
+                {/*<p className="mt-4 text-sm text-gray-600">{plan.description}</p>*/}
               </div>
             ))}
           </div>
