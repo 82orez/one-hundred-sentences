@@ -249,7 +249,7 @@ export default function UserCoursePointsPage({ params }: Props) {
                 <td
                   className="cursor-pointer p-3 text-center align-middle font-semibold hover:text-blue-600 hover:underline"
                   onClick={() => openPointsDetailModal(user.userId, user.userName || user.userClassNickName)}>
-                  {user.points}
+                  {user.points.toLocaleString()}
                 </td>
               </tr>
             ))}
