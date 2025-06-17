@@ -44,6 +44,7 @@ const PurchasePage = () => {
       <section className="py-6 md:py-12">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">요금 Plan</h2>
+
           {/* Grid for Plans */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {pricePlans.map((plan) => (
@@ -59,11 +60,28 @@ const PurchasePage = () => {
                     <IoMdCheckboxOutline size={24} />
                   </div>
                 )}
+
                 <h3 className={`text-xl font-bold ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>{plan.title}</h3>
+
                 <div className="mt-4 text-gray-600">
-                  <ul className="list-disc space-y-2 pl-4 text-left">
+                  <ul className="list-disc space-y-4 pl-4 text-left">
                     {plan.description.map((item, index) => (
-                      <li key={index}>{item}</li>
+                      <li key={index}>
+                        {typeof item === "string" ? (
+                          <span className="font-semibold">{item}</span>
+                        ) : (
+                          <div>
+                            <span className="font-semibold">{item.title}</span>
+                            <ul className="mt-1 -ml-2 space-y-1">
+                              {item.details.map((detail, detailIndex) => (
+                                <li key={detailIndex} className="list-none text-[0.95rem]">
+                                  - {detail}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </li>
                     ))}
                   </ul>
                 </div>
