@@ -64,6 +64,8 @@ const PurchasePage = () => {
                 {/* 강좌 제목 표시 부분 */}
                 <h3 className={`text-xl font-bold ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>{plan.title}</h3>
 
+                <div className={"mt-4 border-b"}></div>
+
                 {/* 강좌 특징 소개 부분*/}
                 <div className="mt-4 text-gray-600">
                   <ul className="list-disc space-y-4 pl-4 text-left">
@@ -89,7 +91,7 @@ const PurchasePage = () => {
                 </div>
 
                 <div className={"mt-4 border-b"}></div>
-                <p className={"mt-2 text-[0.95rem]"}>※ 무료 체험반은 수강 기간 종료 후 학습 관련 데이터가 삭제 됩니다.</p>
+                <p className={"mt-2 text-[0.95rem]"}>※ 무료 체험반은 수강 기간 종료 후 학습 관련 데이터가 모두 삭제 됩니다.</p>
               </div>
             ))}
           </div>
