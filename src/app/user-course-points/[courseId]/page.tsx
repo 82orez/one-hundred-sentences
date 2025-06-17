@@ -306,9 +306,9 @@ export default function UserCoursePointsPage({ params }: Props) {
 
       {/* 포인트 상세 정보 모달 */}
       {isPointsModalOpen && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="w-11/12 max-w-3xl rounded-lg bg-white p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-semibold">{selectedUserName}님의 포인트 상세 내역</h2>
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/30 p-4">
+          <div className="my-4 max-h-[90vh] w-11/12 max-w-3xl overflow-y-auto rounded-lg bg-white p-6 pt-0 shadow-lg md:pt-6">
+            <h2 className="sticky top-0 z-10 mb-4 border-b bg-white p-4 pb-2 text-xl font-semibold">{selectedUserName}님의 포인트 상세 내역</h2>
 
             {pointsDetailIsLoading ? (
               <div className="flex items-center justify-center p-8">
