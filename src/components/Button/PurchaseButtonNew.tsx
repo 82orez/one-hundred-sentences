@@ -90,7 +90,7 @@ export function PurchaseButton({ id, title, price, onValidationErrorAction }: Pu
     <div className="mx-auto mt-4 max-w-md md:mt-10">
       <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
         <div className="mb-2 flex items-center justify-between">
-          <span className="font-bold">사용권 구매하기</span>
+          <span className="font-bold">결제 금액</span>
           <span className="text-primary text-lg font-bold">{price?.toLocaleString()}원</span>
         </div>
         <button onClick={handlePurchase} disabled={isPurchasing} className="btn btn-primary w-full py-6 text-lg font-bold">

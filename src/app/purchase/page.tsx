@@ -35,15 +35,15 @@ const PurchasePage = () => {
     <div className="min-h-screen bg-gray-50 text-gray-800">
       <header className="bg-blue-600 py-3 text-white md:py-6">
         <div className="mx-auto max-w-5xl px-4 text-center">
-          <h1 className="text-2xl font-extrabold md:text-4xl">요금제를 선택하세요</h1>
-          <p className="mt-4 text-lg">필요에 맞는 요금제를 선택하고 시작하세요!</p>
+          <h1 className="text-2xl font-extrabold md:text-4xl">강좌를 선택해 주세요.</h1>
+          <p className="mt-4 text-lg">원하는 강좌를 선택하고 시작하세요!</p>
         </div>
       </header>
 
       {/* Pricing Section */}
       <section className="py-6 md:py-12">
         <div className="mx-auto max-w-5xl px-4 text-center">
-          <h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">요금 Plan</h2>
+          <h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">강좌 선택</h2>
 
           {/* Grid for Plans */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
