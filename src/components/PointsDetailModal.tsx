@@ -29,64 +29,77 @@ export function PointsDetailModal({ isOpen, onClose, userName, pointsDetail, isL
         ) : pointsDetail ? (
           <div className="space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="rounded-lg bg-gray-50 p-4">
-                <h3 className="mb-2 font-medium">영상 시청</h3>
-                <p>포인트: {pointsDetail.pointsDetail.videoPoints}점</p>
+              <div className="rounded-lg bg-gray-100 p-4">
+                <h3 className="mb-2 text-lg font-semibold">
+                  영상 시청 <span className={"text-sm"}>(0.5p/초)</span>
+                </h3>
                 <p>
                   시청 시간: {Math.round(pointsDetail.pointsDetail.videoSeconds / 60)}분 {pointsDetail.pointsDetail.videoSeconds % 60}초
                 </p>
+                <p className={"font-semibold"}>포인트: {pointsDetail.pointsDetail.videoPoints.toLocaleString()}점</p>
                 <p className="mt-1 text-sm text-gray-500">전체 포인트의 {pointsDetail.pointsRate.videoPointsRate}%</p>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-4">
-                <h3 className="mb-2 font-medium">원어민 음성 듣기</h3>
-                <p>포인트: {pointsDetail.pointsDetail.audioPoints}점</p>
+              <div className="rounded-lg bg-gray-100 p-4">
+                <h3 className="mb-2 text-lg font-semibold">
+                  원어민 음성 듣기 <span className={"text-sm"}>(1p/회)</span>
+                </h3>
                 <p>듣기 횟수: {pointsDetail.pointsDetail.audioAttempts}회</p>
+                <p className={"font-semibold"}>포인트: {pointsDetail.pointsDetail.audioPoints}점</p>
                 <p className="mt-1 text-sm text-gray-500">전체 포인트의 {pointsDetail.pointsRate.audioPointsRate}%</p>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-4">
-                <h3 className="mb-2 font-medium">녹음 제출</h3>
-                <p>포인트: {pointsDetail.pointsDetail.recordingPoints}점</p>
+              <div className="rounded-lg bg-gray-100 p-4">
+                <h3 className="mb-2 text-lg font-semibold">
+                  녹음 파일 업로드 <span className={"text-sm"}>(50p/회)</span>
+                </h3>
                 <p>녹음 횟수: {pointsDetail.pointsDetail.recordingAttempts}회</p>
+                <p className={"font-semibold"}>포인트: {pointsDetail.pointsDetail.recordingPoints}점</p>
                 <p className="mt-1 text-sm text-gray-500">전체 포인트의 {pointsDetail.pointsRate.recordingPointsRate}%</p>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-4">
-                <h3 className="mb-2 font-medium">퀴즈</h3>
-                <p>
+              <div className="rounded-lg bg-gray-100 p-4">
+                <h3 className="mb-2 text-lg font-semibold">
+                  퀴즈 <span className={"text-sm"}>(3p/회)</span>
+                </h3>
+                <p className={"font-semibold"}>
                   시도 포인트: {pointsDetail.pointsDetail.quizAttemptPoints}점 (시도 {pointsDetail.pointsDetail.quizAttempts}회)
                 </p>
-                <p>
-                  정답 포인트: {pointsDetail.pointsDetail.quizCorrectPoints}점 (정답 {pointsDetail.pointsDetail.quizCorrect}개)
+                <p className={"font-semibold"}>
+                  정답 포인트: {pointsDetail.pointsDetail.quizCorrectPoints}점 (정답 {pointsDetail.pointsDetail.quizCorrect}회)
                 </p>
                 <p className="mt-1 text-sm text-gray-500">전체 포인트의 {pointsDetail.pointsRate.quizPointsRate}%</p>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-4">
-                <h3 className="mb-2 font-medium">출석</h3>
-                <p>포인트: {pointsDetail.pointsDetail.attendancePoints}점</p>
+              <div className="rounded-lg bg-gray-100 p-4">
+                <h3 className="mb-2 text-lg font-semibold">
+                  출석 <span className={"text-sm"}>(50p/회)</span>
+                </h3>
                 <p>출석 횟수: {pointsDetail.pointsDetail.attendanceCount}회</p>
+                <p className={"font-semibold"}>포인트: {pointsDetail.pointsDetail.attendancePoints}점</p>
                 <p className="mt-1 text-sm text-gray-500">전체 포인트의 {pointsDetail.pointsRate.attendancePointsRate}%</p>
               </div>
 
-              <div className="rounded-lg bg-gray-50 p-4">
-                <h3 className="mb-2 font-medium">음성 좋아요</h3>
-                <p>
-                  내 발음 공개 포인트: {pointsDetail.pointsDetail.myVoiceOpenPoints}점 (받은 좋아요 {pointsDetail.pointsDetail.myVoiceOpenCount}개)
+              <div className="rounded-lg bg-gray-100 p-4">
+                <h3 className="mb-2 text-lg font-semibold">
+                  내 발음 공개 <span className={"text-sm"}>(100p/개)</span>
+                </h3>
+                <p className={"font-semibold"}>
+                  내 발음 공개 포인트: {pointsDetail.pointsDetail.myVoiceOpenPoints}점 (내 발음 공개 {pointsDetail.pointsDetail.myVoiceOpenCount}개)
                 </p>
-                <p>
+                <p className={"font-semibold"}>
                   받은 좋아요 포인트: {pointsDetail.pointsDetail.voiceLikePoints}점 (받은 좋아요 {pointsDetail.pointsDetail.voiceLikesReceived}개)
                 </p>
-                <p>
-                  준 좋아요 포인트: {pointsDetail.pointsDetail.userVoiceLikePoints}점 (준 좋아요 {pointsDetail.pointsDetail.userVoiceLikesGiven}개)
+                <p className={"font-semibold"}>
+                  좋아요 클릭 포인트: {pointsDetail.pointsDetail.userVoiceLikePoints}점 (좋아요 클릭 {pointsDetail.pointsDetail.userVoiceLikesGiven}
+                  개, 20p)
                 </p>
                 <p className="mt-1 text-sm text-gray-500">전체 포인트의 {pointsDetail.pointsRate.voiceLikePointsRate}%</p>
               </div>
             </div>
 
             <div className="mt-4 rounded-lg bg-green-50 p-4 text-center">
-              <p className="text-lg font-bold">총 포인트: {pointsDetail.totalPoints}점</p>
+              <p className="text-lg font-bold">총 포인트: {pointsDetail.totalPoints.toLocaleString()}점</p>
             </div>
           </div>
         ) : (
