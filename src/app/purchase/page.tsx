@@ -7,6 +7,9 @@ import { pricePlans } from "@/lib/pricePlans";
 import { useSession } from "next-auth/react";
 import { PurchaseButton } from "@/components/Button/PurchaseButtonNew";
 import toast from "react-hot-toast";
+import { MdCheckBoxOutlineBlank } from "react-icons/md";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("free");
@@ -55,9 +58,13 @@ const PurchasePage = () => {
                 }`}
                 onClick={() => setSelectedPlan(plan.id)}>
                 {/* 선택된 경우 체크 아이콘 표시 */}
-                {selectedPlan === plan.id && (
+                {selectedPlan === plan.id ? (
                   <div className="absolute top-4 left-4 text-blue-600">
                     <IoMdCheckboxOutline size={24} />
+                  </div>
+                ) : (
+                  <div className="absolute top-4 left-4 text-blue-600">
+                    <MdCheckBoxOutlineBlank size={24} />
                   </div>
                 )}
 
@@ -102,6 +109,13 @@ const PurchasePage = () => {
             price={selectedPlanInfo?.price}
             onValidationErrorAction={() => toast.error("강좌를 선택해 주세요.")}
           />
+
+          <div className={"mt-4 flex justify-center md:mt-6"}>
+            <Link href="/" className="flex items-center text-blue-500 hover:underline">
+              <ArrowLeft className="mr-1" size={20} />
+              Back to Home
+            </Link>
+          </div>
         </div>
       </section>
     </div>
