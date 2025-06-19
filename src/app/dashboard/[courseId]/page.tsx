@@ -19,6 +19,7 @@ import ClassMembersModal from "@/components/ClassMembersModal";
 import CoursePointsRankingModal from "@/components/CoursePointsRankingModal";
 import ClassVoiceModal from "@/components/ClassVoiceModal";
 import { FiRefreshCw } from "react-icons/fi";
+import { POINT_CONSTANTS } from "@/lib/pointConstants";
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -305,26 +306,16 @@ export default function Dashboard({ params }: Props) {
       return null;
     }
 
-    // 포인트 계산 로직 (기존과 동일)
-    const VIDEO_POINT_PER_SECOND = 0.5;
-    const AUDIO_POINT_PER_ATTEMPT = 1;
-    const RECORDING_POINT_PER_ATTEMPT = 20;
-    const QUIZ_ATTEMPT_POINT = 3;
-    const QUIZ_CORRECT_POINT = 3;
-    const ATTENDANCE_POINT = 50;
-    const VOICE_LIKE_POINT = 100;
-    const USER_VOICE_LIKE_POINT = 20;
-    const MY_VOICE_OPEN_POINT = 100; // 내 발음 공개 포인트 가중치
-
-    const videoPoints = totalVideoDuration * VIDEO_POINT_PER_SECOND;
-    const audioPoints = (nativeAudioData?.totalAttempts || 0) * AUDIO_POINT_PER_ATTEMPT;
-    const recordingPoints = (totalRecordingAttempts || 0) * RECORDING_POINT_PER_ATTEMPT;
-    const quizAttemptPoints = (quizStats?.totalAttempts || 0) * QUIZ_ATTEMPT_POINT;
-    const quizCorrectPoints = (quizStats?.totalCorrect || 0) * QUIZ_CORRECT_POINT;
-    const attendancePoints = (attendanceData?.attendedClassDates || 0) * ATTENDANCE_POINT;
-    const voiceLikePoints = (voiceLikesData?.totalLikes || 0) * VOICE_LIKE_POINT;
-    const userVoiceLikePoints = (userLikesData?.totalUserLikes || 0) * USER_VOICE_LIKE_POINT;
-    const myVoiceOpenPoints = (myVoiceOpenData?.count || 0) * MY_VOICE_OPEN_POINT; // 내 발음 공개 포인트
+    // 포인트 계산 로직
+    const videoPoints = totalVideoDuration * POINT_CONSTANTS.VIDEO_POINT_PER_SECOND;
+    const audioPoints = (nativeAudioData?.totalAttempts || 0) * POINT_CONSTANTS.AUDIO_POINT_PER_ATTEMPT;
+    const recordingPoints = (totalRecordingAttempts || 0) * POINT_CONSTANTS.RECORDING_POINT_PER_ATTEMPT;
+    const quizAttemptPoints = (quizStats?.totalAttempts || 0) * POINT_CONSTANTS.QUIZ_ATTEMPT_POINT;
+    const quizCorrectPoints = (quizStats?.totalCorrect || 0) * POINT_CONSTANTS.QUIZ_CORRECT_POINT;
+    const attendancePoints = (attendanceData?.attendedClassDates || 0) * POINT_CONSTANTS.ATTENDANCE_POINT;
+    const voiceLikePoints = (voiceLikesData?.totalLikes || 0) * POINT_CONSTANTS.VOICE_LIKE_POINT;
+    const userVoiceLikePoints = (userLikesData?.totalUserLikes || 0) * POINT_CONSTANTS.USER_VOICE_LIKE_POINT;
+    const myVoiceOpenPoints = (myVoiceOpenData?.count || 0) * POINT_CONSTANTS.MY_VOICE_OPEN_POINT; // 내 발음 공개 포인트
 
     return Math.round(
       videoPoints +
