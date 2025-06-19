@@ -260,7 +260,15 @@ export default function MyCourses() {
                     </button>
 
                     <button onClick={(e) => handleOpenClassVoiceModal(e, course.id)} className="cursor-pointer font-medium text-blue-600">
-                      발음 게시판 보기 {unlistenedCounts?.[course.id] ? `(${unlistenedCounts[course.id]})` : "(0)"} /{" "}
+                      발음 게시판 보기{" "}
+                      {unlistenedCounts?.[course.id] !== 0 && (
+                        <>
+                          <span className="inline-flex cursor-pointer items-center justify-center rounded-full bg-red-600 px-2 py-1 text-xs leading-none font-bold text-red-100">
+                            {unlistenedCounts?.[course.id]}
+                          </span>{" "}
+                          <span>/</span>{" "}
+                        </>
+                      )}
                       {totalCounts?.[course.id] ? `(${totalCounts[course.id]})` : "(0)"} →
                     </button>
                   </div>
