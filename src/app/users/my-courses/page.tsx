@@ -223,7 +223,7 @@ export default function MyCoursesPage() {
 
                         <button
                           onClick={() => openScheduleModal(enrollment.course.id)}
-                          className="mt-0 cursor-pointer rounded-md border border-indigo-700 bg-indigo-100 px-4 py-2 text-indigo-700 transition-colors hover:bg-indigo-200">
+                          className="mt-0 cursor-pointer rounded-md border border-indigo-700 bg-indigo-100 px-4 py-1.5 text-indigo-700 transition-colors hover:bg-indigo-200">
                           수업 일정 및 수업 참여
                         </button>
                       </div>

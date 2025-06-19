@@ -266,7 +266,7 @@ export default function MyCourses() {
                           <span className="inline-flex cursor-pointer items-center justify-center rounded-full bg-red-600 px-2 py-1 text-xs leading-none font-bold text-red-100">
                             {unlistenedCounts?.[course.id]}
                           </span>{" "}
-                          <span>/</span>{" "}
+                          {/*<span>/</span>{" "}*/}
                         </>
                       )}
                       {totalCounts?.[course.id] ? `(${totalCounts[course.id]})` : "(0)"} →
