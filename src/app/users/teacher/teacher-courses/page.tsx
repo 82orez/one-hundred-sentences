@@ -118,6 +118,48 @@ export default function MyCourses() {
     setIsStudentListModalOpen(false);
   };
 
+  // 각 강좌별 미청취 음성 파일 수 조회
+  const { data: unlistenedCounts } = useQuery({
+    queryKey: ["unlistenedCounts"],
+    queryFn: async () => {
+      if (!myCourses) return {};
+
+      const counts = {};
+      for (const course of myCourses) {
+        try {
+          const response = await axios.get(`/api/voice/unlistened/count?courseId=${course.id}`);
+          counts[course.id] = response.data.unlistenedCount;
+        } catch (error) {
+          console.error(`강좌 ${course.id}의 미청취 음성 파일 수 조회 실패:`, error);
+          counts[course.id] = 0;
+        }
+      }
+      return counts;
+    },
+    enabled: !!myCourses,
+  });
+
+  // 각 강좌별 전체 공개 음성 파일 수 조회
+  const { data: totalCounts } = useQuery({
+    queryKey: ["totalVoiceCounts"],
+    queryFn: async () => {
+      if (!myCourses) return {};
+
+      const counts = {};
+      for (const course of myCourses) {
+        try {
+          const response = await axios.get(`/api/voice/count?courseId=${course.id}`);
+          counts[course.id] = response.data.totalFiles;
+        } catch (error) {
+          console.error(`강좌 ${course.id}의 전체 음성 파일 수 조회 실패:`, error);
+          counts[course.id] = 0;
+        }
+      }
+      return counts;
+    },
+    enabled: !!myCourses,
+  });
+
   // 클래스 음성 모달 열기 핸들러
   const handleOpenClassVoiceModal = (e: React.MouseEvent, courseId: string) => {
     e.stopPropagation(); // 이벤트 버블링 방지
@@ -218,7 +260,8 @@ export default function MyCourses() {
                     </button>
 
                     <button onClick={(e) => handleOpenClassVoiceModal(e, course.id)} className="cursor-pointer font-medium text-blue-600">
-                      발음 게시판 보기 →
+                      발음 게시판 보기 {unlistenedCounts?.[course.id] ? `(${unlistenedCounts[course.id]})` : "(0)"} /{" "}
+                      {totalCounts?.[course.id] ? `(${totalCounts[course.id]})` : "(0)"} →
                     </button>
                   </div>
                 </div>
