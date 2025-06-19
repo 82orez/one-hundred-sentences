@@ -64,10 +64,12 @@ export function PointsDetailModal({ isOpen, onClose, userName, pointsDetail, isL
                   퀴즈 <span className={"text-sm"}>({POINT_CONSTANTS.QUIZ_ATTEMPT_POINT}p/회)</span>
                 </h3>
                 <p className={"font-semibold"}>
-                  시도 포인트: {pointsDetail.pointsDetail.quizAttemptPoints}점 (시도 {pointsDetail.pointsDetail.quizAttempts}회)
+                  시도 포인트: {pointsDetail.pointsDetail.quizAttemptPoints}점{" "}
+                  <span className={"font-medium"}>(시도 {pointsDetail.pointsDetail.quizAttempts}회)</span>
                 </p>
                 <p className={"font-semibold"}>
-                  정답 포인트: {pointsDetail.pointsDetail.quizCorrectPoints}점 (정답 {pointsDetail.pointsDetail.quizCorrect}회)
+                  정답 포인트: {pointsDetail.pointsDetail.quizCorrectPoints}점{" "}
+                  <span className={"font-medium"}>(정답 {pointsDetail.pointsDetail.quizCorrect}회)</span>
                 </p>
                 <p className="mt-1 text-sm text-gray-500">전체 포인트의 {pointsDetail.pointsRate.quizPointsRate}%</p>
               </div>
@@ -83,18 +85,23 @@ export function PointsDetailModal({ isOpen, onClose, userName, pointsDetail, isL
 
               <div className="rounded-lg bg-gray-100 p-4">
                 <h3 className="mb-2 text-lg font-semibold">
-                  내 발음 공개 <span className={"text-sm"}>({POINT_CONSTANTS.MY_VOICE_OPEN_POINT}p/개)</span>
+                  내 발음 공개 관련 <span className={"text-sm"}>({POINT_CONSTANTS.MY_VOICE_OPEN_POINT}p/개)</span>
                 </h3>
-                <p className={"font-semibold"}>
-                  내 발음 공개 포인트: {pointsDetail.pointsDetail.myVoiceOpenPoints}점 (내 발음 공개 {pointsDetail.pointsDetail.myVoiceOpenCount}개)
-                </p>
-                <p className={"font-semibold"}>
-                  받은 좋아요 포인트: {pointsDetail.pointsDetail.voiceLikePoints}점 (받은 좋아요 {pointsDetail.pointsDetail.voiceLikesReceived}개)
-                </p>
-                <p className={"font-semibold"}>
-                  좋아요 클릭 포인트: {pointsDetail.pointsDetail.userVoiceLikePoints}점 (좋아요 클릭 {pointsDetail.pointsDetail.userVoiceLikesGiven}
-                  개, {POINT_CONSTANTS.USER_VOICE_LIKE_POINT}p)
-                </p>
+                <div className={"font-semibold"}>
+                  내 발음 공개 포인트: {pointsDetail.pointsDetail.myVoiceOpenPoints}점{" "}
+                  <div className={"font-medium"}>(내 발음 공개 {pointsDetail.pointsDetail.myVoiceOpenCount}개)</div>
+                </div>
+                <div className={"mt-2 font-semibold"}>
+                  받은 좋아요 포인트: {pointsDetail.pointsDetail.voiceLikePoints}점{" "}
+                  <div className={"font-medium"}>(받은 좋아요 {pointsDetail.pointsDetail.voiceLikesReceived}개)</div>
+                </div>
+                <div className={"mt-2 font-semibold"}>
+                  좋아요 클릭 포인트: {pointsDetail.pointsDetail.userVoiceLikePoints}점{" "}
+                  <div className={"font-medium"}>
+                    (좋아요 클릭 {pointsDetail.pointsDetail.userVoiceLikesGiven}
+                    개, {POINT_CONSTANTS.USER_VOICE_LIKE_POINT}p)
+                  </div>
+                </div>
                 <p className="mt-1 text-sm text-gray-500">전체 포인트의 {pointsDetail.pointsRate.voiceLikePointsRate}%</p>
               </div>
             </div>
