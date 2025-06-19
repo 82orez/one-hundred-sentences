@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 import clsx from "clsx";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import CourseSchedule from "@/components/CourseSchedule";
 import StudentListModal from "@/components/StudentListModal";
@@ -15,6 +16,8 @@ import AttendanceModal from "@/components/AttendanceModal";
 import ClassVoiceModal from "@/components/ClassVoiceModal";
 
 export default function MyCourses() {
+  const router = useRouter();
+
   // 모달 상태와 선택된 강좌 ID를 관리할 state
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
@@ -205,9 +208,14 @@ export default function MyCourses() {
                     {/*  수강생 List 보기 →*/}
                     {/*</button>*/}
 
-                    <Link href={`/user-course-points/${course.id}`} className="font-medium text-blue-600" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/user-course-points/${course.id}`);
+                      }}
+                      className="cursor-pointer font-medium text-blue-600">
                       수강생 List/포인트 랭킹 →
-                    </Link>
+                    </button>
 
                     <button onClick={(e) => handleOpenClassVoiceModal(e, course.id)} className="cursor-pointer font-medium text-blue-600">
                       발음 게시판 보기 →
