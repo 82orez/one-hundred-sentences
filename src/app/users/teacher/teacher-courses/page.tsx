@@ -201,17 +201,17 @@ export default function MyCourses() {
                   </div>
 
                   <div className="flex items-center justify-between bg-gray-50 px-4 py-3 text-right">
-                    <button className="cursor-pointer font-medium text-blue-600" onClick={(e) => handleStudentListClick(e, course.id, course.title)}>
-                      수강생 List 보기 →
-                    </button>
-
-                    <button onClick={(e) => handleOpenClassVoiceModal(e, course.id)} className="cursor-pointer font-medium text-blue-600">
-                      공개된 발음 보기 →
-                    </button>
+                    {/*<button className="cursor-pointer font-medium text-blue-600" onClick={(e) => handleStudentListClick(e, course.id, course.title)}>*/}
+                    {/*  수강생 List 보기 →*/}
+                    {/*</button>*/}
 
                     <Link href={`/user-course-points/${course.id}`} className="font-medium text-blue-600" onClick={(e) => e.stopPropagation()}>
-                      포인트 랭킹 보기 →
+                      수강생 List/포인트 랭킹 →
                     </Link>
+
+                    <button onClick={(e) => handleOpenClassVoiceModal(e, course.id)} className="cursor-pointer font-medium text-blue-600">
+                      발음 게시판 보기 →
+                    </button>
                   </div>
                 </div>
               );
