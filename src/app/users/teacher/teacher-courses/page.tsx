@@ -12,6 +12,7 @@ import { X } from "lucide-react";
 import CourseSchedule from "@/components/CourseSchedule";
 import StudentListModal from "@/components/StudentListModal";
 import AttendanceModal from "@/components/AttendanceModal";
+import ClassVoiceModal from "@/components/ClassVoiceModal";
 
 export default function MyCourses() {
   // 모달 상태와 선택된 강좌 ID를 관리할 state
@@ -27,6 +28,9 @@ export default function MyCourses() {
 
   // 수강생 목록 모달 상태 관리
   const [isStudentListModalOpen, setIsStudentListModalOpen] = useState(false);
+
+  // 클래스 음성 모달 상태 관리
+  const [isClassVoiceModalOpen, setIsClassVoiceModalOpen] = useState(false);
 
   const { data: myCourses, isPending: loading } = useQuery({
     queryKey: ["myCourses"],
@@ -111,6 +115,18 @@ export default function MyCourses() {
     setIsStudentListModalOpen(false);
   };
 
+  // 클래스 음성 모달 열기 핸들러
+  const handleOpenClassVoiceModal = (e: React.MouseEvent, courseId: string) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
+    setSelectedCourseId(courseId); // courseId 설정
+    setIsClassVoiceModalOpen(true);
+  };
+
+  // 클래스 음성 모달 닫기 핸들러
+  const handleCloseClassVoiceModal = () => {
+    setIsClassVoiceModalOpen(false);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold">내 강좌</h1>
@@ -189,6 +205,10 @@ export default function MyCourses() {
                       수강생 List 보기 →
                     </button>
 
+                    <button onClick={(e) => handleOpenClassVoiceModal(e, course.id)} className="cursor-pointer font-medium text-blue-600">
+                      공개된 발음 보기 →
+                    </button>
+
                     <Link href={`/user-course-points/${course.id}`} className="font-medium text-blue-600" onClick={(e) => e.stopPropagation()}>
                       포인트 랭킹 보기 →
                     </Link>
@@ -243,6 +263,11 @@ export default function MyCourses() {
           courseId={selectedCourseId}
           courseTitle={selectedCourseTitle}
         />
+      )}
+
+      {/* 클래스 음성 모달 */}
+      {isClassVoiceModalOpen && (
+        <ClassVoiceModal isOpen={isClassVoiceModalOpen} closeModal={handleCloseClassVoiceModal} courseId={selectedCourseId} />
       )}
     </div>
   );
