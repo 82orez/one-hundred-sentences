@@ -223,7 +223,7 @@ export default function MyCoursesPage() {
 
                         <button
                           onClick={() => openScheduleModal(enrollment.course.id)}
-                          className="mt-0 rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">
+                          className="mt-0 cursor-pointer rounded-md border border-indigo-700 bg-indigo-100 px-4 py-2 text-indigo-700 transition-colors hover:bg-indigo-200">
                           수업 일정 및 수업 참여
                         </button>
                       </div>
@@ -246,7 +246,7 @@ export default function MyCoursesPage() {
                         // 라우팅 처리
                         router.push(`/dashboard/${enrollment.course.id}`);
                       }}
-                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-center font-semibold text-gray-700 hover:bg-gray-200">
+                      className="btn btn-active btn-primary mt-4 flex w-full items-center justify-center gap-2 text-[1rem]">
                       <Play className="mr-1 h-4 w-4" />
                       <div>학습 어플 시작하기</div>
                     </button>
