@@ -1,4 +1,5 @@
 import { PointsDetailResponse } from "@/types/points";
+import { POINT_CONSTANTS } from "@/lib/pointConstants";
 
 interface PointsDetailModalProps {
   isOpen: boolean;
@@ -31,7 +32,7 @@ export function PointsDetailModal({ isOpen, onClose, userName, pointsDetail, isL
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="rounded-lg bg-gray-100 p-4">
                 <h3 className="mb-2 text-lg font-semibold">
-                  영상 시청 <span className={"text-sm"}>(0.5p/초)</span>
+                  영상 시청 <span className={"text-sm"}>({POINT_CONSTANTS.VIDEO_POINT_PER_SECOND}p/초)</span>
                 </h3>
                 <p>
                   시청 시간: {Math.round(pointsDetail.pointsDetail.videoSeconds / 60)}분 {pointsDetail.pointsDetail.videoSeconds % 60}초
@@ -42,7 +43,7 @@ export function PointsDetailModal({ isOpen, onClose, userName, pointsDetail, isL
 
               <div className="rounded-lg bg-gray-100 p-4">
                 <h3 className="mb-2 text-lg font-semibold">
-                  원어민 음성 듣기 <span className={"text-sm"}>(1p/회)</span>
+                  원어민 음성 듣기 <span className={"text-sm"}>({POINT_CONSTANTS.AUDIO_POINT_PER_ATTEMPT}p/회)</span>
                 </h3>
                 <p>듣기 횟수: {pointsDetail.pointsDetail.audioAttempts}회</p>
                 <p className={"font-semibold"}>포인트: {pointsDetail.pointsDetail.audioPoints}점</p>
@@ -51,7 +52,7 @@ export function PointsDetailModal({ isOpen, onClose, userName, pointsDetail, isL
 
               <div className="rounded-lg bg-gray-100 p-4">
                 <h3 className="mb-2 text-lg font-semibold">
-                  녹음 파일 업로드 <span className={"text-sm"}>(50p/회)</span>
+                  녹음 파일 업로드 <span className={"text-sm"}>({POINT_CONSTANTS.RECORDING_POINT_PER_ATTEMPT}p/회)</span>
                 </h3>
                 <p>녹음 횟수: {pointsDetail.pointsDetail.recordingAttempts}회</p>
                 <p className={"font-semibold"}>포인트: {pointsDetail.pointsDetail.recordingPoints}점</p>
@@ -60,7 +61,7 @@ export function PointsDetailModal({ isOpen, onClose, userName, pointsDetail, isL
 
               <div className="rounded-lg bg-gray-100 p-4">
                 <h3 className="mb-2 text-lg font-semibold">
-                  퀴즈 <span className={"text-sm"}>(3p/회)</span>
+                  퀴즈 <span className={"text-sm"}>({POINT_CONSTANTS.QUIZ_ATTEMPT_POINT}p/회)</span>
                 </h3>
                 <p className={"font-semibold"}>
                   시도 포인트: {pointsDetail.pointsDetail.quizAttemptPoints}점 (시도 {pointsDetail.pointsDetail.quizAttempts}회)
@@ -73,7 +74,7 @@ export function PointsDetailModal({ isOpen, onClose, userName, pointsDetail, isL
 
               <div className="rounded-lg bg-gray-100 p-4">
                 <h3 className="mb-2 text-lg font-semibold">
-                  출석 <span className={"text-sm"}>(50p/회)</span>
+                  출석 <span className={"text-sm"}>({POINT_CONSTANTS.ATTENDANCE_POINT}p/회)</span>
                 </h3>
                 <p>출석 횟수: {pointsDetail.pointsDetail.attendanceCount}회</p>
                 <p className={"font-semibold"}>포인트: {pointsDetail.pointsDetail.attendancePoints}점</p>
@@ -82,7 +83,7 @@ export function PointsDetailModal({ isOpen, onClose, userName, pointsDetail, isL
 
               <div className="rounded-lg bg-gray-100 p-4">
                 <h3 className="mb-2 text-lg font-semibold">
-                  내 발음 공개 <span className={"text-sm"}>(100p/개)</span>
+                  내 발음 공개 <span className={"text-sm"}>({POINT_CONSTANTS.MY_VOICE_OPEN_POINT}p/개)</span>
                 </h3>
                 <p className={"font-semibold"}>
                   내 발음 공개 포인트: {pointsDetail.pointsDetail.myVoiceOpenPoints}점 (내 발음 공개 {pointsDetail.pointsDetail.myVoiceOpenCount}개)
@@ -92,7 +93,7 @@ export function PointsDetailModal({ isOpen, onClose, userName, pointsDetail, isL
                 </p>
                 <p className={"font-semibold"}>
                   좋아요 클릭 포인트: {pointsDetail.pointsDetail.userVoiceLikePoints}점 (좋아요 클릭 {pointsDetail.pointsDetail.userVoiceLikesGiven}
-                  개, 20p)
+                  개, {POINT_CONSTANTS.USER_VOICE_LIKE_POINT}p)
                 </p>
                 <p className="mt-1 text-sm text-gray-500">전체 포인트의 {pointsDetail.pointsRate.voiceLikePointsRate}%</p>
               </div>
