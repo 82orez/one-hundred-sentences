@@ -631,7 +631,9 @@ export default function Dashboard({ params }: Props) {
                   )}
                 </div>
               </div>
-              <p className="mt-1 text-sm text-gray-500">(현재 이 강좌에 등록된 활성 수강생 수 {totalStudents}명)</p>
+              <p className="mt-1 cursor-pointer text-sm text-gray-500 hover:underline" onClick={() => setClassMembersModalOpen(true)}>
+                (현재 이 강좌에 등록된 활성 수강생 수 {totalStudents}명)
+              </p>
             </div>
           </div>
         </div>
