@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import CourseSchedule from "@/components/CourseSchedule";
 import Link from "next/link";
 import { resetSelectedData } from "@/utils/resetSelectedData";
+import { useRouter } from "next/navigation";
 
 export default function MyCoursesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,6 +19,8 @@ export default function MyCoursesPage() {
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [selectedCourseContents, setSelectedCourseContents] = useState<string | null>(null);
   const [selectedCourseTitle, setSelectedCourseTitle] = useState<string | null>(null);
+
+  const router = useRouter();
 
   // 페이지 로드 시 Selected 데이터 초기화
   useEffect(() => {
@@ -188,7 +191,6 @@ export default function MyCoursesPage() {
                         수강중
                       </span>
                     </div>
-
                     {enrollment.course.id === "freecoursetour" ? (
                       <div className={"flex items-center justify-center md:h-60"}>
                         <div className={""}>수업 정보 없음</div>
@@ -227,9 +229,8 @@ export default function MyCoursesPage() {
                       </div>
                     )}
 
-                    <Link
-                      href={`/dashboard/${enrollment.course.id}`}
-                      onClick={async () => {
+                    <button
+                      onClick={() => {
                         // 로컬 상태 업데이트
                         setSelectedCourseId(enrollment.course.id);
                         setSelectedCourseContents(enrollment.course.contents);
@@ -241,11 +242,14 @@ export default function MyCoursesPage() {
                           selectedCourseContents: enrollment.course.contents,
                           selectedCourseTitle: enrollment.course.title,
                         });
+
+                        // 라우팅 처리
+                        router.push(`/dashboard/${enrollment.course.id}`);
                       }}
                       className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-center font-semibold text-gray-700 hover:bg-gray-200">
                       <Play className="mr-1 h-4 w-4" />
                       <div>학습 어플 시작하기</div>
-                    </Link>
+                    </button>
                   </div>
                 ))}
               </div>
