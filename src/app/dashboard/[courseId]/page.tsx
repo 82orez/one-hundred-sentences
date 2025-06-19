@@ -20,6 +20,7 @@ import CoursePointsRankingModal from "@/components/CoursePointsRankingModal";
 import ClassVoiceModal from "@/components/ClassVoiceModal";
 import { FiRefreshCw } from "react-icons/fi";
 import { POINT_CONSTANTS } from "@/lib/pointConstants";
+import { PointsDetailModal } from "@/components/PointsDetailModal";
 
 // ✅ Chart.js 요소 등록
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -39,6 +40,7 @@ export default function Dashboard({ params }: Props) {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isPointsDetailModalOpen, setIsPointsDetailModalOpen] = useState(false);
 
   // ✅ 로그인한 사용자의 Selected 정보 가져오기
   const { data: selectedData } = useQuery({
@@ -387,6 +389,21 @@ export default function Dashboard({ params }: Props) {
     }
   }, [teamPointsData]);
 
+  // ✅ 사용자의 포인트 상세 정보를 가져오는 쿼리 추가
+  const {
+    data: pointsDetail,
+    isLoading: pointsDetailIsLoading,
+    error: pointsDetailError,
+  } = useQuery({
+    queryKey: ["points-detail", selectedCourseId, session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id || !selectedCourseId) return null;
+      const response = await axios.get(`/api/user-course-points/points-detail?courseId=${selectedCourseId}&studentId=${session.user.id}`);
+      return response.data;
+    },
+    enabled: !!selectedCourseId && !!session?.user?.id,
+  });
+
   // ✅ 팀 전체 학생 수 조회 useQuery 추가
   const { data: studentsData } = useQuery({
     queryKey: ["enrollmentsCount", selectedCourseId],
@@ -553,7 +570,9 @@ export default function Dashboard({ params }: Props) {
           {/* 총 획득 포인트 표시 */}
           <div className="flex items-center justify-between">
             <div className="text-lg font-medium">나의 총 획득 포인트</div>
-            <div className="flex text-xl font-bold text-indigo-600">
+            <div
+              onClick={() => setIsPointsDetailModalOpen(true)}
+              className="flex cursor-pointer text-xl font-bold text-indigo-600 hover:text-indigo-800">
               <FlipCounter value={totalPoints} className={""} />
               <span className="ml-1">P</span>
             </div>
@@ -852,6 +871,16 @@ export default function Dashboard({ params }: Props) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 사용자의 포인트 상세 모달 */}
+      <PointsDetailModal
+        isOpen={isPointsDetailModalOpen}
+        onClose={() => setIsPointsDetailModalOpen(false)}
+        userName={session?.user?.name || null}
+        pointsDetail={pointsDetail}
+        isLoading={pointsDetailIsLoading}
+        error={pointsDetailError}
+      />
 
       {/* ✅ 팀원 보기 모달 */}
       {selectedCourseId && (
