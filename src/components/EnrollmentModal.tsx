@@ -209,7 +209,7 @@ export default function EnrollmentModal({ isOpen, onClose, courseId, courseTitle
                   type="button"
                   onClick={onClose}
                   className="rounded border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                  취소
+                  닫기
                 </button>
                 <button
                   type="submit"
