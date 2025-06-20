@@ -18,7 +18,7 @@ export default function LandingPage() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // 보이는 슬라이드의 id에서 번호 추출하여 currentSlide 업데이트
+            // 보이는 슬라이드의 id 에서 번호 추출하여 currentSlide 업데이트
             const slideId = entry.target.id;
             const slideNumber = parseInt(slideId.replace("feature", ""));
             setCurrentSlide(slideNumber);
@@ -169,7 +169,13 @@ export default function LandingPage() {
                   </ul>
                 </div>
                 <div className="absolute top-1/2 right-0 left-0 flex -translate-y-1/2 transform justify-between">
-                  <a href="#feature3" className="btn btn-circle btn-sm border-none bg-white/80" onClick={() => changeSlide(3)}>
+                  <a
+                    href="#feature3"
+                    className="btn btn-circle btn-sm border-none bg-white/80"
+                    onClick={() => {
+                      changeSlide(2);
+                      setTimeout(() => changeSlide(3), 500);
+                    }}>
                     ❮
                   </a>
                   <a href="#feature2" className="btn btn-circle btn-sm border-none bg-white/80" onClick={() => changeSlide(2)}>
@@ -214,7 +220,13 @@ export default function LandingPage() {
                   <a href="#feature2" className="btn btn-circle btn-sm border-none bg-white/80" onClick={() => changeSlide(2)}>
                     ❮
                   </a>
-                  <a href="#feature1" className="btn btn-circle btn-sm border-none bg-white/80" onClick={() => changeSlide(1)}>
+                  <a
+                    href="#feature1"
+                    className="btn btn-circle btn-sm border-none bg-white/80"
+                    onClick={() => {
+                      changeSlide(2);
+                      setTimeout(() => changeSlide(1), 500);
+                    }}>
                     ❯
                   </a>
                 </div>
