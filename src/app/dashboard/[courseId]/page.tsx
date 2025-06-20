@@ -418,25 +418,27 @@ export default function Dashboard({ params }: Props) {
   // ✅ 학생 수 가져오기
   const totalStudents = studentsData?.count || 0;
 
-  // ✅ 전체 학생 수와 현재 사용자의 순위 조회
-  const { data: rankData, isLoading: isRankLoading } = useQuery({
-    queryKey: ["userRank", session?.user?.id, selectedCourseId, totalPoints],
+  // ✅ 학생들의 포인트 순위 데이터 가져오기
+  // /api/course-points/rank/route.ts 파일 삭제 가능
+  const { data: studentsRankData } = useQuery({
+    queryKey: ["studentsRank", selectedCourseId],
     queryFn: async () => {
-      const res = await axios.get(`/api/course-points/rank?courseId=${selectedCourseId}`);
+      const res = await axios.get(`/api/course-points/each-student-rank?courseId=${selectedCourseId}`);
       return res.data;
     },
-    enabled: status === "authenticated" && !!session?.user?.id && !!selectedCourseId,
+    enabled: status === "authenticated" && !!selectedCourseId,
   });
 
+  // ✅ 현재 사용자의 순위 계산
   const [userRank, setUserRank] = useState(0);
 
-  // ✅ 순위 데이터가 로드되면 상태 업데이트
   useEffect(() => {
-    if (rankData) {
-      setUserRank(rankData.rank);
-      // setTotalStudents(rankData.totalStudents);
+    if (studentsRankData && session?.user?.id) {
+      // 현재 사용자의 순위 찾기
+      const rank = studentsRankData.findIndex((student: any) => student.userId === session.user.id) + 1;
+      setUserRank(rank > 0 ? rank : 0);
     }
-  }, [rankData]);
+  }, [studentsRankData, session?.user?.id]);
 
   // ✅ 아직 듣지 않은 음성 파일 개수 가져오기
   const {
@@ -621,7 +623,7 @@ export default function Dashboard({ params }: Props) {
                 <div
                   className="cursor-pointer text-2xl font-bold text-indigo-600 hover:text-indigo-800"
                   onClick={() => setIsCoursePointsRankingModalOpen(true)}>
-                  {totalPoints ? (
+                  {userRank > 0 ? (
                     <div className="flex items-center">
                       <FlipCounter value={userRank} className={""} />
                       <span className="ml-1">등</span>

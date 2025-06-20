@@ -232,13 +232,13 @@ export default function MyCourses() {
 
                     <div className="mt-8 flex flex-col justify-around gap-2 md:flex-row">
                       <button
-                        className="min-w-[150px] rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+                        className="min-w-[150px] cursor-pointer rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
                         onClick={(e) => handleScheduleClick(e, course.id, course.title)}>
                         수업 일정 및 진행
                       </button>
 
                       <button
-                        className="min-w-[150px] rounded-md bg-green-500 px-4 py-2 text-white transition-colors hover:bg-green-600"
+                        className="min-w-[150px] cursor-pointer rounded-md bg-green-500 px-4 py-2 text-white transition-colors hover:bg-green-600"
                         onClick={(e) => handleAttendanceClick(e, course.id, course.title)}>
                         수강생 출석부
                       </button>
