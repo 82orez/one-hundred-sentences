@@ -235,19 +235,19 @@ export default function LandingPage() {
 
             {/* 캐러셀 인디케이터 - 동그라미 형태로 변경 */}
             <div className="mt-2 flex w-full justify-center gap-3 py-2">
-              <a
-                href="#feature1"
-                onClick={() => changeSlide(1)}
+              <div
+                // href="#feature1"
+                // onClick={() => changeSlide(1)}
                 className={`h-3 w-3 rounded-full transition-all ${currentSlide === 1 ? "scale-125 bg-white" : "bg-indigo-300 hover:bg-indigo-200"}`}
               />
-              <a
-                href="#feature2"
-                onClick={() => changeSlide(2)}
+              <div
+                // href="#feature2"
+                // onClick={() => changeSlide(2)}
                 className={`h-3 w-3 rounded-full transition-all ${currentSlide === 2 ? "scale-125 bg-white" : "bg-indigo-300 hover:bg-indigo-200"}`}
               />
-              <a
-                href="#feature3"
-                onClick={() => changeSlide(3)}
+              <div
+                // href="#feature3"
+                // onClick={() => changeSlide(3)}
                 className={`h-3 w-3 rounded-full transition-all ${currentSlide === 3 ? "scale-125 bg-white" : "bg-indigo-300 hover:bg-indigo-200"}`}
               />
             </div>
