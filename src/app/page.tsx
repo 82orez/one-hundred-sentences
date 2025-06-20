@@ -5,11 +5,44 @@ import { Button } from "@/components/Button/Button";
 import { CultureMemberButton } from "@/components/Button/CultureMemberButton";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function LandingPage() {
   const [showModal, setShowModal] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(1);
+
+  useEffect(() => {
+    // 캐러셀의 각 아이템을 관찰하기 위한 Intersection Observer 설정
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // 보이는 슬라이드의 id에서 번호 추출하여 currentSlide 업데이트
+            const slideId = entry.target.id;
+            const slideNumber = parseInt(slideId.replace("feature", ""));
+            setCurrentSlide(slideNumber);
+          }
+        });
+      },
+      {
+        threshold: 0.5, // 슬라이드가 50% 이상 보일 때 감지
+      },
+    );
+
+    // 각 캐러셀 아이템에 observer 적용
+    const carouselItems = document.querySelectorAll(".carousel-item");
+    carouselItems.forEach((item) => {
+      observer.observe(item);
+    });
+
+    // 컴포넌트 언마운트 시 observer 해제
+    return () => {
+      carouselItems.forEach((item) => {
+        observer.unobserve(item);
+      });
+    };
+  }, []); // 컴포넌트 마운트 시 한 번만 실행
 
   const openModal = () => {
     setShowModal(true);
@@ -18,8 +51,6 @@ export default function LandingPage() {
   const closeModal = () => {
     setShowModal(false);
   };
-
-  const [currentSlide, setCurrentSlide] = useState(1);
 
   // 슬라이드 변경 함수 추가
   const changeSlide = (slideNumber) => {
