@@ -419,9 +419,9 @@ export default function Dashboard({ params }: Props) {
   const totalStudents = studentsData?.count || 0;
 
   // ✅ 학생들의 포인트 순위 데이터 가져오기
-  // /api/course-points/rank/route.ts 파일 삭제 가능
+  // ! /api/course-points/rank/route.ts 파일 삭제 가능
   const { data: studentsRankData } = useQuery({
-    queryKey: ["studentsRank", selectedCourseId],
+    queryKey: ["studentsRank", selectedCourseId, totalPoints, voiceLikesData?.totalLikes, userLikesData?.totalUserLikes],
     queryFn: async () => {
       const res = await axios.get(`/api/course-points/each-student-rank?courseId=${selectedCourseId}`);
       return res.data;
