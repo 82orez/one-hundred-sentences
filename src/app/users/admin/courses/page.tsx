@@ -7,7 +7,7 @@ import axios from "axios";
 import { format, addDays, getDay, isValid } from "date-fns";
 import { Calendar, CheckSquare, Edit, Trash2, Plus, X, Clock } from "lucide-react";
 import { RiArrowGoBackFill } from "react-icons/ri";
-import { FaList } from "react-icons/fa6";
+import { FaList, FaLock, FaLockOpen } from "react-icons/fa6";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
@@ -76,6 +76,7 @@ interface ClassDate {
 export default function CoursePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [lockedCourses, setLockedCourses] = useState<{ [key: string]: boolean }>({});
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -569,6 +570,11 @@ export default function CoursePage() {
 
   // 강좌 삭제 확인
   const handleDeleteCourse = (id: string, title: string) => {
+    if (!lockedCourses[id]) {
+      toast.error("강좌가 잠겨있어 삭제할 수 없습니다. 먼저 잠금을 해제해주세요.");
+      return;
+    }
+
     if (window.confirm(`정말로 '${title}' 강좌를 삭제하시겠습니까?`)) {
       deleteCourseMutation.mutate(id);
     }
@@ -786,7 +792,21 @@ export default function CoursePage() {
             <tbody>
               {filteredCourses.map((course: Course) => (
                 <tr key={course.id}>
-                  <td className="font-medium">{course.title}</td>
+                  <td className="font-medium">
+                    <div className="flex items-center gap-2">
+                      {course.title}
+                      <button
+                        onClick={() =>
+                          setLockedCourses((prev) => ({
+                            ...prev,
+                            [course.id]: !prev[course.id],
+                          }))
+                        }
+                        className="cursor-pointer text-gray-600 hover:text-gray-800">
+                        {lockedCourses[course.id] ? <FaLockOpen size={22} className={"text-green-600"} /> : <FaLock size={20} />}
+                      </button>
+                    </div>
+                  </td>
                   <td>{course.location}</td>
                   <td>
                     {course.teacher?.user.realName ? (
