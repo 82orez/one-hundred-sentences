@@ -3,6 +3,8 @@
 import { X } from "lucide-react";
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FaArrowRight } from "react-icons/fa";
 
 export default function ErrorHelpModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [mounted, setMounted] = useState(false);
@@ -23,12 +25,38 @@ export default function ErrorHelpModal({ isOpen, onClose }: { isOpen: boolean; o
           {/*</button>*/}
         </div>
         <ol className="list-decimal space-y-2 pl-5 text-gray-700">
+          <li>로그 아웃 후 다시 로그인 하기</li>
           <li>사용 중인 웹 브라우저를 닫았다가 다시 열기</li>
           <li>핸드폰 전원을 껐다가 다시 켜기</li>
           <li>
-            그래도 안 될 경우에는 구글 플레이 스토어 또는 애플 앱 스토어에서 최신 버전의 <span className="font-semibold">'크롬'</span>을 다운 받아서
-            설치 및 사용하기
+            아래 링크를 통해 최신 버전의 <span className="font-semibold">크롬</span> 브라우저를 다운 받아서 설치 및 사용하기
           </li>
+          <div className={"flex items-center"}>
+            <img src={"/images/chrome.webp"} alt={"chrome"} width={50} />
+            <p>Chrome(크롬) 브라우저 다운 받기</p>
+          </div>
+          <div>
+            <ul className={"pl-6"}>
+              <li className={"list-disc"}>
+                <Link
+                  href={"https://play.google.com/store/apps/details?id=com.android.chrome"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={"flex items-center gap-1 hover:underline"}>
+                  삼성폰(안드로이드폰) <FaArrowRight />
+                </Link>
+              </li>
+              <li className={"mt-1 list-disc"}>
+                <Link
+                  href={"https://apps.apple.com/kr/app/google-chrome/id535886823?l=ko"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={"flex items-center gap-1 hover:underline"}>
+                  애플 아이폰(IOS) <FaArrowRight />
+                </Link>
+              </li>
+            </ul>
+          </div>
         </ol>
 
         <div className={"mt-4 flex items-center justify-center"}>
