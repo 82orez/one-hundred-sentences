@@ -28,9 +28,11 @@ export async function calculateUserActivityPoints(userId: string, courseId: stri
       userId: userId,
       courseId: courseId,
     },
-    _count: true,
+    _sum: {
+      attemptNativeAudio: true,
+    },
   });
-  const totalAudioAttempts = audioData._count;
+  const totalAudioAttempts = audioData._sum.attemptNativeAudio || 0;
 
   // 녹음 제출 횟수 조회
   const recordingsData = await prisma.recordings.aggregate({
