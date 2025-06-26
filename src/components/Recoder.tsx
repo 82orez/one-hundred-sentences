@@ -12,6 +12,7 @@ import { getMaskedSentence } from "@/utils/getMaskedSentence";
 import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
 import { LuMousePointerClick } from "react-icons/lu";
+import { getDisplaySentenceNumber } from "@/utils/getDisplaySentenceNumber";
 
 interface Props {
   sentenceNo: number;
@@ -211,7 +212,7 @@ const AudioRecorder = ({
           <div className={"mt-2 w-full rounded-lg border px-2 py-4"}>
             <div className={"mt-1 mb-4 flex w-full items-center justify-around"}>
               <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-                {sentenceNo}번 문장
+                {getDisplaySentenceNumber(sentenceNo)}번 문장
               </div>
               <button className={"flex items-center justify-center gap-2"} onClick={() => handleToggleFavorite(sentenceNo)}>
                 <div>

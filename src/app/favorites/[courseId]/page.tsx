@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import { useNativeAudioAttempt } from "@/hooks/useNativeAudioAttempt";
 import clsx from "clsx";
 import Link from "next/link";
+import { getDisplaySentenceNumber } from "@/utils/getDisplaySentenceNumber";
 
 // 즐겨찾기 문장 타입 정의
 interface FavoriteSentence {
@@ -165,7 +166,7 @@ export default function FavoriteSentencesPage({ params }: Props) {
           className="mt-4 rounded-lg border border-gray-400 bg-white p-4 shadow-md dark:bg-gray-800">
           <div className="mb-2 flex items-start justify-between">
             <span className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-              {item.sentenceNo}번 문장
+              {getDisplaySentenceNumber(item.sentenceNo)}번 문장
             </span>
             <button
               onClick={() => handleRemoveFavorite(item.sentence.no)}

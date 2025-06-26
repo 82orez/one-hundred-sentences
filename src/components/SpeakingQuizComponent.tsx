@@ -21,6 +21,7 @@ import CountdownUI from "@/components/CountdownAnimation";
 import AudioWaveform from "@/components/AudioWaveform";
 import ListeningModal from "@/components/ListeningModal";
 import { useAudioResources } from "@/hooks/useAudioResources";
+import { getDisplaySentenceNumber } from "@/utils/getDisplaySentenceNumber";
 
 type SpeakingQuizProps = {
   currentSentenceNumber: number;
@@ -400,7 +401,7 @@ export default function SpeakingQuizComponent({
               <div className="mt-1 mb-1 flex min-h-24 flex-col items-center justify-center rounded-lg border bg-white p-4 text-xl font-semibold text-gray-800 md:mb-1">
                 <div className={"mb-4 flex w-full items-center justify-around"}>
                   <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-                    {currentSentence?.no}번 문장
+                    {getDisplaySentenceNumber(currentSentence?.no)}번 문장
                   </div>
                   <button className={"flex items-center justify-center gap-2 text-sm"} onClick={toggleFavorite}>
                     <div>

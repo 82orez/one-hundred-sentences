@@ -23,6 +23,7 @@ import { GrFavorite } from "react-icons/gr";
 import { MdOutlineFavorite } from "react-icons/md";
 import SpeakingQuizComponent from "@/components/SpeakingQuizComponent";
 import { updateNextDayInDB } from "@/utils/updateNextDayInDB";
+import { getDisplaySentenceNumber } from "@/utils/getDisplaySentenceNumber";
 
 interface Sentence {
   no: number;
@@ -688,7 +689,7 @@ const LearnPage = ({ params }: Props) => {
         <div key={sentence.no} className="my-4 rounded-lg border p-4">
           <div className={"flex items-center justify-between gap-4"}>
             <div className="rounded bg-indigo-100 px-2 py-1 text-sm text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-              {sentence.no}번 <span className={"hidden md:inline"}>문장</span>
+              {getDisplaySentenceNumber(sentence.no)}번 <span className={"hidden md:inline"}>문장</span>
             </div>
 
             {/* 내 목소리 공개 여부 버튼 */}
