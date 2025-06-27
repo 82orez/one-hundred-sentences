@@ -187,7 +187,7 @@ export default function FavoriteSentencesPage({ params }: Props) {
                 className={`flex items-center text-sm ${
                   currentlyPlaying !== null && currentlyPlaying !== item.sentence.no
                     ? "cursor-not-allowed text-gray-400"
-                    : "text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
+                    : "cursor-pointer text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300"
                 }`}>
                 <span className="mr-1">🔊</span>
                 {currentlyPlaying === item.sentence.no ? "재생 중..." : "발음 듣기"}
@@ -195,8 +195,8 @@ export default function FavoriteSentencesPage({ params }: Props) {
             )}
 
             <button
-              onClick={() => router.push(`/learn/${Math.ceil(item.sentenceNo / 5)}`)}
-              className="rounded-md bg-indigo-600 px-3 py-1 text-sm text-white transition-colors hover:bg-indigo-700">
+              onClick={() => router.push(`/learn/${Math.ceil(getDisplaySentenceNumber(item.sentenceNo) / 5)}`)}
+              className="cursor-pointer rounded-md bg-indigo-600 px-3 py-1 text-sm text-white transition-colors hover:bg-indigo-700">
               학습하러 가기
             </button>
           </div>
