@@ -153,7 +153,7 @@ const LearnPage = ({ params }: Props) => {
     if (!completedSentences || completedSentences.length === 0) return 1;
 
     // 완료된 문장을 학습일 단위로 그룹화
-    const completedDays = new Set(completedSentences.map((no) => Math.ceil(no / 5)));
+    const completedDays = new Set(completedSentences.map((no) => Math.ceil(getDisplaySentenceNumber(no) / 5)));
 
     // Set 을 배열로 변환하고, 빈 경우 기본값 설정
     const completedDaysArray = Array.from(completedDays) as number[];
