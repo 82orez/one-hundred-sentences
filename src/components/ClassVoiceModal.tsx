@@ -10,6 +10,7 @@ import { queryClient } from "@/app/providers";
 import toast from "react-hot-toast";
 import { useVoiceListenedStatus } from "@/hooks/useVoiceListenedStatus";
 import clsx from "clsx";
+import { getDisplaySentenceNumber } from "@/utils/getDisplaySentenceNumber";
 
 type VoiceItem = {
   id: string;
@@ -435,7 +436,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
                       className={clsx("hover:bg-gray-50", isUnlistenedAndNotMine(item) && "font-bold", {
                         "bg-green-100 hover:bg-green-200": isUnlistenedAndNotMine(item),
                       })}>
-                      <td className="px-2 py-3 text-sm whitespace-nowrap text-gray-500">{item.sentenceNo}</td>
+                      <td className="px-2 py-3 text-sm whitespace-nowrap text-gray-500">{getDisplaySentenceNumber(item.sentenceNo)}</td>
                       <td className="px-2 py-3 text-sm">{item.sentenceEn}</td>
                       <td className="px-2 py-3 whitespace-nowrap">
                         <div className="flex items-center">
@@ -538,7 +539,7 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
 
                     { "bg-green-100": isUnlistenedAndNotMine(item) },
                   )}>
-                  <div className="mb-1 text-sm text-gray-500">문장 번호: {item.sentenceNo}</div>
+                  <div className="mb-1 text-sm text-gray-500">{getDisplaySentenceNumber(item.sentenceNo)}번 문장</div>
                   <div className="mb-2 font-semibold text-gray-800">{item.sentenceEn}</div>
                   <div className="mb-2 flex items-center gap-2">
                     <Image
