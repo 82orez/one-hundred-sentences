@@ -39,7 +39,11 @@ export async function GET(req: Request) {
     // ✅ 5문장을 모두 완료한 학습일만 필터링 - Array(배열)
     const completedDays = Object.keys(dayCounts)
       .map(Number)
-      .filter((day) => dayCounts[day] === 5); // ✅ 학습일에 속한 5문장이 전부 완료된 경우만 반환
+      .filter((day) => dayCounts[day] === 5) // ✅ 학습일에 속한 5문장이 전부 완료된 경우만 반환
+      .map((day) => {
+        const remainder = day % 20;
+        return remainder === 0 ? 20 : remainder;
+      });
 
     console.log("completedDaysArray: ", completedDays);
     return NextResponse.json({ completedDays });
