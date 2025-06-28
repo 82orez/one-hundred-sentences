@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { FaHandPointRight } from "react-icons/fa";
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("free");
@@ -39,14 +40,14 @@ const PurchasePage = () => {
       <header className="bg-blue-600 py-3 text-white md:py-6">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <h1 className="text-2xl font-extrabold md:text-4xl">강좌를 선택해 주세요.</h1>
-          <p className="mt-4 text-lg">원하는 강좌를 선택하고 시작하세요!</p>
+          <p className="mt-1 text-lg md:mt-4">원하는 강좌를 선택하고 시작하세요!</p>
         </div>
       </header>
 
       {/* Pricing Section */}
       <section className="py-6 md:py-12">
         <div className="mx-auto max-w-5xl px-4 text-center">
-          <h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">강좌 선택</h2>
+          <h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">대국민 완전 무료 시리즈!</h2>
 
           {/* Grid for Plans */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -98,7 +99,12 @@ const PurchasePage = () => {
                 </div>
 
                 <div className={"mt-4 border-b"}></div>
-                <p className={"mt-2 text-[0.95rem]"}>※ 무료 체험반은 수강 기간 종료 후 학습 관련 데이터가 모두 삭제 됩니다.</p>
+                <div
+                  className={"mt-2 flex cursor-pointer items-center justify-center gap-2 text-blue-600 hover:underline"}
+                  onClick={() => router.push(`/course-detail`)}>
+                  <FaHandPointRight />
+                  <div>강의 소개 페이지 보기</div>
+                </div>
               </div>
             ))}
           </div>

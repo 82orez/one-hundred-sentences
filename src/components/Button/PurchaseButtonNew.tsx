@@ -47,8 +47,8 @@ export function PurchaseButton({ id, title, price, onValidationErrorAction }: Pu
     try {
       setIsPurchasing(true);
 
-      // 무료 체험반인 경우 수강 신청 처리
-      if (id === "testfreecourse2506") {
+      // ! 무료 체험반인 경우 수강 신청 처리
+      if (id === "cmce4nkls0001ftfvn4xwicj8") {
         await enrollMutation.mutateAsync({
           courseId: id,
           courseTitle: title,
@@ -56,7 +56,7 @@ export function PurchaseButton({ id, title, price, onValidationErrorAction }: Pu
         return;
       }
 
-      // 유료 강좌 결제 처리 로직...
+      // * 유료 강좌 결제 처리 로직...(추후 개발 예정)
       const response = await PortOne.requestPayment({
         // Store ID 설정
         storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID,
@@ -94,7 +94,7 @@ export function PurchaseButton({ id, title, price, onValidationErrorAction }: Pu
           <span className="text-primary text-lg font-bold">{price?.toLocaleString()}원</span>
         </div>
         <button onClick={handlePurchase} disabled={isPurchasing} className="btn btn-primary w-full py-6 text-lg font-bold">
-          {isPurchasing ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : id === "free" ? "시작하기" : "결제하기"}
+          {isPurchasing ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : id === "free" ? "시작하기" : "수강 신청"}
         </button>
       </div>
     </div>

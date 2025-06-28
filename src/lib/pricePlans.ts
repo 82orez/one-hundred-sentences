@@ -15,6 +15,22 @@ export const pricePlans = [
       },
     ],
   },
+  {
+    id: "cmce4nkls0001ftfvn4xwicj8",
+    title: "Test -  대국민 여행영어 뽀개기 공동체반",
+    price: 0,
+    description: [
+      "박민규(Sean) 대표 강사",
+      {
+        title: "주1회(15분) 1:N 온라인 무료 강의",
+        details: ["매주 일요일 오후 8시 수업", "총 20회 (7월6일 ~ 11월23일)", "수업 시작 전, zoom 설치 필요"],
+      },
+      {
+        title: "온라인 학습 어플 무료 사용권",
+        details: ["예습, 복습 및 AI 테스트 가능"],
+      },
+    ],
+  },
   //   {
   //     id: "basic",
   //     title: "Basic Plan",
