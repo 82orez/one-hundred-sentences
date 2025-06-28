@@ -55,64 +55,40 @@ export default function EnglishCoursePage() {
         <div className="flex-col">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             {/*<h1 className="text-primary mb-4 text-5xl font-bold">대국민 여행영어 뽀개기 - 공동체반</h1>*/}
-            <p className="text-secondary mb-2 text-2xl font-semibold md:mb-4">완전무료! 함께 도전 참여하세요!!</p>
+            <p className="text-secondary mb-4 text-2xl font-semibold md:mb-4">완전무료! 함께 도전 참여하세요!!</p>
             <button className="btn btn-primary btn-lg">무료 수강 신청하기</button>
           </motion.div>
         </div>
       </section>
 
       {/* 프로그램 개요 */}
-      <section className="container mx-auto px-4 py-16">
+      <section className="container mx-auto w-full max-w-4xl px-4 py-8">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title mb-6 text-3xl">프로그램 개요</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-4">
-                <p>
-                  <strong>강의명:</strong> 대국민 여행영어 뽀개기
-                </p>
-                <p>
-                  <strong>강사:</strong> 션 쌤 (박민규)
-                </p>
-                <p>
-                  <strong>기간:</strong> 20주 (주1회)
-                </p>
-                <p>
-                  <strong>구성:</strong> 초급 여행영어 20유닛
-                </p>
-              </div>
-              <div className="space-y-4">
-                <p>
-                  <strong>교재:</strong> 온라인 교재 (오픈채팅방 제공)
-                </p>
-                <p>
-                  <strong>수업 시간:</strong> 일 저녁 8시 (15분)
-                </p>
-                <p>
-                  <strong>수업 기간:</strong> 25년 7월6일-11월17일
-                </p>
-                <p>
+            <h2 className="card-title mx-auto text-2xl font-bold md:mb-2 md:text-3xl">프로그램 개요</h2>
+            <div className="mt-4 grid gap-6 text-lg md:grid-cols-2">
+              <ul className="space-y-4 px-4">
+                <li className={"list-disc"}>
+                  <strong>강의명:</strong> 대국민 여행영어 뽀개기 공동체반
+                </li>
+                <li className={"list-disc"}>
+                  <strong>강사:</strong> 박민규 대표 강사 (Sean)
+                </li>
+                <li className={"list-disc"}>
+                  <strong>교재:</strong> ShallE 100 여행영어
+                </li>
+              </ul>
+              <ul className="space-y-4 px-4">
+                <li className={"list-disc"}>
+                  <strong>강의 시간:</strong> 매주 일요일 오후 8시 (총 20회)
+                </li>
+                <li className={"list-disc"}>
+                  <strong>수업 기간:</strong> 25년 7월6일 ~ 11월23일
+                </li>
+                <li className={"list-disc"}>
                   <strong>비용:</strong> <span className="text-primary font-bold">무료</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 프로그램 소개 */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title mb-6 text-3xl">프로그램 소개</h2>
-            <div className="prose max-w-none">
-              <blockquote className="text-lg">
-                해외여행 필수 시대!
-                <br />
-                영어 소통에 불안감을 느끼는 사람, 무려 86%!
-                <br />
-                프렌딩은 그 불안을 함께 해결하고자 이 프로젝트를 기획했습니다.
-              </blockquote>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
