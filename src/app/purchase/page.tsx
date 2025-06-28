@@ -50,11 +50,12 @@ const PurchasePage = () => {
           <h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">대국민 완전 무료 시리즈!</h2>
 
           {/* Grid for Plans */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {/*<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">*/}
+          <div className="flex items-center justify-center">
             {pricePlans.map((plan) => (
               <div
                 key={plan.id}
-                className={`relative w-full cursor-pointer rounded-lg border p-8 text-center shadow-lg transition-transform duration-300 ease-in-out ${
+                className={`relative w-full max-w-80 cursor-pointer rounded-lg border p-8 text-center shadow-lg transition-transform duration-300 ease-in-out ${
                   selectedPlan === plan.id ? "scale-105 border-blue-600 bg-blue-50 shadow-2xl" : "border-gray-300 bg-white"
                 }`}
                 onClick={() => setSelectedPlan(plan.id)}>
