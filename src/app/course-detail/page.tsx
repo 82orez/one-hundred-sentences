@@ -51,11 +51,11 @@ export default function EnglishCoursePage() {
       </div>
 
       {/* 헤더 섹션 */}
-      <section className="hero bg-base-200 min-h-[50vh] text-center">
-        <div className="hero-content flex-col">
+      <section className="mt-6 text-center">
+        <div className="flex-col">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <h1 className="text-primary mb-4 text-5xl font-bold">대국민 여행영어 뽀개기 - 공동체반</h1>
-            <p className="text-secondary mb-8 text-2xl font-semibold">완전무료! 함께 도전 참여하세요!!</p>
+            {/*<h1 className="text-primary mb-4 text-5xl font-bold">대국민 여행영어 뽀개기 - 공동체반</h1>*/}
+            <p className="text-secondary mb-2 text-2xl font-semibold md:mb-4">완전무료! 함께 도전 참여하세요!!</p>
             <button className="btn btn-primary btn-lg">무료 수강 신청하기</button>
           </motion.div>
         </div>
