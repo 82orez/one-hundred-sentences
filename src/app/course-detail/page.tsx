@@ -3,6 +3,7 @@
 // import { Button } from "@/components/ui/button";
 import { useFreeEnrollment } from "@/hooks/useFreeEnrollment";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function EnglishCoursePage() {
   const { mutate: enrollCourse } = useFreeEnrollment();
@@ -16,6 +17,33 @@ export default function EnglishCoursePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <div className="mx-auto max-w-md overflow-hidden rounded-lg bg-[#FFE3B3] p-4 shadow-lg md:p-6">
+        <div className="flex flex-col items-center justify-between text-2xl font-bold text-gray-700 md:gap-2 md:text-4xl">
+          <div>대국민 여행영어 뽀개기</div>
+          <div>공동체반!</div>
+        </div>
+
+        {/* 이미지 섹션 */}
+        <div className="relative mt-2 w-full md:mt-4">
+          <Image
+            src="/images/tour-1.png"
+            alt="대국민 여행영어 뽀개기 공동체반"
+            width={1200}
+            height={500}
+            className="h-auto w-full rounded-t-2xl object-contain"
+            priority
+          />
+        </div>
+
+        {/* 텍스트 섹션 */}
+        <div className="bg-[#FFF2D9] p-6">
+          <h2 className="mb-2 text-2xl font-extrabold text-[#E94E1B] md:text-4xl">해외여행 필수 시대!</h2>
+          <p className="mb-1 text-base text-[#4A2C20] md:text-xl">영어 소통에 불안감을 느끼는 사람,</p>
+          <p className="mb-1 text-2xl font-bold text-[#E94E1B] md:text-4xl">무려 86%!</p>
+          <p className="text-base text-[#4A2C20] md:text-xl">프렌딩은 그 불안을 함께 해결하고자 이 프로젝트를 기획했습니다.</p>
+        </div>
+      </div>
+
       {/* 헤더 섹션 */}
       <section className="hero bg-base-200 min-h-[50vh] text-center">
         <div className="hero-content flex-col">
