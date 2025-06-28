@@ -62,7 +62,7 @@ export default function EnglishCoursePage() {
       </section>
 
       {/* 프로그램 개요 */}
-      <section className="container mx-auto w-full max-w-4xl px-4 py-8">
+      <section className="container mx-auto w-full max-w-4xl px-4 py-8 md:py-16">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title mx-auto text-2xl font-bold md:mb-2 md:text-3xl">프로그램 개요</h2>
@@ -95,8 +95,8 @@ export default function EnglishCoursePage() {
       </section>
 
       {/* 특징 */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="mb-12 text-center text-3xl font-bold">프로그램 특징</h2>
+      <section className="container mx-auto w-full max-w-6xl px-4 py-4 md:py-16">
+        <h2 className="mb-4 text-center text-2xl font-bold md:text-3xl">프로그램 특징</h2>
         <div className="grid gap-8 md:grid-cols-3">
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
