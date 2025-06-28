@@ -51,7 +51,7 @@ const PurchasePage = () => {
 
           {/* Grid for Plans */}
           {/*<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">*/}
-          <div className="flex items-center justify-center">
+          <div className="hidden items-center justify-center">
             {pricePlans.map((plan) => (
               <div
                 key={plan.id}
@@ -71,7 +71,9 @@ const PurchasePage = () => {
                 )}
 
                 {/* 강좌 제목 표시 부분 */}
-                <h3 className={`text-xl font-bold ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>{plan.title}</h3>
+                <h3 className={`text-xl font-bold whitespace-pre-line ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>
+                  {plan.title}
+                </h3>
 
                 <div className={"mt-4 border-b"}></div>
 
