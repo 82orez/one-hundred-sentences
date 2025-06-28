@@ -113,20 +113,21 @@ export default function EnglishCoursePage() {
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
               <h3 className="card-title">1:N Zoom 클래스</h3>
-              <p>실시간 소통으로 피드백과 몰입도 향상</p>
+              <p className={"text-[1rem]"}>실시간 온라인 수업으로 소통과 몰입도 향상</p>
+              <Image src={"/images/zoom_screen.png"} width={500} height={500} alt={"zoom screen"} className={"rounded-2xl"} />
             </div>
           </div>
         </div>
       </section>
 
       {/* 유닛 구성 */}
-      <section className="bg-base-200 container mx-auto px-4 py-16">
-        <h2 className="mb-12 text-center text-3xl font-bold">유닛 구성</h2>
+      <section className="bg-base-200 container mx-auto w-full max-w-6xl px-4 py-8 md:py-16">
+        <h2 className="mb-4 text-center text-3xl font-bold md:mb-12">유닛 구성</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {[...Array(20)].map((_, index) => (
             <div key={index} className="card bg-base-100 shadow-hover">
-              <div className="card-body">
-                <h3 className="card-title text-sm">Unit {String(index + 1).padStart(2, "0")}</h3>
+              <div className="card-body text-lg">
+                <h3 className="card-title text-lg">Unit {String(index + 1).padStart(2, "0")}</h3>
                 <p>{getUnitTitle(index + 1)}</p>
               </div>
             </div>
@@ -135,8 +136,8 @@ export default function EnglishCoursePage() {
       </section>
 
       {/* CTA 섹션 */}
-      <section className="bg-primary text-primary-content py-16 text-center">
-        <h2 className="mb-8 text-3xl font-bold">지금 바로 시작하세요!</h2>
+      <section className="bg-primary text-primary-content py-6 text-center md:py-12">
+        <h2 className="mb-4 text-3xl font-bold md:mb-6">지금 바로 시작하세요!</h2>
         <button className="btn btn-secondary ondary btn-lg">무료 수강 신청하기</button>
       </section>
     </div>
