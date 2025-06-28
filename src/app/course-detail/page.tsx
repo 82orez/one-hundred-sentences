@@ -16,7 +16,7 @@ export default function EnglishCoursePage() {
   // };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white md:py-8">
       <div className="mx-auto max-w-md overflow-hidden rounded-lg bg-[#FFE3B3] p-4 shadow-lg md:p-6">
         <div className="flex flex-col items-center justify-between text-2xl font-bold text-gray-700 md:gap-2 md:text-4xl">
           <div>대국민 여행영어 뽀개기</div>
@@ -37,10 +37,16 @@ export default function EnglishCoursePage() {
 
         {/* 텍스트 섹션 */}
         <div className="bg-[#FFF2D9] p-6">
-          <h2 className="mb-2 text-2xl font-extrabold text-[#E94E1B] md:text-4xl">해외여행 필수 시대!</h2>
-          <p className="mb-1 text-base text-[#4A2C20] md:text-xl">영어 소통에 불안감을 느끼는 사람,</p>
-          <p className="mb-1 text-2xl font-bold text-[#E94E1B] md:text-4xl">무려 86%!</p>
-          <p className="text-base text-[#4A2C20] md:text-xl">프렌딩은 그 불안을 함께 해결하고자 이 프로젝트를 기획했습니다.</p>
+          <div className={"text-center"}>
+            <h2 className="mb-2 text-2xl font-bold text-[#E94E1B] md:text-4xl">해외여행 필수 시대!</h2>
+            <p className="mb-1 text-base text-[#4A2C20] md:text-xl">영어 소통에 불안감을 느끼는 사람,</p>
+            <p className="mb-1 text-2xl font-bold text-[#E94E1B] md:text-4xl">무려 86%!</p>
+          </div>
+          <p className="mt-6 text-base text-[#4A2C20] md:text-xl">프렌딩은 그 불안감을 함께 해결하고자 이 프로젝트를 기획했습니다.</p>
+          <p className="mt-2 text-base text-[#4A2C20] md:text-xl">
+            이 프로젝트는 팀원들이 공동체를 이루어 함께 끝까지 완주하는 대국민 <span className={"font-semibold underline"}>완전 무료</span> 영어 학습
+            프로그램입니다.
+          </p>
         </div>
       </div>
 
