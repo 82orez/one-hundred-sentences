@@ -121,7 +121,7 @@ export default function MyCoursesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-8 text-2xl font-bold">내 강의 보기</h1>
+      <h1 className="mb-8 text-2xl font-bold">내가 신청한 강의 보기</h1>
 
       {pendingCourses.length === 0 && activeCourses.length === 0 ? (
         <div className="rounded-lg bg-gray-50 p-6 text-center text-gray-500">
