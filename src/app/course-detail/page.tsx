@@ -63,11 +63,11 @@ export default function EnglishCoursePage() {
       </section>
 
       {/* 프로그램 개요 */}
-      <section className="container mx-auto w-full max-w-4xl px-4 py-8 md:py-16">
-        <div className="card bg-base-100 shadow-xl">
+      <section className="container mx-auto w-full max-w-lg px-4 py-8 md:px-12 md:py-16">
+        <div className="card bg-base-100 p-2 shadow-xl">
           <div className="card-body">
             <h2 className="card-title mx-auto text-2xl font-bold md:mb-2 md:text-3xl">프로그램 개요</h2>
-            <div className="mt-4 grid gap-6 text-lg md:grid-cols-2">
+            <div className="mt-4 grid gap-6 text-lg md:grid-cols-1">
               <ul className="space-y-4 px-4">
                 <li className={"list-disc"}>
                   <strong>강의명:</strong> 대국민 여행영어 뽀개기 공동체반
@@ -78,13 +78,12 @@ export default function EnglishCoursePage() {
                 <li className={"list-disc"}>
                   <strong>교재:</strong> ShallE 100 여행영어
                 </li>
-              </ul>
-              <ul className="space-y-4 px-4">
+
                 <li className={"list-disc"}>
                   <strong>강의 시간:</strong> 매주 일요일 오후 8시 (총 20회)
                 </li>
                 <li className={"list-disc"}>
-                  <strong>수업 기간:</strong> 25년 7월6일 ~ 11월23일
+                  <strong>수업 기간:</strong> 7월6일 ~ 11월23일
                 </li>
                 <li className={"list-disc"}>
                   <strong>비용:</strong> <span className="text-primary font-bold">무료</span>
