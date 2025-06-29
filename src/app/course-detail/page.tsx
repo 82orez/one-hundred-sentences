@@ -9,12 +9,14 @@ import { FaHandPointRight } from "react-icons/fa";
 export default function EnglishCoursePage() {
   const { mutate: enrollCourse } = useFreeEnrollment();
 
-  // const handleEnrollment = () => {
-  //   enrollCourse({
-  //     courseId: "cmce4nkls0001ftfvn4xwicj8",
-  //     courseTitle: "대국민 여행영어 뽀개기 공동체반",
-  //   });
-  // };
+  const handleEnrollment = () => {
+    if (confirm("무료 수강을 신청하시겠습니까?")) {
+      enrollCourse({
+        courseId: "cmce4nkls0001ftfvn4xwicj8",
+        courseTitle: "대국민 여행영어 뽀개기 공동체반",
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white md:py-8">
@@ -57,7 +59,9 @@ export default function EnglishCoursePage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             {/*<h1 className="text-primary mb-4 text-5xl font-bold">대국민 여행영어 뽀개기 - 공동체반</h1>*/}
             <p className="text-secondary mb-4 text-2xl font-semibold md:mb-4">완전무료! 함께 도전 참여하세요!!</p>
-            <button className="btn btn-primary btn-lg">무료 수강 신청하기</button>
+            <button className="btn btn-primary btn-lg" onClick={handleEnrollment}>
+              무료 수강 신청하기
+            </button>
           </motion.div>
         </div>
       </section>
@@ -153,7 +157,9 @@ export default function EnglishCoursePage() {
       {/* CTA 섹션 */}
       <section className="bg-primary text-primary-content py-6 text-center md:py-12">
         <h2 className="mb-4 text-3xl font-bold md:mb-6">지금 바로 시작하세요!</h2>
-        <button className="btn btn-secondary ondary btn-lg">무료 수강 신청하기</button>
+        <button className="btn btn-secondary ondary btn-lg" onClick={handleEnrollment}>
+          무료 수강 신청하기
+        </button>
       </section>
     </div>
   );
