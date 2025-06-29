@@ -4,6 +4,7 @@
 import { useFreeEnrollment } from "@/hooks/useFreeEnrollment";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { FaHandPointRight } from "react-icons/fa";
 
 export default function EnglishCoursePage() {
   const { mutate: enrollCourse } = useFreeEnrollment();
@@ -100,21 +101,33 @@ export default function EnglishCoursePage() {
         <div className="grid gap-8 md:grid-cols-3">
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
-              <h3 className="card-title">공동체 기반 성취 시스템</h3>
-              <p>팀 목표 + 개인 수치화로 지속적인 동기 부여</p>
+              <h3 className="card-title">
+                <FaHandPointRight />
+                <div className={"text-xl"}>공동체 기반 성취 시스템</div>
+              </h3>
+              <div className={"text-[1rem]"}>팀 목표 + 개인 수치화로 지속적인 동기 부여</div>
+              <Image src={"/images/teampoints.png"} width={500} height={500} alt={"team screen"} className={"rounded-2xl"} />
+              <Image src={"/images/members.png"} width={500} height={500} alt={"team screen"} className={"rounded-2xl"} />
             </div>
           </div>
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
-              <h3 className="card-title">학습 어플 제공</h3>
-              <p>동영상 강의, 원어민음성, 반복연습, 녹음까지 한 번에!!</p>
+              <h3 className="card-title">
+                <FaHandPointRight />
+                <div className={"text-xl"}>학습 어플 제공</div>
+              </h3>
+              <div className={"text-[1rem]"}>동영상 강의, 원어민음성, 반복연습, 녹음까지 한 번에!!</div>
+              <Image src={"/images/learn-page.png"} width={500} height={500} alt={"team screen"} className={"rounded-2xl"} />
             </div>
           </div>
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
-              <h3 className="card-title">1:N Zoom 클래스</h3>
-              <p className={"text-[1rem]"}>실시간 온라인 수업으로 소통과 몰입도 향상</p>
-              <Image src={"/images/zoom_screen.png"} width={500} height={500} alt={"zoom screen"} className={"rounded-2xl"} />
+              <h3 className="card-title">
+                <FaHandPointRight />
+                <div className={"text-xl"}>1:N Zoom 클래스</div>
+              </h3>
+              <div className={"text-[1rem]"}>실시간 온라인 수업으로 소통과 몰입도 향상</div>
+              <Image src={"/images/zoom_screen.png"} width={500} height={500} alt={"zoom screen"} className={"mt-2 rounded-2xl"} />
             </div>
           </div>
         </div>
@@ -122,8 +135,11 @@ export default function EnglishCoursePage() {
 
       {/* 유닛 구성 */}
       <section className="bg-base-200 container mx-auto w-full max-w-6xl px-4 py-8 md:py-16">
-        <h2 className="mb-4 text-center text-3xl font-bold md:mb-12">유닛 구성</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <h2 className="text-center text-3xl font-bold md:mb-4">유닛 구성</h2>
+        <p className={"mt-3 text-center"}>
+          실제 여행에 필요한 상황을 바탕으로 문장 구성, 쓸모있는 표현들만 배웁니다. 입국심사, 공항, 쇼핑, 현지인들과 대화 등을 알차게 배워요.
+        </p>
+        <div className="mt-2 grid gap-4 md:mt-4 md:grid-cols-2 lg:grid-cols-3">
           {[...Array(20)].map((_, index) => (
             <div key={index} className="card bg-base-100 shadow-hover">
               <div className="card-body text-lg">
