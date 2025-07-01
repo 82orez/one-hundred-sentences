@@ -19,7 +19,7 @@ export default function EnglishCoursePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-yellow-100 md:py-8">
+    <div className="min-h-screen bg-gradient-to-br from-amber-100 to-yellow-50 md:py-8">
       <div className="mx-auto max-w-md overflow-hidden rounded-lg bg-[#FFE3B3] p-4 shadow-lg md:p-6">
         <div className="flex flex-col items-center justify-between text-2xl font-bold text-gray-700 md:gap-2 md:text-4xl">
           <div>대국민 여행영어 뽀개기</div>
