@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { IoMdCheckboxOutline } from "react-icons/io";
-import { pricePlans } from "@/lib/pricePlans";
+import { pricePlansForCourse } from "@/lib/pricePlansForCourse";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
@@ -29,7 +29,7 @@ const PurchasePage = () => {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
   }
 
-  const selectedPlanInfo = pricePlans.find((plan) => plan.id === selectedPlan);
+  const selectedPlanInfo = pricePlansForCourse.find((plan) => plan.id === selectedPlan);
   console.log(`selectedPlanInfo: `, selectedPlanInfo);
 
   // 인증되지 않은 상태라면 페이지 내용을 렌더링하지 않음
@@ -47,12 +47,12 @@ const PurchasePage = () => {
       {/* Pricing Section */}
       <section className="py-6 md:py-12">
         <div className="mx-auto max-w-5xl px-4 text-center">
-          <h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">대국민 완전 무료 시리즈!</h2>
+          {/*<h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">대국민 완전 무료 시리즈!</h2>*/}
 
           {/* Grid for Plans */}
           {/*<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">*/}
           <div className="flex items-center justify-center">
-            {pricePlans.map((plan) => (
+            {pricePlansForCourse.map((plan) => (
               <div
                 key={plan.id}
                 className={`relative w-full max-w-80 cursor-pointer rounded-lg border p-8 text-center shadow-lg transition-transform duration-300 ease-in-out ${
@@ -112,12 +112,12 @@ const PurchasePage = () => {
             ))}
           </div>
 
-          <PurchaseButtonCourse
-            id={selectedPlanInfo?.id}
-            title={selectedPlanInfo?.title}
-            price={selectedPlanInfo?.price}
-            onValidationErrorAction={() => toast.error("강좌를 선택해 주세요.")}
-          />
+          {/*<PurchaseButtonCourse*/}
+          {/*  id={selectedPlanInfo?.id}*/}
+          {/*  title={selectedPlanInfo?.title}*/}
+          {/*  price={selectedPlanInfo?.price}*/}
+          {/*  onValidationErrorAction={() => toast.error("강좌를 선택해 주세요.")}*/}
+          {/*/>*/}
 
           <div className={"mt-4 flex justify-center md:mt-6"}>
             <Link href="/" className="flex items-center text-blue-500 hover:underline">
