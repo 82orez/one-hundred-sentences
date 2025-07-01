@@ -102,25 +102,23 @@ export default function LandingPage() {
 
             {/* pc 모드 */}
             <div className={"hidden md:flex md:w-full md:flex-col md:items-center"}>
-              <div className={"hidden md:flex md:max-w-[350px] md:flex-col md:items-center md:justify-between md:gap-4"}>
-                {/*<div className={"flex justify-center md:w-full md:justify-between md:gap-6"}>*/}
-                {/*  <CultureMemberButton className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700 md:flex md:min-w-[150px] md:gap-0">*/}
-                {/*    <div className={"flex flex-col items-center"}>*/}
-                {/*      <span>문화센터</span>*/}
-                {/*      <span>등록 회원</span>*/}
-                {/*    </div>*/}
-                {/*    <FaArrowRight className="ml-2" />*/}
-                {/*  </CultureMemberButton>*/}
+              <div className={"hidden w-full md:flex md:max-w-[400px] md:flex-col md:items-center md:justify-between md:gap-4"}>
+                <div className={"flex justify-center md:w-full md:justify-between md:gap-6"}>
+                  <CultureMemberButton className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-4 text-lg text-white hover:bg-indigo-700 md:flex md:min-w-[150px] md:gap-0">
+                    <div className={"flex flex-col items-center"}>
+                      <span>내 강의실 입장</span>
+                    </div>
+                    <FaArrowRight className="ml-2" />
+                  </CultureMemberButton>
 
-                {/*  <Button className="pointer-events-none hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:min-w-[150px]">*/}
-                {/*    /!*개인 회원 <FaArrowRight className="ml-2" />*!/*/}
-                {/*    <div className={"flex flex-col items-center"}>*/}
-                {/*      <span>개인 회원</span>*/}
-                {/*      <span>(준비 중)</span>*/}
-                {/*    </div>*/}
-                {/*    <FaArrowRight className="ml-2" />*/}
-                {/*  </Button>*/}
-                {/*</div>*/}
+                  <Button className="pointer-events-none hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-4 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:min-w-[150px]">
+                    {/*개인 회원 <FaArrowRight className="ml-2" />*/}
+                    <div className={"flex flex-col items-center"}>
+                      <span>수강 신청 하기</span>
+                    </div>
+                    <FaArrowRight className="ml-2" />
+                  </Button>
+                </div>
 
                 {/* 개설 강좌 보기 */}
                 {/*<Link*/}
@@ -129,10 +127,10 @@ export default function LandingPage() {
                 {/*  개설 강좌 보기 <FaArrowRight className="ml-2" />*/}
                 {/*</Link>*/}
 
-                <CultureMemberButton className="hidden cursor-pointer items-center rounded-xl bg-green-600 px-6 py-4 text-lg text-white hover:bg-green-700 md:flex md:w-full md:min-w-[150px] md:justify-center">
-                  <span>내 강의실 입장</span>
-                  <FaSignInAlt size={22} className="ml-3" />
-                </CultureMemberButton>
+                {/*<CultureMemberButton className="hidden cursor-pointer items-center rounded-xl bg-green-600 px-6 py-4 text-lg text-white hover:bg-green-700 md:flex md:w-full md:min-w-[150px] md:justify-center">*/}
+                {/*  <span>내 강의실 입장</span>*/}
+                {/*  <FaSignInAlt size={22} className="ml-3" />*/}
+                {/*</CultureMemberButton>*/}
 
                 {/* 무료 체험 신청 안내 */}
                 <Link
