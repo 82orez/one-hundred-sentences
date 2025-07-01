@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { IoMdCheckboxOutline } from "react-icons/io";
 import { pricePlans } from "@/lib/pricePlans";
 import { useSession } from "next-auth/react";
-import { PurchaseButtonFree } from "@/components/Button/PurchaseButtonFree";
 import toast from "react-hot-toast";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { FaHandPointRight } from "react-icons/fa";
+import { PurchaseButtonFree } from "@/components/Button/PurchaseButtonFree";
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("free");
