@@ -7,6 +7,7 @@ import Image from "next/image";
 import { FaArrowRight, FaSignInAlt } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { MoveToPurchaseCourseButton } from "@/components/Button/MoveToPurchaseCourseButton";
 
 export default function LandingPage() {
   const [showModal, setShowModal] = useState(false);
@@ -111,13 +112,13 @@ export default function LandingPage() {
                     <FaArrowRight className="ml-2" />
                   </CultureMemberButton>
 
-                  <Button className="pointer-events-none hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-4 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:min-w-[150px]">
+                  <MoveToPurchaseCourseButton className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-4 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:min-w-[150px]">
                     {/*개인 회원 <FaArrowRight className="ml-2" />*/}
                     <div className={"flex flex-col items-center"}>
                       <span>수강 신청 하기</span>
                     </div>
                     <FaArrowRight className="ml-2" />
-                  </Button>
+                  </MoveToPurchaseCourseButton>
                 </div>
 
                 {/* 개설 강좌 보기 */}

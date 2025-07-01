@@ -10,7 +10,7 @@ import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { FaHandPointRight } from "react-icons/fa";
-import { PurchaseButtonFree } from "@/components/Button/PurchaseButtonFree";
+import { PurchaseButtonCourse } from "@/components/Button/PurchaseButtonCourse";
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("free");
@@ -112,7 +112,7 @@ const PurchasePage = () => {
             ))}
           </div>
 
-          <PurchaseButtonFree
+          <PurchaseButtonCourse
             id={selectedPlanInfo?.id}
             title={selectedPlanInfo?.title}
             price={selectedPlanInfo?.price}
