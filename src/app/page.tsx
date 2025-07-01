@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/Card";
 import { Button } from "@/components/Button/Button";
 import { CultureMemberButton } from "@/components/Button/CultureMemberButton";
 import Image from "next/image";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaSignInAlt } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
@@ -75,9 +75,10 @@ export default function LandingPage() {
 
           {/* 모바일 모드 */}
           <div>
-            {/*<CultureMemberButton className="mb-4 flex min-w-[220px] cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700 md:hidden">*/}
-            {/*  문화센터 등록 회원 <FaArrowRight className="ml-2" />*/}
-            {/*</CultureMemberButton>*/}
+            <CultureMemberButton className="mb-4 flex min-w-[220px] cursor-pointer items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white hover:bg-indigo-700 md:hidden">
+              <span>내 강의실 입장</span>
+              <FaSignInAlt size={22} className="ml-2" />
+            </CultureMemberButton>
 
             {/*<Button className="pointer-events-none mb-4 flex min-w-[220px] cursor-pointer items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 text-lg text-white opacity-50 hover:bg-indigo-700 md:hidden">*/}
             {/*  <span>개인 회원(준비 중)</span>*/}
@@ -127,6 +128,11 @@ export default function LandingPage() {
                 {/*  className="hidden cursor-pointer items-center rounded-xl bg-green-600 px-6 py-4 text-lg text-white hover:bg-green-700 md:flex md:w-full md:min-w-[150px] md:justify-center">*/}
                 {/*  개설 강좌 보기 <FaArrowRight className="ml-2" />*/}
                 {/*</Link>*/}
+
+                <CultureMemberButton className="hidden cursor-pointer items-center rounded-xl bg-green-600 px-6 py-4 text-lg text-white hover:bg-green-700 md:flex md:w-full md:min-w-[150px] md:justify-center">
+                  <span>내 강의실 입장</span>
+                  <FaSignInAlt size={22} className="ml-3" />
+                </CultureMemberButton>
 
                 {/* 무료 체험 신청 안내 */}
                 <Link
