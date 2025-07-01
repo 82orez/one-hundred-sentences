@@ -96,7 +96,8 @@ export default function MyCoursesPage() {
     if (data.scheduleSaturday) days.push("토");
     if (data.scheduleSunday) days.push("일");
 
-    return days.join("/");
+    const result = days.join("/");
+    return days.length === 1 ? result + "요일" : result;
   };
 
   const openScheduleModal = (courseId: string) => {
@@ -204,7 +205,7 @@ export default function MyCoursesPage() {
                         {/*<p className="mb-4 text-gray-600">전화번호: {enrollment.course.teacher.user.phone}</p>*/}
 
                         <p className="mt-4 mb-4 text-gray-600">
-                          <span className="font-medium">수업일:</span> {formatScheduleDays(enrollment.course)} ({enrollment.course.duration},{" "}
+                          <span className="font-medium">수업 요일:</span> {formatScheduleDays(enrollment.course)} ({enrollment.course.duration}, 총{" "}
                           {enrollment.course.classCount}회)
                         </p>
                         <p className="mb-4 text-gray-600">

@@ -19,7 +19,7 @@ export default function EnglishCoursePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-100 to-yellow-50 md:py-8">
+    <div className="min-h-screen md:py-8">
       <div className="mx-auto max-w-md overflow-hidden rounded-lg bg-[#FFE3B3] p-4 shadow-lg md:p-6">
         <div className="flex flex-col items-center justify-between text-2xl font-bold text-gray-700 md:gap-2 md:text-4xl">
           <div>대국민 여행영어 뽀개기</div>
@@ -68,7 +68,7 @@ export default function EnglishCoursePage() {
 
       {/* 프로그램 개요 */}
       <section className="container mx-auto w-full max-w-lg px-4 py-8 md:px-12 md:py-16">
-        <div className="card bg-gray-50 shadow-xl md:p-2">
+        <div className="card border shadow-xl md:p-2">
           <div className="card-body">
             <h2 className="card-title mx-auto text-2xl font-bold md:mb-2 md:text-3xl">프로그램 개요</h2>
             <div className="mt-4 grid gap-6 text-lg md:grid-cols-1">
@@ -103,7 +103,7 @@ export default function EnglishCoursePage() {
         <h2 className="mb-4 text-center text-2xl font-bold md:text-3xl">프로그램 특징</h2>
         <div className={"border border-b"}></div>
         <div className="mt-6 grid gap-8 md:grid-cols-3">
-          <div className="card bg-gray-50 shadow-xl">
+          <div className="card border shadow-xl">
             <div className="card-body">
               <h3 className="card-title">
                 <FaHandPointRight />
@@ -114,7 +114,7 @@ export default function EnglishCoursePage() {
               <Image src={"/images/members.png"} width={500} height={500} alt={"team screen"} className={"rounded-2xl"} />
             </div>
           </div>
-          <div className="card bg-gray-50 shadow-xl">
+          <div className="card border shadow-xl">
             <div className="card-body">
               <h3 className="card-title">
                 <FaHandPointRight />
@@ -124,7 +124,7 @@ export default function EnglishCoursePage() {
               <Image src={"/images/learn-page.png"} width={500} height={500} alt={"team screen"} className={"rounded-2xl"} />
             </div>
           </div>
-          <div className="card bg-gray-50 shadow-xl">
+          <div className="card border shadow-xl">
             <div className="card-body">
               <h3 className="card-title">
                 <FaHandPointRight />
@@ -140,7 +140,7 @@ export default function EnglishCoursePage() {
       </section>
 
       {/* 유닛 구성 */}
-      <section className="bg-base-200 container mx-auto mt-4 w-full max-w-6xl rounded-2xl px-4 py-8 md:mt-0 md:py-12">
+      <section className="bg-base-200 container mx-auto mt-4 w-full max-w-11/12 rounded-2xl border px-4 py-8 md:mt-0 md:max-w-6xl md:py-12">
         <h2 className="text-center text-3xl font-bold md:mb-4">유닛 구성</h2>
         <p className={"mt-3 text-center"}>
           실제 여행에 필요한 상황을 바탕으로 문장 구성, 쓸모있는 표현들만 배웁니다. 입국심사, 공항, 쇼핑, 현지인들과 대화 등을 알차게 배워요.
