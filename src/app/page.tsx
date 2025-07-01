@@ -122,11 +122,11 @@ export default function LandingPage() {
                 {/*</div>*/}
 
                 {/* 개설 강좌 보기 */}
-                <Link
-                  href={"/purchase"}
-                  className="hidden cursor-pointer items-center rounded-xl bg-green-600 px-6 py-4 text-lg text-white hover:bg-green-700 md:flex md:w-full md:min-w-[150px] md:justify-center">
-                  개설 강좌 보기 <FaArrowRight className="ml-2" />
-                </Link>
+                {/*<Link*/}
+                {/*  href={"/purchase"}*/}
+                {/*  className="hidden cursor-pointer items-center rounded-xl bg-green-600 px-6 py-4 text-lg text-white hover:bg-green-700 md:flex md:w-full md:min-w-[150px] md:justify-center">*/}
+                {/*  개설 강좌 보기 <FaArrowRight className="ml-2" />*/}
+                {/*</Link>*/}
 
                 {/* 무료 체험 신청 안내 */}
                 <Link
