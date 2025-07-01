@@ -29,6 +29,7 @@ export const pricePlansForCourse = [
         title: "온라인 학습 어플 무료 사용권",
         details: ["예습, 복습 및 AI 테스트 가능"],
       },
+      "수강료 : 98,000원(24회 기준)",
       {
         title: "무통장 입금 안내",
         details: ["예금주: (주)프렌딩", "국민은행 68040100111448"],
