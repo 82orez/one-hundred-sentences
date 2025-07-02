@@ -105,20 +105,20 @@ export default function LandingPage() {
             <div className={"hidden md:flex md:w-full md:flex-col md:items-center"}>
               <div className={"hidden w-full md:flex md:max-w-[400px] md:flex-col md:items-center md:justify-between md:gap-4"}>
                 <div className={"flex justify-center md:w-full md:justify-between md:gap-6"}>
-                  <CultureMemberButton className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-4 text-lg text-white hover:bg-indigo-700 md:flex md:min-w-[150px] md:gap-0">
+                  <CultureMemberButton className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-4 text-lg text-white hover:bg-indigo-700 md:flex md:w-[190px] md:gap-0">
                     <div className={"flex flex-col items-center"}>
                       <span>내 강의실 입장</span>
                     </div>
-                    <FaArrowRight className="ml-2" />
+                    <FaSignInAlt className="ml-2" size={22} />
                   </CultureMemberButton>
 
-                  <MoveToPurchaseCourseButton className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-4 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:min-w-[150px]">
-                    {/*개인 회원 <FaArrowRight className="ml-2" />*/}
-                    <div className={"flex flex-col items-center"}>
-                      <span>수강 신청 하기</span>
-                    </div>
-                    <FaArrowRight className="ml-2" />
-                  </MoveToPurchaseCourseButton>
+                  {/*<MoveToPurchaseCourseButton className="hidden cursor-pointer items-center rounded-xl bg-indigo-600 px-6 py-4 text-lg text-white opacity-50 hover:bg-indigo-700 md:flex md:w-[190px]">*/}
+                  {/*  /!*개인 회원 <FaArrowRight className="ml-2" />*!/*/}
+                  {/*  <div className={"flex flex-col items-center"}>*/}
+                  {/*    <span>수강 신청 하기</span>*/}
+                  {/*  </div>*/}
+                  {/*  <FaArrowRight className="ml-2" />*/}
+                  {/*</MoveToPurchaseCourseButton>*/}
                 </div>
 
                 {/* 개설 강좌 보기 */}
