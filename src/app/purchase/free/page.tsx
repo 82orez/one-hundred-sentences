@@ -103,7 +103,7 @@ const PurchasePage = () => {
 
                 <div className={"mt-4 border-b"}></div>
                 <div
-                  className={"mt-2 flex cursor-pointer items-center justify-center gap-2 text-blue-600 hover:underline"}
+                  className={"mt-2 flex cursor-pointer items-center justify-center gap-2 text-lg font-semibold text-blue-600 hover:underline"}
                   onClick={() => router.push(`/course-detail/free`)}>
                   <FaHandPointRight />
                   <div>강의 소개 페이지 보기</div>
