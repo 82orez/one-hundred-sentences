@@ -9,7 +9,7 @@ export default function EnglishCoursePage() {
   const router = useRouter();
 
   const handleEnrollment = () => {
-    if (confirm("무료 수강 신청 페이지로 이동하시겠습니까?")) {
+    if (confirm("무료 수업 참여 신청 페이지로 이동하시겠습니까?")) {
       router.replace("/purchase/free");
     }
   };
@@ -56,7 +56,7 @@ export default function EnglishCoursePage() {
             {/*<h1 className="text-primary mb-4 text-5xl font-bold">대국민 여행영어 뽀개기 - 공동체반</h1>*/}
             <p className="text-secondary mb-4 text-2xl font-semibold md:mb-4">완전무료! 함께 도전 참여하세요!!</p>
             <button className="btn btn-primary btn-lg" onClick={handleEnrollment}>
-              무료 수강 신청하기
+              무료 수업 참여 신청
             </button>
           </motion.div>
         </div>
@@ -164,7 +164,7 @@ export default function EnglishCoursePage() {
       <section className="bg-primary text-primary-content mt-8 py-6 text-center md:py-12">
         <h2 className="mb-4 text-3xl font-bold md:mb-6">지금 바로 시작하세요!</h2>
         <button className="btn btn-secondary ondary btn-lg" onClick={handleEnrollment}>
-          무료 수강 신청하기
+          무료 수업 참여 신청
         </button>
       </section>
     </div>
