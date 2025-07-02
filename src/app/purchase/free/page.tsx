@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { FaHandPointRight } from "react-icons/fa";
+import { FaHandPointRight, FaSignInAlt } from "react-icons/fa";
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState("free");
@@ -106,8 +106,15 @@ const PurchasePage = () => {
             <div
               className={"mt-8 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
               onClick={() => router.push(`/course-detail/free`)}>
-              <FaHandPointRight />
+              <FaHandPointRight size={22} />
               <div>강의 소개 페이지 보기</div>
+            </div>
+
+            <div
+              className={"mt-4 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
+              onClick={() => window.open("https://open.kakao.com/o/g8fWLNEh", "_blank")}>
+              <FaSignInAlt size={22} />
+              <div>오픈 채팅방 참여하기</div>
             </div>
           </div>
 

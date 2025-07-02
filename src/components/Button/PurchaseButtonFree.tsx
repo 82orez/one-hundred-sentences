@@ -94,7 +94,7 @@ export function PurchaseButtonFree({ id, title, price, onValidationErrorAction }
           <span className="text-primary text-lg font-bold">{price?.toLocaleString()}원</span>
         </div>
         <button onClick={handlePurchase} disabled={isPurchasing} className="btn btn-primary w-full py-6 text-lg font-bold">
-          {isPurchasing ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : id === "free" ? "시작하기" : "수강 신청"}
+          {isPurchasing ? <AiOutlineLoading3Quarters className="animate-spin text-xl" /> : id === "free" ? "시작하기" : "무료 수업 참여 신청"}
         </button>
       </div>
     </div>

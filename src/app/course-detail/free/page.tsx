@@ -3,7 +3,9 @@
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { FaHandPointRight } from "react-icons/fa";
+import { FaHandPointRight, FaSignInAlt } from "react-icons/fa";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function EnglishCoursePage() {
   const router = useRouter();
@@ -59,6 +61,13 @@ export default function EnglishCoursePage() {
               무료 수업 참여 신청
             </button>
           </motion.div>
+
+          <div
+            className={"mt-8 flex cursor-pointer items-center justify-center gap-2 text-lg font-semibold text-blue-600 hover:underline"}
+            onClick={() => window.open("https://open.kakao.com/o/g8fWLNEh", "_blank")}>
+            <FaSignInAlt size={22} />
+            <div>오픈 채팅방 참여하기</div>
+          </div>
         </div>
       </section>
 
