@@ -47,8 +47,7 @@ export default function EnglishCoursePage() {
           </div>
           <p className="mt-6 text-base text-[#4A2C20] md:text-xl">프렌딩은 그 불안감을 함께 해결하고자 이 프로젝트를 기획했습니다.</p>
           <p className="mt-2 text-base text-[#4A2C20] md:text-xl">
-            이 프로젝트는 팀원들이 공동체를 이루어 함께 끝까지 완주하는 대국민 <span className={"font-semibold underline"}>완전 무료</span> 영어 학습
-            프로그램입니다.
+            이 프로젝트는 팀원들이 공동체를 이루어 함께 끝까지 완주하는 대국민 영어 학습 프로그램입니다.
           </p>
         </div>
       </div>
@@ -84,11 +83,17 @@ export default function EnglishCoursePage() {
                 </li>
 
                 <li className={"list-disc"}>
-                  <strong>강의 시간 :</strong> 매주 화/목 오후 8시 (총 24회)
+                  <strong>수업 일시 :</strong> 매주 화/목 오후 8시
                 </li>
+
                 <li className={"list-disc"}>
-                  <strong>수업 기간 :</strong> 6월 5일 ~ 8월 26일
+                  <strong>수업 시간 :</strong> 25분
                 </li>
+
+                <li className={"list-disc"}>
+                  <strong>수업 기간 :</strong> 6월 5일 ~ 8월 26일 (총 24회)
+                </li>
+
                 <li className={"list-disc"}>
                   <strong>비용 :</strong> <span className="text-primary font-bold">98,000원 (24회 기준)</span>
                 </li>
