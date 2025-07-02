@@ -13,7 +13,7 @@ import { ArrowLeft } from "lucide-react";
 import { FaHandPointRight, FaSignInAlt } from "react-icons/fa";
 
 const PurchasePage = () => {
-  const [selectedPlan, setSelectedPlan] = useState("free");
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const router = useRouter();
   const { status } = useSession();
 
@@ -58,7 +58,7 @@ const PurchasePage = () => {
                 className={`relative w-full max-w-80 cursor-pointer rounded-lg border p-8 text-center shadow-lg transition-transform duration-300 ease-in-out ${
                   selectedPlan === plan.id ? "scale-105 border-blue-600 bg-blue-50 shadow-2xl" : "border-gray-300 bg-white"
                 }`}
-                onClick={() => setSelectedPlan(plan.id)}>
+                onClick={() => setSelectedPlan(selectedPlan === plan.id ? null : plan.id)}>
                 {/* 선택된 경우 체크 아이콘 표시 */}
                 {selectedPlan === plan.id ? (
                   <div className="absolute top-4 left-4 text-blue-600">
