@@ -74,23 +74,30 @@ export default function EnglishCoursePage() {
             <div className="mt-4 grid gap-6 text-lg md:grid-cols-1">
               <ul className="space-y-4 px-4">
                 <li className={"list-disc"}>
-                  <strong>강의명:</strong> 대국민 여행영어 뽀개기 공동체반
+                  <strong>강의명 :</strong> 대국민 여행영어 뽀개기 공동체반
                 </li>
                 <li className={"list-disc"}>
-                  <strong>강사:</strong> 박민규 대표 강사 (Sean)
-                </li>
-                <li className={"list-disc"}>
-                  <strong>교재:</strong> ShallE 100 여행영어
+                  <strong>강사 :</strong> 박민규 대표 강사 (Sean)
                 </li>
 
                 <li className={"list-disc"}>
-                  <strong>강의 시간:</strong> 매주 일요일 오후 8시 (총 20회)
+                  <strong>교재 :</strong> ShallE 100 여행영어
                 </li>
+
                 <li className={"list-disc"}>
-                  <strong>수업 기간:</strong> 7월 6일 ~ 11월 23일
+                  <strong>수업 일시 :</strong> 매주 일요일 오후 8시
                 </li>
+
                 <li className={"list-disc"}>
-                  <strong>비용:</strong> <span className="text-primary font-bold">무료</span>
+                  <strong>수업 시간 :</strong> 15분 (총 20회)
+                </li>
+
+                <li className={"list-disc"}>
+                  <strong>수업 기간 :</strong> 7월 6일 ~ 11월 23일
+                </li>
+
+                <li className={"list-disc"}>
+                  <strong> 수강료 :</strong> <span className="text-primary font-bold">무료</span>
                 </li>
               </ul>
             </div>

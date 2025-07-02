@@ -87,15 +87,15 @@ export default function EnglishCoursePage() {
                 </li>
 
                 <li className={"list-disc"}>
-                  <strong>수업 시간 :</strong> 25분
+                  <strong>수업 시간 :</strong> 25분 (총 24회)
                 </li>
 
                 <li className={"list-disc"}>
-                  <strong>수업 기간 :</strong> 6월 5일 ~ 8월 26일 (총 24회)
+                  <strong>수업 기간 :</strong> 6월 5일 ~ 8월 26일
                 </li>
 
                 <li className={"list-disc"}>
-                  <strong>비용 :</strong> <span className="text-primary font-bold">98,000원 (24회 기준)</span>
+                  <strong>수강료 :</strong> <span className="text-primary font-bold">98,000원 (24회 기준)</span>
                 </li>
               </ul>
             </div>
