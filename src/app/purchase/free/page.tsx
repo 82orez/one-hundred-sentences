@@ -51,7 +51,7 @@ const PurchasePage = () => {
 
           {/* Grid for Plans */}
           {/*<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">*/}
-          <div className="flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center">
             {pricePlans.map((plan) => (
               <div
                 key={plan.id}
@@ -100,16 +100,15 @@ const PurchasePage = () => {
                     ))}
                   </ul>
                 </div>
-
-                <div className={"mt-4 border-b"}></div>
-                <div
-                  className={"mt-2 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
-                  onClick={() => router.push(`/course-detail/free`)}>
-                  <FaHandPointRight />
-                  <div>강의 소개 페이지 보기</div>
-                </div>
               </div>
             ))}
+
+            <div
+              className={"mt-8 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
+              onClick={() => router.push(`/course-detail/free`)}>
+              <FaHandPointRight />
+              <div>강의 소개 페이지 보기</div>
+            </div>
           </div>
 
           <PurchaseButtonFree
