@@ -1,20 +1,16 @@
 "use client";
 
-// import { Button } from "@/components/ui/button";
-import { useFreeEnrollment } from "@/hooks/useFreeEnrollment";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { FaHandPointRight } from "react-icons/fa";
 
 export default function EnglishCoursePage() {
-  const { mutate: enrollCourse } = useFreeEnrollment();
+  const router = useRouter();
 
   const handleEnrollment = () => {
-    if (confirm("무료 수강을 신청하시겠습니까?")) {
-      enrollCourse({
-        courseId: "cmce4nkls0001ftfvn4xwicj8",
-        courseTitle: "대국민 여행영어 뽀개기 공동체반",
-      });
+    if (confirm("무료 수강 신청 페이지로 이동하시겠습니까?")) {
+      router.replace("/purchase/free");
     }
   };
 
