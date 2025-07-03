@@ -151,7 +151,7 @@ export default function EnglishCoursePage() {
           실제 여행에 필요한 상황을 바탕으로 문장 구성, 쓸모있는 표현들만 배웁니다. 입국심사, 공항, 쇼핑, 현지인들과 대화 등을 알차게 배워요.
         </p>
         <div className="mt-2 grid gap-4 md:mt-4 md:grid-cols-2 lg:grid-cols-3">
-          {[...Array(20)].map((_, index) => (
+          {[...Array(24)].map((_, index) => (
             <div key={index} className="card bg-base-100 shadow-hover">
               <div className="card-body text-lg">
                 <h3 className="card-title text-lg">Unit {String(index + 1).padStart(2, "0")}</h3>
@@ -180,21 +180,25 @@ function getUnitTitle(unit: number): string {
     "공항 보안 검색 대에서",
     "공항에서 택시 타고 호텔 가기",
     "마트에서 아시안 푸드 찾기",
+    "Review Unit 1 ~ 5",
     "커피숍에서 주문하기",
     "시내에서 길 묻기",
     "호텔 체크인하기",
     "호텔에서 물과 타올 요청하기",
     "호텔에서 조식 먹기",
+    "Review Unit 7 ~ 11",
     "쇼핑몰에서 옷 사기",
     "아이스크림 가게에서 주문하기",
     "기념품 추천 받기",
     "도서관에서 책 빌리기",
     "해변에서 사진 부탁하기",
+    "Review Unit 13 ~ 17",
     "박물관 투어에 대해 물어보기",
     "이탈리안 레스토랑에서 추천 받기",
     "산책길에서 강아지 주인과 얘기하기",
     "버스 카드 충전하기",
     "공항 셀프 체크인",
+    "Review Unit 19 ~ 23",
   ];
   return titles[unit - 1];
 }
