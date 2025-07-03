@@ -46,7 +46,7 @@ const PurchasePage = () => {
 
       {/* Pricing Section */}
       <section className="py-6 md:py-12">
-        <div className="mx-auto max-w-5xl px-4 text-center">
+        <div className="mx-auto max-w-5xl px-4 text-center whitespace-pre-line">
           {/*<h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">대국민 완전 무료 시리즈!</h2>*/}
 
           {/* Grid for Plans */}
@@ -71,9 +71,7 @@ const PurchasePage = () => {
                 )}
 
                 {/* 강좌 제목 표시 부분 */}
-                <h3 className={`text-xl font-bold whitespace-pre-line ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>
-                  {plan.title}
-                </h3>
+                <h3 className={`text-xl font-bold ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>{plan.title}</h3>
 
                 <div className={"mt-4 border-b"}></div>
 

@@ -1,4 +1,24 @@
 export const pricePlansForCourse = [
+  {
+    id: "cmbfkd0nh001dftdnumra0s03",
+    title: "ShallE 100 여행영어\n(6/5일 개강)",
+    price: 120000,
+    description: [
+      "박민규(Sean) 대표 강사",
+      {
+        title: "주2회(25분) 1:N 온라인 수업",
+        details: ["매주 화/목 오후 8시 수업", "총 24회 (6월 5일 ~ 8월 26일)", "중간 참여 가능", "수업 시작 전, zoom 설치 필요"],
+      },
+      {
+        title: "온라인 학습 어플 무료 사용권",
+        details: ["예습, 복습 및 AI 테스트 가능"],
+      },
+      {
+        title: "수강료 : 12만원 (24회 기준)",
+        details: ["중간 참여 시, 1회당 5,000원", "예) 12회 수업 신청 -> 6만원"],
+      },
+    ],
+  },
   // {
   //   id: "testfreecourse2506",
   //   title: "Test - 6월 무료 체험반",
@@ -15,37 +35,4 @@ export const pricePlansForCourse = [
   //     },
   //   ],
   // },
-  {
-    id: "cmbfkd0nh001dftdnumra0s03",
-    title: "ShallE 100 여행영어\n(6/5일 개강)",
-    price: 98000,
-    description: [
-      "박민규(Sean) 대표 강사",
-      {
-        title: "주2회(25분) 1:N 온라인 수업",
-        details: ["매주 화/목 오후 8시 수업", "총 24회 (6월 5일 ~ 8월 26일)", "중간 참여 가능", "수업 시작 전, zoom 설치 필요"],
-      },
-      {
-        title: "온라인 학습 어플 무료 사용권",
-        details: ["예습, 복습 및 AI 테스트 가능"],
-      },
-      "수강료 : 98,000원(24회 기준)",
-      {
-        title: "무통장 입금 안내",
-        details: ["예금주: (주)프렌딩", "국민은행 680401-00-111448"],
-      },
-    ],
-  },
-  //   {
-  //     id: "basic",
-  //     title: "Basic Plan",
-  //     price: 1100,
-  //     description: "월 $10 - 주요 기능 포함",
-  //   },
-  //   {
-  //     id: "pro",
-  //     title: "Pro Plan",
-  //     price: 2200,
-  //     description: "월 $30 - 모든 기능 + 추가 옵션!",
-  //   },
 ];
