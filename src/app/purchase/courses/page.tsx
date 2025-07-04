@@ -19,6 +19,7 @@ const PurchasePage = () => {
   const [selectedCourseForSchedule, setSelectedCourseForSchedule] = useState<{
     id: string;
     title: string;
+    pricePerHour: number;
   } | null>(null);
   const router = useRouter();
   const { status } = useSession();
@@ -39,8 +40,8 @@ const PurchasePage = () => {
   console.log(`selectedPlanInfo: `, selectedPlanInfo);
 
   // 수업일정 보기 버튼 클릭 핸들러
-  const handleScheduleClick = (courseId: string, courseTitle: string) => {
-    setSelectedCourseForSchedule({ id: courseId, title: courseTitle });
+  const handleScheduleClick = (courseId: string, courseTitle: string, coursePricePerHour: number) => {
+    setSelectedCourseForSchedule({ id: courseId, title: courseTitle, pricePerHour: coursePricePerHour });
     setIsModalOpen(true);
   };
 
@@ -121,7 +122,7 @@ const PurchasePage = () => {
                   className={"btn btn-primary mt-8"}
                   onClick={(e) => {
                     e.stopPropagation(); // 카드 클릭 이벤트 방지
-                    handleScheduleClick(plan.id, plan.title);
+                    handleScheduleClick(plan.id, plan.title, plan.pricePerHour);
                   }}>
                   수업일정 보기
                 </button>
@@ -160,6 +161,7 @@ const PurchasePage = () => {
           onClose={handleCloseModal}
           courseId={selectedCourseForSchedule.id}
           courseTitle={selectedCourseForSchedule.title}
+          coursePricePerHour={selectedCourseForSchedule.pricePerHour}
         />
       )}
     </div>

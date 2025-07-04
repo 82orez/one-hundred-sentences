@@ -3,6 +3,7 @@ export const pricePlansForCourse = [
     id: "cmbfkd0nh001dftdnumra0s03",
     title: "ShallE 100 여행영어\n(6/5일 개강)",
     price: 120000,
+    pricePerHour: 5000,
     description: [
       "박민규(Sean) 대표 강사",
       {

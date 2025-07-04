@@ -21,9 +21,10 @@ interface ClassScheduleModalProps {
   onClose: () => void;
   courseId: string;
   courseTitle: string;
+  coursePricePerHour: number;
 }
 
-const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose, courseId, courseTitle }) => {
+const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose, courseId, courseTitle, coursePricePerHour }) => {
   const [classDates, setClassDates] = useState<ClassDate[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [remainingClasses, setRemainingClasses] = useState<number>(0);
@@ -183,10 +184,11 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
             {selectedDate && (
               <div className="rounded-lg bg-blue-50 p-4">
                 <div className="text-center">
-                  <p className="text-sm font-medium text-blue-800">선택된 수업일</p>
+                  <p className="font-medium text-blue-800">선택하신 수업 시작일</p>
                   <p className="text-lg font-bold text-blue-900">{format(selectedDate, "yyyy년 MM월 dd일 (E)", { locale: ko })}</p>
-                  <p className="mt-2 text-sm text-blue-700">
-                    이 날짜를 포함하여 <span className="font-bold text-blue-900">{remainingClasses}회</span>의 수업이 남았습니다.
+                  <p className="mt-2 text-blue-700">
+                    수업 시작일부터 <span className="font-bold text-blue-900">{remainingClasses}회</span>의 수업이 진행됩니다.{" "}
+                    <span className="font-bold text-blue-900">수강료는 {(coursePricePerHour * remainingClasses).toLocaleString()}원</span> 입니다.
                   </p>
                 </div>
               </div>
