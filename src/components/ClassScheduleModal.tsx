@@ -59,9 +59,19 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
     return classDateObjects.some((classDate) => format(classDate, "yyyy-MM-dd") === format(date, "yyyy-MM-dd"));
   };
 
+  // 오늘을 포함한 이전 수업 날짜인지 확인
+  const isPastOrTodayClassDate = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
+    const checkDate = new Date(date);
+    checkDate.setHours(0, 0, 0, 0);
+
+    return isClassDate(date) && checkDate <= today;
+  };
+
   // 날짜 클릭 핸들러
   const handleDayClick: DayClickEventHandler = (day) => {
-    if (isClassDate(day)) {
+    if (isClassDate(day) && !isPastOrTodayClassDate(day)) {
       setSelectedDate(day);
       calculateRemainingClasses(day);
     }
@@ -135,6 +145,16 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
                 .class-date:hover {
                   background-color: #fbbf24;
                 }
+                .past-class-date {
+                  background-color: #f3f4f6;
+                  color: #9ca3af;
+                  font-weight: bold;
+                  border-radius: 0.5rem;
+                  cursor: not-allowed;
+                }
+                .past-class-date:hover {
+                  background-color: #f3f4f6;
+                }
               `}</style>
 
               <DayPicker
@@ -142,11 +162,14 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
                 selected={selectedDate}
                 onDayClick={handleDayClick}
                 locale={ko}
+                disabled={isPastOrTodayClassDate}
                 modifiers={{
-                  classDate: (date) => isClassDate(date),
+                  classDate: (date) => isClassDate(date) && !isPastOrTodayClassDate(date),
+                  pastClassDate: (date) => isPastOrTodayClassDate(date),
                 }}
                 modifiersClassNames={{
                   classDate: "class-date",
+                  pastClassDate: "past-class-date",
                   selected: "rdp-day_selected",
                   today: "rdp-day_today",
                 }}
