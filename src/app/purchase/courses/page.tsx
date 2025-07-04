@@ -11,9 +11,15 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { FaHandPointRight } from "react-icons/fa";
 import { PurchaseButtonCourse } from "@/components/Button/PurchaseButtonCourse";
+import ClassScheduleModal from "@/components/ClassScheduleModal";
 
 const PurchasePage = () => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedCourseForSchedule, setSelectedCourseForSchedule] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
   const router = useRouter();
   const { status } = useSession();
 
@@ -31,6 +37,18 @@ const PurchasePage = () => {
 
   const selectedPlanInfo = pricePlansForCourse.find((plan) => plan.id === selectedPlan);
   console.log(`selectedPlanInfo: `, selectedPlanInfo);
+
+  // 수업일정 보기 버튼 클릭 핸들러
+  const handleScheduleClick = (courseId: string, courseTitle: string) => {
+    setSelectedCourseForSchedule({ id: courseId, title: courseTitle });
+    setIsModalOpen(true);
+  };
+
+  // 모달 닫기 핸들러
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedCourseForSchedule(null);
+  };
 
   // 인증되지 않은 상태라면 페이지 내용을 렌더링하지 않음
   if (status === "unauthenticated") return null;
@@ -98,6 +116,15 @@ const PurchasePage = () => {
                     ))}
                   </ul>
                 </div>
+
+                <button
+                  className={"btn mt-8"}
+                  onClick={(e) => {
+                    e.stopPropagation(); // 카드 클릭 이벤트 방지
+                    handleScheduleClick(plan.id, plan.title);
+                  }}>
+                  수업일정 보기
+                </button>
               </div>
             ))}
 
@@ -125,6 +152,16 @@ const PurchasePage = () => {
           </div>
         </div>
       </section>
+
+      {/* 수업일정 모달 */}
+      {selectedCourseForSchedule && (
+        <ClassScheduleModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          courseId={selectedCourseForSchedule.id}
+          courseTitle={selectedCourseForSchedule.title}
+        />
+      )}
     </div>
   );
 };
