@@ -92,7 +92,7 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
   if (!isOpen) return null;
 
   return (
-    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
       <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
         {/* 헤더 */}
         <div className="mb-4 flex items-center justify-between">
@@ -111,7 +111,7 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
           <>
             {/* 안내 텍스트 */}
             <div className="mb-4 text-center">
-              <p className="text-sm text-gray-600">수업 날짜를 클릭하면 남은 수업 수를 확인할 수 있습니다.</p>
+              <p className="text-gray-600">원하는 수업 시작일을 선택하면 남은 수업 횟수를 확인할 수 있습니다.</p>
             </div>
 
             {/* 달력 */}
@@ -170,28 +170,28 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
             )}
 
             {/* 전체 수업 일정 목록 */}
-            {classDates.length > 0 && (
-              <div className="mt-6">
-                <h3 className="mb-3 text-lg font-medium text-gray-900">전체 수업 일정</h3>
-                <div className="max-h-40 overflow-y-auto">
-                  <div className="space-y-2">
-                    {classDates.map((classDate) => (
-                      <div key={classDate.id} className="rounded-lg border border-gray-200 p-3 text-sm">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">{format(new Date(classDate.date), "MM월 dd일 (E)", { locale: ko })}</span>
-                          {classDate.startTime && (
-                            <span className="text-gray-500">
-                              {classDate.startTime}
-                              {classDate.endTime && ` - ${classDate.endTime}`}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
+            {/*{classDates.length > 0 && (*/}
+            {/*  <div className="mt-6">*/}
+            {/*    <h3 className="mb-3 text-lg font-medium text-gray-900">전체 수업 일정</h3>*/}
+            {/*    <div className="max-h-40 overflow-y-auto">*/}
+            {/*      <div className="space-y-2">*/}
+            {/*        {classDates.map((classDate) => (*/}
+            {/*          <div key={classDate.id} className="rounded-lg border border-gray-200 p-3 text-sm">*/}
+            {/*            <div className="flex items-center justify-between">*/}
+            {/*              <span className="font-medium">{format(new Date(classDate.date), "MM월 dd일 (E)", { locale: ko })}</span>*/}
+            {/*              {classDate.startTime && (*/}
+            {/*                <span className="text-gray-500">*/}
+            {/*                  {classDate.startTime}*/}
+            {/*                  {classDate.endTime && ` - ${classDate.endTime}`}*/}
+            {/*                </span>*/}
+            {/*              )}*/}
+            {/*            </div>*/}
+            {/*          </div>*/}
+            {/*        ))}*/}
+            {/*      </div>*/}
+            {/*    </div>*/}
+            {/*  </div>*/}
+            {/*)}*/}
           </>
         )}
 

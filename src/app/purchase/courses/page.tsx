@@ -118,7 +118,7 @@ const PurchasePage = () => {
                 </div>
 
                 <button
-                  className={"btn mt-8"}
+                  className={"btn btn-primary mt-8"}
                   onClick={(e) => {
                     e.stopPropagation(); // 카드 클릭 이벤트 방지
                     handleScheduleClick(plan.id, plan.title);
