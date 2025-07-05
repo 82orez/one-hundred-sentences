@@ -40,9 +40,27 @@ const PurchasePage = () => {
   console.log(`selectedPlanInfo: `, selectedPlanInfo);
 
   // 수업일정 보기 버튼 클릭 핸들러
-  const handleScheduleClick = (courseId: string, courseTitle: string, coursePricePerHour: number) => {
-    setSelectedCourseForSchedule({ id: courseId, title: courseTitle, pricePerHour: coursePricePerHour });
-    setIsModalOpen(true);
+  const handleScheduleClick = async (courseId: string, courseTitle: string, coursePricePerHour: number) => {
+    try {
+      // 사용자 정보 확인
+      const response = await fetch("/api/payment/check-user-info");
+      const data = await response.json();
+
+      if (!data.isProfileComplete) {
+        if (confirm("아직 실제 이름과 전화 번호가 등록되지 않았습니다. 회원 정보 수정창으로 이동하시겠습니까?")) {
+          router.push("/users/edit");
+          return;
+        }
+        return;
+      }
+
+      // 사용자 정보가 완료되었다면 모달 열기
+      setSelectedCourseForSchedule({ id: courseId, title: courseTitle, pricePerHour: coursePricePerHour });
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("사용자 정보 확인 중 오류:", error);
+      toast.error("사용자 정보를 확인하는 중 오류가 발생했습니다.");
+    }
   };
 
   // 모달 닫기 핸들러
@@ -119,7 +137,7 @@ const PurchasePage = () => {
                 </div>
 
                 <button
-                  className={"btn btn-primary mt-8"}
+                  className={"btn btn-primary mt-8 text-[1rem]"}
                   onClick={(e) => {
                     e.stopPropagation(); // 카드 클릭 이벤트 방지
                     handleScheduleClick(plan.id, plan.title, plan.pricePerHour);
