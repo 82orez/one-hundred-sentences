@@ -122,7 +122,7 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
           <>
             {/* 안내 텍스트 */}
             <div className="mb-4 text-center">
-              <p className="text-gray-600">원하는 수업 시작일을 선택하면 남은 수업 횟수를 확인할 수 있습니다.</p>
+              <p className="text-gray-600">원하는 수업 시작일을 선택하시면 수업 횟수와 수강료를 확인할 수 있습니다.</p>
             </div>
 
             {/* 달력 */}
