@@ -24,16 +24,117 @@ interface ClassScheduleModalProps {
   coursePricePerHour: number;
 }
 
+interface UserInfo {
+  realName: string;
+  phone: string;
+}
+
+interface EnrollmentConfirmModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  userInfo: UserInfo;
+  courseTitle: string;
+  selectedDate: Date;
+  remainingClasses: number;
+  totalFee: number;
+}
+
+const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
+  isOpen,
+  onClose,
+  userInfo,
+  courseTitle,
+  selectedDate,
+  remainingClasses,
+  totalFee,
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="bg-opacity-50 fixed inset-0 z-[60] flex items-center justify-center bg-black/50">
+      <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
+        {/* 헤더 */}
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-gray-900">수강 신청 확인</h2>
+          <button onClick={onClose} className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* 신청 내역 */}
+        <div className="space-y-4">
+          {/* 신청자 정보 */}
+          <div className="rounded-lg bg-gray-50 p-4">
+            <h3 className="mb-3 text-lg font-medium text-gray-900">신청자 정보</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-gray-600">이름:</span>
+                <span className="font-medium">{userInfo.realName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">전화번호:</span>
+                <span className="font-medium">{userInfo.phone}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 강좌 정보 */}
+          <div className="rounded-lg bg-blue-50 p-4">
+            <h3 className="mb-3 text-lg font-medium text-blue-900">강좌 정보</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-blue-700">강좌명:</span>
+                <span className="font-medium text-blue-900">{courseTitle}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-blue-700">수업 시작일:</span>
+                <span className="font-medium text-blue-900">{format(selectedDate, "yyyy년 MM월 dd일 (E)", { locale: ko })}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-blue-700">수업 횟수:</span>
+                <span className="font-medium text-blue-900">{remainingClasses}회</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-blue-700">수강료:</span>
+                <span className="text-lg font-bold text-blue-900">{totalFee.toLocaleString()}원</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 버튼 */}
+        <div className="mt-6 flex space-x-3">
+          <button onClick={onClose} className="flex-1 rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700">
+            취소
+          </button>
+          <button
+            onClick={() => {
+              // 여기에 실제 수강 신청 로직을 추가하세요
+              console.log("수강 신청 처리");
+              onClose();
+            }}
+            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+            신청하기
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose, courseId, courseTitle, coursePricePerHour }) => {
   const [classDates, setClassDates] = useState<ClassDate[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [remainingClasses, setRemainingClasses] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showEnrollmentModal, setShowEnrollmentModal] = useState<boolean>(false);
+  const [userInfo, setUserInfo] = useState<UserInfo>({ realName: "", phone: "" });
 
   // 강좌 일정 데이터 가져오기
   useEffect(() => {
     if (isOpen && courseId) {
       fetchClassDates();
+      fetchUserInfo();
     }
   }, [isOpen, courseId]);
 
@@ -49,6 +150,21 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
       console.error("Error fetching class dates:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchUserInfo = async () => {
+    try {
+      const response = await fetch("/api/user/profile");
+      if (response.ok) {
+        const data = await response.json();
+        setUserInfo({
+          realName: data.realName || "",
+          phone: data.phone || "",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching user info:", error);
     }
   };
 
@@ -87,6 +203,11 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
     setRemainingClasses(futureClasses.length);
   };
 
+  // 수강 신청 버튼 클릭 핸들러
+  const handleEnrollmentClick = () => {
+    setShowEnrollmentModal(true);
+  };
+
   // 모달이 열릴 때 body 스크롤 방지
   useEffect(() => {
     if (isOpen) {
@@ -103,131 +224,128 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
   if (!isOpen) return null;
 
   return (
-    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
-        {/* 헤더 */}
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900">{courseTitle}</h2>
-          <button onClick={onClose} className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* 로딩 상태 */}
-        {isLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="text-gray-500">수업 일정을 불러오는 중...</div>
+    <>
+      <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+        <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
+          {/* 헤더 */}
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-900">{courseTitle}</h2>
+            <button onClick={onClose} className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+              <X size={20} />
+            </button>
           </div>
-        ) : (
-          <>
-            {/* 안내 텍스트 */}
-            <div className="mb-4 text-center">
-              <p className="text-gray-600">원하는 수업 시작일을 선택하시면 수업 횟수와 수강료를 확인할 수 있습니다.</p>
+
+          {/* 로딩 상태 */}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-gray-500">수업 일정을 불러오는 중...</div>
             </div>
-
-            {/* 달력 */}
-            <div className="mb-4 flex justify-center">
-              <style jsx global>{`
-                .rdp-day_selected {
-                  background-color: #0ea5e9 !important;
-                  color: white !important;
-                  border-radius: 0.5rem;
-                }
-                .rdp-day_today {
-                  font-weight: bold;
-                  border: 1px solid #0ea5e9;
-                }
-                .class-date {
-                  background-color: #fef3c7;
-                  color: #d97706;
-                  font-weight: bold;
-                  border-radius: 0.5rem;
-                }
-                .class-date:hover {
-                  background-color: #fbbf24;
-                }
-                .past-class-date {
-                  background-color: #f3f4f6;
-                  color: #9ca3af;
-                  font-weight: bold;
-                  border-radius: 0.5rem;
-                  cursor: not-allowed;
-                }
-                .past-class-date:hover {
-                  background-color: #f3f4f6;
-                }
-              `}</style>
-
-              <DayPicker
-                mode="single"
-                selected={selectedDate}
-                onDayClick={handleDayClick}
-                locale={ko}
-                disabled={isPastOrTodayClassDate}
-                modifiers={{
-                  classDate: (date) => isClassDate(date) && !isPastOrTodayClassDate(date),
-                  pastClassDate: (date) => isPastOrTodayClassDate(date),
-                }}
-                modifiersClassNames={{
-                  classDate: "class-date",
-                  pastClassDate: "past-class-date",
-                  selected: "rdp-day_selected",
-                  today: "rdp-day_today",
-                }}
-                formatters={{
-                  formatCaption: (date) => format(date, "yyyy년 MM월", { locale: ko }),
-                }}
-              />
-            </div>
-
-            {/* 선택된 날짜 정보 */}
-            {selectedDate && (
-              <div className="rounded-lg bg-blue-50 p-4">
-                <div className="text-center">
-                  <p className="font-medium text-blue-800">선택하신 수업 시작일</p>
-                  <p className="text-lg font-bold text-blue-900">{format(selectedDate, "yyyy년 MM월 dd일 (E)", { locale: ko })}</p>
-                  <p className="mt-2 text-blue-700">
-                    수업 시작일부터 <span className="font-bold text-blue-900">{remainingClasses}회</span>의 수업이 진행됩니다.{" "}
-                    <span className="font-bold text-blue-900">수강료는 {(coursePricePerHour * remainingClasses).toLocaleString()}원</span> 입니다.
-                  </p>
-                </div>
+          ) : (
+            <>
+              {/* 안내 텍스트 */}
+              <div className="mb-4 text-center">
+                <p className="text-gray-600">원하는 수업 시작일을 선택하시면 수업 횟수와 수강료를 확인할 수 있습니다.</p>
               </div>
-            )}
 
-            {/* 전체 수업 일정 목록 */}
-            {/*{classDates.length > 0 && (*/}
-            {/*  <div className="mt-6">*/}
-            {/*    <h3 className="mb-3 text-lg font-medium text-gray-900">전체 수업 일정</h3>*/}
-            {/*    <div className="max-h-40 overflow-y-auto">*/}
-            {/*      <div className="space-y-2">*/}
-            {/*        {classDates.map((classDate) => (*/}
-            {/*          <div key={classDate.id} className="rounded-lg border border-gray-200 p-3 text-sm">*/}
-            {/*            <div className="flex items-center justify-between">*/}
-            {/*              <span className="font-medium">{format(new Date(classDate.date), "MM월 dd일 (E)", { locale: ko })}</span>*/}
-            {/*              {classDate.startTime && (*/}
-            {/*                <span className="text-gray-500">*/}
-            {/*                  {classDate.startTime}*/}
-            {/*                  {classDate.endTime && ` - ${classDate.endTime}`}*/}
-            {/*                </span>*/}
-            {/*              )}*/}
-            {/*            </div>*/}
-            {/*          </div>*/}
-            {/*        ))}*/}
-            {/*      </div>*/}
-            {/*    </div>*/}
-            {/*  </div>*/}
-            {/*)}*/}
-          </>
-        )}
+              {/* 달력 */}
+              <div className="mb-4 flex justify-center">
+                <style jsx global>{`
+                  .rdp-day_selected {
+                    background-color: #0ea5e9 !important;
+                    color: white !important;
+                    border-radius: 0.5rem;
+                  }
+                  .rdp-day_today {
+                    font-weight: bold;
+                    border: 1px solid #0ea5e9;
+                  }
+                  .class-date {
+                    background-color: #fef3c7;
+                    color: #d97706;
+                    font-weight: bold;
+                    border-radius: 0.5rem;
+                  }
+                  .class-date:hover {
+                    background-color: #fbbf24;
+                  }
+                  .past-class-date {
+                    background-color: #f3f4f6;
+                    color: #9ca3af;
+                    font-weight: bold;
+                    border-radius: 0.5rem;
+                    cursor: not-allowed;
+                  }
+                  .past-class-date:hover {
+                    background-color: #f3f4f6;
+                  }
+                `}</style>
 
-        {/* 닫기 버튼 */}
-        <div className="mt-6 flex justify-center">
-          <button onClick={onClose} className="rounded-lg bg-gray-600 px-6 py-2 text-white hover:bg-gray-700">
-            닫기
-          </button>
+                <DayPicker
+                  mode="single"
+                  selected={selectedDate}
+                  onDayClick={handleDayClick}
+                  locale={ko}
+                  disabled={isPastOrTodayClassDate}
+                  modifiers={{
+                    classDate: (date) => isClassDate(date) && !isPastOrTodayClassDate(date),
+                    pastClassDate: (date) => isPastOrTodayClassDate(date),
+                  }}
+                  modifiersClassNames={{
+                    classDate: "class-date",
+                    pastClassDate: "past-class-date",
+                    selected: "rdp-day_selected",
+                    today: "rdp-day_today",
+                  }}
+                  formatters={{
+                    formatCaption: (date) => format(date, "yyyy년 MM월", { locale: ko }),
+                  }}
+                />
+              </div>
+
+              {/* 선택된 날짜 정보 */}
+              {selectedDate && (
+                <div className="rounded-lg bg-blue-50 p-4">
+                  <div className="text-center">
+                    <p className="font-medium text-blue-800">선택하신 수업 시작일</p>
+                    <p className="text-lg font-bold text-blue-900">{format(selectedDate, "yyyy년 MM월 dd일 (E)", { locale: ko })}</p>
+                    <p className="mt-2 text-blue-700">
+                      수업 시작일부터 <span className="font-bold text-blue-900">{remainingClasses}회</span>의 수업이 진행됩니다.{" "}
+                      <span className="font-bold text-blue-900">수강료는 {(coursePricePerHour * remainingClasses).toLocaleString()}원</span> 입니다.
+                    </p>
+                  </div>
+
+                  <div className="mt-6 text-center">
+                    <button className="btn btn-primary" onClick={handleEnrollmentClick}>
+                      수강 대기 신청하기
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* 닫기 버튼 */}
+          <div className="mt-6 flex justify-center">
+            <button onClick={onClose} className="rounded-lg bg-gray-600 px-6 py-2 text-white hover:bg-gray-700">
+              닫기
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* 수강 신청 확인 모달 */}
+      {selectedDate && (
+        <EnrollmentConfirmModal
+          isOpen={showEnrollmentModal}
+          onClose={() => setShowEnrollmentModal(false)}
+          userInfo={userInfo}
+          courseTitle={courseTitle}
+          selectedDate={selectedDate}
+          remainingClasses={remainingClasses}
+          totalFee={coursePricePerHour * remainingClasses}
+        />
+      )}
+    </>
   );
 };
 
