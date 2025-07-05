@@ -6,6 +6,7 @@ import { ko } from "date-fns/locale";
 import { DayPicker, DayClickEventHandler } from "react-day-picker";
 import { X } from "lucide-react";
 import "react-day-picker/dist/style.css";
+import EnrollmentConfirmModal from "@/components/EnrollmentConfirmModal";
 
 interface ClassDate {
   id: string;
@@ -28,99 +29,6 @@ interface UserInfo {
   realName: string;
   phone: string;
 }
-
-interface EnrollmentConfirmModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  userInfo: UserInfo;
-  courseTitle: string;
-  selectedDate: Date;
-  remainingClasses: number;
-  totalFee: number;
-}
-
-const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
-  isOpen,
-  onClose,
-  userInfo,
-  courseTitle,
-  selectedDate,
-  remainingClasses,
-  totalFee,
-}) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="bg-opacity-50 fixed inset-0 z-[60] flex items-center justify-center bg-black/50">
-      <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
-        {/* 헤더 */}
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900">수강 신청 확인</h2>
-          <button onClick={onClose} className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* 신청 내역 */}
-        <div className="space-y-4">
-          {/* 신청자 정보 */}
-          <div className="rounded-lg bg-gray-50 p-4">
-            <h3 className="mb-3 text-lg font-medium text-gray-900">신청자 정보</h3>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">이름:</span>
-                <span className="font-medium">{userInfo.realName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">전화번호:</span>
-                <span className="font-medium">{userInfo.phone}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 강좌 정보 */}
-          <div className="rounded-lg bg-blue-50 p-4">
-            <h3 className="mb-3 text-lg font-medium text-blue-900">강좌 정보</h3>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-blue-700">강좌명:</span>
-                <span className="font-medium text-blue-900">{courseTitle}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-blue-700">수업 시작일:</span>
-                <span className="font-medium text-blue-900">{format(selectedDate, "yyyy년 MM월 dd일 (E)", { locale: ko })}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-blue-700">수업 횟수:</span>
-                <span className="font-medium text-blue-900">{remainingClasses}회</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-blue-700">수강료:</span>
-                <span className="text-lg font-bold text-blue-900">{totalFee.toLocaleString()}원</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 버튼 */}
-        <div className="mt-6 flex space-x-3">
-          <button onClick={onClose} className="flex-1 rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700">
-            취소
-          </button>
-          <button
-            onClick={() => {
-              // 여기에 실제 수강 신청 로직을 추가하세요
-              console.log("수강 신청 처리");
-              onClose();
-            }}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-            신청하기
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose, courseId, courseTitle, coursePricePerHour }) => {
   const [classDates, setClassDates] = useState<ClassDate[]>([]);
