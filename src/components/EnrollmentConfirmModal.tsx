@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { X } from "lucide-react";
+import Link from "next/link";
 
 interface UserInfo {
   realName: string;
@@ -30,7 +31,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
 
   return (
     <div className="bg-opacity-50 fixed inset-0 z-[60] flex items-center justify-center bg-black/50">
-      <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
+      <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white px-4 py-6 shadow-xl md:p-6">
         {/* 헤더 */}
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900">수강 신청 확인</h2>
@@ -42,18 +43,24 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
         {/* 신청 내역 */}
         <div className="space-y-4">
           {/* 신청자 정보 */}
-          <div className="rounded-lg bg-gray-50 p-4">
+          <div className="rounded-lg bg-gray-100 p-4">
             <h3 className="mb-3 text-lg font-medium text-gray-900">신청자 정보</h3>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-gray-600">이름:</span>
+                <span className="text-gray-800">이름 :</span>
                 <span className="font-medium">{userInfo.realName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">전화번호:</span>
+                <span className="text-gray-800">전화번호 :</span>
                 <span className="font-medium">{userInfo.phone}</span>
               </div>
             </div>
+            <p className={"mt-4 text-center text-gray-500"}>
+              이름과 전화번호가 틀리다면,{" "}
+              <Link href={"/users/edit"} className={"underline"}>
+                수정하기!
+              </Link>
+            </p>
           </div>
 
           {/* 강좌 정보 */}
@@ -61,19 +68,19 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
             <h3 className="mb-3 text-lg font-medium text-blue-900">강좌 정보</h3>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-blue-700">강좌명:</span>
+                <span className="text-blue-700">강좌 :</span>
                 <span className="font-medium text-blue-900">{courseTitle}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-blue-700">수업 시작일:</span>
+                <span className="text-blue-700">수업 시작일 :</span>
                 <span className="font-medium text-blue-900">{format(selectedDate, "yyyy년 MM월 dd일 (E)", { locale: ko })}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-blue-700">수업 횟수:</span>
+                <span className="text-blue-700">수업 횟수 :</span>
                 <span className="font-medium text-blue-900">{remainingClasses}회</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-blue-700">수강료:</span>
+                <span className="text-blue-700">수강료 :</span>
                 <span className="text-lg font-bold text-blue-900">{totalFee.toLocaleString()}원</span>
               </div>
             </div>
