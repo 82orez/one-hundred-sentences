@@ -31,7 +31,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
 
   return (
     <div className="bg-opacity-50 fixed inset-0 z-[60] flex items-center justify-center bg-black/50">
-      <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white px-4 py-6 shadow-xl md:p-6">
+      <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white px-3 py-6 shadow-xl md:p-6">
         {/* 헤더 */}
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-gray-900">수강 신청 확인</h2>

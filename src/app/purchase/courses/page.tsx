@@ -142,7 +142,7 @@ const PurchasePage = () => {
                     e.stopPropagation(); // 카드 클릭 이벤트 방지
                     handleScheduleClick(plan.id, plan.title, plan.pricePerHour);
                   }}>
-                  수강 신청 시작
+                  수강 신청 시작하기
                 </button>
               </div>
             ))}

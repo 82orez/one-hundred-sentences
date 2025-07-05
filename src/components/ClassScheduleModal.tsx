@@ -133,7 +133,7 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
 
   return (
     <>
-      <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+      <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black/30 whitespace-pre-line">
         <div className="relative mx-4 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
           {/* 헤더 */}
           <div className="mb-4 flex items-center justify-between">
