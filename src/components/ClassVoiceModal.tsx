@@ -5,7 +5,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { createPortal } from "react-dom";
 import { ImSpinner9 } from "react-icons/im";
-import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
+import { FaCheck, FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 import { queryClient } from "@/app/providers";
 import toast from "react-hot-toast";
 import { useVoiceListenedStatus } from "@/hooks/useVoiceListenedStatus";
@@ -292,7 +292,13 @@ export default function ClassVoiceModal({ isOpen, closeModal, courseId }: { isOp
 
     return (
       <div className="ml-2 flex items-center justify-center text-sm text-gray-500">
-        {listenedStatus[voiceId] ? <span className="font-bold text-green-500">🗸</span> : <span>-</span>}
+        {listenedStatus[voiceId] ? (
+          <span className="font-bold text-green-500">
+            <FaCheck />
+          </span>
+        ) : (
+          <span>-</span>
+        )}
       </div>
     );
   };
