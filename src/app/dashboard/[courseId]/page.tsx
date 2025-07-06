@@ -395,7 +395,7 @@ export default function Dashboard({ params }: Props) {
     isLoading: pointsDetailIsLoading,
     error: pointsDetailError,
   } = useQuery({
-    queryKey: ["points-detail", selectedCourseId, session?.user?.id],
+    queryKey: ["points-detail", selectedCourseId, session?.user?.id, isPointsDetailModalOpen],
     queryFn: async () => {
       if (!session?.user?.id || !selectedCourseId) return null;
       const response = await axios.get(`/api/user-course-points/points-detail?courseId=${selectedCourseId}&studentId=${session.user.id}`);
