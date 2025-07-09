@@ -100,8 +100,9 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
               </div>
             </div>
             <div className="mt-4 space-y-1 text-sm text-yellow-700">
-              <p>• 금일 중으로 입금 부탁드립니다.</p>
+              <p>• '수강 신청' 버튼을 클릭하시면 결제 대기 상태로 전환됩니다.</p>
               <p>• 결제 대기 중인 강의 리스트는 '결제 대기 강의 보기' 메뉴에서 확인하실 수 있습니다.</p>
+              <p>• 금일 중으로 입금 부탁드립니다.</p>
             </div>
           </div>
         </div>
@@ -118,7 +119,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
               onClose();
             }}
             className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-            신청하기
+            수강 신청
           </button>
         </div>
       </div>
