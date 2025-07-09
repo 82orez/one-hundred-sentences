@@ -66,13 +66,13 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
           {/* 강좌 정보 */}
           <div className="rounded-lg bg-blue-50 p-4">
             <h3 className="mb-3 text-lg font-medium text-blue-900">강좌 정보</h3>
-            <div className="space-y-2">
+            <div className="space-y-2 text-sm md:text-base">
               <div className="flex justify-between">
-                <span className="text-blue-700">강좌 :</span>
+                <span className="text-blue-700">강좌명 :</span>
                 <span className="font-medium text-blue-900">{courseTitle}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-blue-700">수업 시작일 :</span>
+                <span className="text-blue-700">수강 시작일 :</span>
                 <span className="font-medium text-blue-900">{format(selectedDate, "yyyy년 MM월 dd일 (E)", { locale: ko })}</span>
               </div>
               <div className="flex justify-between">
@@ -83,6 +83,25 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
                 <span className="text-blue-700">수강료 :</span>
                 <span className="text-lg font-bold text-blue-900">{totalFee.toLocaleString()}원</span>
               </div>
+            </div>
+          </div>
+
+          {/* 무통장 입금 안내 */}
+          <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+            <h3 className="mb-3 text-lg font-medium text-yellow-900">무통장 입금 안내</h3>
+            <div className="space-y-2 text-sm md:text-base">
+              <div className="flex justify-between">
+                <span className="text-yellow-700">예금주 :</span>
+                <span className="font-medium text-yellow-900">(주)프렌딩</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-yellow-700">계좌 번호 :</span>
+                <span className="font-medium text-yellow-900">국민은행 / 680401-00-111448</span>
+              </div>
+            </div>
+            <div className="mt-4 space-y-1 text-sm text-yellow-700">
+              <p>• 금일 중으로 입금 부탁드립니다.</p>
+              <p>• 결제 대기 중인 강의 리스트는 '결제 대기 강의 보기' 메뉴에서 확인하실 수 있습니다.</p>
             </div>
           </div>
         </div>

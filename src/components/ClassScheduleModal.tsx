@@ -224,7 +224,7 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
 
                   <div className="mt-6 text-center">
                     <button className="btn btn-primary" onClick={handleEnrollmentClick}>
-                      수강 대기 신청하기
+                      다음 단계
                     </button>
                   </div>
                 </div>
