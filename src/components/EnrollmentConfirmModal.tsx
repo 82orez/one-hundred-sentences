@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface UserInfo {
   realName: string;
@@ -32,6 +33,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
   totalFee,
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
 
   const handleEnrollment = async () => {
     if (isProcessing) return;
@@ -59,6 +61,8 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
         toast.success(data.message || "수강 신청이 완료되었습니다!");
         onClose();
         // 필요시 페이지 리로드 또는 다른 페이지로 이동
+        alert("수강 신청이 완료되었습니다. 결제 대기 화면으로 이동합니다.");
+        router.push(`/`);
         // window.location.reload();
       } else {
         toast.error(data.error || "수강 신청 중 오류가 발생했습니다.");
