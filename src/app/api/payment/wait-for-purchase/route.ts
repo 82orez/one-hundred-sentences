@@ -122,17 +122,47 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
     }
 
+    // 사용자 정보 조회 (role 포함)
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        role: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "사용자 정보를 찾을 수 없습니다." }, { status: 404 });
+    }
+
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status") || "pending";
 
+    // role에 따라 다른 조건으로 조회
+    let whereCondition: any = {
+      status: status as any,
+    };
+
+    // student 권한인 경우 자신의 것만 조회
+    if (user.role === "student") {
+      whereCondition.userId = session.user.id;
+    }
+    // admin 또는 semiAdmin인 경우 모든 결제 대기 목록 조회 (whereCondition 그대로 사용)
+
     const waitForPurchases = await prisma.waitForPurchase.findMany({
-      where: {
-        userId: session.user.id,
-        status: status as any,
-      },
+      where: whereCondition,
       include: {
+        user: {
+          select: {
+            id: true,
+            realName: true,
+            phone: true,
+            email: true,
+          },
+        },
         course: {
           select: {
+            id: true,
             title: true,
             location: true,
             price: true,
@@ -147,6 +177,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: waitForPurchases,
+      userRole: user.role,
     });
   } catch (error) {
     console.error("결제 대기 목록 조회 중 오류:", error);
