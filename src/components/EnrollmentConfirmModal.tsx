@@ -2,6 +2,8 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { X } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 interface UserInfo {
   realName: string;
@@ -12,6 +14,7 @@ interface EnrollmentConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
   userInfo: UserInfo;
+  courseId: string;
   courseTitle: string;
   selectedDate: Date;
   remainingClasses: number;
@@ -22,11 +25,52 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
   isOpen,
   onClose,
   userInfo,
+  courseId,
   courseTitle,
   selectedDate,
   remainingClasses,
   totalFee,
 }) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleEnrollment = async () => {
+    if (isProcessing) return;
+
+    setIsProcessing(true);
+
+    try {
+      const response = await fetch("/api/payment/wait-for-purchase", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          courseId: courseId,
+          courseTitle: courseTitle,
+          startDate: selectedDate.toISOString(),
+          classCount: remainingClasses,
+          totalFee: totalFee,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message || "수강 신청이 완료되었습니다!");
+        onClose();
+        // 필요시 페이지 리로드 또는 다른 페이지로 이동
+        // window.location.reload();
+      } else {
+        toast.error(data.error || "수강 신청 중 오류가 발생했습니다.");
+      }
+    } catch (error) {
+      console.error("수강 신청 처리 중 오류:", error);
+      toast.error("수강 신청 처리 중 오류가 발생했습니다.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -109,17 +153,17 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
 
         {/* 버튼 */}
         <div className="mt-6 flex space-x-3">
-          <button onClick={onClose} className="flex-1 rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700">
+          <button
+            onClick={onClose}
+            disabled={isProcessing}
+            className="flex-1 rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 disabled:opacity-50">
             취소
           </button>
           <button
-            onClick={() => {
-              // 여기에 실제 수강 신청 로직을 추가하세요
-              console.log("수강 신청 처리");
-              onClose();
-            }}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-            수강 신청
+            onClick={handleEnrollment}
+            disabled={isProcessing}
+            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50">
+            {isProcessing ? "처리 중..." : "수강 신청"}
           </button>
         </div>
       </div>

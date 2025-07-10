@@ -242,15 +242,16 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
       </div>
 
       {/* 수강 신청 확인 모달 */}
-      {selectedDate && (
+      {showEnrollmentModal && (
         <EnrollmentConfirmModal
           isOpen={showEnrollmentModal}
           onClose={() => setShowEnrollmentModal(false)}
           userInfo={userInfo}
+          courseId={courseId} // 이 부분 추가
           courseTitle={courseTitle}
-          selectedDate={selectedDate}
+          selectedDate={selectedDate!}
           remainingClasses={remainingClasses}
-          totalFee={coursePricePerHour * remainingClasses}
+          totalFee={remainingClasses * coursePricePerHour}
         />
       )}
     </>
