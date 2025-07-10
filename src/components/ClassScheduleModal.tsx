@@ -84,14 +84,17 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
     return classDateObjects.some((classDate) => format(classDate, "yyyy-MM-dd") === format(date, "yyyy-MM-dd"));
   };
 
-  // 오늘을 포함한 이전 수업 날짜인지 확인
+  // 오늘 이후 2일 후 이전의 수업 날짜인지 확인 (한국 시간 기준)
   const isPastOrTodayClassDate = (date: Date) => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
+    // 한국 시간대 기준으로 오늘 이후 2일 후 계산
+    const twoDaysAfterToday = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
+    twoDaysAfterToday.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
+
     const checkDate = new Date(date);
     checkDate.setHours(0, 0, 0, 0);
 
-    return isClassDate(date) && checkDate <= today;
+    return isClassDate(date) && checkDate < twoDaysAfterToday;
   };
 
   // 날짜 클릭 핸들러
@@ -153,6 +156,7 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
               {/* 안내 텍스트 */}
               <div className="mb-4 text-center">
                 <p className="text-gray-600">원하는 수업 시작일을 선택하시면 수업 횟수와 수강료를 확인할 수 있습니다.</p>
+                <p className="mt-2 text-sm text-blue-600">수업 시작일은 이틀 후 수업부터 신청 가능합니다.</p>
               </div>
 
               {/* 달력 */}
@@ -235,7 +239,7 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
           {/* 닫기 버튼 */}
           <div className="mt-6 flex justify-center">
             <button onClick={onClose} className="rounded-lg bg-gray-600 px-6 py-2 text-white hover:bg-gray-700">
-              닫기
+              취 소
             </button>
           </div>
         </div>

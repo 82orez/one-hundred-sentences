@@ -21,6 +21,28 @@ export const pricePlansForCourse = [
       },
     ],
   },
+  {
+    id: "cmcxwhrfk0001ftgk7z54bn3j",
+    title: "Test",
+    price: 120000,
+    pricePerHour: 5000,
+    description: [
+      "박민규(Sean) 대표 강사",
+      {
+        title: "주2회(25분) 1:N 온라인 수업",
+        details: ["매주 화/목 오후 8시 수업", "총 24회 (6월 5일 ~ 8월 26일)", "중간 참여 가능", "수업 시작 전, zoom 설치 필요"],
+      },
+      "온라인 학습 어플 무료 사용권",
+      // {
+      //   title: "온라인 학습 어플 무료 사용권",
+      //   details: ["예습, 복습 및 AI 테스트 가능"],
+      // },
+      {
+        title: "수강료 : 12만원 (24회 기준)",
+        details: ["중간 참여 시, 1회당 5,000원", "예) 12회 수업 신청 -> 6만원"],
+      },
+    ],
+  },
   // {
   //   id: "testfreecourse2506",
   //   title: "Test - 6월 무료 체험반",
