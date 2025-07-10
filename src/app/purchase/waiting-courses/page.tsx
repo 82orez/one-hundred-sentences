@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { Clock, User, Phone, Mail, Calendar, BookOpen, DollarSign, AlertCircle } from "lucide-react";
+import { FaWonSign } from "react-icons/fa6";
 
 interface WaitForPurchaseItem {
   id: string;
@@ -240,7 +241,7 @@ export default function WaitingCoursesPage() {
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center text-gray-600">
-                          <DollarSign className="mr-2 h-4 w-4" />
+                          <FaWonSign className="mr-2 h-4 w-4" />
                           <span>수강료</span>
                         </div>
                         <span className="font-bold text-blue-600">{course.totalFee.toLocaleString()}원</span>

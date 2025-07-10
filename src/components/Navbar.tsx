@@ -182,6 +182,15 @@ export default function Navbar() {
                     </>
                   )}
 
+                  {(isAdmin || isSemiAdmin) && (
+                    <Link
+                      href="/purchase/waiting-courses"
+                      className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
+                      onClick={() => setMenuOpen(false)}>
+                      결제 대기 강의 보기
+                    </Link>
+                  )}
+
                   {!isStudent && (
                     <>
                       <Link
