@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import { Clock, User, Phone, Mail, Calendar, BookOpen, DollarSign, AlertCircle } from "lucide-react";
+import { Clock, User, Phone, Mail, Calendar, BookOpen, DollarSign, AlertCircle, X } from "lucide-react";
 import { FaWonSign } from "react-icons/fa6";
 
 interface WaitForPurchaseItem {
@@ -48,6 +48,7 @@ export default function WaitingCoursesPage() {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("pending");
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -82,6 +83,38 @@ export default function WaitingCoursesPage() {
       toast.error("데이터를 불러오는 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancelWaitForPurchase = async (waitForPurchaseId: string, courseTitle: string) => {
+    if (!confirm(`${courseTitle} 강좌의 수강 신청을 취소하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      setCancellingId(waitForPurchaseId);
+      const response = await fetch("/api/payment/wait-for-purchase", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ waitForPurchaseId }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success(data.message);
+        // 목록 새로고침
+        fetchWaitingCourses();
+      } else {
+        toast.error(data.error || "취소 처리 중 오류가 발생했습니다.");
+      }
+    } catch (error) {
+      console.error("결제 대기 취소 중 오류:", error);
+      toast.error("취소 처리 중 오류가 발생했습니다.");
+    } finally {
+      setCancellingId(null);
     }
   };
 
@@ -266,6 +299,28 @@ export default function WaitingCoursesPage() {
                       )}
                     </div>
                   </div>
+
+                  {/* 취소하기 버튼 추가 */}
+                  {userRole === "student" && course.status === "pending" && (
+                    <div className="border-t pt-3">
+                      <button
+                        onClick={() => handleCancelWaitForPurchase(course.id, course.courseTitle)}
+                        disabled={cancellingId === course.id}
+                        className="flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-400">
+                        {cancellingId === course.id ? (
+                          <>
+                            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                            취소 중...
+                          </>
+                        ) : (
+                          <>
+                            <X className="mr-2 h-4 w-4" />
+                            수강 신청 취소
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

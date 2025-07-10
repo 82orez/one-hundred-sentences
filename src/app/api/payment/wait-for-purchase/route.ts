@@ -189,3 +189,77 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+// 결제 대기 정보 삭제 (취소)
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+    }
+
+    // 사용자 정보 조회 (role 포함)
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        role: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "사용자 정보를 찾을 수 없습니다." }, { status: 404 });
+    }
+
+    const body = await request.json();
+    const { waitForPurchaseId } = body;
+
+    if (!waitForPurchaseId) {
+      return NextResponse.json({ error: "삭제할 결제 대기 ID가 필요합니다." }, { status: 400 });
+    }
+
+    // 결제 대기 정보 조회
+    const waitForPurchase = await prisma.waitForPurchase.findUnique({
+      where: { id: waitForPurchaseId },
+      select: {
+        id: true,
+        userId: true,
+        courseTitle: true,
+        status: true,
+      },
+    });
+
+    if (!waitForPurchase) {
+      return NextResponse.json({ error: "결제 대기 정보를 찾을 수 없습니다." }, { status: 404 });
+    }
+
+    // student 권한인 경우 자신의 것만 삭제 가능
+    if (user.role === "student" && waitForPurchase.userId !== session.user.id) {
+      return NextResponse.json({ error: "자신의 결제 대기 정보만 삭제할 수 있습니다." }, { status: 403 });
+    }
+
+    // 이미 결제 완료된 경우 삭제 불가
+    if (waitForPurchase.status === "paid") {
+      return NextResponse.json({ error: "이미 결제 완료된 강좌는 취소할 수 없습니다." }, { status: 400 });
+    }
+
+    // 결제 대기 정보 삭제
+    await prisma.waitForPurchase.delete({
+      where: { id: waitForPurchaseId },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: `${waitForPurchase.courseTitle} 강좌의 수강 신청이 취소되었습니다.`,
+    });
+  } catch (error) {
+    console.error("결제 대기 정보 삭제 중 오류:", error);
+    return NextResponse.json(
+      {
+        error: "서버 오류가 발생했습니다.",
+      },
+      { status: 500 },
+    );
+  }
+}
