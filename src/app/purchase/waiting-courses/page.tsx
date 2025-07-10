@@ -301,7 +301,7 @@ export default function WaitingCoursesPage() {
                   </div>
 
                   {/* 취소하기 버튼 추가 */}
-                  {userRole === "student" && course.status === "pending" && (
+                  {(userRole === "student" || userRole === "admin") && course.status === "pending" && (
                     <div className="border-t pt-3">
                       <button
                         onClick={() => handleCancelWaitForPurchase(course.id, course.courseTitle)}
