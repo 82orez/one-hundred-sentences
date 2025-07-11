@@ -75,6 +75,18 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
     }
   };
 
+  // 현재 날짜 계산을 위한 함수 추가
+  const getTomorrowDeadlineText = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const month = tomorrow.getMonth() + 1;
+    const date = tomorrow.getDate();
+
+    return `${month}/${date}일 오후 5시`;
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -150,7 +162,13 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
             <div className="mt-4 space-y-1 text-sm text-yellow-700">
               <p>• '수강 신청' 버튼을 클릭하시면 결제 대기 상태로 전환됩니다.</p>
               <p>• 결제 대기 중인 강의 리스트는 '결제 대기 강의 보기' 메뉴에서 확인하실 수 있습니다.</p>
-              <p>• 금일 중으로 입금 부탁드립니다.</p>
+              {/*<p>*/}
+              {/*  • 수강 신청하는 날이 한국 시간 {format(new Date(), "M월 d일", { locale: ko })}인 경우, '{getTomorrowDeadlineText()}'*/}
+              {/*</p>*/}
+              <p>
+                • 내일 <span className={"font-semibold underline"}>{getTomorrowDeadlineText()}</span>까지 입금 부탁드립니다.
+              </p>
+              <p>• 해당 시간까지 입금 정보가 확인이 되지 않을 경우 자동으로 수강 신청 내역이 취소됩니다.</p>
             </div>
           </div>
         </div>

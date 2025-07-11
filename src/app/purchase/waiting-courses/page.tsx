@@ -328,7 +328,7 @@ export default function WaitingCoursesPage() {
         )}
 
         {/* 결제 안내 (결제 대기 상태이고 student인 경우) */}
-        {selectedStatus === "pending" && userRole === "student" && waitingCourses.length > 0 && (
+        {selectedStatus === "pending" && (userRole === "student" || userRole === "admin") && waitingCourses.length > 0 && (
           <div className="mt-8 rounded-lg border border-yellow-200 bg-yellow-50 p-6">
             <h3 className="mb-3 text-lg font-medium text-yellow-900">무통장 입금 안내</h3>
             <div className="space-y-2 text-sm text-yellow-800">
