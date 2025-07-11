@@ -62,7 +62,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
         onClose();
         // 필요시 페이지 리로드 또는 다른 페이지로 이동
         alert("수강 신청이 완료되었습니다. 결제 대기 화면으로 이동합니다.");
-        router.push(`/`);
+        router.push(`/purchase/waiting-courses`);
         // window.location.reload();
       } else {
         toast.error(data.error || "수강 신청 중 오류가 발생했습니다.");
