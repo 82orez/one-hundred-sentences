@@ -166,7 +166,19 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
                     background-color: #0ea5e9 !important;
                     color: white !important;
                     border-radius: 0.5rem;
+                    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
                   }
+
+                  @keyframes pulse {
+                    0%,
+                    100% {
+                      opacity: 1;
+                    }
+                    50% {
+                      opacity: 0.7;
+                    }
+                  }
+
                   .rdp-day_today {
                     font-weight: bold;
                     border: 1px solid #0ea5e9;
