@@ -17,13 +17,6 @@ const PurchasePage = () => {
   const router = useRouter();
   const { status } = useSession();
 
-  // useEffect(() => {
-  //   // 로그인 상태가 'unauthenticated' 인 경우 로그인 페이지로 리다이렉트
-  //   if (status === "unauthenticated") {
-  //     router.push("/users/sign-in");
-  //   }
-  // }, [status, router]);
-
   // 로딩 상태 처리
   if (status === "loading") {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
@@ -31,9 +24,6 @@ const PurchasePage = () => {
 
   const selectedPlanInfo = pricePlans.find((plan) => plan.id === selectedPlan);
   console.log(`selectedPlanInfo: `, selectedPlanInfo);
-
-  // 인증되지 않은 상태라면 페이지 내용을 렌더링하지 않음
-  if (status === "unauthenticated") return null;
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
@@ -100,22 +90,22 @@ const PurchasePage = () => {
                     ))}
                   </ul>
                 </div>
+
+                <div
+                  className={"mt-8 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
+                  onClick={() => router.push(`/course-detail/free`)}>
+                  <FaHandPointRight size={22} />
+                  <div>강의 소개 페이지 보기</div>
+                </div>
+
+                <div
+                  className={"mt-4 flex cursor-pointer items-center justify-center gap-2 font-semibold text-amber-500 hover:underline"}
+                  onClick={() => window.open("https://open.kakao.com/o/g8fWLNEh", "_blank")}>
+                  <FaSignInAlt size={22} />
+                  <div>오픈 채팅방 참여하기</div>
+                </div>
               </div>
             ))}
-
-            <div
-              className={"mt-8 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
-              onClick={() => router.push(`/course-detail/free`)}>
-              <FaHandPointRight size={22} />
-              <div>강의 소개 페이지 보기</div>
-            </div>
-
-            <div
-              className={"mt-4 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
-              onClick={() => window.open("https://open.kakao.com/o/g8fWLNEh", "_blank")}>
-              <FaSignInAlt size={22} />
-              <div>오픈 채팅방 참여하기</div>
-            </div>
           </div>
 
           <PurchaseButtonFree
