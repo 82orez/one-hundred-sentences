@@ -49,7 +49,8 @@ export default function WaitingCoursesPage() {
   const [userRole, setUserRole] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("pending");
   const [cancellingId, setCancellingId] = useState<string | null>(null);
-  const [isDeletingExpired, setIsDeletingExpired] = useState(false);
+  const [isDeletingExpired, setIsDeletingExpired] = useState(false); // 기존 코드에서 상태 변수 추가
+  const [confirmingPaymentId, setConfirmingPaymentId] = useState<string | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -206,6 +207,39 @@ export default function WaitingCoursesPage() {
     const diffTime = expireDateKorea.getTime() - nowKorea.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays <= 2 && diffDays > 0;
+  };
+
+  // 결제 확인 처리 함수 추가
+  const handleConfirmPayment = async (waitForPurchaseId: string, courseId: string, courseTitle: string) => {
+    if (!confirm(`${courseTitle} 강좌의 결제를 확인하시겠습니까?`)) {
+      return;
+    }
+
+    try {
+      setConfirmingPaymentId(waitForPurchaseId);
+      const response = await fetch("/api/payment/wait-for-purchase/confirm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ waitForPurchaseId, courseId }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success(data.message);
+        // 목록 새로고침
+        fetchWaitingCourses();
+      } else {
+        toast.error(data.error || "결제 확인 처리 중 오류가 발생했습니다.");
+      }
+    } catch (error) {
+      console.error("결제 확인 처리 중 오류:", error);
+      toast.error("결제 확인 처리 중 오류가 발생했습니다.");
+    } finally {
+      setConfirmingPaymentId(null);
+    }
   };
 
   if (status === "loading" || loading) {
@@ -398,6 +432,23 @@ export default function WaitingCoursesPage() {
                               <>
                                 <X className="h-4 w-4" />
                                 <span>신청 취소</span>
+                              </>
+                            )}
+                          </button>
+                        )}
+                        {(userRole === "admin" || userRole === "semiAdmin") && selectedStatus === "pending" && (
+                          <button
+                            onClick={() => handleConfirmPayment(course.id, course.courseId, course.courseTitle)}
+                            disabled={confirmingPaymentId === course.id}
+                            className="mt-2 flex flex-1 items-center justify-center gap-1 rounded-md bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50">
+                            {confirmingPaymentId === course.id ? (
+                              <>
+                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                                <span>확인 중...</span>
+                              </>
+                            ) : (
+                              <>
+                                <span>결제 확인</span>
                               </>
                             )}
                           </button>
