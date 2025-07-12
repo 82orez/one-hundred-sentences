@@ -47,37 +47,10 @@ export function PurchaseButtonFree({ id, title, price, onValidationErrorAction }
     try {
       setIsPurchasing(true);
 
-      // ! 무료 체험반인 경우 수강 신청 처리
-      if (id === "cmce4nkls0001ftfvn4xwicj8") {
-        await enrollMutation.mutateAsync({
-          courseId: id,
-          courseTitle: title,
-        });
-        return;
-      }
-
-      // * 유료 강좌 결제 처리 로직...(추후 개발 예정)
-      const response = await PortOne.requestPayment({
-        // Store ID 설정
-        storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID,
-        // 채널 키 설정
-        channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY,
-        paymentId: `payment-${crypto.randomUUID()}`,
-        orderName: id,
-        totalAmount: price,
-        currency: "CURRENCY_KRW",
-        payMethod: "CARD",
-        redirectUrl: `${window.location.origin}/api/payment/complete`,
+      await enrollMutation.mutateAsync({
+        courseId: id,
+        courseTitle: title,
       });
-
-      console.log("Purchase-response: ", response);
-
-      if (response?.code !== undefined) {
-        alert(response.message);
-      } else {
-        // 리디렉션 URL 로 바로 이동
-        window.location.href = `${window.location.origin}/api/payment/complete?paymentId=${response.paymentId}`;
-      }
     } catch (error) {
       console.error("구매 중 오류 발생:", error);
       alert("구매 처리 중 문제가 발생했습니다.");
