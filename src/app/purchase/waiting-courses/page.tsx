@@ -148,12 +148,31 @@ export default function WaitingCoursesPage() {
     }
   };
 
+  // 한국 시간으로 현재 시간과 만료 시간 비교
+  const isExpired = (expiresAt: string) => {
+    const now = new Date();
+    const expireDate = new Date(expiresAt);
+
+    // 한국 시간 기준으로 비교 (UTC+9)
+    const koreaOffset = 9 * 60 * 60 * 1000; // 9시간을 밀리초로 변환
+    const nowKorea = new Date(now.getTime() + koreaOffset);
+    const expireDateKorea = new Date(expireDate.getTime() + koreaOffset);
+
+    return nowKorea > expireDateKorea;
+  };
+
   const isExpiringSoon = (expiresAt: string) => {
     const expireDate = new Date(expiresAt);
-    const today = new Date();
-    const diffTime = expireDate.getTime() - today.getTime();
+    const now = new Date();
+
+    // 한국 시간 기준으로 계산
+    const koreaOffset = 9 * 60 * 60 * 1000;
+    const nowKorea = new Date(now.getTime() + koreaOffset);
+    const expireDateKorea = new Date(expireDate.getTime() + koreaOffset);
+
+    const diffTime = expireDateKorea.getTime() - nowKorea.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays <= 2;
+    return diffDays <= 2 && diffDays > 0;
   };
 
   if (status === "loading" || loading) {
@@ -209,146 +228,176 @@ export default function WaitingCoursesPage() {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {waitingCourses.map((course) => (
-              <div key={course.id} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
-                {/* 상태 및 만료 경고 */}
-                <div className="mb-4 flex items-center justify-between">
-                  <span className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(course.status)}`}>
-                    {getStatusText(course.status)}
-                  </span>
-                  {course.expiresAt && course.status === "pending" && isExpiringSoon(course.expiresAt) && (
-                    <div className="flex items-center text-red-600">
-                      <AlertCircle className="mr-1 h-4 w-4" />
-                      <span className="text-xs">만료 임박</span>
-                    </div>
-                  )}
-                </div>
+            {waitingCourses.map((course) => {
+              // 만료 여부 확인
+              const courseExpired = course.expiresAt && isExpired(course.expiresAt);
+              const courseExpiringSoon = course.expiresAt && !courseExpired && isExpiringSoon(course.expiresAt);
 
-                {/* 강좌 정보 */}
-                <div className="space-y-3">
-                  <div>
-                    <h3 className="mb-1 font-semibold text-gray-900">{course.courseTitle}</h3>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <BookOpen className="mr-1 h-4 w-4" />
-                      <span>{course.course.location}</span>
-                    </div>
-                  </div>
-
-                  {/* 신청자 정보 (관리자만 보임) */}
-                  {(userRole === "admin" || userRole === "semiAdmin") && (
-                    <div className="border-t pt-3">
-                      <h4 className="mb-2 text-sm font-medium text-gray-900">신청자 정보</h4>
-                      <div className="space-y-1">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <User className="mr-2 h-4 w-4" />
-                          <span>{course.user.realName}</span>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Phone className="mr-2 h-4 w-4" />
-                          <span>{course.user.phone}</span>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Mail className="mr-2 h-4 w-4" />
-                          <span>{course.user.email}</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 수강 정보 */}
-                  <div className="border-t pt-3">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center text-gray-600">
-                          <Calendar className="mr-2 h-4 w-4" />
-                          <span>수강 시작일</span>
-                        </div>
-                        <span className="font-medium">{format(new Date(course.startDate), "yyyy년 MM월 dd일", { locale: ko })}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center text-gray-600">
-                          <Clock className="mr-2 h-4 w-4" />
-                          <span>수업 횟수</span>
-                        </div>
-                        <span className="font-medium">{course.classCount}회</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center text-gray-600">
-                          <FaWonSign className="mr-2 h-4 w-4" />
-                          <span>수강료</span>
-                        </div>
-                        <span className="font-bold text-blue-600">{course.totalFee.toLocaleString()}원</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 신청일 및 만료일 */}
-                  <div className="border-t pt-3">
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-sm text-gray-500">
-                        <span>수강 신청일</span>
-                        <span>{format(new Date(course.createdAt), "yyyy.MM.dd HH:mm", { locale: ko })}</span>
-                      </div>
-                      {course.expiresAt && (
-                        <div className="flex justify-between text-sm text-gray-500">
-                          <span className={"text-red-600"}>결제 대기 만료 시간</span>
-                          <span className={course.status === "pending" && isExpiringSoon(course.expiresAt) ? "font-semibold text-red-600" : ""}>
-                            {format(new Date(course.expiresAt), "yyyy.MM.dd HH:mm", { locale: ko })}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* 취소하기 버튼 추가 */}
-                  {(userRole === "student" || userRole === "admin") && course.status === "pending" && (
-                    <div className="border-t pt-3">
-                      <button
-                        onClick={() => handleCancelWaitForPurchase(course.id, course.courseTitle)}
-                        disabled={cancellingId === course.id}
-                        className="flex w-full items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-red-400">
-                        {cancellingId === course.id ? (
-                          <>
-                            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                            취소 중...
-                          </>
-                        ) : (
-                          <>
-                            <X className="mr-2 h-4 w-4" />
-                            수강 신청 취소
-                          </>
+              return (
+                <div key={course.id} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+                  {/* 상태 및 만료 경고 */}
+                  <div className="mb-4 flex items-center justify-between">
+                    <span className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(courseExpired ? "expired" : course.status)}`}>
+                      {courseExpired ? "만료됨" : getStatusText(course.status)}
+                    </span>
+                    {course.expiresAt && course.status === "pending" && (
+                      <>
+                        {courseExpired && (
+                          <div className="flex items-center text-red-600">
+                            <AlertCircle className="mr-1 h-4 w-4" />
+                            <span className="text-xs font-semibold">만료됨</span>
+                          </div>
                         )}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                        {courseExpiringSoon && (
+                          <div className="flex items-center text-red-600">
+                            <AlertCircle className="mr-1 h-4 w-4" />
+                            <span className="text-xs">만료 임박</span>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
 
-        {/* 결제 안내 (결제 대기 상태이고 student인 경우) */}
-        {selectedStatus === "pending" && (userRole === "student" || userRole === "admin") && waitingCourses.length > 0 && (
-          <div className="mx-auto mt-8 w-full rounded-lg border border-yellow-200 bg-yellow-50 p-6 md:max-w-xl">
-            <h3 className="mb-3 text-lg font-medium text-yellow-900">무통장 입금 안내</h3>
-            <div className="space-y-2 text-yellow-800">
-              <div className="flex justify-between">
-                <span>예금주:</span>
-                <span className="font-medium">(주)프렌딩</span>
-              </div>
-              <div className="flex justify-between">
-                <span>계좌번호:</span>
-                <span className="font-medium">국민은행 680401-00-111448</span>
-              </div>
-            </div>
-            <div className="mt-4 space-y-1 text-yellow-700">
-              <p>• 입금자명은 신청자명과 동일하게 입금해 주세요.</p>
-              <p>• 입금 확인 후 결제 완료 상태로 변경됩니다.</p>
-              <p>• 결제 대기 만료 시간 이후에는 자동으로 수강 신청 내역이 취소됩니다.</p>
-            </div>
+                  {/* 강좌 정보 */}
+                  <div className="space-y-3">
+                    <div>
+                      <h3 className="mb-1 font-semibold text-gray-900">{course.courseTitle}</h3>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <BookOpen className="mr-1 h-4 w-4" />
+                        <span>{course.course.location}</span>
+                      </div>
+                    </div>
+
+                    {/* 신청자 정보 (관리자만 보임) */}
+                    {(userRole === "admin" || userRole === "semiAdmin") && (
+                      <div className="border-t pt-3">
+                        <h4 className="mb-2 text-sm font-medium text-gray-900">신청자 정보</h4>
+                        <div className="space-y-1">
+                          <div className="flex items-center text-sm text-gray-600">
+                            <User className="mr-2 h-4 w-4" />
+                            <span>{course.user.realName}</span>
+                          </div>
+                          <div className="flex items-center text-sm text-gray-600">
+                            <Phone className="mr-2 h-4 w-4" />
+                            <span>{course.user.phone}</span>
+                          </div>
+                          <div className="flex items-center text-sm text-gray-600">
+                            <Mail className="mr-2 h-4 w-4" />
+                            <span>{course.user.email}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 수강 정보 */}
+                    <div className="border-t pt-3">
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center text-gray-600">
+                            <Calendar className="mr-2 h-4 w-4" />
+                            <span>수강 시작일</span>
+                          </div>
+                          <span className="font-medium">{format(new Date(course.startDate), "yyyy년 MM월 dd일", { locale: ko })}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center text-gray-600">
+                            <Clock className="mr-2 h-4 w-4" />
+                            <span>수업 횟수</span>
+                          </div>
+                          <span className="font-medium">{course.classCount}회</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center text-gray-600">
+                            <FaWonSign className="mr-2 h-4 w-4" />
+                            <span>수강료</span>
+                          </div>
+                          <span className="font-bold text-blue-600">{course.totalFee.toLocaleString()}원</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 신청일 및 만료일 */}
+                    <div className="border-t pt-3">
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-sm text-gray-500">
+                          <span>수강 신청일</span>
+                          <span>{format(new Date(course.createdAt), "yyyy.MM.dd HH:mm", { locale: ko })}</span>
+                        </div>
+                        {course.expiresAt && (
+                          <div className="flex justify-between text-sm text-gray-500">
+                            <span className="text-red-600">결제 대기 만료 시간</span>
+                            <span className={courseExpired ? "font-semibold text-red-600" : courseExpiringSoon ? "font-semibold text-red-600" : ""}>
+                              {format(new Date(course.expiresAt), "yyyy.MM.dd HH:mm", { locale: ko })}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 취소하기 버튼 추가 */}
+                    {(userRole === "student" || userRole === "admin") && course.status === "pending" && !courseExpired && (
+                      <div className="border-t pt-3">
+                        <button
+                          onClick={() => handleCancelWaitForPurchase(course.id, course.courseTitle)}
+                          disabled={cancellingId === course.id}
+                          className={`flex w-full items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                            cancellingId === course.id ? "cursor-not-allowed bg-gray-300 text-gray-500" : "bg-red-500 text-white hover:bg-red-600"
+                          }`}>
+                          {cancellingId === course.id ? (
+                            <>
+                              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                              취소 중...
+                            </>
+                          ) : (
+                            <>
+                              <X className="mr-2 h-4 w-4" />
+                              수강 신청 취소
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* 만료된 경우 메시지 표시 */}
+                    {courseExpired && (
+                      <div className="border-t pt-3">
+                        <div className="rounded-lg bg-red-50 p-3 text-center">
+                          <div className="flex items-center justify-center text-red-600">
+                            <AlertCircle className="mr-2 h-5 w-5" />
+                            <span className="text-sm font-medium">결제 대기 시간이 만료되었습니다</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
+
+      {/* 결제 안내 (결제 대기 상태이고 student인 경우) */}
+      {selectedStatus === "pending" && (userRole === "student" || userRole === "admin") && waitingCourses.length > 0 && (
+        <div className="mx-auto mt-8 w-full rounded-lg border border-yellow-200 bg-yellow-50 p-6 md:max-w-xl">
+          <h3 className="mb-3 text-lg font-medium text-yellow-900">무통장 입금 안내</h3>
+          <div className="space-y-2 text-yellow-800">
+            <div className="flex justify-between">
+              <span>예금주:</span>
+              <span className="font-medium">(주)프렌딩</span>
+            </div>
+            <div className="flex justify-between">
+              <span>계좌번호:</span>
+              <span className="font-medium">국민은행 680401-00-111448</span>
+            </div>
+          </div>
+          <div className="mt-4 space-y-1 text-yellow-700">
+            <p>• 입금자명은 신청자명과 동일하게 입금해 주세요.</p>
+            <p>• 입금 확인 후 결제 완료 상태로 변경됩니다.</p>
+            <p>• 결제 대기 만료 시간 이후에는 자동으로 수강 신청 내역이 취소됩니다.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
