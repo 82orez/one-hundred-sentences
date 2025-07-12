@@ -41,7 +41,7 @@ const PurchasePage = () => {
 
           {/* Grid for Plans */}
           {/*<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">*/}
-          <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:gap-6">
+          <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:items-stretch md:gap-6">
             {pricePlans.map((plan) => (
               <div
                 key={plan.id}
