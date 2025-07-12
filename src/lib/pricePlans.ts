@@ -37,6 +37,7 @@ export const pricePlans = [
     title: "대국민 여행영어 뽀개기\n공동체반",
     price: 0,
     introPage: "/course-detail/free",
+    openChatUrl: "https://open.kakao.com/o/g8fWLNEh",
     description: [
       "박민규(Sean) 대표 강사",
       {

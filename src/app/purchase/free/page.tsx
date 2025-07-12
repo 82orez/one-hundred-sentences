@@ -101,12 +101,14 @@ const PurchasePage = () => {
                   </div>
                 )}
 
-                <div
-                  className={"mt-4 flex cursor-pointer items-center justify-center gap-2 font-semibold text-amber-500 underline"}
-                  onClick={() => window.open("https://open.kakao.com/o/g8fWLNEh", "_blank")}>
-                  <FaSignInAlt size={22} />
-                  <div>오픈 채팅방 참여하기</div>
-                </div>
+                {plan.openChatUrl && (
+                  <div
+                    className={"mt-4 flex cursor-pointer items-center justify-center gap-2 font-semibold text-amber-500 underline"}
+                    onClick={() => window.open(plan.openChatUrl, "_blank")}>
+                    <FaSignInAlt size={22} />
+                    <div>오픈 채팅방 참여하기</div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
