@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import { Clock, User, Phone, Mail, Calendar, BookOpen, DollarSign, AlertCircle, X } from "lucide-react";
+import { Clock, User, Phone, Mail, Calendar, BookOpen, DollarSign, AlertCircle, X, Trash2 } from "lucide-react";
 import { FaWonSign } from "react-icons/fa6";
 
 interface WaitForPurchaseItem {
@@ -49,6 +49,7 @@ export default function WaitingCoursesPage() {
   const [userRole, setUserRole] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("pending");
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [isDeletingExpired, setIsDeletingExpired] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -115,6 +116,38 @@ export default function WaitingCoursesPage() {
       toast.error("취소 처리 중 오류가 발생했습니다.");
     } finally {
       setCancellingId(null);
+    }
+  };
+
+  const handleDeleteExpiredCourses = async () => {
+    if (!confirm("만료된 모든 결제 대기 정보를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.")) {
+      return;
+    }
+
+    try {
+      setIsDeletingExpired(true);
+      const response = await fetch("/api/payment/wait-for-purchase", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "deleteExpired" }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success(data.message);
+        // 목록 새로고침
+        fetchWaitingCourses();
+      } else {
+        toast.error(data.error || "삭제 처리 중 오류가 발생했습니다.");
+      }
+    } catch (error) {
+      console.error("만료된 결제 대기 정보 삭제 중 오류:", error);
+      toast.error("삭제 처리 중 오류가 발생했습니다.");
+    } finally {
+      setIsDeletingExpired(false);
     }
   };
 
@@ -194,8 +227,8 @@ export default function WaitingCoursesPage() {
           </p>
         </div>
 
-        {/* 상태 필터 */}
-        <div className="mb-6">
+        {/* 상태 필터 및 관리자 버튼 */}
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex space-x-2">
             {[
               { value: "pending", label: "결제 대기" },
@@ -213,6 +246,26 @@ export default function WaitingCoursesPage() {
               </button>
             ))}
           </div>
+
+          {/* 관리자 전용 버튼 */}
+          {(userRole === "admin" || userRole === "semiAdmin") && selectedStatus === "expired" && (
+            <button
+              onClick={handleDeleteExpiredCourses}
+              disabled={isDeletingExpired}
+              className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50">
+              {isDeletingExpired ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                  <span>삭제 중...</span>
+                </>
+              ) : (
+                <>
+                  <Trash2 className="h-4 w-4" />
+                  <span>전체 삭제</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
 
         {/* 결제 대기 목록 */}
@@ -309,66 +362,63 @@ export default function WaitingCoursesPage() {
                         <div className="flex items-center justify-between text-sm">
                           <div className="flex items-center text-gray-600">
                             <FaWonSign className="mr-2 h-4 w-4" />
-                            <span>수강료</span>
+                            <span>총 수강료</span>
                           </div>
-                          <span className="font-bold text-blue-600">{course.totalFee.toLocaleString()}원</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 신청일 및 만료일 */}
-                    <div className="border-t pt-3">
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-sm text-gray-500">
-                          <span>수강 신청일</span>
-                          <span>{format(new Date(course.createdAt), "yyyy.MM.dd HH:mm", { locale: ko })}</span>
+                          <span className="font-medium">{course.totalFee.toLocaleString()}원</span>
                         </div>
                         {course.expiresAt && (
-                          <div className="flex justify-between text-sm text-gray-500">
-                            <span className="text-red-600">결제 대기 만료 시간</span>
-                            <span className={courseExpired ? "font-semibold text-red-600" : courseExpiringSoon ? "font-semibold text-red-600" : ""}>
-                              {format(new Date(course.expiresAt), "yyyy.MM.dd HH:mm", { locale: ko })}
+                          <div className="flex items-center justify-between text-sm">
+                            <div className="flex items-center text-gray-600">
+                              <AlertCircle className="mr-2 h-4 w-4" />
+                              <span>결제 마감일</span>
+                            </div>
+                            <span
+                              className={`font-medium ${courseExpired ? "text-red-600" : courseExpiringSoon ? "text-orange-600" : "text-gray-900"}`}>
+                              {format(new Date(course.expiresAt), "yyyy년 MM월 dd일 HH시", { locale: ko })}
                             </span>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* 취소하기 버튼 추가 */}
-                    {(userRole === "student" || userRole === "admin") && course.status === "pending" && !courseExpired && (
-                      <div className="border-t pt-3">
-                        <button
-                          onClick={() => handleCancelWaitForPurchase(course.id, course.courseTitle)}
-                          disabled={cancellingId === course.id}
-                          className={`flex w-full items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                            cancellingId === course.id ? "cursor-not-allowed bg-gray-300 text-gray-500" : "bg-red-500 text-white hover:bg-red-600"
-                          }`}>
-                          {cancellingId === course.id ? (
-                            <>
-                              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                              취소 중...
-                            </>
-                          ) : (
-                            <>
-                              <X className="mr-2 h-4 w-4" />
-                              수강 신청 취소
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    )}
-
-                    {/* 만료된 경우 메시지 표시 */}
-                    {courseExpired && (
-                      <div className="border-t pt-3">
-                        <div className="rounded-lg bg-red-50 p-3 text-center">
-                          <div className="flex items-center justify-center text-red-600">
-                            <AlertCircle className="mr-2 h-5 w-5" />
-                            <span className="text-sm font-medium">결제 대기 시간이 만료되었습니다</span>
+                    {/* 액션 버튼 */}
+                    <div className="border-t pt-3">
+                      <div className="flex gap-2">
+                        {course.status === "pending" && (
+                          <button
+                            onClick={() => handleCancelWaitForPurchase(course.id, course.courseTitle)}
+                            disabled={cancellingId === course.id}
+                            className="flex flex-1 items-center justify-center gap-1 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50">
+                            {cancellingId === course.id ? (
+                              <>
+                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                                <span>취소 중...</span>
+                              </>
+                            ) : (
+                              <>
+                                <X className="h-4 w-4" />
+                                <span>신청 취소</span>
+                              </>
+                            )}
+                          </button>
+                        )}
+                        {course.status === "paid" && (
+                          <div className="flex flex-1 items-center justify-center rounded-md bg-green-100 px-3 py-2 text-sm font-medium text-green-800">
+                            결제 완료
                           </div>
-                        </div>
+                        )}
+                        {course.status === "cancelled" && (
+                          <div className="flex flex-1 items-center justify-center rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-800">
+                            취소됨
+                          </div>
+                        )}
+                        {course.status === "expired" && (
+                          <div className="flex flex-1 items-center justify-center rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-800">
+                            만료됨
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               );
@@ -376,28 +426,6 @@ export default function WaitingCoursesPage() {
           </div>
         )}
       </div>
-
-      {/* 결제 안내 (결제 대기 상태이고 student인 경우) */}
-      {selectedStatus === "pending" && (userRole === "student" || userRole === "admin") && waitingCourses.length > 0 && (
-        <div className="mx-auto mt-8 w-full rounded-lg border border-yellow-200 bg-yellow-50 p-6 md:max-w-xl">
-          <h3 className="mb-3 text-lg font-medium text-yellow-900">무통장 입금 안내</h3>
-          <div className="space-y-2 text-yellow-800">
-            <div className="flex justify-between">
-              <span>예금주:</span>
-              <span className="font-medium">(주)프렌딩</span>
-            </div>
-            <div className="flex justify-between">
-              <span>계좌번호:</span>
-              <span className="font-medium">국민은행 680401-00-111448</span>
-            </div>
-          </div>
-          <div className="mt-4 space-y-1 text-yellow-700">
-            <p>• 입금자명은 신청자명과 동일하게 입금해 주세요.</p>
-            <p>• 입금 확인 후 결제 완료 상태로 변경됩니다.</p>
-            <p>• 결제 대기 만료 시간 이후에는 자동으로 수강 신청 내역이 취소됩니다.</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

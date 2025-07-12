@@ -284,3 +284,60 @@ export async function DELETE(request: NextRequest) {
     );
   }
 }
+
+// 만료된 결제 대기 정보 일괄 삭제 (관리자 전용)
+export async function PATCH(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+    }
+
+    // 사용자 정보 조회 (role 포함)
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        role: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "사용자 정보를 찾을 수 없습니다." }, { status: 404 });
+    }
+
+    // admin 또는 semiAdmin 권한 확인
+    if (user.role !== "admin" && user.role !== "semiAdmin") {
+      return NextResponse.json({ error: "관리자 권한이 필요합니다." }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const { action } = body;
+
+    if (action === "deleteExpired") {
+      // 만료된 결제 대기 정보 일괄 삭제
+      const deleteResult = await prisma.waitForPurchase.deleteMany({
+        where: {
+          status: "expired",
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: `만료된 결제 대기 정보 ${deleteResult.count}건이 삭제되었습니다.`,
+        deletedCount: deleteResult.count,
+      });
+    }
+
+    return NextResponse.json({ error: "잘못된 요청입니다." }, { status: 400 });
+  } catch (error) {
+    console.error("만료된 결제 대기 정보 일괄 삭제 중 오류:", error);
+    return NextResponse.json(
+      {
+        error: "서버 오류가 발생했습니다.",
+      },
+      { status: 500 },
+    );
+  }
+}
