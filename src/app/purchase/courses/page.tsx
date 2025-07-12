@@ -88,7 +88,7 @@ const PurchasePage = () => {
 
           {/* Grid for Plans */}
           {/*<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">*/}
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-8 md:flex-row md:items-stretch md:gap-8">
             {pricePlansForCourse.map((plan) => (
               <div
                 key={plan.id}
@@ -136,8 +136,17 @@ const PurchasePage = () => {
                   </ul>
                 </div>
 
+                <div
+                  className={"mt-4 mb-12 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
+                  onClick={() => router.push(`/course-detail/courses/tour100`)}>
+                  <FaHandPointRight />
+                  <div>강의 소개 페이지 보기</div>
+                </div>
+
                 <button
-                  className={"btn btn-primary mt-8 text-[1rem]"}
+                  className={
+                    "btn btn-primary absolute right-0 bottom-3 left-0 z-50 mx-auto mt-8 max-w-11/12 rounded-lg border-t border-gray-200 p-6 text-[1rem] shadow-lg"
+                  }
                   onClick={(e) => {
                     e.stopPropagation(); // 카드 클릭 이벤트 방지
                     handleScheduleClick(plan.id, plan.title, plan.pricePerHour);
@@ -146,14 +155,6 @@ const PurchasePage = () => {
                 </button>
               </div>
             ))}
-
-            <div className={"mt-4 border-b"}></div>
-            <div
-              className={"mt-2 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
-              onClick={() => router.push(`/course-detail/courses/tour100`)}>
-              <FaHandPointRight />
-              <div>강의 소개 페이지 보기</div>
-            </div>
           </div>
 
           {/*<PurchaseButtonCourse*/}
