@@ -91,12 +91,15 @@ const PurchasePage = () => {
                   </ul>
                 </div>
 
-                <div
-                  className={"mt-8 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 underline"}
-                  onClick={() => router.push(`/course-detail/free`)}>
-                  <FaHandPointRight size={22} />
-                  <div>강의 소개 페이지 보기</div>
-                </div>
+                {/* introPage가 있는 강좌만 강의 소개 페이지 보기 링크 표시 */}
+                {plan.introPage && (
+                  <div
+                    className={"mt-8 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 underline"}
+                    onClick={() => router.push(plan.introPage)}>
+                    <FaHandPointRight size={22} />
+                    <div>강의 소개 페이지 보기</div>
+                  </div>
+                )}
 
                 <div
                   className={"mt-4 flex cursor-pointer items-center justify-center gap-2 font-semibold text-amber-500 underline"}

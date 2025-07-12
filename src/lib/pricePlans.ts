@@ -36,6 +36,7 @@ export const pricePlans = [
     id: "cmce4nkls0001ftfvn4xwicj8",
     title: "대국민 여행영어 뽀개기\n공동체반",
     price: 0,
+    introPage: "/course-detail/free",
     description: [
       "박민규(Sean) 대표 강사",
       {
