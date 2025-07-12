@@ -62,8 +62,15 @@ export async function POST(request: NextRequest) {
     }
 
     // 결제 대기 만료일 설정 (7일 후)
+    // const expiresAt = new Date();
+    // expiresAt.setDate(expiresAt.getDate() + 7);
+
+    // 결제 대기 만료일 설정 (한국 시간 기준으로 다음 날 오후 5시)
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7);
+    // 한국 시간대 기준으로 다음 날 설정
+    expiresAt.setDate(expiresAt.getDate() + 1);
+    // 오후 5시 (17:00)로 설정
+    expiresAt.setHours(17, 0, 0, 0);
 
     // WaitForPurchase 데이터 생성
     const waitForPurchase = await prisma.waitForPurchase.create({

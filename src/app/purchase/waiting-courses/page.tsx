@@ -285,14 +285,14 @@ export default function WaitingCoursesPage() {
                   {/* 신청일 및 만료일 */}
                   <div className="border-t pt-3">
                     <div className="space-y-1">
-                      <div className="flex justify-between text-xs text-gray-500">
-                        <span>신청일</span>
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <span>수강 신청일</span>
                         <span>{format(new Date(course.createdAt), "yyyy.MM.dd HH:mm", { locale: ko })}</span>
                       </div>
                       {course.expiresAt && (
-                        <div className="flex justify-between text-xs text-gray-500">
-                          <span>만료일</span>
-                          <span className={course.status === "pending" && isExpiringSoon(course.expiresAt) ? "font-medium text-red-600" : ""}>
+                        <div className="flex justify-between text-sm text-gray-500">
+                          <span className={"text-red-600"}>결제 대기 만료 시간</span>
+                          <span className={course.status === "pending" && isExpiringSoon(course.expiresAt) ? "font-semibold text-red-600" : ""}>
                             {format(new Date(course.expiresAt), "yyyy.MM.dd HH:mm", { locale: ko })}
                           </span>
                         </div>
@@ -329,9 +329,9 @@ export default function WaitingCoursesPage() {
 
         {/* 결제 안내 (결제 대기 상태이고 student인 경우) */}
         {selectedStatus === "pending" && (userRole === "student" || userRole === "admin") && waitingCourses.length > 0 && (
-          <div className="mt-8 rounded-lg border border-yellow-200 bg-yellow-50 p-6">
+          <div className="mx-auto mt-8 w-full rounded-lg border border-yellow-200 bg-yellow-50 p-6 md:max-w-xl">
             <h3 className="mb-3 text-lg font-medium text-yellow-900">무통장 입금 안내</h3>
-            <div className="space-y-2 text-sm text-yellow-800">
+            <div className="space-y-2 text-yellow-800">
               <div className="flex justify-between">
                 <span>예금주:</span>
                 <span className="font-medium">(주)프렌딩</span>
@@ -341,10 +341,10 @@ export default function WaitingCoursesPage() {
                 <span className="font-medium">국민은행 680401-00-111448</span>
               </div>
             </div>
-            <div className="mt-4 space-y-1 text-sm text-yellow-700">
+            <div className="mt-4 space-y-1 text-yellow-700">
               <p>• 입금자명은 신청자명과 동일하게 입금해 주세요.</p>
               <p>• 입금 확인 후 결제 완료 상태로 변경됩니다.</p>
-              <p>• 결제 대기 만료일 이후에는 자동으로 취소됩니다.</p>
+              <p>• 결제 대기 만료 시간 이후에는 자동으로 수강 신청 내역이 취소됩니다.</p>
             </div>
           </div>
         )}
