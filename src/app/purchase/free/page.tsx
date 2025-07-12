@@ -30,12 +30,12 @@ const PurchasePage = () => {
       <header className="bg-blue-600 py-3 text-white md:py-6">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <h1 className="text-2xl font-extrabold md:text-4xl">강좌를 선택해 주세요.</h1>
-          <p className="mt-1 text-lg md:mt-4">원하는 강좌를 선택하고 시작하세요!</p>
+          <p className="mt-1 hidden text-lg md:mt-4 md:block">원하는 강좌를 선택하고 시작하세요!</p>
         </div>
       </header>
 
       {/* Pricing Section */}
-      <section className="py-6 md:py-12">
+      <section className="py-6 pb-32 md:pb-12">
         <div className="mx-auto max-w-5xl px-4 text-center">
           <h2 className="mb-4 text-2xl font-bold md:mb-8 md:text-3xl">대국민 완전 무료 시리즈!</h2>
 
@@ -92,14 +92,14 @@ const PurchasePage = () => {
                 </div>
 
                 <div
-                  className={"mt-8 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
+                  className={"mt-8 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 underline"}
                   onClick={() => router.push(`/course-detail/free`)}>
                   <FaHandPointRight size={22} />
                   <div>강의 소개 페이지 보기</div>
                 </div>
 
                 <div
-                  className={"mt-4 flex cursor-pointer items-center justify-center gap-2 font-semibold text-amber-500 hover:underline"}
+                  className={"mt-4 flex cursor-pointer items-center justify-center gap-2 font-semibold text-amber-500 underline"}
                   onClick={() => window.open("https://open.kakao.com/o/g8fWLNEh", "_blank")}>
                   <FaSignInAlt size={22} />
                   <div>오픈 채팅방 참여하기</div>
@@ -108,14 +108,17 @@ const PurchasePage = () => {
             ))}
           </div>
 
-          <PurchaseButtonFree
-            id={selectedPlanInfo?.id}
-            title={selectedPlanInfo?.title}
-            price={selectedPlanInfo?.price}
-            onValidationErrorAction={() => toast.error("강좌를 선택해 주세요.")}
-          />
+          {/* 데스크톱에서만 보이는 버튼 */}
+          <div className="hidden md:block">
+            <PurchaseButtonFree
+              id={selectedPlanInfo?.id}
+              title={selectedPlanInfo?.title}
+              price={selectedPlanInfo?.price}
+              onValidationErrorAction={() => toast.error("강좌를 선택해 주세요.")}
+            />
+          </div>
 
-          <div className={"mt-4 flex justify-center md:mt-6"}>
+          <div className={"mt-8 mb-4 flex justify-center md:mt-6 md:mb-0"}>
             <Link href="/" className="flex items-center text-blue-500 hover:underline">
               <ArrowLeft className="mr-1" size={20} />
               Back to Home
@@ -123,6 +126,16 @@ const PurchasePage = () => {
           </div>
         </div>
       </section>
+
+      {/* 모바일에서만 보이는 고정 버튼 */}
+      <div className="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-200 bg-white p-0 shadow-lg md:hidden">
+        <PurchaseButtonFree
+          id={selectedPlanInfo?.id}
+          title={selectedPlanInfo?.title}
+          price={selectedPlanInfo?.price}
+          onValidationErrorAction={() => toast.error("강좌를 선택해 주세요.")}
+        />
+      </div>
     </div>
   );
 };

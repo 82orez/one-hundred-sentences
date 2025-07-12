@@ -87,7 +87,7 @@ export function PurchaseButtonFree({ id, title, price, onValidationErrorAction }
   };
 
   return (
-    <div className="mx-auto mt-4 max-w-md md:mt-10">
+    <div className="mx-auto mt-0 max-w-md md:mt-10">
       <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
         <div className="mb-2 flex items-center justify-between">
           <span className="font-bold">결제 금액</span>
