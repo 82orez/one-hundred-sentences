@@ -145,6 +145,20 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status") || "pending";
 
+    // 먼저 만료된 항목들을 업데이트
+    const now = new Date();
+    await prisma.waitForPurchase.updateMany({
+      where: {
+        status: "pending",
+        expiresAt: {
+          lt: now,
+        },
+      },
+      data: {
+        status: "expired",
+      },
+    });
+
     // role에 따라 다른 조건으로 조회
     let whereCondition: any = {
       status: status as any,
