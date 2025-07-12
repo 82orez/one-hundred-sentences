@@ -41,7 +41,7 @@ const PurchasePage = () => {
 
           {/* Grid for Plans */}
           {/*<div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">*/}
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-6 md:flex-row md:gap-6">
             {pricePlans.map((plan) => (
               <div
                 key={plan.id}
@@ -70,7 +70,7 @@ const PurchasePage = () => {
                 {/* 강좌 특징 소개 부분*/}
                 <div className="mt-4 text-gray-600">
                   <ul className="list-disc space-y-4 pl-4 text-left">
-                    {plan.description.map((item, index) => (
+                    {plan.description?.map((item, index) => (
                       <li key={index}>
                         {typeof item === "string" ? (
                           <span className="font-semibold">{item}</span>
