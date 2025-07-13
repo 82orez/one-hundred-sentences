@@ -97,12 +97,20 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
     return isClassDate(date) && checkDate < twoDaysAfterToday;
   };
 
+  // 클릭 가능한 날짜인지 확인 (수업 날짜이면서 과거가 아닌 날짜)
+  const isClickableDate = (date: Date) => {
+    return isClassDate(date) && !isPastOrTodayClassDate(date);
+  };
+
   // 날짜 클릭 핸들러
   const handleDayClick: DayClickEventHandler = (day) => {
-    if (isClassDate(day) && !isPastOrTodayClassDate(day)) {
-      setSelectedDate(day);
-      calculateRemainingClasses(day);
+    // 수업이 없는 날짜나 과거 날짜는 클릭 불가
+    if (!isClickableDate(day)) {
+      return;
     }
+
+    setSelectedDate(day);
+    calculateRemainingClasses(day);
   };
 
   // 남은 수업 수 계산
@@ -183,15 +191,19 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
                     font-weight: bold;
                     border: 1px solid #0ea5e9;
                   }
+
                   .class-date {
                     background-color: #fef3c7;
                     color: #d97706;
                     font-weight: bold;
                     border-radius: 0.5rem;
+                    cursor: pointer;
                   }
+
                   .class-date:hover {
                     background-color: #fbbf24;
                   }
+
                   .past-class-date {
                     background-color: #f3f4f6;
                     color: #9ca3af;
@@ -199,8 +211,18 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
                     border-radius: 0.5rem;
                     cursor: not-allowed;
                   }
+
                   .past-class-date:hover {
                     background-color: #f3f4f6;
+                  }
+
+                  .non-class-date {
+                    color: #222223;
+                    cursor: not-allowed;
+                  }
+
+                  .non-class-date:hover {
+                    background-color: transparent;
                   }
                 `}</style>
 
@@ -209,14 +231,16 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
                   selected={selectedDate}
                   onDayClick={handleDayClick}
                   locale={ko}
-                  disabled={isPastOrTodayClassDate}
+                  disabled={(date) => !isClickableDate(date)}
                   modifiers={{
                     classDate: (date) => isClassDate(date) && !isPastOrTodayClassDate(date),
                     pastClassDate: (date) => isPastOrTodayClassDate(date),
+                    nonClassDate: (date) => !isClassDate(date),
                   }}
                   modifiersClassNames={{
                     classDate: "class-date",
                     pastClassDate: "past-class-date",
+                    nonClassDate: "non-class-date",
                     selected: "rdp-day_selected",
                     today: "rdp-day_today",
                   }}
