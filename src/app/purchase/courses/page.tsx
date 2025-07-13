@@ -92,20 +92,20 @@ const PurchasePage = () => {
             {pricePlansForCourse.map((plan) => (
               <div
                 key={plan.id}
-                className={`relative w-full max-w-80 cursor-pointer rounded-lg border p-8 text-center shadow-lg transition-transform duration-300 ease-in-out ${
+                className={`relative w-full max-w-80 rounded-lg border p-8 text-center shadow-lg transition-transform duration-300 ease-in-out ${
                   selectedPlan === plan.id ? "scale-105 border-blue-600 bg-blue-50 shadow-2xl" : "border-gray-300 bg-white"
                 }`}
                 onClick={() => setSelectedPlan(selectedPlan === plan.id ? null : plan.id)}>
                 {/* 선택된 경우 체크 아이콘 표시 */}
-                {selectedPlan === plan.id ? (
-                  <div className="absolute top-4 left-4 text-blue-600">
-                    <IoMdCheckboxOutline size={24} />
-                  </div>
-                ) : (
-                  <div className="absolute top-4 left-4 text-blue-600">
-                    <MdCheckBoxOutlineBlank size={24} />
-                  </div>
-                )}
+                {/*{selectedPlan === plan.id ? (*/}
+                {/*  <div className="absolute top-4 left-4 text-blue-600">*/}
+                {/*    <IoMdCheckboxOutline size={24} />*/}
+                {/*  </div>*/}
+                {/*) : (*/}
+                {/*  <div className="absolute top-4 left-4 text-blue-600">*/}
+                {/*    <MdCheckBoxOutlineBlank size={24} />*/}
+                {/*  </div>*/}
+                {/*)}*/}
 
                 {/* 강좌 제목 표시 부분 */}
                 <h3 className={`text-xl font-bold ${selectedPlan === plan.id ? "text-blue-700" : "text-blue-600"}`}>{plan.title}</h3>
