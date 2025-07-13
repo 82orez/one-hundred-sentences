@@ -238,8 +238,15 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
                     </p>
                   </div>
 
-                  <div className="mt-6 text-center">
-                    <button className="btn btn-primary" onClick={handleEnrollmentClick}>
+                  <div className="mt-6 mb-2 flex space-x-3">
+                    {/* 닫기 버튼 */}
+                    <button onClick={onClose} className="flex-1 rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 disabled:opacity-50">
+                      취 소
+                    </button>
+
+                    <button
+                      className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+                      onClick={handleEnrollmentClick}>
                       다음 단계
                     </button>
                   </div>
@@ -247,13 +254,6 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
               )}
             </>
           )}
-
-          {/* 닫기 버튼 */}
-          <div className="mt-6 flex justify-center">
-            <button onClick={onClose} className="rounded-lg bg-gray-600 px-6 py-2 text-white hover:bg-gray-700">
-              취 소
-            </button>
-          </div>
         </div>
       </div>
 
