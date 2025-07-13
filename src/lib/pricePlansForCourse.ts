@@ -23,9 +23,9 @@ export const pricePlansForCourse = [
     ],
   },
   {
-    id: "cmd16tdst000vftyg0e27hs2u",
+    id: "cmd1daw08001jft0d3npodk84",
     title: "Test - 유료 강좌\n(7/13일)",
-    price: 60000,
+    price: 30000,
     pricePerHour: 5000,
     description: [
       "Paul 강사",
@@ -39,8 +39,8 @@ export const pricePlansForCourse = [
       //   details: ["예습, 복습 및 AI 테스트 가능"],
       // },
       {
-        title: "수강료 : 6만원 (12회 기준)",
-        details: ["중간 참여 시, 1회당 5,000원", "예) 6회 수업 신청 -> 3만원"],
+        title: "수강료 : 3만원 (6회 기준)",
+        details: ["중간 참여 시, 1회당 5,000원", "예) 4회 수업 신청 -> 2만원"],
       },
     ],
   },
