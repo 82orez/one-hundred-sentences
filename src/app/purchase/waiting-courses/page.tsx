@@ -401,13 +401,12 @@ export default function WaitingCoursesPage() {
                           <span className="font-medium">{course.totalFee.toLocaleString()}원</span>
                         </div>
                         {course.expiresAt && (
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between font-semibold">
                             <div className="flex items-center text-gray-600">
                               <AlertCircle className="mr-2 h-4 w-4" />
-                              <span>결제 대기 마감 시한</span>
+                              <span>마감 시한</span>
                             </div>
-                            <span
-                              className={`font-medium ${courseExpired ? "text-red-600" : courseExpiringSoon ? "text-orange-600" : "text-gray-900"}`}>
+                            <span className={` ${courseExpired ? "text-red-600" : courseExpiringSoon ? "text-orange-600" : "text-gray-900"}`}>
                               {format(new Date(course.expiresAt), "yyyy년 MM월 dd일 HH시", { locale: ko })}
                             </span>
                           </div>
@@ -498,7 +497,7 @@ export default function WaitingCoursesPage() {
             <div className="mt-4 space-y-3 text-yellow-700">
               <p>• 입금자명은 신청자명과 동일하게 입금해 주세요.</p>
               <p>• 관리자가 입금 확인을 한 후에는 '내 강의실 입장' 메뉴에서 해당 수업 수강이 가능합니다.</p>
-              <p>• 반드시 결제 대기 마감 시한까지 입금 부탁드립니다.</p>
+              <p className={"font-semibold"}>• 반드시 마감 시한까지 수강료 입금 부탁드립니다.</p>
               <p>• 해당 시간까지 입금 정보가 확인이 되지 않을 경우 자동으로 수강 신청 내역이 취소점 양해 부탁드립니다.</p>
             </div>
           </div>
