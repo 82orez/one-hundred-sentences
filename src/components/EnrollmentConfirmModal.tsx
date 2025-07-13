@@ -38,6 +38,13 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
   const handleEnrollment = async () => {
     if (isProcessing) return;
 
+    // 확인 메시지 표시
+    const userConfirmed = confirm("수강 관련 정보를 모두 확인하셨습니까? (신청자 정보, 수강료, 유의 사항 등)");
+
+    if (!userConfirmed) {
+      return; // 사용자가 취소를 누르면 함수 종료
+    }
+
     setIsProcessing(true);
 
     try {

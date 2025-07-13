@@ -136,12 +136,14 @@ const PurchasePage = () => {
                   </ul>
                 </div>
 
-                <div
-                  className={"mt-4 mb-12 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
-                  onClick={() => router.push(`/course-detail/courses/tour100`)}>
-                  <FaHandPointRight />
-                  <div>강의 소개 페이지 보기</div>
-                </div>
+                {plan.introPage && (
+                  <div
+                    className={"mt-4 mb-12 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
+                    onClick={() => router.push(plan.introPage)}>
+                    <FaHandPointRight />
+                    <div>강의 소개 페이지 보기</div>
+                  </div>
+                )}
 
                 <button
                   className={

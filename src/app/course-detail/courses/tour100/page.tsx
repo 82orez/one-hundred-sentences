@@ -21,9 +21,9 @@ export default function EnglishCoursePage() {
   return (
     <div className="min-h-screen md:py-8">
       <div className="mx-auto max-w-md overflow-hidden rounded-lg bg-[#FFE3B3] p-4 shadow-lg md:p-6">
-        <div className="flex flex-col items-center justify-between text-2xl font-bold text-gray-700 md:gap-2 md:text-4xl">
+        <div className="flex flex-col items-center justify-between text-3xl font-bold text-gray-700 md:gap-2 md:text-4xl">
           <div>ShallE 100 여행영어</div>
-          <div>(6/5일 개강)</div>
+          <div>강좌 소개</div>
         </div>
 
         {/* 이미지 섹션 */}
