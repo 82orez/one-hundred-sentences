@@ -115,10 +115,10 @@ function Timer({ expiresAt, onExpire }: TimerProps) {
   };
 
   return (
-    <div className="text-center">
-      <div className="mt-1 mb-1 text-sm text-gray-500">{timeLeft.days > 0 ? "마감까지 남은 시간" : "마감 임박"}</div>
-      <div className={`font-mono text-sm ${getTimerColor()}`}>
-        {timeLeft.days > 0 && <span className="inline-block min-w-[2rem]">{timeLeft.days}일</span>}
+    <div className="text-center text-lg">
+      <div className="mt-1 mb-1 text-gray-500">{timeLeft.days > 0 ? "마감까지 남은 시간" : "마감 임박"}</div>
+      <div className={`font-semibold ${getTimerColor()}`}>
+        {timeLeft.days > 0 && <span className="inline-block min-w-[2rem]">D - {timeLeft.days}일</span>}{" "}
         <span className="inline-block min-w-[2rem]">{timeLeft.hours.toString().padStart(2, "0")}시간</span>{" "}
         <span className="inline-block min-w-[2rem]">{timeLeft.minutes.toString().padStart(2, "0")}분</span>{" "}
         <span className="inline-block min-w-[2rem]">{timeLeft.seconds.toString().padStart(2, "0")}초</span>
@@ -416,7 +416,7 @@ export default function WaitingCoursesPage() {
                 <div key={course.id} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
                   {/* 상태 및 만료 경고 */}
                   <div className="mb-4 flex items-center justify-between">
-                    <span className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(courseExpired ? "expired" : course.status)}`}>
+                    <span className={`rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(courseExpired ? "expired" : course.status)}`}>
                       {courseExpired ? "만료됨" : getStatusText(course.status)}
                     </span>
                     {course.expiresAt && course.status === "pending" && (
@@ -424,13 +424,13 @@ export default function WaitingCoursesPage() {
                         {courseExpired && (
                           <div className="flex items-center text-red-600">
                             <AlertCircle className="mr-1 h-4 w-4" />
-                            <span className="text-xs font-semibold">만료됨</span>
+                            <span className="text-sm font-semibold">만료됨</span>
                           </div>
                         )}
                         {courseExpiringSoon && (
                           <div className="flex items-center text-red-600">
                             <AlertCircle className="mr-1 h-4 w-4" />
-                            <span className="text-xs">만료 임박</span>
+                            <span className="text-sm">마감 임박</span>
                           </div>
                         )}
                       </>
@@ -507,11 +507,11 @@ export default function WaitingCoursesPage() {
                         {/* 마감 시간까지의 타이머 */}
                         {course.expiresAt && course.status === "pending" && (
                           <div className="mt-3 rounded-lg border bg-gray-50 p-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center text-gray-600">
-                                <Clock className="mr-2 h-4 w-4" />
-                                <span className="font-medium">남은 시간</span>
-                              </div>
+                            <div className="flex items-center justify-center">
+                              {/*<div className="flex items-center text-gray-600">*/}
+                              {/*  <Clock className="mr-2 h-4 w-4" />*/}
+                              {/*  <span className="font-medium">남은 시간</span>*/}
+                              {/*</div>*/}
                               <Timer expiresAt={course.expiresAt} onExpire={handleTimerExpire} />
                             </div>
                           </div>
@@ -526,7 +526,7 @@ export default function WaitingCoursesPage() {
                           <button
                             onClick={() => handleCancelWaitForPurchase(course.id, course.courseTitle)}
                             disabled={cancellingId === course.id}
-                            className="flex flex-1 items-center justify-center gap-1 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50">
+                            className="flex flex-1 items-center justify-center gap-1 rounded-md bg-red-600 px-3 py-2 font-medium text-white hover:bg-red-700 disabled:opacity-50">
                             {cancellingId === course.id ? (
                               <>
                                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
