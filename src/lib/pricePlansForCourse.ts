@@ -23,7 +23,7 @@ export const pricePlansForCourse = [
     ],
   },
   {
-    id: "cmd0we7ko0001ft171vs7dyh0",
+    id: "cmd16tdst000vftyg0e27hs2u",
     title: "Test - 유료 강좌\n(7/13일)",
     price: 60000,
     pricePerHour: 5000,

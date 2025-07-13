@@ -3,37 +3,28 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+      return NextResponse.json({ error: "인증되지 않은 사용자입니다." }, { status: 401 });
     }
 
-    // 사용자 정보 조회 (role 포함)
+    // 사용자 권한 확인
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
-      select: {
-        id: true,
-        role: true,
-      },
+      select: { role: true },
     });
 
-    if (!user) {
-      return NextResponse.json({ error: "사용자 정보를 찾을 수 없습니다." }, { status: 404 });
-    }
-
-    // admin 또는 semiAdmin 권한 확인
-    if (user.role !== "admin" && user.role !== "semiAdmin") {
+    if (!user || (user.role !== "admin" && user.role !== "semiAdmin")) {
       return NextResponse.json({ error: "관리자 권한이 필요합니다." }, { status: 403 });
     }
 
-    const body = await request.json();
-    const { waitForPurchaseId, courseId } = body;
+    const { waitForPurchaseId, courseId } = await req.json();
 
     if (!waitForPurchaseId || !courseId) {
-      return NextResponse.json({ error: "필수 데이터가 누락되었습니다." }, { status: 400 });
+      return NextResponse.json({ error: "필수 정보가 누락되었습니다." }, { status: 400 });
     }
 
     // 결제 대기 정보 조회
@@ -45,17 +36,12 @@ export async function POST(request: NextRequest) {
             id: true,
             realName: true,
             phone: true,
-            email: true,
           },
         },
         course: {
           select: {
             id: true,
             title: true,
-            contents: true,
-            teacherId: true,
-            startDate: true,
-            endDate: true,
           },
         },
       },
@@ -65,63 +51,55 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "결제 대기 정보를 찾을 수 없습니다." }, { status: 404 });
     }
 
-    // 이미 결제 완료된 경우
-    if (waitForPurchase.status === "paid") {
-      return NextResponse.json({ error: "이미 결제 완료된 강좌입니다." }, { status: 400 });
-    }
-
-    // 결제 대기 상태가 아닌 경우
     if (waitForPurchase.status !== "pending") {
       return NextResponse.json({ error: "결제 대기 상태가 아닙니다." }, { status: 400 });
     }
 
-    // 이미 해당 강좌에 등록된 사용자인지 확인
-    const existingEnrollment = await prisma.enrollment.findFirst({
+    // 이미 수강 신청이 되어 있는지 확인
+    const existingEnrollment = await prisma.enrollment.findUnique({
       where: {
-        studentId: waitForPurchase.userId, // userId 대신 studentId 사용
-        courseId: courseId,
+        courseId_studentId: {
+          courseId: courseId,
+          studentId: waitForPurchase.userId,
+        },
       },
     });
 
     if (existingEnrollment) {
-      return NextResponse.json({ error: "이미 해당 강좌에 등록된 사용자입니다." }, { status: 400 });
+      return NextResponse.json({ error: "이미 수강 신청이 완료된 강좌입니다." }, { status: 400 });
     }
 
-    // 트랜잭션으로 처리
-    const result = await prisma.$transaction(async (prisma) => {
-      // 1. WaitForPurchase 상태를 'paid' 로 업데이트
-      const updatedWaitForPurchase = await prisma.waitForPurchase.update({
+    // 트랜잭션으로 결제 확인 및 수강 신청 처리
+    await prisma.$transaction(async (tx) => {
+      // 1. 결제 대기 상태를 paid로 변경
+      await tx.waitForPurchase.update({
         where: { id: waitForPurchaseId },
-        data: {
-          status: "paid",
-        },
+        data: { status: "paid" },
       });
 
-      // 2. Enrollment 생성
-      const enrollment = await prisma.enrollment.create({
+      // 2. Enrollment 테이블에 등록 정보 저장
+      await tx.enrollment.create({
         data: {
-          studentId: waitForPurchase.userId, // userId 대신 studentId 사용
           courseId: courseId,
           courseTitle: waitForPurchase.courseTitle,
-          studentName: waitForPurchase.userName,
-          studentPhone: waitForPurchase.userPhone,
-          status: "active", // 기본값이 pending 이므로 active로 설정
+          studentId: waitForPurchase.userId,
+          studentName: waitForPurchase.user.realName || waitForPurchase.userName,
+          studentPhone: waitForPurchase.user.phone || waitForPurchase.userPhone,
+          status: "active", // 결제 확인 후 바로 활성 상태로 설정
+          description: `관리자에 의해 결제 확인됨 (${new Date().toISOString()})`,
         },
       });
-
-      return { updatedWaitForPurchase, enrollment };
     });
 
     return NextResponse.json({
       success: true,
-      message: `${waitForPurchase.courseTitle} 강좌의 결제가 확인되었습니다. 수강생이 등록되었습니다.`,
-      data: result,
+      message: "결제가 확인되었고 수강 신청이 완료되었습니다.",
     });
   } catch (error) {
     console.error("결제 확인 처리 중 오류:", error);
     return NextResponse.json(
       {
-        error: "서버 오류가 발생했습니다.",
+        error: "결제 확인 처리 중 오류가 발생했습니다.",
       },
       { status: 500 },
     );
