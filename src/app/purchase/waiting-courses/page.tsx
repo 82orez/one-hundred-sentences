@@ -417,7 +417,7 @@ export default function WaitingCoursesPage() {
 
                     {/* 액션 버튼 */}
                     <div className="border-t pt-3">
-                      <div className="flex gap-2">
+                      <div className="flex flex-col gap-2">
                         {course.status === "pending" && (
                           <button
                             onClick={() => handleCancelWaitForPurchase(course.id, course.courseTitle)}
@@ -431,11 +431,12 @@ export default function WaitingCoursesPage() {
                             ) : (
                               <>
                                 <X className="h-4 w-4" />
-                                <span>신청 취소</span>
+                                <span>수강 신청 취소</span>
                               </>
                             )}
                           </button>
                         )}
+
                         {(userRole === "admin" || userRole === "semiAdmin") && selectedStatus === "pending" && (
                           <button
                             onClick={() => handleConfirmPayment(course.id, course.courseId, course.courseTitle)}
