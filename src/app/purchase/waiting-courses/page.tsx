@@ -41,6 +41,92 @@ interface ApiResponse {
   userRole: "admin" | "semiAdmin" | "teacher" | "student";
 }
 
+// 타이머 컴포넌트
+interface TimerProps {
+  expiresAt: string;
+  onExpire?: () => void;
+}
+
+function Timer({ expiresAt, onExpire }: TimerProps) {
+  const [timeLeft, setTimeLeft] = useState<{
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  } | null>(null);
+
+  const [isExpired, setIsExpired] = useState(false);
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      // 한국 시간 기준으로 계산
+      const now = new Date();
+      const expireDate = new Date(expiresAt);
+
+      // 한국 시간 오프셋 적용 (UTC+9)
+      const koreaOffset = 9 * 60 * 60 * 1000;
+      const nowKorea = new Date(now.getTime() + koreaOffset);
+      const expireDateKorea = new Date(expireDate.getTime() + koreaOffset);
+
+      const difference = expireDateKorea.getTime() - nowKorea.getTime();
+
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        setTimeLeft({ days, hours, minutes, seconds });
+        setIsExpired(false);
+      } else {
+        setTimeLeft(null);
+        setIsExpired(true);
+        onExpire?.();
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, [expiresAt, onExpire]);
+
+  if (isExpired) {
+    return (
+      <div className="text-center">
+        <span className="font-semibold text-red-600">만료됨</span>
+      </div>
+    );
+  }
+
+  if (!timeLeft) {
+    return null;
+  }
+
+  const getTimerColor = () => {
+    if (timeLeft.days === 0 && timeLeft.hours < 2) {
+      return "text-red-600"; // 2시간 미만
+    } else if (timeLeft.days === 0 && timeLeft.hours < 12) {
+      return "text-orange-600"; // 12시간 미만
+    } else if (timeLeft.days <= 1) {
+      return "text-yellow-600"; // 1일 이하
+    }
+    return "text-gray-700"; // 정상
+  };
+
+  return (
+    <div className="text-center">
+      <div className="mt-1 mb-1 text-sm text-gray-500">{timeLeft.days > 0 ? "마감까지 남은 시간" : "마감 임박"}</div>
+      <div className={`font-mono text-sm ${getTimerColor()}`}>
+        {timeLeft.days > 0 && <span className="inline-block min-w-[2rem]">{timeLeft.days}일</span>}
+        <span className="inline-block min-w-[2rem]">{timeLeft.hours.toString().padStart(2, "0")}시간</span>{" "}
+        <span className="inline-block min-w-[2rem]">{timeLeft.minutes.toString().padStart(2, "0")}분</span>{" "}
+        <span className="inline-block min-w-[2rem]">{timeLeft.seconds.toString().padStart(2, "0")}초</span>
+      </div>
+    </div>
+  );
+}
+
 export default function WaitingCoursesPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -242,6 +328,12 @@ export default function WaitingCoursesPage() {
     }
   };
 
+  // 타이머 만료 시 호출되는 함수
+  const handleTimerExpire = () => {
+    // 목록을 새로고침하여 만료된 상태를 반영
+    fetchWaitingCourses();
+  };
+
   if (status === "loading" || loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -409,6 +501,19 @@ export default function WaitingCoursesPage() {
                             <span className={` ${courseExpired ? "text-red-600" : courseExpiringSoon ? "text-orange-600" : "text-gray-900"}`}>
                               {format(new Date(course.expiresAt), "yyyy년 MM월 dd일 HH시", { locale: ko })}
                             </span>
+                          </div>
+                        )}
+
+                        {/* 마감 시간까지의 타이머 */}
+                        {course.expiresAt && course.status === "pending" && (
+                          <div className="mt-3 rounded-lg border bg-gray-50 p-3">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center text-gray-600">
+                                <Clock className="mr-2 h-4 w-4" />
+                                <span className="font-medium">남은 시간</span>
+                              </div>
+                              <Timer expiresAt={course.expiresAt} onExpire={handleTimerExpire} />
+                            </div>
                           </div>
                         )}
                       </div>
