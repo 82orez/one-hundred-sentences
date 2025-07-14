@@ -5,10 +5,10 @@ export default function TravelEnglishPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-sky-50 to-white text-gray-800">
       {/* Hero */}
-      <section className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-20 text-center md:flex-row">
+      <section className="mx-auto flex max-w-6xl flex-col items-center gap-0 px-4 py-6 text-center md:flex-row md:gap-6 md:py-12">
         <div className="md:w-1/2">
           <h1 className="text-3xl font-extrabold sm:text-5xl">프렌딩 여행영어</h1>
-          <h1 className="mt-4 text-3xl font-extrabold whitespace-nowrap sm:text-5xl">1:1 화상영어</h1>
+          <h1 className="mt-2 text-3xl font-extrabold whitespace-nowrap sm:text-5xl md:mt-4">1:1 화상영어</h1>
           <div className={"md:hidden"}>
             <p className="mt-4 text-lg leading-relaxed">실전 말하기 훈련으로</p>
             <p className="font-semibold text-sky-600">빠른 실력 업그레이드!</p>
@@ -18,14 +18,14 @@ export default function TravelEnglishPage() {
           </p>
           <a
             href="tel:01037534546"
-            className="mt-8 inline-block rounded-xl bg-sky-600 px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-sky-700">
+            className="mt-4 inline-block rounded-xl bg-sky-600 px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-sky-700 md:mt-8">
             상담 예약하기
           </a>
         </div>
 
         {/* 대표 이미지 자리 */}
-        <div className="relative mt-10 h-64 w-full overflow-hidden rounded-3xl shadow-lg md:mt-0 md:w-1/2">
-          <Image src="/hero-placeholder.jpg" alt="온라인 수업 화면" fill className="object-cover" priority />
+        <div className="relative mt-6 h-96 w-full overflow-hidden rounded-3xl shadow-lg md:mt-0 md:w-1/2">
+          <Image src="/images/one_to_one_online_class.png" alt="온라인 수업 화면" fill className="object-cover" priority />
         </div>
       </section>
 
