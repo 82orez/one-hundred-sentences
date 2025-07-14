@@ -53,7 +53,7 @@ export default function TravelEnglishPage() {
         <h2 className="mb-6 text-center text-2xl font-extrabold sm:text-3xl md:mb-10">프로그램 특징</h2>
         <div className="grid gap-12 md:grid-cols-3 md:gap-10">
           {[
-            ["/images/app-dashboard.png", "학습어플 연계 + 실전 연습", "반복 학습과 말하기 훈련을 통해 표현력·응용력·적응력이 동시에 향상!"],
+            ["/images/app-intro-1.png", "학습어플 연계 + 실전 연습", "반복 학습과 말하기 훈련을 통해 표현력·응용력·적응력이 동시에 향상!"],
             ["/images/teac2_1.png", "1:1 전담 강사제", "내 수준에 딱 맞춘 수업으로 영어 자신감 UP! 실력도 자연스럽게 성장"],
             ["/images/teac2.png", "실시간 피드백 + 표현 교정", "직접 말한 문장을 바로 교정받고, 발음·문법·표현까지 정확하게 완성!"],
           ].map(([src, title, desc]) => (
