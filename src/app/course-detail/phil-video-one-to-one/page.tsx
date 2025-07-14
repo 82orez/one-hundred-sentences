@@ -30,7 +30,7 @@ export default function TravelEnglishPage() {
       </section>
 
       {/* Overview */}
-      <section className="bg-white py-14">
+      <section className="bg-white py-8 md:py-14">
         <div className="mx-auto grid max-w-4xl gap-8 px-4 sm:grid-cols-2">
           {[
             ["강의명", "프렌딩 여행영어 1:1 화상영어"],
@@ -38,19 +38,19 @@ export default function TravelEnglishPage() {
             ["교재", "프렌딩 여행영어 100 (온라인)"],
             ["수업 시간", "주 2회 · 회당 25분"],
             ["수강료", "180,000원 (12주, 총 24회)"],
-            ["대상", "초급‒초중급 / 여행 준비자"],
+            ["대상", "초급 ~ 초·중급 / 해외 여행 예정인 분"],
           ].map(([label, value]) => (
             <div key={label} className="flex flex-col">
-              <span className="text-sm font-medium text-gray-500">{label}</span>
-              <span className="text-base font-semibold">{value}</span>
+              <span className="font-medium text-gray-500">{label}</span>
+              <span className="text-lg font-semibold">{value}</span>
             </div>
           ))}
         </div>
       </section>
 
       {/* Features */}
-      <section className="mx-auto max-w-6xl px-4 py-20">
-        <h2 className="mb-12 text-center text-2xl font-extrabold sm:text-3xl">프로그램 특징</h2>
+      <section className="mx-auto my-6 max-w-6xl px-4 md:my-12">
+        <h2 className="mb-6 text-center text-2xl font-extrabold sm:text-3xl md:mb-10">프로그램 특징</h2>
         <div className="grid gap-10 md:grid-cols-3">
           {[
             ["/images/app-dashboard.png", "학습어플 연계 + 실전 연습", "반복 학습과 말하기 훈련을 통해 표현력·응용력·적응력이 동시에 향상!"],
