@@ -138,7 +138,7 @@ const PurchasePage = () => {
 
                 {plan.introPage && (
                   <div
-                    className={"mt-8 mb-0 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
+                    className={"mt-8 mb-0 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline md:mb-16"}
                     onClick={() => router.push(plan.introPage)}>
                     <FaHandPointRight />
                     <div>강의 소개 페이지 보기</div>
