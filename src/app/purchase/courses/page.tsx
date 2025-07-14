@@ -76,7 +76,7 @@ const PurchasePage = () => {
     <div className="min-h-screen bg-gray-50 text-gray-800">
       <header className="bg-blue-600 py-3 text-white md:py-6">
         <div className="mx-auto max-w-5xl px-4 text-center">
-          <h1 className="text-2xl font-extrabold md:text-4xl">강좌를 선택해 주세요.</h1>
+          <h1 className="hidden text-2xl font-extrabold md:block md:text-4xl">강좌를 선택해 주세요.</h1>
           <p className="mt-1 text-lg md:mt-4">원하는 강좌를 선택하고 시작하세요!</p>
         </div>
       </header>
@@ -138,7 +138,7 @@ const PurchasePage = () => {
 
                 {plan.introPage && (
                   <div
-                    className={"mt-4 mb-12 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
+                    className={"mt-8 mb-0 flex cursor-pointer items-center justify-center gap-2 font-semibold text-blue-600 hover:underline"}
                     onClick={() => router.push(plan.introPage)}>
                     <FaHandPointRight />
                     <div>강의 소개 페이지 보기</div>
@@ -147,7 +147,7 @@ const PurchasePage = () => {
 
                 <button
                   className={
-                    "btn btn-primary absolute right-0 bottom-3 left-0 z-50 mx-auto mt-8 max-w-11/12 rounded-lg border-t border-gray-200 p-6 text-[1rem] shadow-lg"
+                    "btn btn-primary mx-auto mt-8 max-w-11/12 rounded-lg border-t border-gray-200 p-6 text-[1rem] shadow-lg md:absolute md:right-0 md:bottom-3 md:left-0 md:z-50"
                   }
                   onClick={(e) => {
                     e.stopPropagation(); // 카드 클릭 이벤트 방지
@@ -166,7 +166,7 @@ const PurchasePage = () => {
           {/*  onValidationErrorAction={() => toast.error("강좌를 선택해 주세요.")}*/}
           {/*/>*/}
 
-          <div className={"mt-4 flex justify-center md:mt-6"}>
+          <div className={"mt-8 mb-4 flex justify-center md:mt-12"}>
             <Link href="/" className="flex items-center text-blue-500 hover:underline">
               <ArrowLeft className="mr-1" size={20} />
               Back to Home
