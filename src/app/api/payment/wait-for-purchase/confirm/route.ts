@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
           studentName: waitForPurchase.user.realName || waitForPurchase.userName,
           studentPhone: waitForPurchase.user.phone || waitForPurchase.userPhone,
           status: "active", // 결제 확인 후 바로 활성 상태로 설정
-          description: `관리자에 의해 결제 확인됨 (${new Date().toISOString()})`,
+          // description: `관리자에 의해 결제 확인됨 (${new Date().toISOString()})`,
         },
       });
     });
