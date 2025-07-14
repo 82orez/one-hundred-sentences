@@ -67,21 +67,19 @@ export default function SignInForm() {
     setIsLoading(true);
 
     try {
+      // redirect: false 대신 callbackUrl을 직접 전달
       const result = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
-        redirect: false,
+        callbackUrl, // NextAuth.js가 자동으로 리다이렉션 처리
       });
 
+      // 에러가 있는 경우에만 처리
       if (result?.error) {
         setError(result.error || "An error occurred during sign in.");
-        setIsLoading(false); // 에러 발생 시 로딩 상태 해제
-      } else {
-        // 로그인 성공 후 로딩 화면을 유지
-        setIsLoading(true);
-        // * 이메일 로그인에 성공하면 callbackUrl로 이동.
-        router.push(callbackUrl);
+        setIsLoading(false);
       }
+      // 성공 시에는 NextAuth.js가 자동으로 callbackUrl로 리다이렉션
     } catch (error) {
       setError("An unexpected error occurred.");
       setIsLoading(false);
