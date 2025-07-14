@@ -97,6 +97,13 @@ export default function Navbar() {
                   onClick={() => setMenuOpen(false)}>
                   Purchase
                 </Link>
+
+                <Link
+                  href="/course-detail/phil-video-one-to-one"
+                  className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
+                  onClick={() => setMenuOpen(false)}>
+                  필리핀
+                </Link>
               </>
             )}
 
