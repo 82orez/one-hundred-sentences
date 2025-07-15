@@ -414,13 +414,7 @@ export default function WaitingCoursesPage() {
                               <span>마감 시한</span>
                             </div>
                             <span className={` ${courseExpired ? "text-red-600" : courseExpiringSoon ? "text-orange-600" : "text-gray-900"}`}>
-                              {(() => {
-                                const expiryDate = new Date(course.expiresAt);
-                                // 한국 시간대 오프셋 적용 (UTC+9)
-                                const koreaOffset = 9 * 60 * 60 * 1000;
-                                const koreaTime = new Date(expiryDate.getTime() + koreaOffset);
-                                return format(koreaTime, "yyyy년 MM월 dd일 HH시", { locale: ko });
-                              })()}
+                              {format(new Date(course.expiresAt), "yyyy년 MM월 dd일 HH시", { locale: ko })}
                             </span>
                           </div>
                         )}
