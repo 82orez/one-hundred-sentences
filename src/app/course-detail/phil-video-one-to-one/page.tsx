@@ -1,9 +1,9 @@
-// app/(marketing)/page.tsx
+// src/app/course-detail/phil-video-one-to-one/page.tsx
 import Image from "next/image";
 
 export default function TravelEnglishPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-sky-50 to-white text-gray-800">
+    <main className="min-h-screen bg-gradient-to-br from-sky-100 to-white text-gray-800">
       {/* Hero */}
       <section className="mx-auto flex max-w-6xl flex-col items-center gap-0 px-4 py-6 text-center md:flex-row md:gap-6 md:py-12">
         <div className="md:w-1/2">
@@ -69,9 +69,9 @@ export default function TravelEnglishPage() {
       </section>
 
       {/* Units */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gray-50 py-8 md:py-16">
         <div className="mx-auto max-w-5xl px-4">
-          <h2 className="mb-8 text-center text-2xl font-extrabold sm:text-3xl">유닛 구성</h2>
+          <h2 className="mb-4 text-center text-2xl font-extrabold sm:text-3xl md:mb-8">유닛 구성</h2>
           <ul className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
             {[
               "비행기에서 승무원과 대화하기",
@@ -95,7 +95,7 @@ export default function TravelEnglishPage() {
               "버스 카드 충전하기",
               "공항 셀프 체크인",
             ].map((unit, i) => (
-              <li key={unit} className="rounded-lg bg-white px-4 py-3 text-sm shadow-sm transition hover:shadow-md">
+              <li key={unit} className="rounded-lg bg-white px-4 py-3 shadow-sm transition hover:shadow-md">
                 <span className="font-semibold">Unit {String(i + 1).padStart(2, "0")}</span>
                 &nbsp;— {unit}
               </li>
@@ -105,7 +105,7 @@ export default function TravelEnglishPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-4 py-20 text-center">
+      <section className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-4 py-8 text-center md:py-12">
         <h2 className="text-2xl font-extrabold sm:text-3xl">빠르게 실력을 올리고 싶다면?</h2>
         <p className="max-w-lg text-base">1:1 전담 강사와 시작해 보세요. 상담만 받아도 학습 가이드를 드립니다!</p>
         <div className="flex flex-wrap justify-center gap-4">
