@@ -176,6 +176,13 @@ export default function Navbar() {
                         대시보드
                       </Link>
 
+                      <Link
+                        href="/course-detail/phil-video-one-to-one"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setMenuOpen(false)}>
+                        필리핀
+                      </Link>
+
                       <Link href="/learn" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
                         기존 Learn
                       </Link>
