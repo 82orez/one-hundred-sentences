@@ -17,10 +17,10 @@ export default function TravelEnglishPage() {
             실전 말하기 훈련으로 <span className="font-semibold text-sky-600">빠른 실력 업그레이드!</span>
           </p>
           <a
-            href="https://pf.kakao.com/_YOUR_ID_"
+            href="http://pf.kakao.com/_yxkcfn"
             target="_blank"
-            className="mt-4 inline-block rounded-xl bg-sky-600 px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-sky-700 md:mt-8">
-            카카오톡 채널 문의하기
+            className="mt-4 inline-block rounded-xl bg-yellow-300 px-6 py-3 font-semibold text-yellow-900 shadow-lg transition hover:bg-sky-700 md:mt-8">
+            카카오톡 채널 문의
           </a>
         </div>
 
@@ -116,8 +116,8 @@ export default function TravelEnglishPage() {
           <a
             href="https://pf.kakao.com/_YOUR_ID_"
             target="_blank"
-            className="rounded-xl border border-sky-600 px-8 py-3 font-semibold text-sky-600 shadow-md transition hover:bg-sky-50">
-            카카오톡 문의
+            className="mt-4 inline-block rounded-xl bg-yellow-300 px-6 py-3 font-semibold text-yellow-900 shadow-lg transition hover:bg-sky-700 md:mt-8">
+            카카오톡 채널 문의
           </a>
         </div>
       </section>
