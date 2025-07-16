@@ -196,15 +196,15 @@ export async function POST(request: NextRequest) {
     <div class="section">
       <h2>👤 신청자 정보</h2>
       <h3 class="info-item">
-        <span class="label">이름:</span>
+        <span class="label">이름 :</span>
         <span class="value highlight">${user.realName}</span>
       </h3>
       <h3 class="info-item">
-        <span class="label">전화번호:</span>
+        <span class="label">전화번호 :</span>
         <span class="value">${user.phone}</span>
       </h3>
       <h3 class="info-item">
-        <span class="label">이메일:</span>
+        <span class="label">이메일 :</span>
         <span class="value">${user.email || "미제공"}</span>
       </h3>
     </div>
@@ -212,21 +212,21 @@ export async function POST(request: NextRequest) {
     <div>----------------------------------------------------------</div>
     
     <div class="section">
-      <h2>📚 강좌 정보</h2>
+      <h2>📚 수강 신청 강좌 정보</h2>
       <h3 class="info-item">
-        <span class="label">강좌명:</span>
+        <span class="label">강좌명 :</span>
         <span class="value highlight">${courseTitle}</span>
       </h3>
       <h3 class="info-item">
-        <span class="label">수강 시작일:</span>
+        <span class="label">수업 시작일 :</span>
         <span class="value">${new Date(startDate).toLocaleDateString("ko-KR")}</span>
       </h3>
       <h3 class="info-item">
-        <span class="label">수업 횟수:</span>
+        <span class="label">총 수업 횟수 :</span>
         <span class="value">${classCount}회</span>
       </h3>
       <h3 class="info-item">
-        <span class="label">수강료:</span>
+        <span class="label">입금 예정 수강료 :</span>
         <span class="value" style="color: #28a745; font-weight: bold;">${totalFee.toLocaleString()}원</span>
       </h3>
     </div>
