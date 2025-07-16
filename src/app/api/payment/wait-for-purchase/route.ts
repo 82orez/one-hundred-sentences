@@ -69,17 +69,24 @@ export async function POST(request: NextRequest) {
 
     // 결제 대기 만료일 설정 (한국 시간 기준으로 다음 날 오후 5시)
     const koreaTimezone = "Asia/Seoul";
-    const tomorrow = addDays(new Date(), 1);
+
+    // 현재 한국 시간 기준으로 오늘 날짜 생성
+    const nowInKorea = new Date();
+    const koreaToday = new Date(nowInKorea.toLocaleString("en-US", { timeZone: koreaTimezone }));
+
+    // 한국 시간 기준 내일 오후 5시로 설정
+    const tomorrowInKorea = addDays(koreaToday, 1);
     const koreaDeadline = setMilliseconds(
       setSeconds(
         setMinutes(
-          setHours(tomorrow, 17), // 오후 5시
+          setHours(tomorrowInKorea, 17), // 오후 5시
           0,
         ),
         0,
       ),
       0,
     );
+
     // 한국 시간을 UTC로 변환하여 저장
     const expiresAt = fromZonedTime(koreaDeadline, koreaTimezone);
 
@@ -268,7 +275,8 @@ export async function POST(request: NextRequest) {
 
         const { data, error } = await resend.emails.send({
           from: "프렌딩 아카데미 <no-reply@friending.ac>",
-          to: ["82orez@naver.com", "82orez@gmail.com"],
+          // to: ["82orez@naver.com", "82orez@gmail.com"],
+          to: "82orez@naver.com",
           subject: "새로운 수강 신청(결제 대기) 알림",
           html: emailContent,
         });
