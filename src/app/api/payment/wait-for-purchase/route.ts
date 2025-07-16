@@ -120,27 +120,130 @@ export async function POST(request: NextRequest) {
       if (process.env.RESEND_API_KEY) {
         // 이메일 내용 구성
         const emailContent = `
-          새로운 수강 신청자가 추가되었습니다.
-          
-          [신청자 정보]
-          - 이름: ${user.realName}
-          - 전화번호: ${user.phone}
-          - 이메일: ${user.email || "미제공"}
-          
-          [강좌 정보]
-          - 강좌명: ${courseTitle}
-          - 수강 시작일: ${new Date(startDate).toLocaleDateString("ko-KR")}
-          - 수업 횟수: ${classCount}회
-          - 수강료: ${totalFee.toLocaleString()}원
-          
-          신청 시간: ${new Date().toLocaleString("ko-KR")}
-        `;
+  <!DOCTYPE html>
+  <html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새로운 수강 신청 알림</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .section {
+        background-color: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .section h3 {
+        color: #495057;
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 18px;
+      }
+      .info-item {
+        margin-bottom: 8px;
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f3f4;
+      }
+      .info-item:last-child {
+        border-bottom: none;
+      }
+      .label {
+        font-weight: bold;
+        color: #6c757d;
+        display: inline-block;
+        width: 120px;
+      }
+      .value {
+        color: #212529;
+      }
+      .footer {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        color: #6c757d;
+        font-size: 14px;
+      }
+      .highlight {
+        background-color: #fff3cd;
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1 style="color: #007bff; margin: 0;">🎓 새로운 수강 신청 알림</h1>
+    </div>
+    
+    <div class="section">
+      <h2>👤 신청자 정보</h2>
+      <h3 class="info-item">
+        <span class="label">이름:</span>
+        <span class="value highlight">${user.realName}</span>
+      </h3>
+      <h3 class="info-item">
+        <span class="label">전화번호:</span>
+        <span class="value">${user.phone}</span>
+      </h3>
+      <h3 class="info-item">
+        <span class="label">이메일:</span>
+        <span class="value">${user.email || "미제공"}</span>
+      </h3>
+    </div>
+    
+    <div>----------------------------------------------------------</div>
+    
+    <div class="section">
+      <h2>📚 강좌 정보</h2>
+      <h3 class="info-item">
+        <span class="label">강좌명:</span>
+        <span class="value highlight">${courseTitle}</span>
+      </h3>
+      <h3 class="info-item">
+        <span class="label">수강 시작일:</span>
+        <span class="value">${new Date(startDate).toLocaleDateString("ko-KR")}</span>
+      </h3>
+      <h3 class="info-item">
+        <span class="label">수업 횟수:</span>
+        <span class="value">${classCount}회</span>
+      </h3>
+      <h3 class="info-item">
+        <span class="label">수강료:</span>
+        <span class="value" style="color: #28a745; font-weight: bold;">${totalFee.toLocaleString()}원</span>
+      </h3>
+    </div>
+    
+    <div>----------------------------------------------------------</div>
+        
+    <h3 class="footer">
+      <p>📅 신청 시간: ${new Date().toLocaleString("ko-KR")}</p>
+      <p>이 메일은 자동으로 전송된 알림입니다.</p>
+    </h3>
+  </body>
+  </html>
+`;
 
         const { data, error } = await resend.emails.send({
           from: "프렌딩 아카데미 <no-reply@friending.ac>",
           to: "82orez@naver.com",
           subject: "새로운 수강 신청 알림",
-          text: emailContent,
+          html: emailContent,
         });
 
         if (error) {
