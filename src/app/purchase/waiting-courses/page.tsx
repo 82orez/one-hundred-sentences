@@ -400,21 +400,21 @@ export default function WaitingCoursesPage() {
                           </div>
                           <span className="font-medium">{course.classCount}회</span>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center text-gray-600">
+                        <div className="flex items-center justify-between font-semibold text-blue-500">
+                          <div className="flex items-center">
                             <FaWonSign className="mr-2 h-4 w-4" />
                             <span>총 수강료</span>
                           </div>
-                          <span className="font-medium">{course.totalFee.toLocaleString()}원</span>
+                          <span className="">{course.totalFee.toLocaleString()}원</span>
                         </div>
                         {course.expiresAt && (
-                          <div className="flex items-center justify-between font-semibold">
+                          <div className="flex items-center justify-between text-sm font-semibold md:text-base">
                             <div className="flex items-center text-gray-600">
                               <AlertCircle className="mr-2 h-4 w-4" />
                               <span>마감 시한</span>
                             </div>
                             <span className={` ${courseExpired ? "text-red-600" : courseExpiringSoon ? "text-orange-600" : "text-gray-900"}`}>
-                              {format(new Date(course.expiresAt), "yyyy년 MM월 dd일 HH시", { locale: ko })}
+                              {format(new Date(course.expiresAt), "yyyy년 MM월 dd일 a h시", { locale: ko })}
                             </span>
                           </div>
                         )}
