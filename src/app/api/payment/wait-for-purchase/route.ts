@@ -4,6 +4,9 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { addDays, setHours, setMinutes, setSeconds, setMilliseconds } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,6 +31,7 @@ export async function POST(request: NextRequest) {
         id: true,
         realName: true,
         phone: true,
+        email: true,
       },
     });
 
@@ -62,10 +66,6 @@ export async function POST(request: NextRequest) {
         { status: 409 },
       );
     }
-
-    // 결제 대기 만료일 설정 (7일 후)
-    // const expiresAt = new Date();
-    // expiresAt.setDate(expiresAt.getDate() + 7);
 
     // 결제 대기 만료일 설정 (한국 시간 기준으로 다음 날 오후 5시)
     const koreaTimezone = "Asia/Seoul";
@@ -114,6 +114,45 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    // 관리자 이메일 전송 (직접 호출)
+    try {
+      if (process.env.RESEND_API_KEY) {
+        // 이메일 내용 구성
+        const emailContent = `
+          새로운 수강 신청자가 추가되었습니다.
+          
+          [신청자 정보]
+          - 이름: ${user.realName}
+          - 전화번호: ${user.phone}
+          - 이메일: ${user.email || "미제공"}
+          
+          [강좌 정보]
+          - 강좌명: ${courseTitle}
+          - 수강 시작일: ${new Date(startDate).toLocaleDateString("ko-KR")}
+          - 수업 횟수: ${classCount}회
+          - 수강료: ${totalFee.toLocaleString()}원
+          
+          신청 시간: ${new Date().toLocaleString("ko-KR")}
+        `;
+
+        const { data, error } = await resend.emails.send({
+          from: "프렌딩 아카데미 <no-reply@friending.ac>",
+          to: "82orez@naver.com",
+          subject: "새로운 수강 신청 알림",
+          text: emailContent,
+        });
+
+        if (error) {
+          console.error("관리자 이메일 전송 실패:", error);
+        } else {
+          console.log("관리자 이메일 전송 성공:", data);
+        }
+      }
+    } catch (emailError) {
+      console.error("이메일 전송 중 오류:", emailError);
+      // 이메일 전송 실패가 수강 신청 자체를 실패시키지 않도록 처리
+    }
 
     return NextResponse.json({
       success: true,
