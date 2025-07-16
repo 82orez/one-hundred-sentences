@@ -118,6 +118,13 @@ export async function POST(request: NextRequest) {
     // 관리자 이메일 전송 (직접 호출)
     try {
       if (process.env.RESEND_API_KEY) {
+        // 현재 결제 대기 중인 강좌 개수 조회
+        const pendingCoursesCount = await prisma.waitForPurchase.count({
+          where: {
+            status: "pending",
+          },
+        });
+
         // 이메일 내용 구성
         const emailContent = `
   <!DOCTYPE html>
@@ -184,6 +191,24 @@ export async function POST(request: NextRequest) {
         padding: 2px 6px;
         border-radius: 4px;
       }
+      .pending-count {
+        background-color: #e7f3ff;
+        border: 1px solid #b3d9ff;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .pending-count h2 {
+        color: #0066cc;
+        margin: 0;
+        font-size: 18px;
+      }
+      .pending-count .count {
+        color: #ff6b35;
+        font-weight: bold;
+        font-size: 24px;
+      }
     </style>
   </head>
   <body>
@@ -232,6 +257,11 @@ export async function POST(request: NextRequest) {
     </div>
     
     <div>----------------------------------------------------------</div>
+    
+    <div class="pending-count">
+      <h2>📊 현재 결제 대기 강좌 현황</h2>
+      <h3>현재 결제 대기 중인 전체 강좌 수 : <span class="count">${pendingCoursesCount}</span>개</h3>
+    </div>
   </body>
   </html>
 `;
