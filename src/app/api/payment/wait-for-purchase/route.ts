@@ -190,6 +190,8 @@ export async function POST(request: NextRequest) {
     <div class="header">
       <h1 style="color: #007bff; margin: 0;">🎓 새로운 수강 신청 알림</h1>
     </div>
+
+    <div>----------------------------------------------------------</div>
     
     <div class="section">
       <h2>👤 신청자 정보</h2>
@@ -230,11 +232,6 @@ export async function POST(request: NextRequest) {
     </div>
     
     <div>----------------------------------------------------------</div>
-        
-    <h3 class="footer">
-      <p>📅 신청 시간: ${new Date().toLocaleString("ko-KR")}</p>
-      <p>이 메일은 자동으로 전송된 알림입니다.</p>
-    </h3>
   </body>
   </html>
 `;
