@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { addDays, setHours, setMinutes, setSeconds, setMilliseconds } from "date-fns";
+import { fromZonedTime } from "date-fns-tz";
 
 export async function POST(request: NextRequest) {
   try {
@@ -66,11 +68,20 @@ export async function POST(request: NextRequest) {
     // expiresAt.setDate(expiresAt.getDate() + 7);
 
     // 결제 대기 만료일 설정 (한국 시간 기준으로 다음 날 오후 5시)
-    const expiresAt = new Date();
-    // 한국 시간대 기준으로 다음 날 설정
-    expiresAt.setDate(expiresAt.getDate() + 1);
-    // 오후 5시 (17:00)로 설정
-    expiresAt.setHours(17, 0, 0, 0);
+    const koreaTimezone = "Asia/Seoul";
+    const tomorrow = addDays(new Date(), 1);
+    const koreaDeadline = setMilliseconds(
+      setSeconds(
+        setMinutes(
+          setHours(tomorrow, 17), // 오후 5시
+          0,
+        ),
+        0,
+      ),
+      0,
+    );
+    // 한국 시간을 UTC로 변환하여 저장
+    const expiresAt = fromZonedTime(koreaDeadline, koreaTimezone);
 
     // WaitForPurchase 데이터 생성
     const waitForPurchase = await prisma.waitForPurchase.create({
