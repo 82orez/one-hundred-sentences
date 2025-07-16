@@ -78,7 +78,7 @@ export default function Timer({ expiresAt, onExpire }: TimerProps) {
     <div className="text-center text-lg">
       <div className="mt-1 mb-1 text-gray-500">{timeLeft.days > 0 ? "마감까지 남은 시간" : "마감 임박"}</div>
       <div className={`font-semibold ${getTimerColor()}`}>
-        {timeLeft.days > 0 && <span className="inline-block min-w-[2rem]">D - {timeLeft.days}일</span>}{" "}
+        D -{timeLeft.days > 0 && <span className="inline-block min-w-[2rem]">{timeLeft.days}일</span>}{" "}
         <span className="inline-block min-w-[2rem]">{timeLeft.hours.toString().padStart(2, "0")}시간</span>{" "}
         <span className="inline-block min-w-[2rem]">{timeLeft.minutes.toString().padStart(2, "0")}분</span>{" "}
         <span className="inline-block min-w-[2rem]">{timeLeft.seconds.toString().padStart(2, "0")}초</span>

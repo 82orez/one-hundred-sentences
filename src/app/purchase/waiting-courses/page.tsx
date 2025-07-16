@@ -456,7 +456,7 @@ export default function WaitingCoursesPage() {
                           <button
                             onClick={() => handleConfirmPayment(course.id, course.courseId, course.courseTitle)}
                             disabled={confirmingPaymentId === course.id}
-                            className="mt-2 flex flex-1 items-center justify-center gap-1 rounded-md bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50">
+                            className="mt-2 flex flex-1 items-center justify-center gap-1 rounded-md bg-green-600 px-3 py-2 font-medium text-white hover:bg-green-700 disabled:opacity-50">
                             {confirmingPaymentId === course.id ? (
                               <>
                                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
