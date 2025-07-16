@@ -414,7 +414,7 @@ export default function WaitingCoursesPage() {
                               <span>마감 시한</span>
                             </div>
                             <span className={` ${courseExpired ? "text-red-600" : courseExpiringSoon ? "text-orange-600" : "text-gray-900"}`}>
-                              {format(new Date(course.expiresAt), "yyyy년 MM월 dd일 a h시", { locale: ko })}
+                              {format(new Date(course.expiresAt), "yy년 MM월 dd일 a h시", { locale: ko })}
                             </span>
                           </div>
                         )}
