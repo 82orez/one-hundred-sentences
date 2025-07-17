@@ -67,6 +67,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 만료된 기존 신청 내역이 있는지 확인하고 삭제
+    const expiredWaitForPurchase = await prisma.waitForPurchase.findFirst({
+      where: {
+        userId: session.user.id,
+        courseId: courseId,
+        status: "expired",
+      },
+    });
+
+    if (expiredWaitForPurchase) {
+      // 만료된 신청 내역 삭제
+      await prisma.waitForPurchase.delete({
+        where: {
+          id: expiredWaitForPurchase.id,
+        },
+      });
+    }
+
     // 결제 대기 만료일 설정 (한국 시간 기준으로 다음 날 오후 5시)
     const koreaTimezone = "Asia/Seoul";
 
@@ -229,76 +247,91 @@ export async function POST(request: NextRequest) {
       <h2>👤 신청자 정보</h2>
       <h3 class="info-item">
         <span class="label">이름 :</span>
-        <span class="value highlight">${user.realName}</span>
+        <span class="value">${waitForPurchase.userName}</span>
       </h3>
       <h3 class="info-item">
         <span class="label">전화번호 :</span>
-        <span class="value">${user.phone}</span>
+        <span class="value">${waitForPurchase.userPhone}</span>
       </h3>
       <h3 class="info-item">
         <span class="label">이메일 :</span>
-        <span class="value">${user.email || "미제공"}</span>
+        <span class="value">${waitForPurchase.user.email}</span>
       </h3>
     </div>
-    
-    <div>----------------------------------------------------------</div>
-    
+
     <div class="section">
-      <h2>📚 수강 신청 강좌 정보</h2>
+      <h2>🎯 수강 신청 정보</h2>
       <h3 class="info-item">
         <span class="label">강좌명 :</span>
-        <span class="value highlight">${courseTitle}</span>
+        <span class="value">${waitForPurchase.courseTitle}</span>
       </h3>
       <h3 class="info-item">
-        <span class="label">수업 시작일 :</span>
-        <span class="value">${new Date(startDate).toLocaleDateString("ko-KR")}</span>
+        <span class="label">수강 시작일 :</span>
+        <span class="value">${waitForPurchase.startDate.toLocaleDateString("ko-KR")}</span>
       </h3>
       <h3 class="info-item">
-        <span class="label">총 수업 횟수 :</span>
-        <span class="value">${classCount}회</span>
+        <span class="label">수업 횟수 :</span>
+        <span class="value">${waitForPurchase.classCount}회</span>
       </h3>
       <h3 class="info-item">
-        <span class="label">입금 예정 수강료 :</span>
-        <span class="value" style="color: #28a745; font-weight: bold;">${totalFee.toLocaleString()}원</span>
+        <span class="label">수강료 :</span>
+        <span class="value">${waitForPurchase.totalFee.toLocaleString()}원</span>
       </h3>
     </div>
-    
-    <div>----------------------------------------------------------</div>
-    
+
+    <div class="section">
+      <h2>📅 결제 정보</h2>
+      <h3 class="info-item">
+        <span class="label">결제 마감일 :</span>
+        <span class="value highlight">${expiresAt.toLocaleDateString("ko-KR")} 오후 5시</span>
+      </h3>
+      <h3 class="info-item">
+        <span class="label">계좌 번호 :</span>
+        <span class="value">국민은행 / 680401-00-111448</span>
+      </h3>
+      <h3 class="info-item">
+        <span class="label">예금주 :</span>
+        <span class="value">(주)프렌딩</span>
+      </h3>
+    </div>
+
     <div class="pending-count">
-      <h2>📊 현재 결제 대기 강좌 현황</h2>
-      <h3>현재 결제 대기 중인 전체 강좌 수 : <span class="count">${pendingCoursesCount}</span>개</h3>
+      <h2>📊 현재 결제 대기 중인 강좌 수</h2>
+      <div class="count">${pendingCoursesCount}개</div>
+    </div>
+
+    <div class="footer">
+      <p>이 메일은 새로운 수강 신청 알림을 위한 자동 발송 메일입니다.</p>
+      <p>문의사항이 있으시면 언제든지 연락해 주세요.</p>
     </div>
   </body>
   </html>
-`;
+        `;
 
-        const { data, error } = await resend.emails.send({
-          from: "프렌딩 아카데미 <no-reply@friending.ac>",
-          // to: ["82orez@naver.com", "82orez@gmail.com"],
-          to: "82orez@naver.com",
-          subject: "새로운 수강 신청(결제 대기) 알림",
+        // 이메일 발송
+        await resend.emails.send({
+          from: "수강 신청 알림 <no-reply@frending.co.kr>",
+          to: ["admin@frending.co.kr"],
+          subject: `🎓 새로운 수강 신청 알림 - ${waitForPurchase.courseTitle}`,
           html: emailContent,
         });
 
-        if (error) {
-          console.error("관리자 이메일 전송 실패:", error);
-        } else {
-          console.log("관리자 이메일 전송 성공:", data);
-        }
+        console.log("관리자 이메일 발송 완료");
       }
     } catch (emailError) {
-      console.error("이메일 전송 중 오류:", emailError);
-      // 이메일 전송 실패가 수강 신청 자체를 실패시키지 않도록 처리
+      console.error("이메일 발송 중 오류:", emailError);
+      // 이메일 발송 실패는 전체 프로세스를 중단하지 않음
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "수강 신청이 완료되었습니다. 결제 대기 상태로 전환됩니다.",
-      data: waitForPurchase,
-    });
+    return NextResponse.json(
+      {
+        message: "수강 신청이 완료되었습니다. 결제 대기 상태로 전환됩니다.",
+        waitForPurchase,
+      },
+      { status: 201 },
+    );
   } catch (error) {
-    console.error("결제 대기 처리 중 오류:", error);
+    console.error("수강 신청 처리 중 오류:", error);
     return NextResponse.json(
       {
         error: "서버 오류가 발생했습니다.",
@@ -308,7 +341,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 결제 대기 목록 조회
+// GET 메서드 - 결제 대기 목록 조회
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -317,7 +350,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
     }
 
-    // 사용자 정보 조회 (role 포함)
+    const { searchParams } = new URL(request.url);
+    const statusParam = searchParams.get("status") || "pending";
+
+    // 사용자 정보 조회 (역할 확인을 위해)
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: {
@@ -330,34 +366,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "사용자 정보를 찾을 수 없습니다." }, { status: 404 });
     }
 
-    const { searchParams } = new URL(request.url);
-    const status = searchParams.get("status") || "pending";
+    const isAdmin = user.role === "admin" || user.role === "semiAdmin";
 
-    // 먼저 만료된 항목들을 업데이트
-    const now = new Date();
-    await prisma.waitForPurchase.updateMany({
-      where: {
-        status: "pending",
-        expiresAt: {
-          lt: now,
-        },
-      },
-      data: {
-        status: "expired",
-      },
-    });
-
-    // role에 따라 다른 조건으로 조회
-    let whereCondition: any = {
-      status: status as any,
+    // 조회 조건 설정
+    const whereCondition: any = {
+      status: statusParam,
     };
 
-    // student 권한인 경우 자신의 것만 조회
-    if (user.role === "student") {
+    // 관리자가 아닌 경우, 본인의 데이터만 조회
+    if (!isAdmin) {
       whereCondition.userId = session.user.id;
     }
-    // admin 또는 semiAdmin인 경우 모든 결제 대기 목록 조회 (whereCondition 그대로 사용)
 
+    // 결제 대기 목록 조회
     const waitForPurchases = await prisma.waitForPurchase.findMany({
       where: whereCondition,
       include: {
@@ -399,7 +420,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// 결제 대기 정보 삭제 (취소)
+// DELETE 메서드 - 결제 대기 취소
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -408,34 +429,23 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
     }
 
-    // 사용자 정보 조회 (role 포함)
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: {
-        id: true,
-        role: true,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "사용자 정보를 찾을 수 없습니다." }, { status: 404 });
-    }
-
     const body = await request.json();
     const { waitForPurchaseId } = body;
 
     if (!waitForPurchaseId) {
-      return NextResponse.json({ error: "삭제할 결제 대기 ID가 필요합니다." }, { status: 400 });
+      return NextResponse.json({ error: "결제 대기 ID가 필요합니다." }, { status: 400 });
     }
 
     // 결제 대기 정보 조회
     const waitForPurchase = await prisma.waitForPurchase.findUnique({
       where: { id: waitForPurchaseId },
-      select: {
-        id: true,
-        userId: true,
-        courseTitle: true,
-        status: true,
+      include: {
+        user: {
+          select: {
+            id: true,
+            role: true,
+          },
+        },
       },
     });
 
@@ -443,27 +453,31 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "결제 대기 정보를 찾을 수 없습니다." }, { status: 404 });
     }
 
-    // student 권한인 경우 자신의 것만 삭제 가능
-    if (user.role === "student" && waitForPurchase.userId !== session.user.id) {
-      return NextResponse.json({ error: "자신의 결제 대기 정보만 삭제할 수 있습니다." }, { status: 403 });
+    // 권한 확인 (본인이거나 관리자)
+    const isAdmin = waitForPurchase.user.role === "admin" || waitForPurchase.user.role === "semiAdmin";
+    const isOwner = waitForPurchase.userId === session.user.id;
+
+    if (!isOwner && !isAdmin) {
+      return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 });
     }
 
-    // 이미 결제 완료된 경우 삭제 불가
+    // 이미 결제 완료된 항목은 취소할 수 없음
     if (waitForPurchase.status === "paid") {
-      return NextResponse.json({ error: "이미 결제 완료된 강좌는 취소할 수 없습니다." }, { status: 400 });
+      return NextResponse.json({ error: "이미 결제 완료된 항목은 취소할 수 없습니다." }, { status: 400 });
     }
 
-    // 결제 대기 정보 삭제
-    await prisma.waitForPurchase.delete({
+    // 결제 대기 상태를 cancelled로 변경
+    await prisma.waitForPurchase.update({
       where: { id: waitForPurchaseId },
+      data: { status: "cancelled" },
     });
 
     return NextResponse.json({
       success: true,
-      message: `${waitForPurchase.courseTitle} 강좌의 수강 신청이 취소되었습니다.`,
+      message: "수강 신청이 취소되었습니다.",
     });
   } catch (error) {
-    console.error("결제 대기 정보 삭제 중 오류:", error);
+    console.error("결제 대기 취소 중 오류:", error);
     return NextResponse.json(
       {
         error: "서버 오류가 발생했습니다.",
@@ -473,7 +487,7 @@ export async function DELETE(request: NextRequest) {
   }
 }
 
-// 만료된 결제 대기 정보 일괄 삭제 (관리자 전용)
+// PATCH 메서드 - 만료된 결제 대기 정보 삭제
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -482,45 +496,38 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
     }
 
-    // 사용자 정보 조회 (role 포함)
+    const body = await request.json();
+    const { action } = body;
+
+    if (action !== "deleteExpired") {
+      return NextResponse.json({ error: "지원하지 않는 액션입니다." }, { status: 400 });
+    }
+
+    // 사용자 권한 확인
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: {
-        id: true,
         role: true,
       },
     });
 
-    if (!user) {
-      return NextResponse.json({ error: "사용자 정보를 찾을 수 없습니다." }, { status: 404 });
+    if (!user || (user.role !== "admin" && user.role !== "semiAdmin")) {
+      return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 });
     }
 
-    // admin 또는 semiAdmin 권한 확인
-    if (user.role !== "admin" && user.role !== "semiAdmin") {
-      return NextResponse.json({ error: "관리자 권한이 필요합니다." }, { status: 403 });
-    }
+    // 만료된 결제 대기 정보 삭제
+    const deletedCount = await prisma.waitForPurchase.deleteMany({
+      where: {
+        status: "expired",
+      },
+    });
 
-    const body = await request.json();
-    const { action } = body;
-
-    if (action === "deleteExpired") {
-      // 만료된 결제 대기 정보 일괄 삭제
-      const deleteResult = await prisma.waitForPurchase.deleteMany({
-        where: {
-          status: "expired",
-        },
-      });
-
-      return NextResponse.json({
-        success: true,
-        message: `만료된 결제 대기 정보 ${deleteResult.count}건이 삭제되었습니다.`,
-        deletedCount: deleteResult.count,
-      });
-    }
-
-    return NextResponse.json({ error: "잘못된 요청입니다." }, { status: 400 });
+    return NextResponse.json({
+      success: true,
+      message: `만료된 결제 대기 정보 ${deletedCount.count}개가 삭제되었습니다.`,
+    });
   } catch (error) {
-    console.error("만료된 결제 대기 정보 일괄 삭제 중 오류:", error);
+    console.error("만료된 결제 대기 정보 삭제 중 오류:", error);
     return NextResponse.json(
       {
         error: "서버 오류가 발생했습니다.",
