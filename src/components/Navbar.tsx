@@ -172,6 +172,20 @@ export default function Navbar() {
                         강사 관리
                       </Link>
 
+                      <Link
+                        href="/users/teacher"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setMenuOpen(false)}>
+                        강사 페이지
+                      </Link>
+
+                      <Link
+                        href="/users/teacher/teacher-courses"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setMenuOpen(false)}>
+                        teacher-courses
+                      </Link>
+
                       <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
                         대시보드
                       </Link>
@@ -203,24 +217,6 @@ export default function Navbar() {
                       onClick={() => setMenuOpen(false)}>
                       결제 대기 강의 보기
                     </Link>
-                  )}
-
-                  {!isStudent && (
-                    <>
-                      <Link
-                        href="/users/teacher"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}>
-                        강사 페이지
-                      </Link>
-
-                      <Link
-                        href="/users/teacher/teacher-courses"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}>
-                        teacher-courses
-                      </Link>
-                    </>
                   )}
 
                   <Link

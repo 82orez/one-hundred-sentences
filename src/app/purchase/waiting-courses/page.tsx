@@ -289,7 +289,7 @@ export default function WaitingCoursesPage() {
           </div>
 
           {/* 관리자 전용 버튼 */}
-          {(userRole === "admin" || userRole === "semiAdmin") && selectedStatus === "expired" && waitingCourses.length > 0 && (
+          {userRole === "admin" && selectedStatus === "expired" && waitingCourses.length > 0 && (
             <button
               onClick={handleDeleteExpiredCourses}
               disabled={isDeletingExpired}
