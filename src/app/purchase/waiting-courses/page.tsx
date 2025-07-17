@@ -433,7 +433,7 @@ export default function WaitingCoursesPage() {
                     {/* 액션 버튼 */}
                     <div className="border-t pt-3">
                       <div className="flex flex-col gap-2">
-                        {course.status === "pending" && (
+                        {(userRole === "admin" || userRole === "student") && course.status === "pending" && (
                           <button
                             onClick={() => handleCancelWaitForPurchase(course.id, course.courseTitle)}
                             disabled={cancellingId === course.id}
