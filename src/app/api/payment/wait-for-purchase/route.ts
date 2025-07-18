@@ -466,10 +466,9 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "이미 결제 완료된 항목은 취소할 수 없습니다." }, { status: 400 });
     }
 
-    // 결제 대기 상태를 cancelled로 변경
-    await prisma.waitForPurchase.update({
+    // 결제 대기 상태를 cancelled로 변경하는 대신 삭제
+    await prisma.waitForPurchase.delete({
       where: { id: waitForPurchaseId },
-      data: { status: "cancelled" },
     });
 
     return NextResponse.json({
