@@ -23,15 +23,16 @@ export const pricePlansForCourse = [
     ],
   },
   {
-    id: "cmd1daw08001jft0d3npodk84",
-    title: "Test - 유료 강좌\n(7/13일)",
-    price: 30000,
+    id: "cmdf1x2vq0005ftltajc3mubn",
+    title: "Test - 유료 강좌\n(7/25일)",
+    price: 20000,
     pricePerHour: 5000,
+    introPage: "/course-detail/courses/tour100",
     description: [
       "Paul 강사",
       {
         title: "주2회(25분) 1:N 온라인 수업",
-        details: ["매주 월/화/일 오후 2시 수업", "중간 참여 가능", "수업 시작 전, zoom 설치 필요"],
+        details: ["매주 수/금 오전 7시 수업", "중간 참여 가능", "수업 시작 전, zoom 설치 필요"],
       },
       "온라인 학습 어플 무료 사용권",
       // {
@@ -39,8 +40,8 @@ export const pricePlansForCourse = [
       //   details: ["예습, 복습 및 AI 테스트 가능"],
       // },
       {
-        title: "수강료 : 3만원 (6회 기준)",
-        details: ["중간 참여 시, 1회당 5,000원", "예) 4회 수업 신청 -> 2만원"],
+        title: "수강료 : 2만원 (4회 기준)",
+        details: ["중간 참여 시, 1회당 5,000원", "예) 2회 수업 신청 -> 1만원"],
       },
     ],
   },
