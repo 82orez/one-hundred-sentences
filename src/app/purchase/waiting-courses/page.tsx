@@ -211,8 +211,8 @@ export default function WaitingCoursesPage() {
   };
 
   // 결제 확인 처리 함수 추가
-  const handleConfirmPayment = async (waitForPurchaseId: string, courseId: string, courseTitle: string) => {
-    if (!confirm(`${courseTitle} 강좌의 결제를 확인하시겠습니까?`)) {
+  const handleConfirmPayment = async (waitForPurchaseId: string, courseId: string, courseTitle: string, userName: string) => {
+    if (!confirm(`${userName}님이 신청하신 ${courseTitle} 강좌의 결제를 확인하시겠습니까?`)) {
       return;
     }
 
@@ -454,7 +454,7 @@ export default function WaitingCoursesPage() {
 
                         {(userRole === "admin" || userRole === "semiAdmin") && selectedStatus === "pending" && (
                           <button
-                            onClick={() => handleConfirmPayment(course.id, course.courseId, course.courseTitle)}
+                            onClick={() => handleConfirmPayment(course.id, course.courseId, course.courseTitle, course.userName)}
                             disabled={confirmingPaymentId === course.id}
                             className="mt-2 flex flex-1 items-center justify-center gap-1 rounded-md bg-green-600 px-3 py-2 font-medium text-white hover:bg-green-700 disabled:opacity-50">
                             {confirmingPaymentId === course.id ? (
