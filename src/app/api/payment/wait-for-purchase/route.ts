@@ -293,7 +293,7 @@ export async function POST(request: NextRequest) {
 
         const { data, error } = await resend.emails.send({
           from: "프렌딩 아카데미 <no-reply@friending.ac>",
-          to: ["82orez@naver.com", "82orez@gmail.com"],
+          to: ["82orez@gmail.com", "lina.friending@gmail.com"],
           // to: "82orez@naver.com",
           subject: "새로운 수강 신청(결제 대기) 알림",
           html: emailContent,
