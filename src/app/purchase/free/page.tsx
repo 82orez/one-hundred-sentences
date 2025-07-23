@@ -17,6 +17,13 @@ const PurchasePage = () => {
   const router = useRouter();
   const { status } = useSession();
 
+  useEffect(() => {
+    // 로그인 상태가 'unauthenticated' 인 경우 로그인 페이지로 리다이렉트
+    if (status === "unauthenticated") {
+      router.push("/users/sign-in");
+    }
+  }, [status, router]);
+
   // 로딩 상태 처리
   if (status === "loading") {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
