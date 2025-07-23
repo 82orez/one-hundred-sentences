@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -13,22 +13,26 @@ import { BiSolidMessageRounded } from "react-icons/bi";
 
 export default function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // 비밀번호 표시 상태 추가
+  const [showPassword, setShowPassword] = useState(false);
+
+  // * 원래 접근하려던 URL을 가져오기
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   // * 클라이언트 컴포넌트에서 로그인 session 정보 가져오기 : useSession()
   const { status, data } = useSession();
   console.log("status: ", status);
   console.log("data: ", data);
 
-  // * 로그인이 되어 있을 때 이 페이지로 접근하면 루트 페이지 '/' 로 되돌림.
+  // * 로그인이 되어 있을 때 이 페이지로 접근하면 callbackUrl로 리다이렉트
   useEffect(() => {
     if (status === "authenticated") {
-      router.replace("/");
+      router.replace(callbackUrl);
     }
-  }, [status, router]);
+  }, [status, router, callbackUrl]);
 
   // * auth.ts 파일에서 반환한 에러 관련 query 문들을 처리하기 위한 상태 설정.
   const [errorSocialLogIn, setErrorSocialLogIn] = useState<null | string>(null);
@@ -48,7 +52,8 @@ export default function SignInForm() {
 
   const handleClickKakao = async () => {
     setIsKakaoLoading(true);
-    await signIn("kakao", { callbackUrl: "/" });
+    // * 카카오 로그인에 성공하면 callbackUrl로 이동.
+    await signIn("kakao", { callbackUrl });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,14 +74,15 @@ export default function SignInForm() {
         redirect: false, // 에러 발생 시 리다이렉션 방지
       });
 
+      console.log("로그인 결과:", result);
+
+      // 에러가 있는 경우 처리
       if (result?.error) {
-        setError(result.error || "An error occurred during sign in.");
-        setIsLoading(false); // 에러 발생 시 로딩 상태 해제
-      } else {
-        // 로그인 성공 후 로딩 화면을 유지
-        setIsLoading(true);
-        // * 로그인에 성공하면 '/' 로 이동.
-        router.push("/");
+        setError(result.error);
+        setIsLoading(false);
+      } else if (result?.ok) {
+        // 성공 시 수동으로 리다이렉션
+        router.push(callbackUrl);
       }
     } catch (error) {
       setError("An unexpected error occurred.");
