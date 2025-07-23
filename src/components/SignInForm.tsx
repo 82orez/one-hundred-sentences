@@ -67,25 +67,18 @@ export default function SignInForm() {
     setIsLoading(true);
 
     try {
-      // redirect: false를 추가하여 에러 처리를 클라이언트에서 할 수 있도록 설정
+      // 이메일 로그인도 카카오 로그인과 같은 방식으로 처리
       const result = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
-        redirect: false, // 에러 발생 시 리다이렉션 방지
+        callbackUrl: callbackUrl, // callbackUrl 전달
+        redirect: true, // 자동 리디렉션 활성화
       });
 
       console.log("로그인 결과:", result);
-
-      // 에러가 있는 경우 처리
-      if (result?.error) {
-        setError(result.error);
-        setIsLoading(false);
-      } else if (result?.ok) {
-        // 성공 시 수동으로 리다이렉션
-        router.push(callbackUrl);
-      }
     } catch (error) {
-      setError("An unexpected error occurred.");
+      console.error("로그인 에러:", error);
+      setError("로그인 중 오류가 발생했습니다.");
       setIsLoading(false);
     }
   };
