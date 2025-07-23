@@ -88,7 +88,7 @@ export default function LandingPage() {
 
             {/* 무료 체험 신청 안내 */}
             <Link
-              href={"/purchase/free"}
+              href={"/free-courses"}
               className="mb-4 flex min-w-[220px] cursor-pointer items-center justify-center rounded-xl bg-green-600 px-6 py-3 text-lg text-white hover:bg-green-700 md:hidden">
               <span>무료 수업 참여 신청</span>
               <FaArrowRight className="ml-2" />
@@ -134,7 +134,7 @@ export default function LandingPage() {
 
                 {/* 무료 체험 신청 안내 */}
                 <Link
-                  href={"/purchase/free"}
+                  href={"/free-courses"}
                   className="hidden cursor-pointer items-center rounded-xl bg-green-600 px-6 py-4 text-lg text-white hover:bg-green-700 md:flex md:w-full md:min-w-[150px] md:justify-center">
                   무료 수업 참여 신청 <FaArrowRight className="ml-2" />
                 </Link>
