@@ -9,10 +9,10 @@ export function MoveToPurchaseFreeButton({ children, className, ...props }) {
 
   const handleClick = () => {
     if (status === "authenticated") {
-      router.replace("/purchase/courses");
+      router.replace("/purchase/free");
     } else {
       // 로그인되지 않은 경우 callbackUrl과 함께 로그인 페이지로 이동
-      router.replace("/users/sign-in?callbackUrl=" + encodeURIComponent("/purchase/courses"));
+      router.replace("/users/sign-in?callbackUrl=" + encodeURIComponent("/purchase/free"));
     }
   };
 
