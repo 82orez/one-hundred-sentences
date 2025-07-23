@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -13,14 +13,10 @@ import { BiSolidMessageRounded } from "react-icons/bi";
 
 export default function SignInForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
-  // * 원래 접근하려던 URL을 가져오기
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const [showPassword, setShowPassword] = useState(false); // 비밀번호 표시 상태 추가
 
   // * 클라이언트 컴포넌트에서 로그인 session 정보 가져오기 : useSession()
   const { status, data } = useSession();
@@ -52,8 +48,7 @@ export default function SignInForm() {
 
   const handleClickKakao = async () => {
     setIsKakaoLoading(true);
-    // * 카카오 로그인에 성공하면 callbackUrl로 이동.
-    await signIn("kakao", { callbackUrl });
+    await signIn("kakao", { callbackUrl: "/" });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,9 +69,6 @@ export default function SignInForm() {
         redirect: false, // 에러 발생 시 리다이렉션 방지
       });
 
-      console.log("로그인 결과:", result);
-
-      // 에러가 있는 경우 처리
       if (result?.error) {
         setError(result.error || "An error occurred during sign in.");
         setIsLoading(false); // 에러 발생 시 로딩 상태 해제
