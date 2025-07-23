@@ -27,12 +27,12 @@ export default function SignInForm() {
   console.log("status: ", status);
   console.log("data: ", data);
 
-  // * 로그인이 되어 있을 때 이 페이지로 접근하면 callbackUrl로 리다이렉트
+  // * 로그인이 되어 있을 때 이 페이지로 접근하면 루트 페이지 '/' 로 되돌림.
   useEffect(() => {
     if (status === "authenticated") {
-      router.replace(callbackUrl);
+      router.replace("/");
     }
-  }, [status, router, callbackUrl]);
+  }, [status, router]);
 
   // * auth.ts 파일에서 반환한 에러 관련 query 문들을 처리하기 위한 상태 설정.
   const [errorSocialLogIn, setErrorSocialLogIn] = useState<null | string>(null);
@@ -78,11 +78,13 @@ export default function SignInForm() {
 
       // 에러가 있는 경우 처리
       if (result?.error) {
-        setError(result.error);
-        setIsLoading(false);
-      } else if (result?.ok) {
-        // 성공 시 수동으로 리다이렉션
-        router.push(callbackUrl);
+        setError(result.error || "An error occurred during sign in.");
+        setIsLoading(false); // 에러 발생 시 로딩 상태 해제
+      } else {
+        // 로그인 성공 후 로딩 화면을 유지
+        setIsLoading(true);
+        // * 로그인에 성공하면 '/' 로 이동.
+        router.push("/");
       }
     } catch (error) {
       setError("An unexpected error occurred.");
