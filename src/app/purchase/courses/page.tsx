@@ -54,6 +54,15 @@ const PurchasePage = () => {
         return;
       }
 
+      // 이미 수강 중인 강좌인지 확인
+      const enrollmentCheck = await fetch(`/api/payment/check-already-enrolled?courseId=${courseId}`);
+      const enrollmentData = await enrollmentCheck.json();
+
+      if (enrollmentData.exists) {
+        alert("이미 수강 중인 강좌입니다.");
+        return;
+      }
+
       // 사용자 정보가 완료되었다면 모달 열기
       setSelectedCourseForSchedule({ id: courseId, title: courseTitle, pricePerHour: coursePricePerHour });
       setIsModalOpen(true);
