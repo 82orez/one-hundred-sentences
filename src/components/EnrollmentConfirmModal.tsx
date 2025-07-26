@@ -66,6 +66,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
           startDate: selectedDate.toISOString(),
           classCount: remainingClasses,
           totalFee: totalFee,
+          // ! 서버 코드 수정 필요
           paymentMethod: paymentMethod, // 선택된 지불 방법 추가
         }),
       });
@@ -79,7 +80,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
         if (paymentMethod === "card") {
           // 카드 결제의 경우 결제 화면으로 이동
           alert("카드 결제 화면으로 이동합니다.");
-          // 여기에 카드 결제 로직을 추가할 수 있습니다
+          // ! 여기에 카드 결제 로직을 추가할 수 있습니다
           router.push(`/purchase/payment?courseId=${courseId}`);
         } else {
           // 무통장 입금의 경우 결제 대기 화면으로 이동
@@ -174,16 +175,17 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
               <h3 className="mb-3 text-lg font-medium text-green-900">지불 방법 선택</h3>
               <div className="space-y-3">
                 {/* 카드 결제 옵션 */}
-                <label className="flex cursor-pointer items-center">
+                <label className="flex cursor-not-allowed items-center opacity-50">
                   <input
                     type="checkbox"
                     checked={paymentMethod === "card"}
                     onChange={() => setPaymentMethod(paymentMethod === "card" ? null : "card")}
                     className="mr-3 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                    disabled
                   />
                   <div className="flex-1">
-                    <span className="font-medium text-green-700">카드 결제</span>
-                    <p className="mt-1 text-sm text-green-600">즉시 결제 후 수강 신청이 완료됩니다.</p>
+                    <span className="font-medium text-gray-400">카드 결제</span>
+                    <p className="mt-1 text-sm text-gray-400">즉시 결제 후 수강 신청이 완료됩니다.</p>
                   </div>
                 </label>
 
