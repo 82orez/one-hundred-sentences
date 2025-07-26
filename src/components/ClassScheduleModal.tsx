@@ -252,13 +252,14 @@ const ClassScheduleModal: React.FC<ClassScheduleModalProps> = ({ isOpen, onClose
 
               {/* 선택된 날짜 정보 */}
               {selectedDate && (
-                <div className="rounded-lg bg-blue-50 p-4">
-                  <div className="text-center">
+                <div className="rounded-lg md:p-4">
+                  <div className="bg-blue-50 px-1 py-4 text-center">
                     <p className="font-medium text-blue-800">선택하신 수업 시작일</p>
                     <p className="text-lg font-bold text-blue-900">{format(selectedDate, "yyyy년 MM월 dd일 (E)", { locale: ko })}</p>
                     <p className="mt-2 text-blue-700">
-                      수업 시작일부터 <span className="font-bold text-blue-900">{remainingClasses}회</span>의 수업이 진행됩니다.{" "}
-                      <span className="font-bold text-blue-900">수강료는 {(coursePricePerHour * remainingClasses).toLocaleString()}원</span> 입니다.
+                      수업 시작일부터 총 <span className="text-lg font-bold text-blue-900">{remainingClasses}회</span>의 수업이 진행됩니다.{" "}
+                      <span className="text-lg font-bold text-blue-900">수강료는 {(coursePricePerHour * remainingClasses).toLocaleString()}원</span>{" "}
+                      입니다.
                     </p>
                   </div>
 
