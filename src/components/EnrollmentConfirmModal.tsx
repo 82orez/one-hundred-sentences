@@ -260,7 +260,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
                 </div>
 
                 {/* 확인 체크박스 */}
-                <div className="mt-4 border-t border-yellow-300 pt-4">
+                <div className="mt-4 flex justify-center border-t border-yellow-300 pt-4">
                   <label className="flex cursor-pointer items-center">
                     <input
                       type="checkbox"
@@ -268,7 +268,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
                       onChange={(e) => setIsTransferConfirmed(e.target.checked)}
                       className="mr-3 h-4 w-4 rounded border-yellow-300 text-yellow-600 focus:ring-yellow-500"
                     />
-                    <span className="font-medium text-yellow-800">내용을 확인하였습니다.</span>
+                    <span className="font-medium text-yellow-800">위 내용을 확인하였습니다.</span>
                   </label>
                 </div>
               </div>
