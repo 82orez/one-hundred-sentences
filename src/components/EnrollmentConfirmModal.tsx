@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
@@ -34,7 +34,21 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "transfer" | null>(null);
+  const [isTransferConfirmed, setIsTransferConfirmed] = useState(false);
   const router = useRouter();
+  const scrollableRef = useRef<HTMLDivElement>(null);
+
+  // 무통장 입금 선택 시 자동 스크롤
+  useEffect(() => {
+    if (paymentMethod === "transfer" && scrollableRef.current) {
+      // 약간의 지연을 두어 DOM이 업데이트된 후 스크롤
+      setTimeout(() => {
+        if (scrollableRef.current) {
+          scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
+        }
+      }, 100);
+    }
+  }, [paymentMethod]);
 
   const handleEnrollment = async () => {
     if (isProcessing) return;
@@ -42,6 +56,12 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
     // 지불 방법 선택 확인
     if (!paymentMethod) {
       toast.error("지불 방법을 선택해주세요.");
+      return;
+    }
+
+    // 무통장 입금 선택 시 체크박스 확인
+    if (paymentMethod === "transfer" && !isTransferConfirmed) {
+      toast.error("무통장 입금 안내 내용을 확인해주세요.");
       return;
     }
 
@@ -98,6 +118,14 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
     }
   };
 
+  const handlePaymentMethodChange = (method: "card" | "transfer") => {
+    setPaymentMethod(paymentMethod === method ? null : method);
+    // 무통장 입금이 아닌 경우 체크박스 상태 초기화
+    if (method !== "transfer") {
+      setIsTransferConfirmed(false);
+    }
+  };
+
   // 현재 날짜 계산을 위한 함수 추가
   const getTomorrowDeadlineText = () => {
     const today = new Date();
@@ -124,7 +152,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
         </div>
 
         {/* 스크롤 가능한 콘텐츠 영역 */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 md:px-6">
+        <div ref={scrollableRef} className="flex-1 overflow-y-auto px-3 py-4 md:px-6">
           <div className="space-y-4">
             {/* 신청자 정보 */}
             <div className="rounded-lg bg-gray-100 p-4">
@@ -179,7 +207,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
                   <input
                     type="checkbox"
                     checked={paymentMethod === "card"}
-                    onChange={() => setPaymentMethod(paymentMethod === "card" ? null : "card")}
+                    onChange={() => handlePaymentMethodChange("card")}
                     className="mr-3 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
                     disabled
                   />
@@ -194,7 +222,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
                   <input
                     type="checkbox"
                     checked={paymentMethod === "transfer"}
-                    onChange={() => setPaymentMethod(paymentMethod === "transfer" ? null : "transfer")}
+                    onChange={() => handlePaymentMethodChange("transfer")}
                     className="mr-3 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
                   />
                   <div className="flex-1">
@@ -222,7 +250,6 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
 
                 <div className="my-4 border border-yellow-800"></div>
 
-                <p></p>
                 <div className="mt-0 space-y-3 text-yellow-700">
                   <p>• 아래의 '수강 신청' 버튼을 클릭하시면 결제 대기 상태로 전환됩니다.</p>
                   <p>• 수강 신청 및 결제 대기 중인 강의 리스트는 '결제 대기 강의 보기' 메뉴에서 확인하실 수 있습니다.</p>
@@ -230,6 +257,19 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
                     • 반드시 내일 <span className={"font-semibold underline"}>{getTomorrowDeadlineText()}</span>까지 입금 부탁드립니다.
                   </p>
                   <p>• 해당 시간까지 입금 정보가 확인이 되지 않을 경우 자동으로 수강 신청 내역이 취소점 양해 부탁드립니다.</p>
+                </div>
+
+                {/* 확인 체크박스 */}
+                <div className="mt-4 border-t border-yellow-300 pt-4">
+                  <label className="flex cursor-pointer items-center">
+                    <input
+                      type="checkbox"
+                      checked={isTransferConfirmed}
+                      onChange={(e) => setIsTransferConfirmed(e.target.checked)}
+                      className="mr-3 h-4 w-4 rounded border-yellow-300 text-yellow-600 focus:ring-yellow-500"
+                    />
+                    <span className="font-medium text-yellow-800">내용을 확인하였습니다.</span>
+                  </label>
                 </div>
               </div>
             )}
@@ -247,7 +287,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
             </button>
             <button
               onClick={handleEnrollment}
-              disabled={isProcessing || !paymentMethod}
+              disabled={isProcessing || !paymentMethod || (paymentMethod === "transfer" && !isTransferConfirmed)}
               className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50">
               {isProcessing ? "처리 중..." : "수강 신청"}
             </button>
