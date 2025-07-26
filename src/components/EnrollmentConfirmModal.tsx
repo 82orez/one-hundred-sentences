@@ -33,10 +33,17 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
   totalFee,
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "transfer" | null>(null);
   const router = useRouter();
 
   const handleEnrollment = async () => {
     if (isProcessing) return;
+
+    // 지불 방법 선택 확인
+    if (!paymentMethod) {
+      toast.error("지불 방법을 선택해주세요.");
+      return;
+    }
 
     // 확인 메시지 표시
     const userConfirmed = confirm("수강 관련 정보를 모두 확인하셨습니까? (신청자 정보, 수강료, 유의 사항 등)");
@@ -59,6 +66,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
           startDate: selectedDate.toISOString(),
           classCount: remainingClasses,
           totalFee: totalFee,
+          paymentMethod: paymentMethod, // 선택된 지불 방법 추가
         }),
       });
 
@@ -67,10 +75,17 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
       if (response.ok) {
         toast.success(data.message || "수강 신청이 완료되었습니다!");
         onClose();
-        // 필요시 페이지 리로드 또는 다른 페이지로 이동
-        alert("수강 신청이 완료되었습니다. 결제 대기 화면으로 이동합니다.");
-        router.push(`/purchase/waiting-courses`);
-        // window.location.reload();
+
+        if (paymentMethod === "card") {
+          // 카드 결제의 경우 결제 화면으로 이동
+          alert("카드 결제 화면으로 이동합니다.");
+          // 여기에 카드 결제 로직을 추가할 수 있습니다
+          router.push(`/purchase/payment?courseId=${courseId}`);
+        } else {
+          // 무통장 입금의 경우 결제 대기 화면으로 이동
+          alert("수강 신청이 완료되었습니다. 결제 대기 화면으로 이동합니다.");
+          router.push(`/purchase/waiting-courses`);
+        }
       } else {
         toast.error(data.error || "수강 신청 중 오류가 발생했습니다.");
       }
@@ -154,32 +169,68 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
               </div>
             </div>
 
-            {/* 무통장 입금 안내 */}
-            <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
-              <h3 className="mb-3 text-lg font-medium text-yellow-900">무통장 입금 안내</h3>
-              <div className="space-y-2 text-sm md:text-base">
-                <div className="flex justify-between">
-                  <span className="text-yellow-700">예금주 :</span>
-                  <span className="font-medium text-yellow-900">(주)프렌딩</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-yellow-700">계좌 번호 :</span>
-                  <span className="font-medium text-yellow-900">국민은행 / 680401-00-111448</span>
-                </div>
-              </div>
+            {/* 지불 방법 선택 영역 */}
+            <div className="rounded-lg bg-green-50 p-4">
+              <h3 className="mb-3 text-lg font-medium text-green-900">지불 방법 선택</h3>
+              <div className="space-y-3">
+                {/* 카드 결제 옵션 */}
+                <label className="flex cursor-pointer items-center">
+                  <input
+                    type="checkbox"
+                    checked={paymentMethod === "card"}
+                    onChange={() => setPaymentMethod(paymentMethod === "card" ? null : "card")}
+                    className="mr-3 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  />
+                  <div className="flex-1">
+                    <span className="font-medium text-green-700">카드 결제</span>
+                    <p className="mt-1 text-sm text-green-600">즉시 결제 후 수강 신청이 완료됩니다.</p>
+                  </div>
+                </label>
 
-              <div className="my-4 border border-yellow-800"></div>
-
-              <p></p>
-              <div className="mt-0 space-y-3 text-yellow-700">
-                <p>• 아래의 '수강 신청' 버튼을 클릭하시면 결제 대기 상태로 전환됩니다.</p>
-                <p>• 수강 신청 및 결제 대기 중인 강의 리스트는 '결제 대기 강의 보기' 메뉴에서 확인하실 수 있습니다.</p>
-                <p>
-                  • 반드시 내일 <span className={"font-semibold underline"}>{getTomorrowDeadlineText()}</span>까지 입금 부탁드립니다.
-                </p>
-                <p>• 해당 시간까지 입금 정보가 확인이 되지 않을 경우 자동으로 수강 신청 내역이 취소점 양해 부탁드립니다.</p>
+                {/* 무통장 입금 옵션 */}
+                <label className="flex cursor-pointer items-center">
+                  <input
+                    type="checkbox"
+                    checked={paymentMethod === "transfer"}
+                    onChange={() => setPaymentMethod(paymentMethod === "transfer" ? null : "transfer")}
+                    className="mr-3 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  />
+                  <div className="flex-1">
+                    <span className="font-medium text-green-700">무통장 입금</span>
+                    <p className="mt-1 text-sm text-green-600">아래 계좌로 입금 후 확인까지 시간이 소요됩니다.</p>
+                  </div>
+                </label>
               </div>
             </div>
+
+            {/* 무통장 입금 안내 */}
+            {paymentMethod === "transfer" && (
+              <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
+                <h3 className="mb-3 text-lg font-medium text-yellow-900">무통장 입금 안내</h3>
+                <div className="space-y-2 text-sm md:text-base">
+                  <div className="flex justify-between">
+                    <span className="text-yellow-700">예금주 :</span>
+                    <span className="font-medium text-yellow-900">(주)프렌딩</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-yellow-700">계좌 번호 :</span>
+                    <span className="font-medium text-yellow-900">국민은행 / 680401-00-111448</span>
+                  </div>
+                </div>
+
+                <div className="my-4 border border-yellow-800"></div>
+
+                <p></p>
+                <div className="mt-0 space-y-3 text-yellow-700">
+                  <p>• 아래의 '수강 신청' 버튼을 클릭하시면 결제 대기 상태로 전환됩니다.</p>
+                  <p>• 수강 신청 및 결제 대기 중인 강의 리스트는 '결제 대기 강의 보기' 메뉴에서 확인하실 수 있습니다.</p>
+                  <p>
+                    • 반드시 내일 <span className={"font-semibold underline"}>{getTomorrowDeadlineText()}</span>까지 입금 부탁드립니다.
+                  </p>
+                  <p>• 해당 시간까지 입금 정보가 확인이 되지 않을 경우 자동으로 수강 신청 내역이 취소점 양해 부탁드립니다.</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -194,7 +245,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
             </button>
             <button
               onClick={handleEnrollment}
-              disabled={isProcessing}
+              disabled={isProcessing || !paymentMethod}
               className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50">
               {isProcessing ? "처리 중..." : "수강 신청"}
             </button>
