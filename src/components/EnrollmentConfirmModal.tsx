@@ -170,9 +170,9 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
               </div>
             </div>
 
-            {/* 지불 방법 선택 영역 */}
+            {/* 결제 방법 선택 영역 */}
             <div className="rounded-lg bg-green-50 p-4">
-              <h3 className="mb-3 text-lg font-medium text-green-900">지불 방법 선택</h3>
+              <h3 className="mb-3 text-lg font-medium text-green-900">결제 방법 선택</h3>
               <div className="space-y-3">
                 {/* 카드 결제 옵션 */}
                 <label className="flex cursor-not-allowed items-center opacity-50">
