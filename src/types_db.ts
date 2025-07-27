@@ -740,32 +740,48 @@ export type Database = {
       Purchase: {
         Row: {
           amount: number
+          courseId: string | null
           createdAt: string
           expiresAt: string | null
           id: string
           orderName: string
           paymentId: string
+          phone: string | null
+          realName: string | null
           userId: string
         }
         Insert: {
           amount: number
+          courseId?: string | null
           createdAt?: string
           expiresAt?: string | null
           id: string
           orderName: string
           paymentId: string
+          phone?: string | null
+          realName?: string | null
           userId: string
         }
         Update: {
           amount?: number
+          courseId?: string | null
           createdAt?: string
           expiresAt?: string | null
           id?: string
           orderName?: string
           paymentId?: string
+          phone?: string | null
+          realName?: string | null
           userId?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "Purchase_courseId_fkey"
+            columns: ["courseId"]
+            isOneToOne: false
+            referencedRelation: "Course"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "Purchase_userId_fkey"
             columns: ["userId"]

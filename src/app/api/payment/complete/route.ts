@@ -38,8 +38,21 @@ export async function GET(req: Request) {
         return NextResponse.redirect(new URL("/payment-error?reason=unauthorized", req.url));
       }
 
+      // 사용자 정보 조회 (realName, phone 가져오기)
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: {
+          id: true,
+          realName: true,
+          phone: true,
+        },
+      });
+
+      if (!user) {
+        return NextResponse.redirect(new URL("/payment-error?reason=user-not-found", req.url));
+      }
+
       // * 결제 정보를 purchase 모델에 저장하고 error 처리 과정
-      // ! 추가로 Enrollment 모델에 수강 정보 등록 필요
       try {
         // 결제 금액 추출 로직 개선
         let amount = 0;
@@ -59,18 +72,66 @@ export async function GET(req: Request) {
           amount = typeof payment.paidAmount === "number" ? payment.paidAmount : parseInt(payment.paidAmount);
         }
 
+        // orderName 에서 courseId 추출
+        let courseId = null;
+        let cleanOrderName = payment.orderName;
+
+        if (payment.orderName && payment.orderName.includes("|")) {
+          const parts = payment.orderName.split("|");
+          if (parts.length === 2) {
+            cleanOrderName = parts[0];
+            courseId = parts[1];
+          }
+        }
+
         console.log("저장할 결제 금액:", amount);
+        console.log("추출된 강좌 ID:", courseId);
 
         const purchase = await prisma.purchase.create({
           data: {
             userId: session.user.id,
             paymentId: paymentId,
-            orderName: payment.orderName,
+            orderName: cleanOrderName,
             amount: amount,
+            realName: user.realName,
+            phone: user.phone,
+            courseId: courseId,
           },
         });
 
         console.log("Purchase 레코드 생성 완료:", purchase);
+
+        // 강좌 수강 등록 (courseId가 있는 경우)
+        if (courseId) {
+          try {
+            // 이미 등록된 수강이 있는지 확인
+            const existingEnrollment = await prisma.enrollment.findFirst({
+              where: {
+                studentId: session.user.id, // userId -> studentId로 변경
+                courseId: courseId,
+              },
+            });
+
+            if (!existingEnrollment) {
+              await prisma.enrollment.create({
+                data: {
+                  studentId: session.user.id, // userId -> studentId로 변경
+                  courseId: courseId,
+                  courseTitle: cleanOrderName, // courseTitle 추가
+                  studentName: user.realName || "미등록", // studentName 추가
+                  studentPhone: user.phone || "미등록", // studentPhone 추가
+                  status: "active", // status 추가 (기본값이 pending 이므로)
+                },
+              });
+              console.log("수강 등록 완료");
+            } else {
+              console.log("이미 등록된 수강입니다.");
+            }
+          } catch (enrollmentError) {
+            console.error("수강 등록 중 오류:", enrollmentError);
+            // 수강 등록 실패해도 결제는 성공했으므로 계속 진행
+          }
+        }
 
         // 결제 성공 및 DB 저장 성공 시 루트 "/" 페이지로 리디렉션
         return NextResponse.redirect(new URL("/", req.url));

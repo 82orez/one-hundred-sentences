@@ -63,7 +63,8 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
         // 채널 키 설정
         channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY!,
         paymentId: `payment-${crypto.randomUUID()}`,
-        orderName: courseTitle,
+        // courseId를 orderName에 포함시켜 나중에 파싱할 수 있도록 함
+        orderName: `${courseTitle}|${courseId}`,
         totalAmount: totalFee,
         currency: "CURRENCY_KRW",
         payMethod: "CARD",
