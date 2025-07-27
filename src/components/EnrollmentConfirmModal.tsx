@@ -203,17 +203,17 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
               <h3 className="mb-3 text-lg font-semibold text-green-900">결제 방법 선택</h3>
               <div className="space-y-3">
                 {/* 카드 결제 옵션 */}
-                <label className="flex cursor-not-allowed items-center opacity-50">
+                <label className="flex items-center">
                   <input
                     type="checkbox"
                     checked={paymentMethod === "card"}
                     onChange={() => handlePaymentMethodChange("card")}
                     className="mr-3 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
-                    disabled
+                    // disabled
                   />
                   <div className="flex-1">
-                    <span className="font-medium text-gray-400">카드 결제</span>
-                    <p className="mt-1 text-sm text-gray-400">즉시 결제 후 수강 신청이 완료됩니다.</p>
+                    <span className="font-medium text-green-700">카드 결제</span>
+                    <p className="mt-1 text-sm text-green-600">즉시 결제 후 수강 신청이 완료됩니다.</p>
                   </div>
                 </label>
 
