@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import * as PortOne from "@portone/browser-sdk/v2";
 
 interface UserInfo {
   realName: string;
@@ -35,6 +36,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "transfer" | null>(null);
   const [isTransferConfirmed, setIsTransferConfirmed] = useState(false);
+  const [isPurchasing, setIsPurchasing] = useState(false);
   const router = useRouter();
   const scrollableRef = useRef<HTMLDivElement>(null);
 
@@ -49,6 +51,40 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
       }, 100);
     }
   }, [paymentMethod]);
+
+  const handleCardPayment = async () => {
+    try {
+      setIsPurchasing(true);
+
+      // * 카드 결제 처리 로직
+      const response = await PortOne.requestPayment({
+        // Store ID 설정
+        storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID!,
+        // 채널 키 설정
+        channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY!,
+        paymentId: `payment-${crypto.randomUUID()}`,
+        orderName: courseTitle,
+        totalAmount: totalFee,
+        currency: "CURRENCY_KRW",
+        payMethod: "CARD",
+        redirectUrl: `${window.location.origin}/api/payment/complete`,
+      });
+
+      console.log("Purchase-response: ", response);
+
+      if (response?.code !== undefined) {
+        alert(response.message);
+      } else {
+        // 리디렉션 URL 로 바로 이동
+        window.location.href = `${window.location.origin}/api/payment/complete?paymentId=${response.paymentId}`;
+      }
+    } catch (error) {
+      console.error("구매 중 오류 발생:", error);
+      alert("구매 처리 중 문제가 발생했습니다.");
+    } finally {
+      setIsPurchasing(false);
+    }
+  };
 
   const handleEnrollment = async () => {
     if (isProcessing) return;
@@ -75,6 +111,13 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
     setIsProcessing(true);
 
     try {
+      if (paymentMethod === "card") {
+        // 카드 결제 로직 실행
+        await handleCardPayment();
+        return; // 카드 결제의 경우 여기서 함수 종료
+      }
+
+      // 무통장 입금의 경우 기존 로직 실행
       const response = await fetch("/api/payment/wait-for-purchase", {
         method: "POST",
         headers: {
@@ -97,16 +140,9 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
         toast.success(data.message || "수강 신청이 완료되었습니다!");
         onClose();
 
-        if (paymentMethod === "card") {
-          // 카드 결제의 경우 결제 화면으로 이동
-          alert("카드 결제 화면으로 이동합니다.");
-          // ! 여기에 카드 결제 로직을 추가할 수 있습니다
-          router.push(`/purchase/payment?courseId=${courseId}`);
-        } else {
-          // 무통장 입금의 경우 결제 대기 화면으로 이동
-          alert("수강 신청이 완료되었습니다. 결제 대기 화면으로 이동합니다.");
-          router.push(`/purchase/waiting-courses`);
-        }
+        // 무통장 입금의 경우 결제 대기 화면으로 이동
+        alert("수강 신청이 완료되었습니다. 결제 대기 화면으로 이동합니다.");
+        router.push(`/purchase/waiting-courses`);
       } else {
         toast.error(data.error || "수강 신청 중 오류가 발생했습니다.");
       }
@@ -281,15 +317,15 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
           <div className="flex space-x-3">
             <button
               onClick={onClose}
-              disabled={isProcessing}
+              disabled={isProcessing || isPurchasing}
               className="flex-1 rounded-lg bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 disabled:opacity-50">
               이전 단계
             </button>
             <button
               onClick={handleEnrollment}
-              disabled={isProcessing || !paymentMethod || (paymentMethod === "transfer" && !isTransferConfirmed)}
+              disabled={isProcessing || isPurchasing || !paymentMethod || (paymentMethod === "transfer" && !isTransferConfirmed)}
               className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50">
-              {isProcessing ? "처리 중..." : "수강 신청"}
+              {isProcessing || isPurchasing ? "처리 중..." : paymentMethod === "card" ? "카드 결제" : "수강 신청"}
             </button>
           </div>
         </div>

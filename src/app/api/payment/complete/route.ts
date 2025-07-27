@@ -35,7 +35,8 @@ export async function GET(req: Request) {
         return NextResponse.redirect(new URL("/payment-error?reason=unauthorized", req.url));
       }
 
-      // * 결제 정보를 데이터베이스에 저장할 때 error 처리 과정 필요
+      // * 결제 정보를 purchase 모델에 저장하고 error 처리 과정
+      // ! 추가로 Enrollment 모델에 수강 정보 등록 필요
       try {
         const purchase = await prisma.purchase.create({
           data: {
@@ -46,8 +47,8 @@ export async function GET(req: Request) {
           },
         });
 
-        // 결제 성공 및 DB 저장 성공 시 /learn 페이지로 리디렉션
-        return NextResponse.redirect(new URL("/learn", req.url));
+        // 결제 성공 및 DB 저장 성공 시 루트 "/" 페이지로 리디렉션
+        return NextResponse.redirect(new URL("/", req.url));
       } catch (dbError) {
         // DB 저장 실패 시 로그 기록
         console.error("결제 정보 DB 저장 중 오류:", dbError);
