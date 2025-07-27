@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { format } from "date-fns";
-import { Play, Clock, CheckCircle } from "lucide-react";
+import { Play, Clock, CheckCircle, ArrowLeft } from "lucide-react";
 import { queryClient } from "@/app/providers";
 import { useState, useEffect } from "react";
 import CourseSchedule from "@/components/CourseSchedule";
@@ -258,6 +258,13 @@ export default function MyCoursesPage() {
           )}
         </>
       )}
+
+      <div className={"mt-8 mb-4 flex justify-center md:mt-12"}>
+        <Link href="/" className="flex items-center text-blue-500 hover:underline">
+          <ArrowLeft className="mr-1" size={20} />
+          Back to Home
+        </Link>
+      </div>
 
       {/* 모달 창 */}
       {isModalOpen && (
