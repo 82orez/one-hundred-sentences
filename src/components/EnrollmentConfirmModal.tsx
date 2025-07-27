@@ -156,7 +156,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
           <div className="space-y-4">
             {/* 신청자 정보 */}
             <div className="rounded-lg bg-gray-100 p-4">
-              <h3 className="mb-3 text-lg font-medium text-gray-900">신청자 정보</h3>
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">신청자 정보</h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-800">이름 :</span>
@@ -177,7 +177,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
 
             {/* 강좌 정보 */}
             <div className="rounded-lg bg-blue-50 p-4">
-              <h3 className="mb-3 text-lg font-medium text-blue-900">강좌 정보</h3>
+              <h3 className="mb-3 text-lg font-semibold text-blue-900">강좌 정보</h3>
               <div className="space-y-2 text-sm md:text-base">
                 <div className="flex justify-between">
                   <span className="text-blue-700">강좌명 :</span>
@@ -200,7 +200,7 @@ const EnrollmentConfirmModal: React.FC<EnrollmentConfirmModalProps> = ({
 
             {/* 결제 방법 선택 영역 */}
             <div className="rounded-lg bg-green-50 p-4">
-              <h3 className="mb-3 text-lg font-medium text-green-900">결제 방법 선택</h3>
+              <h3 className="mb-3 text-lg font-semibold text-green-900">결제 방법 선택</h3>
               <div className="space-y-3">
                 {/* 카드 결제 옵션 */}
                 <label className="flex cursor-not-allowed items-center opacity-50">
