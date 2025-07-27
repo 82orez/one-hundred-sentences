@@ -320,11 +320,15 @@ model Purchase {
   paymentId String    @unique // 포트원 결제 ID
   orderName String
   amount    Int // 결제 금액
+  realName  String? // 구매자 실명 추가
+  phone     String? // 구매자 전화번호 추가
+  courseId  String? // 구매한 강좌 ID 추가
   createdAt DateTime  @default(now()) // 구매 시간
   expiresAt DateTime? // 구독 만료일 (null이면 영구)
 
   // 관계 설정
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
 
   @@index([userId])
 }
@@ -387,6 +391,7 @@ model Course {
   TeacherAttendance  TeacherAttendance[]
   MyVoiceOpenList    MyVoiceOpenList[]
   WaitForPurchase    WaitForPurchase[]
+  Purchase           Purchase[]
 }
 
 // 수업 일자 모델
