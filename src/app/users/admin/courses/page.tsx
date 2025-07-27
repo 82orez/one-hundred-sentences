@@ -823,7 +823,7 @@ export default function CoursePage() {
                   <td>{course.startTime || "-"}</td>
                   <td>{course.duration || "-"}</td>
                   <td>{formatDate(course.endDate)}</td>
-                  <td>{course.price || 0}</td>
+                  <td>{course.price.toLocaleString() || 0}</td>
                   <td className="flex gap-2">
                     <button onClick={() => handleEnrollmentClick(course)} className="rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">
                       등록
