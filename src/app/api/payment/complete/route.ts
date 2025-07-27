@@ -25,6 +25,9 @@ export async function GET(req: Request) {
 
     const payment = await paymentResponse.json();
 
+    // 포트원 API 응답 구조 확인을 위한 로그 추가
+    console.log("포트원 결제 정보:", JSON.stringify(payment, null, 2));
+
     // * 결제 상태에 따라 주문 상태 업데이트하기
     if (payment.status === "PAID") {
       // 사용자 정보 가져오기
@@ -38,14 +41,36 @@ export async function GET(req: Request) {
       // * 결제 정보를 purchase 모델에 저장하고 error 처리 과정
       // ! 추가로 Enrollment 모델에 수강 정보 등록 필요
       try {
+        // 결제 금액 추출 로직 개선
+        let amount = 0;
+
+        // 포트원 API v2의 경우 amount 필드 구조 확인
+        if (payment.amount && typeof payment.amount === "object") {
+          // amount.total 또는 amount.paid 등의 필드가 있을 수 있음
+          amount = payment.amount.total || payment.amount.paid || payment.amount.value || 0;
+        } else if (payment.totalAmount) {
+          // totalAmount가 있는 경우
+          amount = typeof payment.totalAmount === "number" ? payment.totalAmount : parseInt(payment.totalAmount);
+        } else if (payment.amount) {
+          // amount가 숫자인 경우
+          amount = typeof payment.amount === "number" ? payment.amount : parseInt(payment.amount);
+        } else if (payment.paidAmount) {
+          // paidAmount 필드가 있는 경우
+          amount = typeof payment.paidAmount === "number" ? payment.paidAmount : parseInt(payment.paidAmount);
+        }
+
+        console.log("저장할 결제 금액:", amount);
+
         const purchase = await prisma.purchase.create({
           data: {
             userId: session.user.id,
             paymentId: paymentId,
             orderName: payment.orderName,
-            amount: payment.totalAmount ? parseInt(payment.totalAmount) : 0,
+            amount: amount,
           },
         });
+
+        console.log("Purchase 레코드 생성 완료:", purchase);
 
         // 결제 성공 및 DB 저장 성공 시 루트 "/" 페이지로 리디렉션
         return NextResponse.redirect(new URL("/", req.url));
