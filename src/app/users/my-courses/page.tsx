@@ -259,6 +259,13 @@ export default function MyCoursesPage() {
         </>
       )}
 
+      <div className={"mt-8 mb-4 flex justify-center text-lg md:mt-12"}>
+        <Link href="/course-detail/phil-video-one-to-one" className="flex items-center underline">
+          {/*<ArrowLeft className="mr-1" size={20} />*/}
+          필리핀 1:1 화상영어 프로그램도 있어요!
+        </Link>
+      </div>
+
       <div className={"mt-8 mb-4 flex justify-center md:mt-12"}>
         <Link href="/" className="flex items-center text-blue-500 hover:underline">
           <ArrowLeft className="mr-1" size={20} />
