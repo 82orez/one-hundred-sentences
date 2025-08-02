@@ -97,13 +97,6 @@ export default function Navbar() {
                   onClick={() => setMenuOpen(false)}>
                   Purchase
                 </Link>
-
-                <Link
-                  href="/course-detail/phil-video-one-to-one"
-                  className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
-                  onClick={() => setMenuOpen(false)}>
-                  필리핀
-                </Link>
               </>
             )}
 
@@ -132,6 +125,13 @@ export default function Navbar() {
               className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
               onClick={() => setMenuOpen(false)}>
               회원 정보
+            </Link>
+
+            <Link
+              href="/course-detail/phil-video-one-to-one"
+              className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
+              onClick={() => setMenuOpen(false)}>
+              필리핀 화상영어 안내
             </Link>
 
             {/* 아래는 드롭다운 버튼 영역 */}
@@ -180,7 +180,7 @@ export default function Navbar() {
                         href="/course-detail/phil-video-one-to-one"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setMenuOpen(false)}>
-                        필리핀
+                        필리핀 화상영어 안내
                       </Link>
 
                       <Link href="/learn" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
@@ -232,6 +232,13 @@ export default function Navbar() {
 
                   <Link href="/users/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
                     회원 정보
+                  </Link>
+
+                  <Link
+                    href="/course-detail/phil-video-one-to-one"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setMenuOpen(false)}>
+                    필리핀 화상영어 안내
                   </Link>
 
                   <button
