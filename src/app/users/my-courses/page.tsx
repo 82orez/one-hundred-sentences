@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import LoadingPageSkeleton from "@/components/LoadingPageSkeleton";
 import { format } from "date-fns";
-import { Play, Clock, CheckCircle, ArrowLeft } from "lucide-react";
+import { Play, Clock, CheckCircle, ArrowLeft, Star } from "lucide-react";
 import { queryClient } from "@/app/providers";
 import { useState, useEffect } from "react";
 import CourseSchedule from "@/components/CourseSchedule";
@@ -260,9 +260,11 @@ export default function MyCoursesPage() {
       )}
 
       <div className={"mt-8 mb-4 flex justify-center text-lg md:mt-12"}>
-        <Link href="/course-detail/phil-video-one-to-one" className="flex items-center underline">
-          {/*<ArrowLeft className="mr-1" size={20} />*/}
-          필리핀 1:1 화상영어 프로그램도 있어요!
+        <Link
+          href="/course-detail/phil-video-one-to-one"
+          className="relative flex items-center rounded-lg border-2 border-yellow-300 bg-yellow-100 px-4 py-2 underline">
+          <span className="absolute -top-1 -left-0.5 text-yellow-600">★</span>
+          필리핀 화상영어 프로그램도 있어요!
         </Link>
       </div>
 
