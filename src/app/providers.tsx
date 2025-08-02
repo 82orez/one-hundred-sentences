@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import AnnouncementModalForOneDay from "@/components/Announcement/oneday/AnnouncementModalForOneDay";
 import AnnouncementModal from "@/components/Announcement/AnnouncementModal";
 import DevelopingNotion from "@/components/Announcement/oneday/DevelopingNotion";
+import TravelEnglishPromotionModal from "@/components/Announcement/TravelEnglishPromotionModal";
 
 interface Props {
   children?: React.ReactNode;
@@ -41,6 +42,7 @@ export const NextLayout = ({ children }: Props) => {
       {/*<DevelopingNotion />*/}
       {/*<AnnouncementModalForOneDay />*/}
       {/*<AnnouncementModal />*/}
+      {/*<TravelEnglishPromotionModal />*/}
       <Navbar />
       {children}
     </QueryClientProvider>
