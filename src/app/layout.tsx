@@ -15,6 +15,7 @@ const inter = Noto_Sans_KR({
 export const metadata: Metadata = {
   title: "프렌딩 아카데미",
   description: "프렌딩과 함께하는 공동체 여행영어",
+  keywords: ["프렌딩", "여행영어"],
   verification: {
     other: {
       "naver-site-verification": "127bb5d3e9929a7eee7513ad139dfe16ef499587",
