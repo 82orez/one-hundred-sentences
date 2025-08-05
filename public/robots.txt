@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.friending.ac
+
+# Sitemaps
+Sitemap: https://www.friending.ac/sitemap.xml
