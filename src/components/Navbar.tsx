@@ -53,7 +53,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="sticky top-0 z-10 flex w-full items-center justify-between bg-white px-6 py-2 shadow-md md:py-4">
+    <nav className="sticky top-0 z-50 flex w-full items-center justify-between bg-white px-6 py-2 shadow-md md:py-4">
       <h1 className="text-2xl font-bold">
         <Link href="/" className={"block md:hidden"}>
           <div className={clsx("", { hidden: status !== "authenticated" })}>Home</div>
@@ -148,7 +148,7 @@ export default function Navbar() {
 
               {/* 드롭다운 메뉴 */}
               {menuOpen && (
-                <div className="ring-opacity-5 absolute right-0 mt-2 w-56 rounded-md bg-white py-2 shadow-lg ring-1 ring-black">
+                <div className="ring-opacity-5 absolute right-0 mt-2 w-56 rounded-md bg-white py-2 shadow-lg ring-1 ring-black z-50">
                   {isAdmin && (
                     <>
                       <Link

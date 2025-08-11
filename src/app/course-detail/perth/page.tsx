@@ -31,7 +31,7 @@ export default function PerthSpeakingTourLanding() {
   return (
     <main className="min-h-dvh bg-gradient-to-b from-white to-zinc-50 text-zinc-900">
       {/* NAV */}
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <a href="#top" className="text-2xl font-bold tracking-tight">
             서호주 스피킹 투어
