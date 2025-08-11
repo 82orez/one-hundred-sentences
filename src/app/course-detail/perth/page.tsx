@@ -1,0 +1,327 @@
+"use client";
+
+import { useMemo } from "react";
+import { motion } from "framer-motion";
+
+// Single-file landing page component for Next.js App Router
+// Drop this into app/page.tsx. TailwindCSS required.
+// Images use public placeholders — replace with your own assets.
+
+export default function PerthSpeakingTourLanding() {
+  const priceItems = useMemo(
+    () => [
+      { label: "학비 및 입학금", value: "₩550,000" },
+      { label: "홈스테이(식사 포함)", value: "약 3,442 AUD (약 315만원)" },
+      { label: "총 예상비용", value: "약 370만원 (항공료 별도)" },
+      { label: "할인", value: "홈스테이 환불 $100 / 친구·가족 동반 $100 할인" },
+    ],
+    [],
+  );
+
+  const benefits = [
+    "필리핀 1:1 화상영어 12주 포함",
+    "온라인 여행영어 4주(1:N)",
+    "월 1회 오프라인 모임(총 3회)",
+    "10년 경력 전문 강사 인솔",
+    "WA TVET 정부 지원 적용",
+    "시티·해변·동물원 등 액티비티",
+  ];
+
+  const schedule = [
+    { time: "오전", weekday: "General English 수업", weekend: "자유/주말 투어" },
+    { time: "오후", weekday: "Conversation Class · 현지 액티비티", weekend: "자유/주말 투어" },
+  ];
+
+  return (
+    <main className="min-h-dvh bg-gradient-to-b from-white to-zinc-50 text-zinc-900">
+      {/* NAV */}
+      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+          <a href="#top" className="text-lg font-bold tracking-tight">
+            서호주 스피킹 투어
+          </a>
+          <nav className="hidden gap-6 md:flex">
+            <a href="#about" className="hover:underline">
+              개요
+            </a>
+            <a href="#program" className="hover:underline">
+              프로그램
+            </a>
+            <a href="#pricing" className="hover:underline">
+              비용
+            </a>
+            <a href="#phoenix" className="hover:underline">
+              Phoenix Academy
+            </a>
+            <a href="#benefits" className="hover:underline">
+              혜택
+            </a>
+            <a href="#contact" className="hover:underline">
+              문의
+            </a>
+          </nav>
+          <a href="#contact" className="rounded-2xl border px-4 py-2 text-sm font-semibold hover:bg-zinc-900 hover:text-white">
+            상담 신청
+          </a>
+        </div>
+      </header>
+
+      {/* HERO */}
+      <section id="top" className="relative overflow-hidden">
+        <div className="absolute inset-0 -z-10">
+          <img
+            src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=1600&auto=format&fit=crop"
+            alt="Perth city skyline"
+            className="h-full w-full object-cover opacity-80"
+          />
+          <div className="absolute inset-0 bg-white/40" />
+        </div>
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 md:grid-cols-2 md:py-24">
+          <div>
+            <motion.h1
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-3xl leading-tight font-extrabold md:text-5xl">
+              실전 회화와 여행이 만나는
+              <span className="block text-emerald-600">서호주 스피킹 투어</span>
+            </motion.h1>
+            <p className="mt-4 max-w-prose text-zinc-700">
+              2025년 1월 24일–2월 9일, 호주 퍼스(PERTH)에서 진행되는 16박 17일 프로그램. 수업·홈스테이·액티비티가 결합된 체험형 어학투어로, 자유여행을
+              위한 실전 영어를 익힙니다.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href="#pricing" className="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-700">
+                비용 보기
+              </a>
+              <a href="#contact" className="rounded-2xl border px-5 py-3 text-sm font-semibold hover:bg-zinc-900 hover:text-white">
+                상담 신청
+              </a>
+            </div>
+            <ul className="mt-6 flex flex-wrap gap-2 text-sm text-zinc-600">
+              <li className="rounded-full border px-3 py-1">방학 단기 어학연수</li>
+              <li className="rounded-full border px-3 py-1">WA TVET 정부 지원</li>
+              <li className="rounded-full border px-3 py-1">전문 강사 인솔</li>
+            </ul>
+          </div>
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
+            {[
+              "https://images.unsplash.com/photo-1491555103944-7c647fd857e6?q=80&w=1200&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1200&auto=format&fit=crop",
+            ].map((src, i) => (
+              <motion.img
+                key={i}
+                src={src}
+                alt="tour image"
+                className={`h-40 w-full rounded-2xl object-cover shadow md:h-52 ${i % 3 === 0 ? "col-span-2" : ""}`}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: i * 0.05 }}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section id="about" className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="text-2xl font-bold md:text-3xl">프로그램 개요</h2>
+        <div className="mt-6 grid gap-6 rounded-2xl border bg-white p-6 shadow-sm md:grid-cols-2">
+          <dl className="grid grid-cols-2 gap-4 text-sm md:text-base">
+            <div>
+              <dt className="font-semibold">지역</dt>
+              <dd className="text-zinc-700">호주 퍼스(Perth)</dd>
+            </div>
+            <div>
+              <dt className="font-semibold">기간</dt>
+              <dd className="text-zinc-700">2025.01.24 – 02.09 (16박 17일)</dd>
+            </div>
+            <div>
+              <dt className="font-semibold">대상</dt>
+              <dd className="text-zinc-700">학생·일반 / 친구·가족 동반 가능</dd>
+            </div>
+            <div>
+              <dt className="font-semibold">운영</dt>
+              <dd className="text-zinc-700">㈜프리덴 × Phoenix Academy</dd>
+            </div>
+          </dl>
+          <p className="text-zinc-700">
+            홈스테이 기반 생활밀착형 환경에서 오전에는 General English, 오후에는 회화/액티비티를 통해 실전 스피킹을 집중 강화합니다.
+          </p>
+        </div>
+      </section>
+
+      {/* PROGRAM */}
+      <section id="program" className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="text-2xl font-bold md:text-3xl">일과 및 커리큘럼</h2>
+        <div className="mt-6 overflow-hidden rounded-2xl border bg-white shadow-sm">
+          <table className="w-full text-left text-sm md:text-base">
+            <thead className="bg-zinc-50">
+              <tr>
+                <th className="px-4 py-3">구분</th>
+                <th className="px-4 py-3">월–금</th>
+                <th className="px-4 py-3">토·일</th>
+              </tr>
+            </thead>
+            <tbody>
+              {schedule.map((row) => (
+                <tr key={row.time} className="border-t">
+                  <td className="px-4 py-3 font-semibold">{row.time}</td>
+                  <td className="px-4 py-3 text-zinc-700">{row.weekday}</td>
+                  <td className="px-4 py-3 text-zinc-700">{row.weekend}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+          {[
+            "시티 투어 및 랜드마크 탐방",
+            "코알라·캥거루 체험, 버섯농장/공원 방문",
+            "해변 액티비티 및 자유시간",
+            "현지 생활 적응을 위한 홈스테이",
+          ].map((t, i) => (
+            <li key={i} className="rounded-xl border bg-white px-4 py-3 text-sm text-zinc-700 shadow-sm">
+              {t}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* PRICING */}
+      <section id="pricing" className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="text-2xl font-bold md:text-3xl">비용 안내</h2>
+        <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <div className="rounded-2xl border bg-white p-6 shadow-sm">
+            <ul className="space-y-3 text-sm md:text-base">
+              {priceItems.map((it) => (
+                <li key={it.label} className="flex items-center justify-between gap-3 border-b pb-3 last:border-b-0 last:pb-0">
+                  <span className="font-semibold">{it.label}</span>
+                  <span className="text-zinc-700">{it.value}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-xs text-zinc-500">* 환율/현지 사정에 따라 변동 가능. 항공료 별도.</p>
+          </div>
+          <div className="rounded-2xl border bg-emerald-600/5 p-6 shadow-sm">
+            <h3 className="text-lg font-semibold">할인 & 조건</h3>
+            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-700">
+              <li>홈스테이 환불: $100</li>
+              <li>친구·가족 동반: $100 할인/인</li>
+              <li>정부 지원 프로그램: WA TVET 적용</li>
+            </ul>
+            <a
+              href="#contact"
+              className="mt-6 inline-block rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-700">
+              상담 신청
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* PHOENIX ACADEMY */}
+      <section id="phoenix" className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="text-2xl font-bold md:text-3xl">Phoenix Academy 소개</h2>
+        <div className="mt-6 grid items-center gap-6 md:grid-cols-2">
+          <img
+            src="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1600&auto=format&fit=crop"
+            alt="Phoenix Academy campus"
+            className="h-64 w-full rounded-2xl object-cover shadow md:h-80"
+          />
+          <div className="rounded-2xl border bg-white p-6 shadow-sm">
+            <dl className="grid grid-cols-2 gap-3 text-sm md:text-base">
+              <div>
+                <dt className="font-semibold">설립</dt>
+                <dd className="text-zinc-700">1989년</dd>
+              </div>
+              <div>
+                <dt className="font-semibold">위치</dt>
+                <dd className="text-zinc-700">퍼스 시내 15분, 해변 인근</dd>
+              </div>
+              <div>
+                <dt className="font-semibold">캠퍼스</dt>
+                <dd className="text-zinc-700">부지 1.5ha, 최대 130명 수용</dd>
+              </div>
+              <div>
+                <dt className="font-semibold">학생 구성</dt>
+                <dd className="text-zinc-700">30개국+, 누적 5만명 졸업</dd>
+              </div>
+            </dl>
+            <p className="mt-4 text-zinc-700">
+              국제적 학습 환경과 다양한 강의·기숙 시설을 갖춘 퍼스 대표 어학기관으로, 실전 회화 향상에 최적화된 커리큘럼을 제공합니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* BENEFITS */}
+      <section id="benefits" className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="text-2xl font-bold md:text-3xl">포함 혜택</h2>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {benefits.map((b, i) => (
+            <div key={i} className="rounded-2xl border bg-white p-5 text-sm text-zinc-700 shadow-sm">
+              {b}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="text-2xl font-bold md:text-3xl">자주 묻는 질문</h2>
+        <div className="mt-6 space-y-4">
+          <details className="rounded-2xl border bg-white p-5 shadow-sm">
+            <summary className="cursor-pointer font-semibold">항공권이 포함되어 있나요?</summary>
+            <p className="mt-2 text-sm text-zinc-700">아니요. 항공료는 별도입니다. 일정(1/24–2/9)에 맞춰 개별 구매하시면 됩니다.</p>
+          </details>
+          <details className="rounded-2xl border bg-white p-5 shadow-sm">
+            <summary className="cursor-pointer font-semibold">영어 실력이 많이 부족해도 참여 가능할까요?</summary>
+            <p className="mt-2 text-sm text-zinc-700">
+              가능합니다. 출발 전 화상수업과 온라인 과정으로 기초를 다지고, 현지에서는 수준별 수업이 제공됩니다.
+            </p>
+          </details>
+          <details className="rounded-2xl border bg-white p-5 shadow-sm">
+            <summary className="cursor-pointer font-semibold">혼자 참여해도 안전한가요?</summary>
+            <p className="mt-2 text-sm text-zinc-700">전문 강사 인솔 및 홈스테이 배정으로 안전하게 프로그램에 참여할 수 있습니다.</p>
+          </details>
+        </div>
+      </section>
+
+      {/* CONTACT */}
+      <section id="contact" className="mx-auto max-w-6xl px-4 py-16">
+        <div className="rounded-2xl border bg-white p-6 shadow-sm">
+          <h2 className="text-2xl font-bold md:text-3xl">상담 및 문의</h2>
+          <p className="mt-2 text-zinc-700">웹 문의를 남겨주시면 담당자가 순차적으로 연락드립니다. (예) 010-3753-4546</p>
+          <form onSubmit={(e) => e.preventDefault()} className="mt-6 grid gap-4 md:grid-cols-2">
+            <input className="rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500" placeholder="이름" />
+            <input className="rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500" placeholder="연락처" />
+            <input
+              className="rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500 md:col-span-2"
+              placeholder="이메일 (선택)"
+            />
+            <textarea
+              className="h-28 rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500 md:col-span-2"
+              placeholder="문의 내용"
+            />
+            <button className="w-full rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 md:w-auto">
+              문의 보내기
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <footer className="border-t py-10 text-center text-sm text-zinc-500">
+        © {new Date().getFullYear()} FRiending / Phoenix Academy · 본 페이지는 홍보용 시안입니다.
+      </footer>
+
+      {/* Sticky CTA */}
+      <a
+        href="#contact"
+        className="fixed right-6 bottom-6 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-emerald-700">
+        상담 신청
+      </a>
+    </main>
+  );
+}
