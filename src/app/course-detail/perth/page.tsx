@@ -15,12 +15,12 @@ export default function PerthSpeakingTourLanding() {
   );
 
   const benefits = [
-    "필리핀 1:1 화상영어 12주 포함",
-    "온라인 여행영어 4주(1:N)",
+    "필리핀 1:1 화상영어 수업 12주 ",
+    "온라인 여행영어 100문장 4주(1:N)",
     "월 1회 오프라인 모임(총 3회)",
-    "10년 경력 전문 강사 인솔",
-    "WA TVET 정부 지원 적용",
-    "시티·해변·동물원 등 액티비티",
+    // "10년 경력 전문 강사 인솔",
+    // "WA TVET 정부 지원 적용",
+    // "시티·해변·동물원 등 액티비티",
   ];
 
   const schedule = [
@@ -75,7 +75,7 @@ export default function PerthSpeakingTourLanding() {
               <span className="mt-2 block text-emerald-600">서호주 스피킹 투어</span>
             </motion.h1>
             <p className="mt-4 max-w-prose text-zinc-700">
-              서호주 퍼스(Perth) 스피킹 투어는 저희 프렌딩 아카데미(줌마영어)에서 이미 4회에 걸쳐 성료한 검증된 프로그램입니다.
+              서호주 퍼스(Perth) 스피킹 투어는 저희 프렌딩 아카데미(줌마영어)에서 이미 4회에 걸쳐 진행된 검증된 프로그램입니다.
             </p>
             <p className="mt-4 max-w-prose text-zinc-700">
               매년 1~2월 서호주 퍼스에서 자유 여행을 꿈꾸는 학생들을 위해 영어 연수와 현지 관광을 동시에 결합한 프로그램입니다.
@@ -200,7 +200,7 @@ export default function PerthSpeakingTourLanding() {
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-xs text-zinc-500">* 환율/현지 사정에 따라 변동 가능. 항공료 별도.</p>
+            <p className="mt-4 text-sm text-zinc-500">* 환율/현지 사정에 따라 변동 가능.</p>
           </div>
           <div className="rounded-2xl border bg-emerald-600/5 p-6 shadow-sm">
             <h3 className="text-lg font-semibold">할인 정책</h3>
@@ -229,11 +229,11 @@ export default function PerthSpeakingTourLanding() {
             Phoenix Academy 소개
           </a>
         </h2>
-        <div className="mt-6 grid items-center gap-6 md:grid-cols-2">
+        <div className="mt-6 grid items-center gap-6 md:grid-cols-2 md:gap-0">
           <img
-            src="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1600&auto=format&fit=crop"
+            src="/images/perth/perth-5.png"
             alt="Phoenix Academy campus"
-            className="h-64 w-full rounded-2xl object-cover shadow md:h-80"
+            className="h-full w-full rounded-2xl object-cover shadow md:mx-auto md:h-full md:max-w-sm"
           />
           <div className="rounded-2xl border bg-white p-6 shadow-sm">
             <dl className="grid grid-cols-2 gap-3 text-sm md:text-base">
@@ -263,7 +263,7 @@ export default function PerthSpeakingTourLanding() {
 
       {/* BENEFITS */}
       <section id="benefits" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
-        <h2 className="text-2xl font-bold md:text-3xl">포함 혜택</h2>
+        <h2 className="text-2xl font-bold md:text-3xl">제공되는 무료 혜택</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {benefits.map((b, i) => (
             <div key={i} className="rounded-2xl border bg-white p-5 text-sm text-zinc-700 shadow-sm">
@@ -275,21 +275,26 @@ export default function PerthSpeakingTourLanding() {
 
       {/* FAQ */}
       <section id="faq" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
-        <h2 className="text-2xl font-bold md:text-3xl">자주 묻는 질문</h2>
+        <h2 className="text-2xl font-bold md:text-3xl">자주 묻는 질문 (FAQ)</h2>
         <div className="mt-6 space-y-4">
           <details className="rounded-2xl border bg-white p-5 shadow-sm">
             <summary className="cursor-pointer font-semibold">항공권이 포함되어 있나요?</summary>
-            <p className="mt-2 text-sm text-zinc-700">아니요. 항공료는 별도입니다. 일정(1/24–2/9)에 맞춰 개별 구매하시면 됩니다.</p>
+            <p className="mt-2 text-sm text-zinc-700">
+              아니요. 항공료는 별도입니다. 항공권은 프로그램 일정(1/24–2/9)에 맞춰서 개별적으로 구입하시면 됩니다. 다만, 원하시는 경우에는 대신 구입해
+              드릴 수 있어요.
+            </p>
           </details>
           <details className="rounded-2xl border bg-white p-5 shadow-sm">
             <summary className="cursor-pointer font-semibold">영어 실력이 많이 부족해도 참여 가능할까요?</summary>
             <p className="mt-2 text-sm text-zinc-700">
-              가능합니다. 출발 전 화상수업과 온라인 과정으로 기초를 다지고, 현지에서는 수준별 수업이 제공됩니다.
+              가능합니다. 출발 전 제공되는 무료 화상수업과 온라인 과정으로 기초를 다지고, 현지에서는 수준별 수업이 제공됩니다.
             </p>
           </details>
           <details className="rounded-2xl border bg-white p-5 shadow-sm">
             <summary className="cursor-pointer font-semibold">혼자 참여해도 안전한가요?</summary>
-            <p className="mt-2 text-sm text-zinc-700">전문 강사 인솔 및 홈스테이 배정으로 안전하게 프로그램에 참여할 수 있습니다.</p>
+            <p className="mt-2 text-sm text-zinc-700">
+              프렌딩 아카데미 대표 강사가 직접 인솔 및 홈스테이 배정으로 걱정없이 안전하게 프로그램에 참여하실 수 있습니다.
+            </p>
           </details>
         </div>
       </section>
