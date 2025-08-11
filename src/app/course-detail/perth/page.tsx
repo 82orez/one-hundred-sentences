@@ -6,9 +6,9 @@ import { motion } from "framer-motion";
 export default function PerthSpeakingTourLanding() {
   const priceItems = useMemo(
     () => [
-      { label: "계약금 및 입학금", value: "₩550,000" },
-      { label: "학비 + 홈스테이 + 투어 비용", value: "약 3,442 AUD (약 315만원)" },
-      { label: "총 비용", value: "약 370만원 (항공료 별도)" },
+      { label: "계약금 및 입학금", value: "55만원" },
+      { label: "학비/홈스테이/투어", value: "315만원 (약 3,442 AUD)" },
+      { label: "총 비용", value: "370만원 (항공료 별도)" },
       { label: "할인 정책", value: "홈스테이 환불 $100 / 친구·가족 동반 $100 할인" },
     ],
     [],
@@ -25,7 +25,7 @@ export default function PerthSpeakingTourLanding() {
 
   const schedule = [
     { time: "오전", weekday: "General English 수업", weekend: "자유/주말 투어" },
-    { time: "오후", weekday: "Conversation Class · 현지 액티비티", weekend: "자유/주말 투어" },
+    { time: "오후", weekday: "Conversation Class 또는 현지 액티비티", weekend: "자유/주말 투어" },
   ];
 
   return (
@@ -88,7 +88,8 @@ export default function PerthSpeakingTourLanding() {
               있습니다.
             </p>
             <p className="mt-4 max-w-prose text-zinc-700">
-              특히 이번에는 호주 정부의 지원으로 기존 대비 30%가 할인된 금액으로 프로그램에 참여하실 수 있게 되었습니다.
+              특히 이번에는 호주 정부의 공식 지원으로 기존 대비 <span className={"font-semibold underline"}>30%가 할인된 금액</span>으로 프로그램에
+              참여하실 수 있게 되었습니다.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
@@ -100,9 +101,9 @@ export default function PerthSpeakingTourLanding() {
               </a>
             </div>
             <ul className="mt-6 flex flex-wrap gap-2 text-sm text-zinc-600">
-              <li className="rounded-full border px-3 py-1">방학 단기 어학연수</li>
-              <li className="rounded-full border px-3 py-1">WA TVET 정부 지원</li>
-              <li className="rounded-full border px-3 py-1">전문 강사 인솔</li>
+              <li className="rounded-full border px-3 py-1">결합형(수업/투어) 영어 연수</li>
+              <li className="rounded-full border px-3 py-1">호주 정부 공식 지원</li>
+              <li className="rounded-full border px-3 py-1">대표 강사 인솔</li>
             </ul>
           </div>
           <div className="grid grid-cols-2 gap-3 md:gap-4">
@@ -136,15 +137,15 @@ export default function PerthSpeakingTourLanding() {
             </div>
             <div>
               <dt className="font-semibold">대상</dt>
-              <dd className="text-zinc-700">학생·일반 / 친구·가족 동반 가능</dd>
+              <dd className="text-zinc-700">일반인 · 학생(친구/가족 동반 가능)</dd>
             </div>
             <div>
               <dt className="font-semibold">운영</dt>
-              <dd className="text-zinc-700">㈜프리덴 × Phoenix Academy</dd>
+              <dd className="text-zinc-700">㈜프렌딩 + 서호주 Phoenix Academy</dd>
             </div>
           </dl>
           <p className="text-zinc-700">
-            홈스테이 기반 생활밀착형 환경에서 오전에는 General English, 오후에는 회화/액티비티를 통해 실전 스피킹을 집중 강화합니다.
+            홈스테이 기반 생활 밀착형 환경에서 오전에는 영어 수업을 하고, 오후에는 여러가지 액티비티를 통해 실전 스피킹에 도전합니다.
           </p>
         </div>
       </section>
@@ -202,11 +203,11 @@ export default function PerthSpeakingTourLanding() {
             <p className="mt-4 text-xs text-zinc-500">* 환율/현지 사정에 따라 변동 가능. 항공료 별도.</p>
           </div>
           <div className="rounded-2xl border bg-emerald-600/5 p-6 shadow-sm">
-            <h3 className="text-lg font-semibold">할인 & 조건</h3>
+            <h3 className="text-lg font-semibold">할인 정책</h3>
             <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-700">
               <li>홈스테이 환불: $100</li>
               <li>친구·가족 동반: $100 할인/인</li>
-              <li>정부 지원 프로그램: WA TVET 적용</li>
+              <li>호주 정부 지원 : WA TVET 프로그램 적용가 </li>
             </ul>
             <a
               href="#contact"
