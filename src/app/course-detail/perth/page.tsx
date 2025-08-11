@@ -163,12 +163,14 @@ export default function PerthSpeakingTourLanding() {
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href="#pricing" className="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-700">
+              <a
+                href="#pricing"
+                className="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-700 md:mx-auto">
                 비용 보기
               </a>
-              <a href="#contact" className="rounded-2xl border px-5 py-3 text-sm font-semibold hover:bg-zinc-900 hover:text-white">
-                상담 신청
-              </a>
+              {/*<a href="#contact" className="rounded-2xl border px-5 py-3 text-sm font-semibold hover:bg-zinc-900 hover:text-white">*/}
+              {/*  상담 신청*/}
+              {/*</a>*/}
             </div>
             <ul className="mt-6 flex flex-wrap gap-2 text-sm text-zinc-600">
               <li className="rounded-full border px-3 py-1">결합형(수업/투어) 영어 연수</li>
@@ -228,8 +230,8 @@ export default function PerthSpeakingTourLanding() {
             <thead className="bg-zinc-50">
               <tr>
                 <th className="px-4 py-3">구분</th>
-                <th className="px-4 py-3">월–금</th>
-                <th className="px-4 py-3">토·일</th>
+                <th className="px-4 py-3 text-center">월 ~ 금</th>
+                <th className="px-4 py-3 text-center">토/일</th>
               </tr>
             </thead>
             <tbody>
@@ -274,16 +276,11 @@ export default function PerthSpeakingTourLanding() {
           </div>
           <div className="rounded-2xl border bg-emerald-600/5 p-6 shadow-sm">
             <h3 className="text-lg font-semibold">할인 정책</h3>
-            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-700">
+            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-700 md:text-base">
               <li>홈스테이 환불: $100</li>
               <li>친구·가족 동반: $100 할인/인</li>
               <li>호주 정부 지원 : WA TVET 프로그램 적용가 </li>
             </ul>
-            <a
-              href="#contact"
-              className="mt-6 inline-block rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-700">
-              상담 신청
-            </a>
           </div>
         </div>
       </section>
@@ -373,8 +370,9 @@ export default function PerthSpeakingTourLanding() {
       <section id="contact" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
         <div className="rounded-2xl border bg-white p-6 shadow-sm">
           <h2 className="text-2xl font-bold md:text-3xl">상담 및 문의하기</h2>
-          <p className="mt-4 text-zinc-700">상담 내용을 남겨주시면 담당자가 확인 후 해당 연락처로 순차적으로 연락드립니다.</p>
-          <p className="mt-2 text-zinc-700">또는 다음 연락처로 연락 부탁드립니다. 대표 강사 박민규 010-3753-4546</p>
+          <p className="mt-4 text-zinc-700">상담 내용을 남겨주시면 담당자가 확인 후 남겨주신 연락처로 순차적으로 연락드립니다.</p>
+          <p className="mt-2 text-zinc-700">또는 다음 연락처로 연락 부탁드립니다.</p>
+          <p className="mt-2 font-semibold text-zinc-700">(주)프렌딩 대표 박민규 010-3753-4546</p>
           <form onSubmit={handleSubmit} className="mt-6 grid gap-4 md:grid-cols-2">
             <input
               className="rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
@@ -425,7 +423,7 @@ export default function PerthSpeakingTourLanding() {
       {/* Sticky CTA */}
       <a
         href="#contact"
-        className="fixed right-6 bottom-6 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-emerald-700">
+        className="fixed right-6 bottom-6 rounded-lg bg-indigo-600 px-5 py-3 text-lg font-semibold text-white shadow-lg hover:bg-indigo-700">
         상담 신청
       </a>
     </main>
