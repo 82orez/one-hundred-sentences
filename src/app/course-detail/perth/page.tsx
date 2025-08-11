@@ -1,9 +1,18 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 export default function PerthSpeakingTourLanding() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
+
   const priceItems = useMemo(
     () => [
       { label: "계약금 및 입학금", value: "55만원" },
@@ -27,6 +36,67 @@ export default function PerthSpeakingTourLanding() {
     { time: "오전", weekday: "General English 수업", weekend: "자유/주말 투어" },
     { time: "오후", weekday: "Conversation Class 또는 현지 액티비티", weekend: "자유/주말 투어" },
   ];
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // 필수 필드 검증
+    if (!formData.name.trim()) {
+      toast.error("이름을 입력해주세요.");
+      return;
+    }
+
+    if (!formData.phone.trim()) {
+      toast.error("연락처를 입력해주세요.");
+      return;
+    }
+
+    if (!formData.message.trim()) {
+      toast.error("문의 내용을 입력해주세요.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/perth-questions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "문의 접수 중 오류가 발생했습니다.");
+      }
+
+      toast.success("문의가 성공적으로 접수되었습니다! 담당자가 순차적으로 연락드리겠습니다.");
+
+      // 폼 초기화
+      setFormData({
+        name: "",
+        phone: "",
+        email: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("문의 접수 오류:", error);
+      toast.error(error instanceof Error ? error.message : "문의 접수 중 오류가 발생했습니다.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <main className="min-h-dvh bg-gradient-to-b from-white to-zinc-50 text-zinc-900">
@@ -302,21 +372,49 @@ export default function PerthSpeakingTourLanding() {
       {/* CONTACT */}
       <section id="contact" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
         <div className="rounded-2xl border bg-white p-6 shadow-sm">
-          <h2 className="text-2xl font-bold md:text-3xl">상담 및 문의</h2>
-          <p className="mt-2 text-zinc-700">웹 문의를 남겨주시면 담당자가 순차적으로 연락드립니다. (예) 010-3753-4546</p>
-          <form onSubmit={(e) => e.preventDefault()} className="mt-6 grid gap-4 md:grid-cols-2">
-            <input className="rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500" placeholder="이름" />
-            <input className="rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500" placeholder="연락처" />
+          <h2 className="text-2xl font-bold md:text-3xl">상담 및 문의하기</h2>
+          <p className="mt-4 text-zinc-700">상담 내용을 남겨주시면 담당자가 확인 후 해당 연락처로 순차적으로 연락드립니다.</p>
+          <p className="mt-2 text-zinc-700">또는 다음 연락처로 연락 부탁드립니다. 대표 강사 박민규 010-3753-4546</p>
+          <form onSubmit={handleSubmit} className="mt-6 grid gap-4 md:grid-cols-2">
+            <input
+              className="rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+              placeholder="이름"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              required
+            />
+            <input
+              className="rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+              placeholder="연락처"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              required
+            />
             <input
               className="rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500 md:col-span-2"
               placeholder="이메일 (선택)"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleInputChange}
             />
             <textarea
               className="h-28 rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500 md:col-span-2"
               placeholder="문의 내용"
+              name="message"
+              value={formData.message}
+              onChange={handleInputChange}
+              required
             />
-            <button className="w-full rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 md:w-auto">
-              문의 보내기
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full rounded-2xl px-5 py-3 text-lg font-semibold text-white md:w-auto ${
+                isSubmitting ? "cursor-not-allowed bg-gray-400" : "bg-emerald-600 hover:bg-emerald-700"
+              }`}>
+              {isSubmitting ? "보내는 중..." : "보내기"}
             </button>
           </form>
         </div>
