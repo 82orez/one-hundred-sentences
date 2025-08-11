@@ -52,9 +52,9 @@ export default function PerthSpeakingTourLanding() {
             <a href="#benefits" className="hover:underline">
               혜택
             </a>
-            {/*<a href="#contact" className="hover:underline">*/}
-            {/*  문의*/}
-            {/*</a>*/}
+            <a href="#faq" className="hover:underline">
+              FAQ
+            </a>
           </nav>
           <a href="#contact" className="rounded-2xl border px-4 py-2 text-sm font-semibold hover:bg-zinc-900 hover:text-white">
             상담 신청
