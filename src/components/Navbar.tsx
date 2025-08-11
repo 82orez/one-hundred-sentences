@@ -231,7 +231,14 @@ export default function Navbar() {
                     href="/course-detail/perth"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setMenuOpen(false)}>
-                    호수 스피킹 투어 안내
+                    호주 스피킹 투어 안내
+                  </Link>
+
+                  <Link
+                    href="/course-detail/perth/admin"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setMenuOpen(false)}>
+                    호주 문의 현황
                   </Link>
 
                   <Link
