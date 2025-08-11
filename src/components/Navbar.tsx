@@ -148,7 +148,7 @@ export default function Navbar() {
 
               {/* 드롭다운 메뉴 */}
               {menuOpen && (
-                <div className="ring-opacity-5 absolute right-0 mt-2 w-56 rounded-md bg-white py-2 shadow-lg ring-1 ring-black z-50">
+                <div className="ring-opacity-5 absolute right-0 z-50 mt-2 w-56 rounded-md bg-white py-2 shadow-lg ring-1 ring-black">
                   {isAdmin && (
                     <>
                       <Link
@@ -174,20 +174,6 @@ export default function Navbar() {
 
                       <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
                         대시보드
-                      </Link>
-
-                      <Link
-                        href="/course-detail/perth"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}>
-                        호수 스피킹 투어 안내
-                      </Link>
-
-                      <Link
-                        href="/course-detail/phil-video-one-to-one"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}>
-                        필리핀 화상영어 안내
                       </Link>
 
                       <Link href="/learn" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
@@ -239,6 +225,13 @@ export default function Navbar() {
 
                   <Link href="/users/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
                     회원 정보
+                  </Link>
+
+                  <Link
+                    href="/course-detail/perth"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setMenuOpen(false)}>
+                    호수 스피킹 투어 안내
                   </Link>
 
                   <Link
