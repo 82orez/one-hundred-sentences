@@ -68,26 +68,18 @@ export default function PerthSpeakingTourLanding() {
 
       {/* HERO */}
       <section id="top" className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <img
-            src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?q=80&w=1600&auto=format&fit=crop"
-            alt="Perth city skyline"
-            className="h-full w-full object-cover opacity-80"
-          />
-          <div className="absolute inset-0 bg-white/40" />
-        </div>
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-16 md:grid-cols-2 md:py-24">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-6 md:grid-cols-2 md:py-12">
           <div>
             <motion.h1
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-3xl leading-tight font-extrabold md:text-5xl">
+              className="text-2xl leading-tight font-extrabold md:text-5xl">
               실전 회화와 여행이 만나는
-              <span className="block text-emerald-600">서호주 스피킹 투어</span>
+              <span className="mt-2 block text-emerald-600">서호주 스피킹 투어</span>
             </motion.h1>
             <p className="mt-4 max-w-prose text-zinc-700">
-              2025년 1월 24일–2월 9일, 호주 퍼스(PERTH)에서 진행되는 16박 17일 프로그램. 수업·홈스테이·액티비티가 결합된 체험형 어학투어로, 자유여행을
+              2025년 1월 24일–2월 9일, 호주 퍼스(Perth)에서 진행되는 16박 17일 프로그램. 수업·홈스테이·액티비티가 결합된 체험형 어학투어로, 자유여행을
               위한 실전 영어를 익힙니다.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -105,12 +97,7 @@ export default function PerthSpeakingTourLanding() {
             </ul>
           </div>
           <div className="grid grid-cols-2 gap-3 md:gap-4">
-            {[
-              "https://images.unsplash.com/photo-1491555103944-7c647fd857e6?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1200&auto=format&fit=crop",
-            ].map((src, i) => (
+            {["/images/perth/perth-1.png", "/images/perth/perth-2.png", "/images/perth/perth-3.png", "/images/perth/perth-4.png"].map((src, i) => (
               <motion.img
                 key={i}
                 src={src}
@@ -126,7 +113,7 @@ export default function PerthSpeakingTourLanding() {
       </section>
 
       {/* ABOUT */}
-      <section id="about" className="mx-auto max-w-6xl px-4 py-16">
+      <section id="about" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
         <h2 className="text-2xl font-bold md:text-3xl">프로그램 개요</h2>
         <div className="mt-6 grid gap-6 rounded-2xl border bg-white p-6 shadow-sm md:grid-cols-2">
           <dl className="grid grid-cols-2 gap-4 text-sm md:text-base">
@@ -154,7 +141,7 @@ export default function PerthSpeakingTourLanding() {
       </section>
 
       {/* PROGRAM */}
-      <section id="program" className="mx-auto max-w-6xl px-4 py-16">
+      <section id="program" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
         <h2 className="text-2xl font-bold md:text-3xl">일과 및 커리큘럼</h2>
         <div className="mt-6 overflow-hidden rounded-2xl border bg-white shadow-sm">
           <table className="w-full text-left text-sm md:text-base">
@@ -191,7 +178,7 @@ export default function PerthSpeakingTourLanding() {
       </section>
 
       {/* PRICING */}
-      <section id="pricing" className="mx-auto max-w-6xl px-4 py-16">
+      <section id="pricing" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
         <h2 className="text-2xl font-bold md:text-3xl">비용 안내</h2>
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <div className="rounded-2xl border bg-white p-6 shadow-sm">
@@ -222,8 +209,16 @@ export default function PerthSpeakingTourLanding() {
       </section>
 
       {/* PHOENIX ACADEMY */}
-      <section id="phoenix" className="mx-auto max-w-6xl px-4 py-16">
-        <h2 className="text-2xl font-bold md:text-3xl">Phoenix Academy 소개</h2>
+      <section id="phoenix" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
+        <h2 className="text-2xl font-bold md:text-3xl">
+          <a
+            href="https://www.phoenix.edu.au/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-pointer transition-colors hover:text-emerald-600">
+            Phoenix Academy 소개
+          </a>
+        </h2>
         <div className="mt-6 grid items-center gap-6 md:grid-cols-2">
           <img
             src="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1600&auto=format&fit=crop"
@@ -257,7 +252,7 @@ export default function PerthSpeakingTourLanding() {
       </section>
 
       {/* BENEFITS */}
-      <section id="benefits" className="mx-auto max-w-6xl px-4 py-16">
+      <section id="benefits" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
         <h2 className="text-2xl font-bold md:text-3xl">포함 혜택</h2>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {benefits.map((b, i) => (
@@ -269,7 +264,7 @@ export default function PerthSpeakingTourLanding() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="mx-auto max-w-6xl px-4 py-16">
+      <section id="faq" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
         <h2 className="text-2xl font-bold md:text-3xl">자주 묻는 질문</h2>
         <div className="mt-6 space-y-4">
           <details className="rounded-2xl border bg-white p-5 shadow-sm">
@@ -290,7 +285,7 @@ export default function PerthSpeakingTourLanding() {
       </section>
 
       {/* CONTACT */}
-      <section id="contact" className="mx-auto max-w-6xl px-4 py-16">
+      <section id="contact" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
         <div className="rounded-2xl border bg-white p-6 shadow-sm">
           <h2 className="text-2xl font-bold md:text-3xl">상담 및 문의</h2>
           <p className="mt-2 text-zinc-700">웹 문의를 남겨주시면 담당자가 순차적으로 연락드립니다. (예) 010-3753-4546</p>
@@ -312,9 +307,7 @@ export default function PerthSpeakingTourLanding() {
         </div>
       </section>
 
-      <footer className="border-t py-10 text-center text-sm text-zinc-500">
-        © {new Date().getFullYear()} FRiending / Phoenix Academy · 본 페이지는 홍보용 시안입니다.
-      </footer>
+      <footer className="border-t py-10 text-center text-sm text-zinc-500">© {new Date().getFullYear()} Friending / Phoenix Academy</footer>
 
       {/* Sticky CTA */}
       <a
