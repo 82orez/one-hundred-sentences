@@ -3,17 +3,13 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 
-// Single-file landing page component for Next.js App Router
-// Drop this into app/page.tsx. TailwindCSS required.
-// Images use public placeholders — replace with your own assets.
-
 export default function PerthSpeakingTourLanding() {
   const priceItems = useMemo(
     () => [
-      { label: "학비 및 입학금", value: "₩550,000" },
-      { label: "홈스테이(식사 포함)", value: "약 3,442 AUD (약 315만원)" },
-      { label: "총 예상비용", value: "약 370만원 (항공료 별도)" },
-      { label: "할인", value: "홈스테이 환불 $100 / 친구·가족 동반 $100 할인" },
+      { label: "계약금 및 입학금", value: "₩550,000" },
+      { label: "학비 + 홈스테이 + 투어 비용", value: "약 3,442 AUD (약 315만원)" },
+      { label: "총 비용", value: "약 370만원 (항공료 별도)" },
+      { label: "할인 정책", value: "홈스테이 환불 $100 / 친구·가족 동반 $100 할인" },
     ],
     [],
   );
@@ -37,7 +33,7 @@ export default function PerthSpeakingTourLanding() {
       {/* NAV */}
       <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <a href="#top" className="text-lg font-bold tracking-tight">
+          <a href="#top" className="text-2xl font-bold tracking-tight">
             서호주 스피킹 투어
           </a>
           <nav className="hidden gap-6 md:flex">
@@ -56,9 +52,9 @@ export default function PerthSpeakingTourLanding() {
             <a href="#benefits" className="hover:underline">
               혜택
             </a>
-            <a href="#contact" className="hover:underline">
-              문의
-            </a>
+            {/*<a href="#contact" className="hover:underline">*/}
+            {/*  문의*/}
+            {/*</a>*/}
           </nav>
           <a href="#contact" className="rounded-2xl border px-4 py-2 text-sm font-semibold hover:bg-zinc-900 hover:text-white">
             상담 신청
@@ -79,9 +75,22 @@ export default function PerthSpeakingTourLanding() {
               <span className="mt-2 block text-emerald-600">서호주 스피킹 투어</span>
             </motion.h1>
             <p className="mt-4 max-w-prose text-zinc-700">
-              2025년 1월 24일–2월 9일, 호주 퍼스(Perth)에서 진행되는 16박 17일 프로그램. 수업·홈스테이·액티비티가 결합된 체험형 어학투어로, 자유여행을
-              위한 실전 영어를 익힙니다.
+              서호주 퍼스(Perth) 스피킹 투어는 저희 프렌딩 아카데미(줌마영어)에서 이미 4회에 걸쳐 성료한 검증된 프로그램입니다.
             </p>
+            <p className="mt-4 max-w-prose text-zinc-700">
+              매년 1~2월 서호주 퍼스에서 자유 여행을 꿈꾸는 학생들을 위해 영어 연수와 현지 관광을 동시에 결합한 프로그램입니다.
+            </p>
+            <p className="mt-4 max-w-prose text-zinc-700">
+              이번에는 2025년 1월 24일부터 다음 해 2월 9일까지 호주 퍼스(Perth)에서 16박 17일 일정으로 진행될 예정입니다.
+            </p>
+            <p className="mt-4 max-w-prose text-zinc-700">
+              이 프로그램에 참여하시면 영어수업 · 홈스테이 · 액티비티가 결합된 체험형 스피킹 투어를 즐기시면서 자유여행을 위한 실전 영어를 익힐 수
+              있습니다.
+            </p>
+            <p className="mt-4 max-w-prose text-zinc-700">
+              특히 이번에는 호주 정부의 지원으로 기존 대비 30%가 할인된 금액으로 프로그램에 참여하실 수 있게 되었습니다.
+            </p>
+
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#pricing" className="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow hover:bg-emerald-700">
                 비용 보기
