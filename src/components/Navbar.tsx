@@ -52,6 +52,33 @@ export default function Navbar() {
     };
   }, []);
 
+  // 활성 메뉴 스타일 함수
+  const getMenuItemClass = (href: string, isDropdown: boolean = false) => {
+    const isActive = pathname === href || pathname.startsWith(href + "/");
+    const baseClasses = isDropdown
+      ? "block px-4 py-2 text-sm transition-all duration-300 ease-in-out"
+      : "hidden px-4 py-2 text-sm transition-all duration-300 ease-in-out md:block";
+
+    if (isActive) {
+      return clsx(
+        baseClasses,
+        "bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold transform scale-105 shadow-lg rounded-lg border-l-4 border-yellow-400",
+      );
+    }
+
+    return clsx(baseClasses, "text-gray-700 hover:bg-gray-100 hover:text-blue-600 hover:transform hover:scale-105");
+  };
+
+  const getDropdownMenuItemClass = (href: string) => {
+    const isActive = pathname === href || pathname.startsWith(href + "/");
+
+    if (isActive) {
+      return "block px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold transform scale-105 shadow-lg rounded-lg border-l-4 border-yellow-400 transition-all duration-300 ease-in-out";
+    }
+
+    return "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 hover:transform hover:scale-105 transition-all duration-300 ease-in-out rounded-lg";
+  };
+
   return (
     <nav className="sticky top-0 z-50 flex w-full items-center justify-between bg-white px-6 py-2 shadow-md md:py-4">
       <h1 className="text-2xl font-bold">
@@ -70,31 +97,19 @@ export default function Navbar() {
             {/* 이 부분은 navbar 메뉴 영역*/}
             {isAdmin && (
               <>
-                <Link
-                  href="/users/admin"
-                  className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
-                  onClick={() => setMenuOpen(false)}>
+                <Link href="/users/admin" className={getMenuItemClass("/users/admin")} onClick={() => setMenuOpen(false)}>
                   Admin-Dashboard
                 </Link>
 
-                <Link
-                  href="/users/admin/courses"
-                  className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
-                  onClick={() => setMenuOpen(false)}>
+                <Link href="/users/admin/courses" className={getMenuItemClass("/users/admin/courses")} onClick={() => setMenuOpen(false)}>
                   강좌 관리
                 </Link>
 
-                <Link
-                  href="/users/admin/teachers"
-                  className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
-                  onClick={() => setMenuOpen(false)}>
+                <Link href="/users/admin/teachers" className={getMenuItemClass("/users/admin/teachers")} onClick={() => setMenuOpen(false)}>
                   강사 관리
                 </Link>
 
-                <Link
-                  href="/purchase/courses"
-                  className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
-                  onClick={() => setMenuOpen(false)}>
+                <Link href="/purchase/courses" className={getMenuItemClass("/purchase/courses")} onClick={() => setMenuOpen(false)}>
                   Purchase
                 </Link>
               </>
@@ -102,34 +117,25 @@ export default function Navbar() {
 
             {isTeacher && (
               <>
-                <Link
-                  href="/users/teacher"
-                  className={clsx("hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block", {})}
-                  onClick={() => setMenuOpen(false)}>
+                <Link href="/users/teacher" className={getMenuItemClass("/users/teacher")} onClick={() => setMenuOpen(false)}>
                   강사 페이지
                 </Link>
               </>
             )}
 
             {!isTeacher && (
-              <Link
-                href="/users/my-courses"
-                className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
-                onClick={() => setMenuOpen(false)}>
+              <Link href="/users/my-courses" className={getMenuItemClass("/users/my-courses")} onClick={() => setMenuOpen(false)}>
                 내 강의실 입장
               </Link>
             )}
 
-            <Link
-              href="/users/profile"
-              className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
-              onClick={() => setMenuOpen(false)}>
+            <Link href="/users/profile" className={getMenuItemClass("/users/profile")} onClick={() => setMenuOpen(false)}>
               회원 정보
             </Link>
 
             <Link
               href="/course-detail/phil-video-one-to-one"
-              className="hidden px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 md:block"
+              className={getMenuItemClass("/course-detail/phil-video-one-to-one")}
               onClick={() => setMenuOpen(false)}>
               필리핀 화상영어 안내
             </Link>
@@ -138,7 +144,7 @@ export default function Navbar() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="flex items-center gap-2 rounded-md bg-white px-4 py-2 text-gray-800 hover:bg-gray-100">
+                className="flex items-center gap-2 rounded-md bg-white px-4 py-2 text-gray-800 transition-all duration-300 hover:bg-gray-100">
                 <div className="flex items-center justify-center">
                   <div>❤️ {session.user?.realName ? session.user.realName : session.user.email} 님</div>
                   {menuOpen ? <ChevronUp className="ml-2" size={18} /> : <ChevronDown className="ml-2" size={18} />}
@@ -151,39 +157,33 @@ export default function Navbar() {
                 <div className="ring-opacity-5 absolute right-0 z-50 mt-2 w-56 rounded-md bg-white py-2 shadow-lg ring-1 ring-black">
                   {isAdmin && (
                     <>
-                      <Link
-                        href="/users/admin"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}>
+                      <Link href="/users/admin" className={getDropdownMenuItemClass("/users/admin")} onClick={() => setMenuOpen(false)}>
                         Admin-Dashboard
                       </Link>
 
                       <Link
                         href="/users/admin/courses"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className={getDropdownMenuItemClass("/users/admin/courses")}
                         onClick={() => setMenuOpen(false)}>
                         강좌 관리
                       </Link>
 
                       <Link
                         href="/users/admin/teachers"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className={getDropdownMenuItemClass("/users/admin/teachers")}
                         onClick={() => setMenuOpen(false)}>
                         강사 관리
                       </Link>
 
-                      <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
+                      <Link href="/dashboard" className={getDropdownMenuItemClass("/dashboard")} onClick={() => setMenuOpen(false)}>
                         대시보드
                       </Link>
 
-                      <Link href="/learn" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
+                      <Link href="/learn" className={getDropdownMenuItemClass("/learn")} onClick={() => setMenuOpen(false)}>
                         기존 Learn
                       </Link>
 
-                      <Link
-                        href="/purchase/courses"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}>
+                      <Link href="/purchase/courses" className={getDropdownMenuItemClass("/purchase/courses")} onClick={() => setMenuOpen(false)}>
                         Purchase
                       </Link>
                     </>
@@ -192,7 +192,7 @@ export default function Navbar() {
                   {(isSemiAdmin || isAdmin) && (
                     <Link
                       href="/course-detail/perth/admin"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className={getDropdownMenuItemClass("/course-detail/perth/admin")}
                       onClick={() => setMenuOpen(false)}>
                       호주 문의 현황
                     </Link>
@@ -200,16 +200,13 @@ export default function Navbar() {
 
                   {(isTeacher || isAdmin) && (
                     <>
-                      <Link
-                        href="/users/teacher"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}>
+                      <Link href="/users/teacher" className={getDropdownMenuItemClass("/users/teacher")} onClick={() => setMenuOpen(false)}>
                         강사 페이지
                       </Link>
 
                       <Link
                         href="/users/teacher/teacher-courses"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className={getDropdownMenuItemClass("/users/teacher/teacher-courses")}
                         onClick={() => setMenuOpen(false)}>
                         teacher-courses
                       </Link>
@@ -219,33 +216,27 @@ export default function Navbar() {
                   {(isAdmin || isSemiAdmin || isStudent) && (
                     <Link
                       href="/purchase/waiting-courses"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className={getDropdownMenuItemClass("/purchase/waiting-courses")}
                       onClick={() => setMenuOpen(false)}>
                       결제 대기 강의 보기
                     </Link>
                   )}
 
-                  <Link
-                    href="/users/my-courses"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setMenuOpen(false)}>
+                  <Link href="/users/my-courses" className={getDropdownMenuItemClass("/users/my-courses")} onClick={() => setMenuOpen(false)}>
                     내 강의실 입장
                   </Link>
 
-                  <Link href="/users/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
+                  <Link href="/users/profile" className={getDropdownMenuItemClass("/users/profile")} onClick={() => setMenuOpen(false)}>
                     회원 정보
                   </Link>
 
-                  <Link
-                    href="/course-detail/perth"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setMenuOpen(false)}>
+                  <Link href="/course-detail/perth" className={getDropdownMenuItemClass("/course-detail/perth")} onClick={() => setMenuOpen(false)}>
                     호주 스피킹 투어 안내
                   </Link>
 
                   <Link
                     href="/course-detail/phil-video-one-to-one"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className={getDropdownMenuItemClass("/course-detail/phil-video-one-to-one")}
                     onClick={() => setMenuOpen(false)}>
                     필리핀 화상영어 안내
                   </Link>
@@ -255,7 +246,7 @@ export default function Navbar() {
                       setMenuOpen(false);
                       setIsErrorModalOpen(true);
                     }}
-                    className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
+                    className="block w-full cursor-pointer px-4 py-2 text-left text-sm text-gray-700 transition-all duration-300 ease-in-out hover:scale-105 hover:transform hover:bg-gray-100 hover:text-blue-600">
                     오류 대처 방법
                   </button>
 
@@ -266,7 +257,7 @@ export default function Navbar() {
                       setMenuOpen(false);
                       signOut({ callbackUrl: "/" });
                     }}
-                    className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100">
+                    className="block w-full px-4 py-2 text-left text-sm text-red-600 transition-all duration-300 ease-in-out hover:scale-105 hover:transform hover:bg-gray-100">
                     로그아웃
                   </button>
                 </div>
