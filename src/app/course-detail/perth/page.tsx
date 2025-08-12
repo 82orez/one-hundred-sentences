@@ -49,7 +49,7 @@ export default function PerthSpeakingTourLanding() {
     e.preventDefault();
 
     // 확인 창 추가
-    if (!window.confirm("정말로 보내시겠습니까?")) {
+    if (!window.confirm("입력한 정보가 정확하신가요?")) {
       return;
     }
 
