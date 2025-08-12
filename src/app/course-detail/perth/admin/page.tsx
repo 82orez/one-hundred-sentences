@@ -46,6 +46,7 @@ export default function PerthQuestionsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [consultationContent, setConsultationContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   // 권한 확인
   useEffect(() => {
@@ -161,6 +162,52 @@ export default function PerthQuestionsPage() {
     }
   };
 
+  // 문의 삭제 핸들러
+  const handleDeleteQuestion = async (question: PerthQuestion) => {
+    // 상담완료된 경우에만 삭제 가능
+    if (!question.consultationContent) {
+      toast.error("상담완료된 문의만 삭제할 수 있습니다.");
+      return;
+    }
+
+    if (!confirm("정말로 삭제하시겠습니까?")) {
+      return;
+    }
+
+    try {
+      setIsDeleting(question.id);
+      const response = await fetch("/api/perth-questions", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: question.id,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("문의 삭제에 실패했습니다.");
+      }
+
+      // 로컬 상태에서 해당 문의 제거
+      setQuestions((prev) => prev.filter((q) => q.id !== question.id));
+
+      // 페이지네이션 정보 업데이트
+      setPagination((prev) => ({
+        ...prev,
+        total: prev.total - 1,
+        totalPages: Math.ceil((prev.total - 1) / prev.limit),
+      }));
+
+      toast.success("문의가 성공적으로 삭제되었습니다.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "삭제 중 오류가 발생했습니다.");
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
   // 날짜 포맷 함수
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("ko-KR", {
@@ -223,12 +270,13 @@ export default function PerthQuestionsPage() {
                     <th className="text-left">문의내용</th>
                     <th className="text-left">상담상태</th>
                     <th className="text-left">작성일</th>
+                    <th className="text-left">작업</th>
                   </tr>
                 </thead>
                 <tbody>
                   {questions.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-8 text-center text-gray-500">
+                      <td colSpan={8} className="py-8 text-center text-gray-500">
                         등록된 문의가 없습니다.
                       </td>
                     </tr>
@@ -252,6 +300,21 @@ export default function PerthQuestionsPage() {
                           )}
                         </td>
                         <td className="text-sm text-gray-600">{formatDate(question.createdAt)}</td>
+                        <td>
+                          <button
+                            className={`btn btn-sm ${question.consultationContent ? "btn-error" : "btn-disabled"}`}
+                            onClick={() => handleDeleteQuestion(question)}
+                            disabled={!question.consultationContent || isDeleting === question.id}>
+                            {isDeleting === question.id ? (
+                              <>
+                                <span className="loading loading-spinner loading-xs"></span>
+                                삭제 중...
+                              </>
+                            ) : (
+                              "삭제"
+                            )}
+                          </button>
+                        </td>
                       </tr>
                     ))
                   )}

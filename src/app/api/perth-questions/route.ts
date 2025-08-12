@@ -112,3 +112,53 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
   }
 }
+
+// DELETE: 퍼스 투어 문의 삭제
+export async function DELETE(request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+    }
+
+    const userRole = (session.user as any)?.role;
+    if (userRole !== "admin" && userRole !== "semiAdmin") {
+      return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 });
+    }
+
+    const { id } = await request.json();
+
+    if (!id) {
+      return NextResponse.json({ error: "문의 ID가 필요합니다." }, { status: 400 });
+    }
+
+    // 문의가 존재하는지 확인
+    const existingQuestion = await prisma.perthQuestion.findUnique({
+      where: { id },
+    });
+
+    if (!existingQuestion) {
+      return NextResponse.json({ error: "해당 문의를 찾을 수 없습니다." }, { status: 404 });
+    }
+
+    // 상담완료된 경우에만 삭제 가능
+    if (!existingQuestion.consultationContent) {
+      return NextResponse.json({ error: "상담완료된 문의만 삭제할 수 있습니다." }, { status: 400 });
+    }
+
+    // 문의 삭제
+    await prisma.perthQuestion.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({
+      message: "문의가 성공적으로 삭제되었습니다.",
+    });
+  } catch (error) {
+    console.error("문의 삭제 실패:", error);
+    return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
+  }
+}
