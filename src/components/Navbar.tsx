@@ -189,6 +189,15 @@ export default function Navbar() {
                     </>
                   )}
 
+                  {(isSemiAdmin || isAdmin) && (
+                    <Link
+                      href="/course-detail/perth/admin"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setMenuOpen(false)}>
+                      호주 문의 현황
+                    </Link>
+                  )}
+
                   {(isTeacher || isAdmin) && (
                     <>
                       <Link
@@ -232,13 +241,6 @@ export default function Navbar() {
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setMenuOpen(false)}>
                     호주 스피킹 투어 안내
-                  </Link>
-
-                  <Link
-                    href="/course-detail/perth/admin"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setMenuOpen(false)}>
-                    호주 문의 현황
                   </Link>
 
                   <Link

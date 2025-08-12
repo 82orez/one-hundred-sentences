@@ -18,7 +18,7 @@ export default function PerthSpeakingTourLanding() {
       { label: "계약금 및 입학금", value: "55만원" },
       { label: "학비/홈스테이/투어", value: "315만원 (약 3,442 AUD)" },
       { label: "총 비용", value: "370만원 (항공료 별도)" },
-      { label: "할인 정책", value: "홈스테이 환불 $100 / 친구·가족 동반 $100 할인" },
+      // { label: "할인 정책", value: "홈스테이 환불 $100 / 친구·가족 동반 $100 할인" },
     ],
     [],
   );
@@ -143,6 +143,7 @@ export default function PerthSpeakingTourLanding() {
               className="text-2xl leading-tight font-extrabold md:text-5xl">
               실전 회화와 여행이 만나는
               <span className="mt-2 block text-emerald-600">서호주 스피킹 투어</span>
+              <span className="mt-2 block text-red-400">지금 당장 30% 인하된 가격에 만나 보세요!</span>
             </motion.h1>
             <p className="mt-4 max-w-prose text-zinc-700">
               서호주 퍼스(Perth) 스피킹 투어는 저희 프렌딩 아카데미(줌마영어)에서 이미 4회에 걸쳐 진행된 검증된 프로그램입니다.
@@ -175,7 +176,7 @@ export default function PerthSpeakingTourLanding() {
             <ul className="mt-6 flex flex-wrap gap-2 text-sm text-zinc-600">
               <li className="rounded-full border px-3 py-1">결합형(수업/투어) 영어 연수</li>
               <li className="rounded-full border px-3 py-1">호주 정부 공식 지원</li>
-              <li className="rounded-full border px-3 py-1">대표 강사 인솔</li>
+              <li className="rounded-full border px-3 py-1">대표 강사 직접 인솔</li>
             </ul>
           </div>
           <div className="grid grid-cols-2 gap-3 md:gap-4">
@@ -272,7 +273,7 @@ export default function PerthSpeakingTourLanding() {
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-sm text-zinc-500">* 환율/현지 사정에 따라 변동 가능.</p>
+            <p className="mt-4 text-sm text-zinc-500">* 환율 및 현지 사정에 따라 변동 가능.</p>
           </div>
           <div className="rounded-2xl border bg-emerald-600/5 p-6 shadow-sm">
             <h3 className="text-lg font-semibold">할인 정책</h3>
