@@ -48,6 +48,11 @@ export default function PerthSpeakingTourLanding() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 확인 창 추가
+    if (!window.confirm("정말로 보내시겠습니까?")) {
+      return;
+    }
+
     // 필수 필드 검증
     if (!formData.name.trim()) {
       toast.error("이름을 입력해주세요.");
