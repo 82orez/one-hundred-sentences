@@ -79,6 +79,17 @@ export default function Navbar() {
     return "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 hover:transform hover:scale-105 transition-all duration-300 ease-in-out rounded-lg";
   };
 
+  // 특별한 메뉴 아이템을 위한 강조 스타일 함수 (호주 스피킹 투어 안내용)
+  const getHighlightedDropdownMenuItemClass = (href: string) => {
+    const isActive = pathname === href || pathname.startsWith(href + "/");
+
+    if (isActive) {
+      return "block px-4 py-2 text-sm bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold transform scale-105 shadow-xl rounded-lg border-l-4 border-yellow-400 transition-all duration-300 ease-in-out animate-pulse";
+    }
+
+    return "block px-4 py-2 text-sm font-semibold bg-gradient-to-r from-orange-400 to-red-500 text-white hover:from-orange-500 hover:to-red-600 hover:shadow-lg hover:transform hover:scale-110 transition-all duration-300 ease-in-out rounded-lg border-2 border-orange-300 shadow-md";
+  };
+
   return (
     <nav className="sticky top-0 z-50 flex w-full items-center justify-between bg-white px-6 py-2 shadow-md md:py-4">
       <h1 className="text-2xl font-bold">
@@ -230,8 +241,11 @@ export default function Navbar() {
                     회원 정보
                   </Link>
 
-                  <Link href="/course-detail/perth" className={getDropdownMenuItemClass("/course-detail/perth")} onClick={() => setMenuOpen(false)}>
-                    호주 스피킹 투어 안내
+                  <Link
+                    href="/course-detail/perth"
+                    className={getHighlightedDropdownMenuItemClass("/course-detail/perth")}
+                    onClick={() => setMenuOpen(false)}>
+                    🇦🇺 호주 스피킹 투어 안내 ✨
                   </Link>
 
                   <Link

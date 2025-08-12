@@ -371,6 +371,9 @@ export default function PerthSpeakingTourLanding() {
       <section id="contact" className="mx-auto max-w-6xl px-4 py-8 md:py-16">
         <div className="rounded-2xl border bg-white p-6 shadow-sm">
           <h2 className="text-2xl font-bold md:text-3xl">상담 및 문의하기</h2>
+          <p className="mt-4 text-zinc-700">
+            지금 상담 받으시고 <span className={"font-semibold underline"}>추가 할인</span>의 혜택도 받아가세요!
+          </p>
           <p className="mt-4 text-zinc-700">상담 내용을 남겨주시면 담당자가 확인 후 남겨주신 연락처로 순차적으로 연락드립니다.</p>
           <p className="mt-2 text-zinc-700">또는 다음 연락처로 연락 부탁드립니다.</p>
           <p className="mt-2 font-semibold text-zinc-700">(주)프렌딩 대표 박민규 010-3753-4546</p>
