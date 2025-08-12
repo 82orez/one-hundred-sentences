@@ -634,11 +634,14 @@ model Configuration {
 
 // 퍼스 스피킹 투어 문의 모델 추가
 model PerthQuestion {
-  id        String   @id @default(cuid())
-  name      String // 이름
-  phone     String // 연락처
-  email     String? // 이메일 (선택사항)
-  message   String // 문의 내용
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  String    @id @default(cuid())
+  name                String
+  phone               String
+  email               String?
+  message             String
+  consultationContent String? // 상담 내용 추가
+  consultedAt         DateTime? // 상담 완료 시간 추가
+  consultedBy         String? // 상담한 관리자 ID 추가
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 }

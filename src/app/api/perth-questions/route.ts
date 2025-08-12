@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 const prisma = new PrismaClient();
 
@@ -70,5 +72,43 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "문의 목록을 불러오는 중 오류가 발생했습니다." }, { status: 500 });
   } finally {
     await prisma.$disconnect();
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json({ error: "인증이 필요합니다." }, { status: 401 });
+    }
+
+    const userRole = (session.user as any)?.role;
+    if (userRole !== "admin" && userRole !== "semiAdmin") {
+      return NextResponse.json({ error: "권한이 없습니다." }, { status: 403 });
+    }
+
+    const { id, consultationContent } = await request.json();
+
+    if (!id || !consultationContent?.trim()) {
+      return NextResponse.json({ error: "문의 ID와 상담 내용이 필요합니다." }, { status: 400 });
+    }
+
+    const updatedQuestion = await prisma.perthQuestion.update({
+      where: { id },
+      data: {
+        consultationContent: consultationContent.trim(),
+        consultedAt: new Date(),
+        consultedBy: session.user?.id,
+      },
+    });
+
+    return NextResponse.json({
+      message: "상담 내용이 성공적으로 등록되었습니다.",
+      data: updatedQuestion,
+    });
+  } catch (error) {
+    console.error("상담 내용 등록 실패:", error);
+    return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
   }
 }

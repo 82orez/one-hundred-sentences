@@ -707,6 +707,9 @@ export type Database = {
       }
       PerthQuestion: {
         Row: {
+          consultationContent: string | null
+          consultedAt: string | null
+          consultedBy: string | null
           createdAt: string
           email: string | null
           id: string
@@ -716,6 +719,9 @@ export type Database = {
           updatedAt: string
         }
         Insert: {
+          consultationContent?: string | null
+          consultedAt?: string | null
+          consultedBy?: string | null
           createdAt?: string
           email?: string | null
           id: string
@@ -725,6 +731,9 @@ export type Database = {
           updatedAt: string
         }
         Update: {
+          consultationContent?: string | null
+          consultedAt?: string | null
+          consultedBy?: string | null
           createdAt?: string
           email?: string | null
           id?: string

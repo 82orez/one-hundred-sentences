@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface PerthQuestion {
   id: string;
@@ -10,6 +11,9 @@ interface PerthQuestion {
   phone: string;
   email?: string;
   message: string;
+  consultationContent?: string;
+  consultedAt?: string;
+  consultedBy?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -40,6 +44,8 @@ export default function PerthQuestionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedQuestion, setSelectedQuestion] = useState<PerthQuestion | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [consultationContent, setConsultationContent] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   // 권한 확인
   useEffect(() => {
@@ -93,13 +99,66 @@ export default function PerthQuestionsPage() {
   // 문의 상세보기 핸들러
   const handleQuestionClick = (question: PerthQuestion) => {
     setSelectedQuestion(question);
+    setConsultationContent(question.consultationContent || "");
     setIsModalOpen(true);
   };
 
   // 모달 닫기 핸들러
   const closeModal = () => {
     setSelectedQuestion(null);
+    setConsultationContent("");
     setIsModalOpen(false);
+  };
+
+  // 상담 내용 저장 핸들러
+  const handleSaveConsultation = async () => {
+    if (!selectedQuestion || !consultationContent.trim()) {
+      toast.error("상담 내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      const response = await fetch("/api/perth-questions", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: selectedQuestion.id,
+          consultationContent: consultationContent.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("상담 내용 저장에 실패했습니다.");
+      }
+
+      const result = await response.json();
+
+      // 로컬 상태 업데이트
+      setQuestions((prev) =>
+        prev.map((q) =>
+          q.id === selectedQuestion.id ? { ...q, consultationContent: consultationContent.trim(), consultedAt: new Date().toISOString() } : q,
+        ),
+      );
+
+      setSelectedQuestion((prev) =>
+        prev
+          ? {
+              ...prev,
+              consultationContent: consultationContent.trim(),
+              consultedAt: new Date().toISOString(),
+            }
+          : null,
+      );
+
+      toast.success("상담 내용이 저장되었습니다.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "저장 중 오류가 발생했습니다.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // 날짜 포맷 함수
@@ -162,13 +221,14 @@ export default function PerthQuestionsPage() {
                     <th className="text-left">연락처</th>
                     <th className="text-left">이메일</th>
                     <th className="text-left">문의내용</th>
+                    <th className="text-left">상담상태</th>
                     <th className="text-left">작성일</th>
                   </tr>
                 </thead>
                 <tbody>
                   {questions.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-8 text-center text-gray-500">
+                      <td colSpan={7} className="py-8 text-center text-gray-500">
                         등록된 문의가 없습니다.
                       </td>
                     </tr>
@@ -183,6 +243,13 @@ export default function PerthQuestionsPage() {
                           <div className="truncate" title="클릭하여 전체 내용 보기">
                             {question.message}
                           </div>
+                        </td>
+                        <td>
+                          {question.consultationContent ? (
+                            <span className="badge badge-success text-white">상담완료</span>
+                          ) : (
+                            <span className="badge badge-warning text-white">대기중</span>
+                          )}
                         </td>
                         <td className="text-sm text-gray-600">{formatDate(question.createdAt)}</td>
                       </tr>
@@ -220,53 +287,102 @@ export default function PerthQuestionsPage() {
             </div>
           )}
 
-          {/* 문의 상세보기 모달 */}
+          {/* 문의 상세보기 및 상담 등록 모달 */}
           <input type="checkbox" id="question-modal" className="modal-toggle" checked={isModalOpen} readOnly />
           <div className="modal">
-            <div className="modal-box max-w-2xl">
-              <h3 className="mb-4 text-lg font-bold">문의 상세 정보</h3>
+            <div className="modal-box max-w-4xl">
+              <h3 className="mb-4 text-lg font-bold">문의 상세 정보 및 상담 관리</h3>
 
               {selectedQuestion && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">이름</label>
-                    <p className="text-sm text-gray-900">{selectedQuestion.name}</p>
-                  </div>
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  {/* 문의 정보 */}
+                  <div className="space-y-4">
+                    <h4 className="text-md border-b pb-2 font-semibold text-gray-800">문의 정보</h4>
 
-                  <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">연락처</label>
-                    <p className="text-sm text-gray-900">
-                      <a href={`tel:${selectedQuestion.phone}`} className="text-blue-600 hover:underline">
-                        {selectedQuestion.phone}
-                      </a>
-                    </p>
-                  </div>
-
-                  {selectedQuestion.email && (
                     <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">이메일</label>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">이름</label>
+                      <p className="text-sm text-gray-900">{selectedQuestion.name}</p>
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">연락처</label>
                       <p className="text-sm text-gray-900">
-                        <a href={`mailto:${selectedQuestion.email}`} className="text-blue-600 hover:underline">
-                          {selectedQuestion.email}
+                        <a href={`tel:${selectedQuestion.phone}`} className="text-blue-600 hover:underline">
+                          {selectedQuestion.phone}
                         </a>
                       </p>
                     </div>
-                  )}
 
-                  <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">문의 내용</label>
-                    <div className="rounded-lg bg-gray-50 p-3">
-                      <textarea
-                        className="h-32 w-full resize-none border-none bg-transparent text-sm whitespace-pre-wrap text-gray-900 focus:outline-none"
-                        value={selectedQuestion.message}
-                        readOnly
-                      />
+                    {selectedQuestion.email && (
+                      <div>
+                        <label className="mb-1 block text-sm font-medium text-gray-700">이메일</label>
+                        <p className="text-sm text-gray-900">
+                          <a href={`mailto:${selectedQuestion.email}`} className="text-blue-600 hover:underline">
+                            {selectedQuestion.email}
+                          </a>
+                        </p>
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">문의 내용</label>
+                      <div className="rounded-lg bg-gray-50 p-3">
+                        <textarea
+                          className="h-32 w-full resize-none border-none bg-transparent text-sm whitespace-pre-wrap text-gray-900 focus:outline-none"
+                          value={selectedQuestion.message}
+                          readOnly
+                        />
+                      </div>
                     </div>
+
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">작성일</label>
+                      <p className="text-sm text-gray-900">{formatDate(selectedQuestion.createdAt)}</p>
+                    </div>
+
+                    {selectedQuestion.consultedAt && (
+                      <div>
+                        <label className="mb-1 block text-sm font-medium text-gray-700">상담 완료일</label>
+                        <p className="text-sm text-gray-900">{formatDate(selectedQuestion.consultedAt)}</p>
+                      </div>
+                    )}
                   </div>
 
-                  <div>
-                    <label className="mb-1 block text-sm font-medium text-gray-700">작성일</label>
-                    <p className="text-sm text-gray-900">{formatDate(selectedQuestion.createdAt)}</p>
+                  {/* 상담 내용 */}
+                  <div className="space-y-4">
+                    <h4 className="text-md border-b pb-2 font-semibold text-gray-800">상담 내용</h4>
+
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-gray-700">
+                        상담 내용 {selectedQuestion.consultationContent ? "(수정)" : "(신규 등록)"}
+                      </label>
+                      <textarea
+                        className="h-40 w-full resize-none rounded-lg border border-gray-300 p-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                        placeholder="상담한 내용을 상세히 입력해주세요..."
+                        value={consultationContent}
+                        onChange={(e) => setConsultationContent(e.target.value)}
+                      />
+                    </div>
+
+                    <button className="btn btn-primary w-full" onClick={handleSaveConsultation} disabled={isSaving || !consultationContent.trim()}>
+                      {isSaving ? (
+                        <>
+                          <span className="loading loading-spinner loading-sm"></span>
+                          저장 중...
+                        </>
+                      ) : selectedQuestion.consultationContent ? (
+                        "상담 내용 수정"
+                      ) : (
+                        "상담 내용 등록"
+                      )}
+                    </button>
+
+                    {selectedQuestion.consultationContent && (
+                      <div className="mt-4 rounded-lg border border-green-200 bg-green-50 p-3">
+                        <label className="mb-2 block text-sm font-medium text-green-800">기존 상담 내용</label>
+                        <p className="text-sm whitespace-pre-wrap text-green-700">{selectedQuestion.consultationContent}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
