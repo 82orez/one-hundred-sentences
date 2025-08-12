@@ -9,6 +9,7 @@ import AnnouncementModalForOneDay from "@/components/Announcement/oneday/Announc
 import AnnouncementModal from "@/components/Announcement/AnnouncementModal";
 import DevelopingNotion from "@/components/Announcement/oneday/DevelopingNotion";
 import TravelEnglishPromotionModal from "@/components/Announcement/TravelEnglishPromotionModal";
+import PerthTourPromotionModal from "@/components/Announcement/PerthTourPromotionModal";
 
 interface Props {
   children?: React.ReactNode;
@@ -43,6 +44,8 @@ export const NextLayout = ({ children }: Props) => {
       {/*<AnnouncementModalForOneDay />*/}
       {/*<AnnouncementModal />*/}
       {/*<TravelEnglishPromotionModal />*/}
+      <PerthTourPromotionModal />
+
       <Navbar />
       {children}
     </QueryClientProvider>
