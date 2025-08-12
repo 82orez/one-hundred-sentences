@@ -3,30 +3,28 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, MapPin, Calendar, Users, Plane } from "lucide-react";
+import Link from "next/link";
 
 const PerthTourPromotionModal = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [dontShowToday, setDontShowToday] = useState(false);
 
   useEffect(() => {
-    // 페이지 로드 후 3초 뒤에 모달 표시
-    const timer = setTimeout(() => {
-      // 오늘 이미 모달을 봤는지 확인
-      const today = new Date().toDateString();
-      const lastShown = localStorage.getItem("perthTourModalShown");
+    // localStorage에서 '오늘 하루 보지 않기' 선택 여부 확인
+    const lastClosed = localStorage.getItem("perthTour_closed_one_day");
+    const today = new Date().toISOString().split("T")[0];
 
-      if (lastShown !== today) {
-        setIsOpen(true);
-      }
-    }, 3000);
-
-    return () => clearTimeout(timer);
+    if (lastClosed !== today) {
+      setIsOpen(true);
+    }
   }, []);
 
   const closeModal = () => {
+    if (dontShowToday) {
+      const today = new Date().toISOString().split("T")[0];
+      localStorage.setItem("perthTour_closed_one_day", today);
+    }
     setIsOpen(false);
-    // 오늘 날짜를 저장하여 하루 동안 다시 표시하지 않도록 함
-    const today = new Date().toDateString();
-    localStorage.setItem("perthTourModalShown", today);
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -62,17 +60,17 @@ const PerthTourPromotionModal = () => {
                 </div>
               </div>
               <h2 className="mb-2 text-2xl font-bold text-gray-900">🌟 특별한 기회! 🌟</h2>
-              <h3 className="mb-4 text-3xl font-bold text-emerald-600">서호주 스피킹 투어</h3>
+              <h3 className="mb-4 text-2xl font-bold text-emerald-600">서호주 스피킹 투어</h3>
             </div>
 
             {/* 내용 */}
             <div className="space-y-4 text-sm text-gray-700">
               <div className="rounded-xl bg-red-50 p-4 text-center">
                 <p className="text-xl font-bold text-red-600">🔥 30% 인하된 특별가! 🔥</p>
-                <p className="mt-2 text-red-500">호주 정부의 공식 지원으로 가능.</p>
+                {/*<p className="mt-2 text-red-500">호주 정부의 공식 지원으로 가능.</p>*/}
               </div>
 
-              <div className="space-y-3 text-base">
+              <div className="hidden space-y-3 text-base">
                 <div className="flex items-center gap-3">
                   <MapPin className="h-5 w-5 text-emerald-600" />
                   <span>호주 퍼스(Perth) 16박 17일</span>
@@ -87,7 +85,7 @@ const PerthTourPromotionModal = () => {
                 </div>
               </div>
 
-              <div className="rounded-xl bg-emerald-50 p-4">
+              <div className="hidden rounded-xl bg-emerald-50 p-4">
                 <h4 className="mb-2 font-semibold text-emerald-800">포함 혜택</h4>
                 <ul className="space-y-1 text-base">
                   <li>✅ 필리핀 1:1 화상영어 수업 12주</li>
@@ -97,30 +95,35 @@ const PerthTourPromotionModal = () => {
                 </ul>
               </div>
 
-              <div className="text-center">
+              <div className="hidden text-center">
                 <p className="text-lg font-bold text-gray-900">총 370만원</p>
                 <p className="text-base text-gray-500">(항공료 별도)</p>
               </div>
             </div>
 
+            <p className="mt-2 text-center text-base text-gray-900">이 기회를 놓치지 마세요!</p>
+
             {/* 버튼 */}
             <div className="mt-6 space-y-3">
-              <a
-                href="#pricing"
+              <Link
+                href="/course-detail/perth"
                 onClick={closeModal}
                 className="block w-full rounded-xl bg-emerald-600 py-3 text-center font-semibold text-white hover:bg-emerald-700">
                 자세한 정보 보기
-              </a>
-              <a
-                href="#contact"
-                onClick={closeModal}
-                className="block w-full rounded-xl border border-emerald-600 py-3 text-center font-semibold text-emerald-600 hover:bg-emerald-50">
-                상담 신청하기
-              </a>
+              </Link>
             </div>
 
-            {/* 하단 텍스트 */}
-            <p className="mt-4 text-center text-xs text-gray-500">이 기회를 놓치지 마세요! 🚀</p>
+            {/* '오늘 하루 보지 않기' + 닫기 버튼 수평 정렬 */}
+            <div className="mt-4 flex items-center justify-between border-t border-gray-200 pt-3">
+              <label className="text-md flex items-center justify-center text-gray-600 hover:underline">
+                <input type="checkbox" className="mr-2" checked={dontShowToday} onChange={() => setDontShowToday(!dontShowToday)} />
+                오늘 하루 보지 않기
+              </label>
+
+              <button onClick={closeModal} className="rounded bg-gray-300 px-2 py-2 text-sm text-gray-800 hover:underline md:px-4">
+                닫기
+              </button>
+            </div>
           </motion.div>
         </motion.div>
       )}
