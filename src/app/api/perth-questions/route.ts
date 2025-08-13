@@ -166,7 +166,9 @@ export async function POST(request: NextRequest) {
 
         const { data, error } = await resend.emails.send({
           from: "프렌딩 아카데미 <no-reply@friending.ac>",
-          to: ["82orez@naver.com", "82orez@gmail.com", "lina.friending@gmail.com"],
+          // to: ["82orez@naver.com", "82orez@gmail.com", "lina.friending@gmail.com"],
+          to: ["82orez@naver.com", "lina.friending@gmail.com"],
+          // to: ["82orez@naver.com", "82orez@gmail.com"],
           subject: `[서호주 스피킹 투어] 새로운 문의 접수 - ${name}님`,
           html: emailContent,
         });
