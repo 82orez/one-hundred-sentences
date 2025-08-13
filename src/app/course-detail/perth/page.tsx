@@ -16,7 +16,7 @@ export default function PerthSpeakingTourLanding() {
   const priceItems = useMemo(
     () => [
       { label: "계약금 및 입학금", value: "55만원" },
-      { label: "학비/홈스테이/투어", value: "315만원 (약 3,442 AUD)" },
+      { label: "학비/홈스테이/투어", value: "315만원" },
       { label: "총 비용", value: "370만원 (항공료 별도)" },
       // { label: "할인 정책", value: "홈스테이 환불 $100 / 친구·가족 동반 $100 할인" },
     ],
@@ -33,7 +33,7 @@ export default function PerthSpeakingTourLanding() {
   ];
 
   const schedule = [
-    { time: "오전", weekday: "General English 수업", weekend: "자유/주말 투어" },
+    { time: "오전", weekday: "General/Business/Job-Interview", weekend: "자유/주말 투어" },
     { time: "오후", weekday: "Conversation Class 또는 현지 액티비티", weekend: "자유/주말 투어" },
   ];
 
@@ -281,11 +281,11 @@ export default function PerthSpeakingTourLanding() {
             <p className="mt-4 text-sm text-zinc-500">* 환율 및 현지 사정에 따라 변동 가능.</p>
           </div>
           <div className="rounded-2xl border bg-emerald-600/5 p-6 shadow-sm">
-            <h3 className="text-lg font-semibold">할인 정책</h3>
+            <h3 className="text-lg font-semibold">주의 사항</h3>
             <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-700 md:text-base">
-              <li>홈스테이 환불: $100</li>
-              <li>친구·가족 동반: $100 할인/인</li>
-              <li>호주 정부 지원 : WA TVET 프로그램 적용가 </li>
+              <li>계약금 및 입학금 55만원은 프르그램 신청 시에 아래 계좌로 입금 부탁드립니다.</li>
+              <li>입금 계좌 : (주)프렌딩 / 국민은행 680401-00-111448</li>
+              {/*<li>호주 정부 지원 : WA TVET 프로그램 적용가 </li>*/}
             </ul>
           </div>
         </div>
