@@ -226,25 +226,7 @@ export async function PUT(request: Request) {
 
     // 트랜잭션으로 업데이트 처리
     const result = await prisma.$transaction(async (prisma) => {
-      // 1. 기존 수업 날짜와 새로운 수업 날짜 비교
-      const existingClassDateIds = existingCourse.classDates.map((date) => date.id);
-
-      // 2. 출석 기록이 없는 수업 날짜만 삭제 (안전하게 하나씩 확인)
-      for (const classDateId of existingClassDateIds) {
-        // 해당 수업 날짜에 연결된 출석 기록이 있는지 확인
-        const attendanceCount = await prisma.attendance.count({
-          where: { classDateId },
-        });
-
-        // 출석 기록이 없는 경우에만 삭제
-        if (attendanceCount === 0) {
-          await prisma.classDate.delete({
-            where: { id: classDateId },
-          });
-        }
-      }
-
-      // 3. 강좌 정보 업데이트
+      // 1. 강좌 정보 업데이트 (ClassDate 처리 전에 먼저 수행)
       const updatedCourse = await prisma.course.update({
         where: { id },
         data: {
@@ -270,25 +252,84 @@ export async function PUT(request: Request) {
         },
       });
 
-      // 4. 새 수업 날짜 추가 (기존에 없던 날짜만)
+      // 2. ClassDate 처리 - 스마트 업데이트 방식
       if (classDatesData.length > 0) {
-        const existingDates = new Set(existingCourse.classDates.map((date) => new Date(date.date).toISOString().split("T")[0]));
+        // 기존 날짜와 새로운 날짜 비교
+        const existingDatesMap = new Map(existingCourse.classDates.map((date) => [new Date(date.date).toISOString().split("T")[0], date]));
 
-        for (const dateItem of classDatesData) {
+        const newDatesSet = new Set(classDatesData.map((dateItem: any) => new Date(dateItem.date).toISOString().split("T")[0]));
+
+        // 삭제할 날짜: 기존에 있지만 새로운 목록에 없는 날짜
+        const datesToDelete = Array.from(existingDatesMap.keys()).filter((dateStr) => !newDatesSet.has(dateStr));
+
+        // 추가할 날짜: 새로운 목록에 있지만 기존에 없는 날짜
+        const datesToAdd = classDatesData.filter((dateItem: any) => {
           const dateStr = new Date(dateItem.date).toISOString().split("T")[0];
+          return !existingDatesMap.has(dateStr);
+        });
 
-          // 기존에 없는 날짜만 추가
-          if (!existingDates.has(dateStr)) {
-            await prisma.classDate.create({
+        // 3. 출석 기록이 없는 날짜만 삭제
+        for (const dateStr of datesToDelete) {
+          const classDateToDelete = existingDatesMap.get(dateStr);
+          if (classDateToDelete) {
+            // 해당 수업 날짜에 연결된 출석 기록이 있는지 확인
+            const attendanceCount = await prisma.attendance.count({
+              where: { classDateId: classDateToDelete.id },
+            });
+
+            // 출석 기록이 없는 경우에만 삭제
+            if (attendanceCount === 0) {
+              await prisma.classDate.delete({
+                where: { id: classDateToDelete.id },
+              });
+            }
+          }
+        }
+
+        // 4. 새로운 날짜 추가
+        for (const dateItem of datesToAdd) {
+          await prisma.classDate.create({
+            data: {
+              courseId: id,
+              date: new Date(dateItem.date),
+              dayOfWeek: dateItem.dayOfWeek,
+              startTime: data.startTime || null,
+              endTime: data.endTime || null,
+            },
+          });
+        }
+
+        // 5. 기존 날짜의 시간 정보 업데이트 (시간이 변경된 경우)
+        const existingDatesToUpdate = classDatesData.filter((dateItem: any) => {
+          const dateStr = new Date(dateItem.date).toISOString().split("T")[0];
+          return existingDatesMap.has(dateStr);
+        });
+
+        for (const dateItem of existingDatesToUpdate) {
+          const dateStr = new Date(dateItem.date).toISOString().split("T")[0];
+          const existingDate = existingDatesMap.get(dateStr);
+
+          if (existingDate && (existingDate.startTime !== (data.startTime || null) || existingDate.endTime !== (data.endTime || null))) {
+            await prisma.classDate.update({
+              where: { id: existingDate.id },
               data: {
-                courseId: id,
-                date: new Date(dateItem.date),
-                dayOfWeek: dateItem.dayOfWeek,
                 startTime: data.startTime || null,
                 endTime: data.endTime || null,
               },
             });
           }
+        }
+      } else {
+        // classDatesData가 비어있는 경우: 제목 등만 변경하고 스케줄은 건드리지 않은 경우
+        // 기존 ClassDate는 그대로 유지하되, 시간 정보만 업데이트
+        if (data.startTime || data.endTime) {
+          await prisma.classDate.updateMany({
+            where: { courseId: id },
+            data: {
+              startTime: data.startTime || null,
+              endTime: data.endTime || null,
+            },
+          });
         }
       }
 
