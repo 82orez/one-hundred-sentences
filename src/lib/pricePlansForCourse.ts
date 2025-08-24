@@ -1,7 +1,7 @@
 export const pricePlansForCourse = [
   {
-    id: "cmbfkd0nh001dftdnumra0s03",
-    title: "ShallE 100 여행영어\n(6/5일 개강)",
+    id: "cmeqap027007tumtlini0vhl7",
+    title: "기초 여행영어 100문장\n(9/2일 개강)",
     price: 120000,
     pricePerHour: 5000,
     introPage: "/course-detail/courses/tour100",
@@ -9,7 +9,13 @@ export const pricePlansForCourse = [
       "박민규(Sean) 대표 강사",
       {
         title: "주2회(25분) 1:N 온라인 수업",
-        details: ["매주 화/목 오후 8시 수업", "총 24회 (6월 5일 ~ 8월 26일)", "중간 참여 가능", "수업 시작 전, zoom 설치 필요"],
+        details: [
+          "매주 화/목 오후 8시 수업",
+          "총 24회 (9월 2일 ~ 11월 27일)",
+          "중간 참여 가능",
+          "10월 7일, 9일 휴강",
+          "수업 시작 전, zoom 설치 필요",
+        ],
       },
       "온라인 학습 어플 무료 사용권",
       // {
@@ -19,29 +25,6 @@ export const pricePlansForCourse = [
       {
         title: "수강료 : 12만원 (24회 기준)",
         details: ["중간 참여 시, 1회당 5,000원", "예) 12회 수업 신청 -> 6만원"],
-      },
-    ],
-  },
-  {
-    id: "cmdf1x2vq0005ftltajc3mubn",
-    title: "Test - 유료 강좌\n(7/25일)",
-    price: 20000,
-    pricePerHour: 5000,
-    introPage: "/course-detail/courses/tour100",
-    description: [
-      "Paul 강사",
-      {
-        title: "주2회(25분) 1:N 온라인 수업",
-        details: ["매주 수/금 오전 7시 수업", "중간 참여 가능", "수업 시작 전, zoom 설치 필요"],
-      },
-      "온라인 학습 어플 무료 사용권",
-      // {
-      //   title: "온라인 학습 어플 무료 사용권",
-      //   details: ["예습, 복습 및 AI 테스트 가능"],
-      // },
-      {
-        title: "수강료 : 2만원 (4회 기준)",
-        details: ["중간 참여 시, 1회당 5,000원", "예) 2회 수업 신청 -> 1만원"],
       },
     ],
   },
